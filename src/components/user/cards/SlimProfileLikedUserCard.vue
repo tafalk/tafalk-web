@@ -1,0 +1,109 @@
+<template>
+<v-card
+  v-if="!isUnliked"
+  hover
+  :max-height="maxHeight"
+  @click.native="onToUserProfileClick">
+  <v-card-title dense primary>
+    <v-avatar v-if="authenticatedUser && userProfilePictureObjectUrl != null" size="60">
+      <img :src="userProfilePictureObjectUrl" />
+    </v-avatar>
+    <v-avatar v-else size="60">
+      <img
+        src="@/assets/default-user-avatar.jpg"
+        alt="Virgina Woolf in Hue"
+        v-bind:style="userHue"
+      />
+    </v-avatar>
+    <span class="display-1 grey--text">&nbsp;@{{ user.username }}</span>
+    <v-spacer />
+    <v-btn
+      v-if="isVisitingOwnProfile"
+      flat
+      small
+      depressed
+      color="error"
+      :loading="isLoading"
+      :disabled="isLoading"
+      @click.stop="unlikeUser"
+    >
+      {{ $t('user.profilePage.tabs.removeLikeUserButtonText') }}
+    </v-btn>
+  </v-card-title>
+</v-card>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
+import { print as gqlToString } from 'graphql/language'
+import { GetInteractionsBetweenUsers, StopWatchingUser } from '@/graphql/UserInteraction'
+import { GetUserHue } from '@/utils/DefaultProfilePainter'
+
+const logger = new Logger('SlimProfileLikedUserCard')
+
+export default {
+  name: 'SlimProfileLikedUserCard',
+  props: ['user', 'isVisitingOwnProfile'],
+  data () {
+    return {
+      isUnliked: false,
+      watchTypeUserConnectionValue: 'Watch',
+      maxHeight: 125,
+      userProfilePictureObjectUrl: null,
+      userHue: null,
+      isLoading: false
+    }
+  },
+  mounted () {
+    this.userHue = GetUserHue(this.user.username)
+
+    if (this.authenticatedUser && this.user.profilePictureKey != null) {
+      Storage.get(this.user.profilePictureKey, {
+        level: 'protected'
+      }).then(resp => (this.userProfilePictureObjectUrl = resp))
+    }
+  },
+  computed: {
+    ...mapGetters({
+      getAuthenticatedUser: 'authenticatedUser/getUser',
+      getVisitedUser: 'visitedUser/getUser'
+    }),
+    authenticatedUser () {
+      return this.getAuthenticatedUser
+    }
+  },
+  methods: {
+    ...mapActions({
+      setNewSiteError: 'shared/setNewSiteError',
+      setNewUserInteractionResultSuccess: 'shared/setNewUserInteractionResultSuccess',
+      setNewUserInteractionResultError: 'shared/setNewUserInteractionResultError'
+    }),
+    async unlikeUser () {
+      const graphqlConnectionsFromAuthenticatedUserToVisitedUserResult = await API.graphql(graphqlOperation(gqlToString(GetInteractionsBetweenUsers), {
+        actorUserId: this.authenticatedUser.id,
+        targetUserId: this.user.id
+      }))
+
+      const inboundUserInteractionsIdIndices = graphqlConnectionsFromAuthenticatedUserToVisitedUserResult.data.queryUserInteractionsBetweenUsersByUserIdIndices
+      const inboundWatchingTypeConnection = inboundUserInteractionsIdIndices.filter(rel => rel.interactionType === this.watchTypeUserConnectionValue)[0]
+
+      this.isLoading = true
+      try {
+        await API.graphql(graphqlOperation(gqlToString(StopWatchingUser), {
+          watchId: inboundWatchingTypeConnection.id
+        }))
+      } catch (err) {
+        logger.error('An error occurred while unfaving the user', err)
+        this.setNewUserInteractionResultError(this.$i18n.t('stream.likes.message.genericUncastError'))
+      } finally {
+        this.isUnliked = true
+        this.isLoading = false
+      }
+    },
+    onToUserProfileClick (username) {
+      this.$router.push({ name: 'profile', params: { username: this.user.username } })
+    }
+  }
+}
+</script>

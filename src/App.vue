@@ -1,31 +1,35 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app :dark="userTheme === 'dark'">
+    <tafalk-header/>
+    <v-content>
+      <v-container fluid full-height>
+        <router-view/>
+        <!-- site messages -->
+        <tafalk-site-notification/>
+      </v-container>
+    </v-content>
+    <footer>
+      <cookie-law
+        theme="dark-lime"
+        :buttonText="$t('common.footer.cookieLaw.buttonText')"
+        :message="$t('common.footer.cookieLaw.message')"
+      ></cookie-law>
+    </footer>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
+<script>
+import TafalkHeader from '@/components/shared/TheHeader.vue'
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+export default {
+  name: 'App',
+  components: {
+    HelloWorld
+  },
+  data () {
+    return {
+      //
+    }
+  }
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+</script>

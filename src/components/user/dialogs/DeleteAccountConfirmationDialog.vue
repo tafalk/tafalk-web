@@ -1,0 +1,77 @@
+<template>
+  <v-dialog v-model="getIsDeleteAccountConfirmationDialogVisible" persistent max-width="290">
+    <v-card>
+      <v-card-title class="headline">{{ $t('user.deleteAccount.dialog.title') }}</v-card-title>
+      <v-card-text>{{ $t('user.deleteAccount.dialog.body') }}</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="red darken-1"
+          flat
+          @click.native="onDeleteAccountConfirmClick"
+        >{{ $t('common.options.yesButtonText') }}</v-btn>
+        <v-btn
+          color="light-blue darken-1"
+          flat
+          @click.native="setIsDeleteAccountConfirmationDialogVisible(false)"
+        >{{ $t('common.options.noButtonText') }}</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script>
+import { Auth, API, graphqlOperation, Logger } from 'aws-amplify'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { print as gqlToString } from 'graphql/language'
+import { DeleteUser } from '@/graphql/Profile'
+
+const logger = new Logger('DeleteAccountConfirmationDialog')
+
+export default {
+  name: 'DeleteAccountConfirmationDialog',
+  props: ['userId'],
+  data () {
+    return {
+    }
+  },
+  computed: {
+    ...mapGetters({
+      getIsDeleteAccountConfirmationDialogVisible: 'visitedUser/dialog/getIsDeleteAccountConfirmationDialogVisible'
+    })
+  },
+  methods: {
+    ...mapMutations({
+      setIsDeleteAccountConfirmationDialogVisible: 'visitedUser/dialog/setIsDeleteAccountConfirmationDialogVisible',
+      clearAuthenticatedUser: 'authenticatedUser/clearUser'
+    }),
+    ...mapActions({
+      setNewSiteError: 'shared/setNewSiteError'
+    }),
+    async onDeleteAccountConfirmClick () {
+      const authenticatedCognitoUser = await Auth.currentAuthenticatedUser()
+
+      authenticatedCognitoUser.deleteUser((err, result) => {
+        if (err) {
+          logger.error('An error occurred while deleting the account')
+          this.setNewSiteError(err.message || err)
+          return
+        }
+
+        // Remove from DB (UserTable)
+        API.graphql(graphqlOperation(gqlToString(DeleteUser), {
+          userId: this.userId
+        })).then(() => {
+          // Route to Account Deleted Page
+          this.$router.push({ name: 'farewell' })
+
+          // Clear the vuex store (authenticatedUser)
+          this.clearAuthenticatedUser()
+        })
+      })
+
+      this.setIsDeleteAccountConfirmationDialogVisible(false)
+    }
+  }
+}
+</script>

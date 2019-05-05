@@ -19,3 +19,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Site-specific data
+google-services-config.js
+aws-config.js
