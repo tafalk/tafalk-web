@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/TimeUtils'
 
 export default {
@@ -82,6 +83,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      getNowTime: 'time/getNowTime'
+    }),
     likeCount () {
       if (this.stream.likes == null) return 0
       return this.stream.likes.length
@@ -97,11 +101,11 @@ export default {
       if (this.isSealed === 0) {
         return null
       }
-      return GetElapsedTimeTillNow(this.stream.sealedAt)
+      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealedAt)
     },
     timeSpentForStream () {
       if (this.isSealed === 0) {
-        return GetElapsedTimeTillNow(this.stream.startedAt)
+        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startedAt)
       }
 
       return GetElapsedTimeBetween(this.stream.startedAt, this.stream.sealedAt)

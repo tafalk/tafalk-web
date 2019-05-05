@@ -142,7 +142,8 @@ export default {
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
-      getVisitedUser: 'visitedUser/getUser'
+      getVisitedUser: 'visitedUser/getUser',
+      getNowTime: 'time/getNowTime'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
@@ -173,11 +174,11 @@ export default {
       if (this.isSealed === 0) {
         return null
       }
-      return GetElapsedTimeTillNow(this.stream.sealedAt)
+      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealedAt)
     },
     timeSpentForStream () {
       if (this.isSealed === 0) {
-        return GetElapsedTimeTillNow(this.stream.startedAt)
+        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startedAt)
       }
 
       return GetElapsedTimeBetween(this.stream.startedAt, this.stream.sealedAt)

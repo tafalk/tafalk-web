@@ -213,7 +213,8 @@ export default {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getStream: 'stream/getStream',
-      getIsFlaggedByAuthenticatedUser: 'stream/getIsFlaggedByAuthenticatedUser'
+      getIsFlaggedByAuthenticatedUser: 'stream/getIsFlaggedByAuthenticatedUser',
+      getNowTime: 'time/getNowTime'
     }),
     stream () {
       return this.getStream
@@ -284,11 +285,11 @@ export default {
       if (!this.isSealed) {
         return null
       }
-      return GetElapsedTimeTillNow(this.stream.sealedAt)
+      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealedAt)
     },
     timeSpentForStream () {
       if (!this.isSealed) {
-        return GetElapsedTimeTillNow(this.stream.startedAt)
+        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startedAt)
       }
       return GetElapsedTimeBetween(this.stream.startedAt, this.stream.sealedAt)
     },

@@ -1,8 +1,8 @@
 import i18n from '../i18n'
 import { timeUnitChars } from './Constants'
 
-const GetElapsedTimeTillNow = (referenceTimeISOString) => {
-  const elapsed = (new Date().getTime() - new Date(referenceTimeISOString).getTime()) / 1000
+const GetElapsedTimeTillNow = (nowTime, referenceTimeISOString) => {
+  const elapsed = (nowTime - new Date(referenceTimeISOString).getTime()) / 1000
   const diff = {}
   diff.days = Math.floor(elapsed / 86400)
   diff.hours = Math.floor(elapsed / 3600 % 24)

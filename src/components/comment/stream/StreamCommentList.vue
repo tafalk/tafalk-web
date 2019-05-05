@@ -27,7 +27,6 @@
 import { mapGetters, mapMutations } from 'vuex'
 import { API, graphqlOperation } from 'aws-amplify'
 import { ListPaginatedStreamComments } from '@/graphql/StreamReaction'
-// import { GetElapsedTimeTillNow } from '@/utils/TimeUtils'
 import { streamCommentFetchLength } from '@/utils/Constants'
 import TafalkStreamComment from '@/components/comment/stream/StreamComment.vue'
 

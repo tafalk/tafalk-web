@@ -69,7 +69,8 @@ export default {
     ...mapGetters({
       getStream: 'stream/getStream',
       getAuthenticatedUser: 'authenticatedUser/getUser',
-      getPaginatedStreamComments: 'stream/getPaginatedStreamComments'
+      getPaginatedStreamComments: 'stream/getPaginatedStreamComments',
+      getNowTime: 'time/getNowTime'
     }),
     stream () {
       return this.getStream
@@ -83,9 +84,6 @@ export default {
     authenticatedUserFlagId () {
       return ((this.comment.flags || []).find(item => item.userId === this.authenticatedUser.id) || {}).id
     }
-  },
-  mounted () {
-    this.interval = setInterval(this.tick, 1000)
   },
   beforeDestroy () {
     clearInterval(this.interval)
@@ -102,7 +100,7 @@ export default {
       this.datenow = new Date().toISOString()
     },
     getTimePassed (str) {
-      return GetElapsedTimeTillNow(str)
+      return GetElapsedTimeTillNow(this.getNowTime, str)
     },
     onToCommenterProfileClick (username) {
       this.$router.push({ name: 'profile', params: { username: username } })
