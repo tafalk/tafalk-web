@@ -96,9 +96,6 @@ export default {
       setFlag: 'flag/setFlag',
       setRetractFlag: 'flag/setRetractFlag'
     }),
-    tick () {
-      this.datenow = new Date().toISOString()
-    },
     getTimePassed (str) {
       return GetElapsedTimeTillNow(this.getNowTime, str)
     },

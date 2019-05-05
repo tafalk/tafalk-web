@@ -69,9 +69,6 @@ export default {
       return this.stream.comments.length
     }
   },
-  mounted () {
-    this.interval = setInterval(this.tick, 1000)
-  },
   beforeDestroy () {
     clearInterval(this.interval)
   },
