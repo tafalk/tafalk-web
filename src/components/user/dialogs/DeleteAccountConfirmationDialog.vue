@@ -23,7 +23,6 @@
 <script>
 import { Auth, API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { print as gqlToString } from 'graphql/language'
 import { DeleteUser } from '@/graphql/Profile'
 
 const logger = new Logger('DeleteAccountConfirmationDialog')
@@ -59,7 +58,7 @@ export default {
         }
 
         // Remove from DB (UserTable)
-        API.graphql(graphqlOperation(gqlToString(DeleteUser), {
+        API.graphql(graphqlOperation(DeleteUser, {
           userId: this.userId
         })).then(() => {
           // Route to Account Deleted Page

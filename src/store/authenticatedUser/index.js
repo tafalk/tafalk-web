@@ -1,5 +1,4 @@
 import { API, graphqlOperation } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { UpdateUserTheme } from '../../graphql/Profile'
 import dialog from './dialog'
 import { themeOptions } from '../../utils/Constants'
@@ -44,7 +43,7 @@ const actions = {
   async setTheme ({ commit }, payload) {
     const validatedTheme = (themeOptions.includes(payload.theme)) ? payload.theme : 'light'
     // Update User DB Table
-    await API.graphql(graphqlOperation(gqlToString(UpdateUserTheme), {
+    await API.graphql(graphqlOperation(UpdateUserTheme, {
       userId: payload.userId,
       theme: validatedTheme
     }))

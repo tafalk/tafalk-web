@@ -23,7 +23,6 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { API, graphqlOperation, Logger } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { BlockUser } from '@/graphql/UserInteraction'
 import { GetFirstOrDefaultIdStr } from '@/utils/ArrayUtils'
 
@@ -64,7 +63,7 @@ export default {
         if (currentBlockId && currentBlockId.length > 0) {
           logger.error(`User is already blocked with Block Id ${currentBlockId}`)
         } else {
-          const graphqlBlockResult = await API.graphql(graphqlOperation(gqlToString(BlockUser), {
+          const graphqlBlockResult = await API.graphql(graphqlOperation(BlockUser, {
             currentAuthenticatedUserId: this.authenticatedUser.id,
             toBeBlockedUserId: this.visitedUser.id
           }))

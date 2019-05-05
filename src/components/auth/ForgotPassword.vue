@@ -101,7 +101,6 @@
 
 <script >
 import { API, graphqlOperation, Auth, Logger } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { mapActions } from 'vuex'
 import { minUsernameLength, maxUsernameLength, minPasswordLength } from '@/utils/Constants'
 import { CheckPassword } from '@/utils/Validator'
@@ -182,7 +181,7 @@ export default {
         const token = await this.$recaptcha('login')
 
         // Validate it
-        const validationGraphqlResult = await API.graphql(graphqlOperation(gqlToString(GetRecaptchaTokenResult), {
+        const validationGraphqlResult = await API.graphql(graphqlOperation(GetRecaptchaTokenResult, {
           token
         }))
 

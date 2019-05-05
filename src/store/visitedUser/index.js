@@ -1,5 +1,4 @@
 import { API, graphqlOperation, Storage } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { UpdateUserBasicProfileInfo, UpdateUserProfilePictureKey, UpdateUserProfilePrivacyInfo } from '../../graphql/Profile'
 import { GetStoreUserForProfilePictureChange, GetStoreUserForBasicInfoChange, GetStoreUserForPrivacyChange } from '../../utils/StorageObjectHelper'
 import dialog from './dialog'
@@ -58,7 +57,7 @@ const actions = {
     })
 
     // Update User DB Table
-    await API.graphql(graphqlOperation(gqlToString(UpdateUserProfilePictureKey), {
+    await API.graphql(graphqlOperation(UpdateUserProfilePictureKey, {
       userId: payload.userId,
       profilePictureKey: payload.profilePicture.key
     }))
@@ -73,7 +72,7 @@ const actions = {
   },
   async setBasicInfo ({ commit }, payload) {
     // Aws Appsync mutation
-    await API.graphql(graphqlOperation(gqlToString(UpdateUserBasicProfileInfo), {
+    await API.graphql(graphqlOperation(UpdateUserBasicProfileInfo, {
       userId: payload.userId,
       // Setting the optional value to null, because DynamoDB rejects empty strings -but accepts null anyway
       // preferredName: (payload.preferredName) ? payload.preferredName : null,
@@ -91,7 +90,7 @@ const actions = {
     commit('authenticatedUser/setBasicInfo', storeObj, { root: true })
   },
   async setProfilePrivacy ({ commit }, payload) {
-    await API.graphql(graphqlOperation(gqlToString(UpdateUserProfilePrivacyInfo), {
+    await API.graphql(graphqlOperation(UpdateUserProfilePrivacyInfo, {
       userId: payload.userId,
       profilePrivacy: payload.profilePrivacy,
       allowDirectMesages: payload.allowDirectMesages

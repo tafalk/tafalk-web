@@ -103,7 +103,6 @@
 
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetUserProfileData } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
@@ -233,7 +232,7 @@ export default {
       let visitedUserStoreObject = null
 
       try {
-        const graphqlVisitedProfileResult = await API.graphql(graphqlOperation(gqlToString(GetUserProfileData), { username }))
+        const graphqlVisitedProfileResult = await API.graphql(graphqlOperation(GetUserProfileData, { username }))
         const visitedUserDbResult = graphqlVisitedProfileResult.data.getUserByUsername[0]
 
         if (!visitedUserDbResult) {
@@ -245,12 +244,12 @@ export default {
           visitedUserStoreObject = await GetStoreUser(visitedUserDbResult)
 
           // get connections
-          const graphqlConnectionsFromAuthenticatedUserToVisitedUserResult = await API.graphql(graphqlOperation(gqlToString(GetInteractionsBetweenUsers), {
+          const graphqlConnectionsFromAuthenticatedUserToVisitedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
             actorUserId: this.authenticatedUser.id,
             targetUserId: visitedUserDbResult.id
           }))
 
-          const graphqlConnectionsFromVisitedUserToAuthenticatedUserResult = await API.graphql(graphqlOperation(gqlToString(GetInteractionsBetweenUsers), {
+          const graphqlConnectionsFromVisitedUserToAuthenticatedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
             actorUserId: visitedUserDbResult.id,
             targetUserId: this.authenticatedUser.id
           }))

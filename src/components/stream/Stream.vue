@@ -158,7 +158,6 @@
 
 <script>
 import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetStream, OnUpdateStream } from '@/graphql/Stream'
 import { ListStreamLikes, CreateLike, DeleteLike, OnCreateOrDeleteStreamLike, CreateComment, ListPaginatedStreamComments } from '@/graphql/StreamReaction'
@@ -349,8 +348,8 @@ export default {
     }),
     async getInitialInfo (streamId) {
       try {
-        const streamGraphqlAsync = API.graphql(graphqlOperation(gqlToString(GetStream), { streamId }))
-        const paginatedCommentsGraphqlAsync = API.graphql(graphqlOperation(gqlToString(ListPaginatedStreamComments), {
+        const streamGraphqlAsync = API.graphql(graphqlOperation(GetStream, { streamId }))
+        const paginatedCommentsGraphqlAsync = API.graphql(graphqlOperation(ListPaginatedStreamComments, {
           streamId: streamId,
           limit: this.commentFetchLimit,
           nextToken: null
@@ -371,7 +370,7 @@ export default {
 
         // Subscribe to stream itself for live content changes
         this.streamChangeSubscription = API.graphql(
-          graphqlOperation(gqlToString(OnUpdateStream), { id: this.stream.id })
+          graphqlOperation(OnUpdateStream, { id: this.stream.id })
         ).subscribe({
           next: (eventData) => {
             this.streamChange = eventData.value.data.onUpdateStream
@@ -381,11 +380,11 @@ export default {
 
         // Subscribe to likes
         this.likeChangeSubscription = API.graphql(
-          graphqlOperation(gqlToString(OnCreateOrDeleteStreamLike), { streamId: this.stream.id })
+          graphqlOperation(OnCreateOrDeleteStreamLike, { streamId: this.stream.id })
         ).subscribe({
           next: async (eventData) => {
             const graphqlLikeListResult = await API.graphql(
-              graphqlOperation(gqlToString(ListStreamLikes), { streamId: this.stream.id })
+              graphqlOperation(ListStreamLikes, { streamId: this.stream.id })
             )
             this.likeObjects = graphqlLikeListResult.data.listStreamLikes
             // this.likeObjects = eventData.value.data.onCreateOrDeleteLike
@@ -393,7 +392,7 @@ export default {
           error: (err) => this.setNewSiteError(err.message || err)
         })
 
-        const graphqlConnectionsFromVisitedStreamAuthorToAuthenticatedUserResult = await API.graphql(graphqlOperation(gqlToString(GetInteractionsBetweenUsers), {
+        const graphqlConnectionsFromVisitedStreamAuthorToAuthenticatedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
           actorUserId: this.author.id,
           targetUserId: this.authenticatedUser.id
         }))
@@ -417,7 +416,7 @@ export default {
     async onLikeClick () {
       this.isLikeLoading = true
       try {
-        await API.graphql(graphqlOperation(gqlToString(CreateLike), {
+        await API.graphql(graphqlOperation(CreateLike, {
           streamId: this.stream.id,
           userId: this.authenticatedUser.id,
           time: new Date().toISOString()
@@ -432,7 +431,7 @@ export default {
     async onRemoveLikeClick () {
       this.isLikeLoading = true
       try {
-        await API.graphql(graphqlOperation(gqlToString(DeleteLike), {
+        await API.graphql(graphqlOperation(DeleteLike, {
           id: this.authenticatedUserLikeId
         }))
       } catch (err) {
@@ -472,7 +471,7 @@ export default {
       // Yes, comments are not saved instantly. Braveness is not required for commenters.
       this.isCommentLoading = true
       try {
-        await API.graphql(graphqlOperation(gqlToString(CreateComment), {
+        await API.graphql(graphqlOperation(CreateComment, {
           streamId: this.stream.id,
           userId: this.authenticatedUser.id,
           time: new Date().toISOString(),
@@ -481,7 +480,7 @@ export default {
         this.setNewUserInteractionResultSuccess(this.$i18n.t('stream.comments.message.genericAddSuccess'))
 
         // Load comments
-        const commentsGraphqlResult = await API.graphql(graphqlOperation(gqlToString(ListPaginatedStreamComments), {
+        const commentsGraphqlResult = await API.graphql(graphqlOperation(ListPaginatedStreamComments, {
           streamId: this.stream.id,
           limit: this.commentFetchLimit,
           nextToken: null

@@ -29,7 +29,6 @@
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapMutations } from 'vuex'
-import { print as gqlToString } from 'graphql/language'
 import { UpdateStreamTitle } from '@/graphql/Stream'
 import { GetKeyName } from '@/utils/IOUtils'
 import { pourStrikethroughTimeToIdle } from '@/utils/Constants'
@@ -58,7 +57,7 @@ export default {
       // Update the title, if body is not null
       try {
         this.processState = this.savingStateConstant
-        await API.graphql(graphqlOperation(gqlToString(UpdateStreamTitle), {
+        await API.graphql(graphqlOperation(UpdateStreamTitle, {
           id: this.streamId,
           title: newTitle
         }))

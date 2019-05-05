@@ -114,7 +114,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { DeleteLike } from '@/graphql/StreamReaction'
 import { GetUserHue } from '@/utils/DefaultProfilePainter'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/TimeUtils'
@@ -195,7 +194,7 @@ export default {
     async unlikeStream () {
       this.isLoading = true
       try {
-        await API.graphql(graphqlOperation(gqlToString(DeleteLike), {
+        await API.graphql(graphqlOperation(DeleteLike, {
           id: this.profileUserLikeId
         }))
       } catch (err) {

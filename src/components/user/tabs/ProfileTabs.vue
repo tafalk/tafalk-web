@@ -61,7 +61,6 @@
 
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { ListStreamsByUser, ListLikesByUser, ListUserInteractionsByActorUserIdIndex } from '@/graphql/Profile'
 import TafalkSlimProfileOwnStreamCard from '@/components/stream/cards/SlimProfileOwnStreamCard.vue'
 import TafalkSlimProfileLikedStreamCard from '@/components/stream/cards/SlimProfileLikedStreamCard.vue'
@@ -95,9 +94,9 @@ export default {
   },
   async mounted () {
     // send async queries
-    const graphqlVisitedProfileStreamsReq = API.graphql(graphqlOperation(gqlToString(ListStreamsByUser), { userId: this.userId, limit: this.fetchLimit, nextToken: this.userStreamFetchNextToken }))
-    const graphqlVisitedProfileLikedStreamsReq = API.graphql(graphqlOperation(gqlToString(ListLikesByUser), { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedStreamFetchNextToken }))
-    const graphqlVisitedProfileOutboundInteractedUsersReq = API.graphql(graphqlOperation(gqlToString(ListUserInteractionsByActorUserIdIndex), { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedUserFetchNextToken }))
+    const graphqlVisitedProfileStreamsReq = API.graphql(graphqlOperation(ListStreamsByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.userStreamFetchNextToken }))
+    const graphqlVisitedProfileLikedStreamsReq = API.graphql(graphqlOperation(ListLikesByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedStreamFetchNextToken }))
+    const graphqlVisitedProfileOutboundInteractedUsersReq = API.graphql(graphqlOperation(ListUserInteractionsByActorUserIdIndex, { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedUserFetchNextToken }))
 
     // load own streams
     const graphqlVisitedProfileStreamsResult = await graphqlVisitedProfileStreamsReq
@@ -125,7 +124,12 @@ export default {
     this.likedUsers.push(...initialFetchLikedUsers)
     // if the result is not enough
     while (this.likedUsers.length < this.fetchLimit && this.likedUserFetchNextToken != null) {
-      const rawNewFetchResult = await API.graphql(graphqlOperation(gqlToString(ListUserInteractionsByActorUserIdIndex), { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedUserFetchNextToken }))
+      const rawNewFetchResult = await API.graphql(graphqlOperation(ListUserInteractionsByActorUserIdIndex, {
+        userId: this.userId,
+        limit: this.fetchLimit,
+        nextToken: this.likedUserFetchNextToken
+      }))
+
       let newFetch = rawNewFetchResult.data.listUserInteractionsByActorUserIdIndex.items
         .filter(rel => rel.interactionType === this.watchTypeUserConnectionValue)
         .map(item => item.targetUser)
@@ -139,7 +143,7 @@ export default {
       if (!this.userStreamFetchNextToken) {
         $state.complete()
       } else {
-        const scrollStreamEndNewFetchResult = await API.graphql(graphqlOperation(gqlToString(ListStreamsByUser), {
+        const scrollStreamEndNewFetchResult = await API.graphql(graphqlOperation(ListStreamsByUser, {
           userId: this.userId,
           limit: this.fetchLimit,
           nextToken: this.userStreamFetchNextToken
@@ -158,7 +162,7 @@ export default {
       if (!this.likedStreamFetchNextToken) {
         $state.complete()
       } else {
-        const scrollLikeEndNewFetchResult = await API.graphql(graphqlOperation(gqlToString(ListLikesByUser), {
+        const scrollLikeEndNewFetchResult = await API.graphql(graphqlOperation(ListLikesByUser, {
           userId: this.userId,
           limit: this.fetchLimit,
           nextToken: this.likedStreamFetchNextToken
@@ -177,7 +181,7 @@ export default {
       if (!this.likedUserFetchNextToken) {
         $state.complete()
       } else {
-        const scrollLikedUserEndNewFetchResult = await API.graphql(graphqlOperation(gqlToString(ListUserInteractionsByActorUserIdIndex), {
+        const scrollLikedUserEndNewFetchResult = await API.graphql(graphqlOperation(ListUserInteractionsByActorUserIdIndex, {
           userId: this.userId,
           limit: this.fetchLimit,
           nextToken: this.likedUserFetchNextToken
@@ -190,7 +194,7 @@ export default {
 
         // if the result is not enough
         while (newPaginatedLikedUserByUserTypeFetch < this.fetchLimit && this.likedUserFetchNextToken != null) {
-          const rawLikedUserNewFetchResult = await API.graphql(graphqlOperation(gqlToString(ListUserInteractionsByActorUserIdIndex), { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedUserFetchNextToken }))
+          const rawLikedUserNewFetchResult = await API.graphql(graphqlOperation(ListUserInteractionsByActorUserIdIndex, { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedUserFetchNextToken }))
           let newLikedUserFetch = rawLikedUserNewFetchResult.data.listUserInteractionsByActorUserIdIndex.items
             .filter(rel => rel.interactionType === this.watchTypeUserConnectionValue)
             .map(item => item.targetUser)

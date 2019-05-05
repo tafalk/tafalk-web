@@ -1,5 +1,4 @@
 import { API, graphqlOperation } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { minSiteSearchTextLength } from '../../utils/Constants'
 import { Search } from '../../graphql/SiteSearch'
 
@@ -47,7 +46,7 @@ const actions = {
     // Set the search result if the text is beyond the acceptable range
     if (payload && payload.length >= minSiteSearchTextLength) {
       commit('setIsSearchTextLongEnough', true)
-      const siteSearchGraphqlResult = await API.graphql(graphqlOperation(gqlToString(Search), {
+      const siteSearchGraphqlResult = await API.graphql(graphqlOperation(Search, {
         query: payload
       }))
       const siteSearchResult = siteSearchGraphqlResult.data.search

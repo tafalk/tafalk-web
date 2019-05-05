@@ -90,7 +90,6 @@
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { print as gqlToString } from 'graphql/language'
 import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
 import { CreateStream, UpdateStreamBody, UpdatePosition, UpdateMood, SealStreamForEver } from '@/graphql/Stream'
 import TafalkStreamAddTitleDialog from '@/components/stream/dialogs/AddTitleDialog.vue'
@@ -190,7 +189,7 @@ export default {
         // Old body is null or empty, so create the entry here
         try {
           this.processState = this.savingStateConstant
-          await API.graphql(graphqlOperation(gqlToString(CreateStream), {
+          await API.graphql(graphqlOperation(CreateStream, {
             // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
             id: this.streamId,
             userId: this.authenticatedUserId,
@@ -216,7 +215,7 @@ export default {
         // Update the entry
         try {
           this.processState = this.savingStateConstant
-          await API.graphql(graphqlOperation(gqlToString(UpdateStreamBody), {
+          await API.graphql(graphqlOperation(UpdateStreamBody, {
             id: this.streamId,
             body: newBody
           }))
@@ -386,7 +385,7 @@ export default {
 
       try {
         this.processState = this.savingStateConstant
-        await API.graphql(graphqlOperation(gqlToString(UpdateMood), {
+        await API.graphql(graphqlOperation(UpdateMood, {
           // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
           id: this.streamId,
           mood: (this.moodModel != null && this.moodModel.length > 0) ? this.moodModel.map(b => b.backendValue) : null
@@ -407,7 +406,7 @@ export default {
 
       try {
         this.processState = this.savingStateConstant
-        await API.graphql(graphqlOperation(gqlToString(UpdatePosition), {
+        await API.graphql(graphqlOperation(UpdatePosition, {
           // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
           id: this.streamId,
           position: (this.positionModel != null && this.positionModel.length > 0) ? this.positionModel.map(b => b.backendValue) : null
@@ -439,7 +438,7 @@ export default {
       // Check if nothing to seal
       if (this.body != null && this.body.length > 0) {
         try {
-          await API.graphql(graphqlOperation(gqlToString(SealStreamForEver), {
+          await API.graphql(graphqlOperation(SealStreamForEver, {
             id: this.streamId,
             title: this.title,
             body: this.body,

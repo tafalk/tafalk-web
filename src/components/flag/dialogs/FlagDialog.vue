@@ -192,7 +192,6 @@
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapMutations } from 'vuex'
-import { print as gqlToString } from 'graphql/language'
 import { CreateStreamFlag, CreateCommentFlag } from '@/graphql/Flag'
 
 const logger = new Logger('FlagDialog')
@@ -302,7 +301,7 @@ export default {
         if (this.flag.type === 'stream') {
           console.log('flagging stream ' + this.flagId)
           // stream flag
-          const flagGraphqlResult = await API.graphql(graphqlOperation(gqlToString(CreateStreamFlag), {
+          const flagGraphqlResult = await API.graphql(graphqlOperation(CreateStreamFlag, {
             streamId: this.flag.streamId,
             commentId: null,
             userId: this.authenticatedUser.id,
@@ -317,7 +316,7 @@ export default {
           this.setStream(currentStream)
         } else if (this.flag.type === 'comment') {
           // comment flag
-          await API.graphql(graphqlOperation(gqlToString(CreateCommentFlag), {
+          await API.graphql(graphqlOperation(CreateCommentFlag, {
             streamId: null,
             commentId: this.flag.commentId,
             userId: this.authenticatedUser.id,

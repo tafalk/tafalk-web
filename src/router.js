@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import { Auth, API, graphqlOperation, Logger } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { GetUserProfileData } from './graphql/Profile'
 import { GetStoreUser } from './utils/StorageObjectHelper'
 import store from './store'
@@ -29,7 +28,6 @@ const router = new Router({
       name: 'about',
       component: () => import(/* webpackChunkName: "about" */ './components/meta/About.vue')
     },
-    // Auth
     {
       path: '/auth/register',
       name: 'register',
@@ -84,30 +82,24 @@ router.beforeEach(async (to, from, next) => {
   store.commit('route/setCurrentRoutePath', to.path)
 
   try {
-    const curentAuthenticatedUser = await Auth.currentAuthenticatedUser()
+    const currentAuthenticatedUser = await Auth.currentAuthenticatedUser()
 
-    if (curentAuthenticatedUser) {
-      const credentials = await Auth.currentCredentials()
-      if (credentials) {
-        const dbUsers = await API.graphql(graphqlOperation(gqlToString(GetUserProfileData), {
-          username: curentAuthenticatedUser.username
-        }))
+    const dbUsers = await API.graphql(graphqlOperation(GetUserProfileData, {
+      username: currentAuthenticatedUser.username
+    }))
 
-        const dbUser = dbUsers.data.getUserByUsername[0]
+    const dbUser = dbUsers.data.getUserByUsername[0]
 
-        const authenticatedUserStoreObject = await GetStoreUser(dbUser)
+    const authenticatedUserStoreObject = await GetStoreUser(dbUser)
 
-        if (authenticatedUserStoreObject == null) {
-          logger.info('No current authenticated user found')
-          store.commit('authenticatedUser/clearUser')
-        } else {
-          store.commit('authenticatedUser/setUser', authenticatedUserStoreObject)
-        }
-        next()
-      }
+    if (authenticatedUserStoreObject == null) {
+      store.commit('authenticatedUser/clearUser')
+    } else {
+      store.commit('authenticatedUser/setUser', authenticatedUserStoreObject)
     }
+    next()
   } catch (err) {
-    logger.error('Error getting autheticated user info before routing')
+    logger.error('Error getting autheticated user info before routing', err)
     store.commit('authenticatedUser/clearUser')
     next()
   }

@@ -23,7 +23,6 @@
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { print as gqlToString } from 'graphql/language'
 import { StopWatchingUser } from '@/graphql/UserInteraction'
 
 const logger = new Logger('StopWatchingConfirmationDialog')
@@ -61,7 +60,7 @@ export default {
         const watchId = this.visitedUser.connectionsWithAuthenticatedUser.inbound.watchId
 
         if (watchId && watchId.length > 0) {
-          await API.graphql(graphqlOperation(gqlToString(StopWatchingUser), {
+          await API.graphql(graphqlOperation(StopWatchingUser, {
             watchId
           }))
           this.clearInboundWatchIdFromAuthenticatedUser()

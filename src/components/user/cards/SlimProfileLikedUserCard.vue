@@ -36,7 +36,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { GetInteractionsBetweenUsers, StopWatchingUser } from '@/graphql/UserInteraction'
 import { GetUserHue } from '@/utils/DefaultProfilePainter'
 
@@ -80,7 +79,7 @@ export default {
       setNewUserInteractionResultError: 'shared/setNewUserInteractionResultError'
     }),
     async unlikeUser () {
-      const graphqlConnectionsFromAuthenticatedUserToVisitedUserResult = await API.graphql(graphqlOperation(gqlToString(GetInteractionsBetweenUsers), {
+      const graphqlConnectionsFromAuthenticatedUserToVisitedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
         actorUserId: this.authenticatedUser.id,
         targetUserId: this.user.id
       }))
@@ -90,7 +89,7 @@ export default {
 
       this.isLoading = true
       try {
-        await API.graphql(graphqlOperation(gqlToString(StopWatchingUser), {
+        await API.graphql(graphqlOperation(StopWatchingUser, {
           watchId: inboundWatchingTypeConnection.id
         }))
       } catch (err) {

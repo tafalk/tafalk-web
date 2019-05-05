@@ -98,7 +98,6 @@
 
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { mapGetters } from 'vuex'
 import TafalkNewStreamFab from '@/components/home/buttons/NewStreamFab.vue'
 import TafalkBriefStreamCard from '@/components/stream/cards/BriefStreamCard.vue'
@@ -142,21 +141,21 @@ export default {
       this.pageReady = false
 
       if (this.recentValue === val) {
-        const rawFetch = this.streamList = await API.graphql(graphqlOperation(gqlToString(ListSealedBriefStreams), {
+        const rawFetch = this.streamList = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
           limit: this.fetchLimit,
           nextToken: null
         }))
         this.streamList = rawFetch.data.listSealedStreams.items
         this.nextToken = rawFetch.data.listSealedStreams.nextToken
       } else if (this.liveNowValue === val) {
-        const rawFetch = await API.graphql(graphqlOperation(gqlToString(ListLiveBriefStreams), {
+        const rawFetch = await API.graphql(graphqlOperation(ListLiveBriefStreams, {
           limit: this.fetchLimit,
           nextToken: null
         }))
         this.streamList = rawFetch.data.listLiveStreams.items
         this.nextToken = rawFetch.data.listLiveStreams.nextToken
       } else if (this.byFaveUsersValue === val) {
-        const rawFetch = await API.graphql(graphqlOperation(gqlToString(ListSealedBriefStreams), {
+        const rawFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
           limit: this.fetchLimit,
           nextToken: null
         }))
@@ -167,7 +166,7 @@ export default {
         /*
         let countOfByFaveOthers = 0
         while (countOfByFaveOthers < this.fetchLimit && this.nextToken != null) {
-          const rawNewFetch = await API.graphql(graphqlOperation(gqlToString(ListSealedBriefStreams), {
+          const rawNewFetch = await API.graphql(ListSealedBriefStreams, {
             limit: this.fetchLimit,
             nextToken: this.nextToken
           }))
@@ -218,7 +217,7 @@ export default {
         $state.complete()
       } else {
         if (this.footerEl === this.recentValue) {
-          const scrollEndNewFetch = await API.graphql(graphqlOperation(gqlToString(ListSealedBriefStreams), {
+          const scrollEndNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
             limit: this.fetchLimit,
             nextToken: this.nextToken
           }))
@@ -226,7 +225,7 @@ export default {
           this.nextToken = scrollEndNewFetch.data.listSealedStreams.nextToken
           $state.loaded()
         } else if (this.footerEl === this.liveNowValue) {
-          const scrollEndNewFetch = await API.graphql(graphqlOperation(gqlToString(ListLiveBriefStreams), {
+          const scrollEndNewFetch = await API.graphql(graphqlOperation(ListLiveBriefStreams, {
             limit: this.fetchLimit,
             nextToken: this.nextToken
           }))
@@ -234,7 +233,7 @@ export default {
           this.nextToken = scrollEndNewFetch.data.listLiveStreams.nextToken
           $state.loaded()
         } else if (this.footerEl === this.byFaveUsersValue) {
-          const scrollEndNewFetch = await API.graphql(graphqlOperation(gqlToString(ListSealedBriefStreams), {
+          const scrollEndNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
             limit: this.fetchLimit,
             nextToken: this.nextToken
           }))
@@ -243,7 +242,7 @@ export default {
           // If the filtered result is not enough fetch a new portion
           let countOfByFaveOthers = 0
           while (countOfByFaveOthers < this.fetchLimit && this.nextToken != null) {
-            const rawNewFetch = await API.graphql(graphqlOperation(gqlToString(ListSealedBriefStreams), {
+            const rawNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
               limit: this.fetchLimit,
               nextToken: this.nextToken
             }))

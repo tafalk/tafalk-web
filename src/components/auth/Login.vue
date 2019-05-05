@@ -53,7 +53,6 @@
 <script>
 import { Auth, API, Logger, graphqlOperation } from 'aws-amplify'
 import { mapActions } from 'vuex'
-import { print as gqlToString } from 'graphql/language'
 import { GetUserProfileData, UpdateUserCognitoIdentityId } from '@/graphql/Profile'
 import { minUsernameOrEmailLength, maxUsernameOrEmailLength, minPasswordLength } from '@/utils/Constants'
 import { GetStoreUserWithCognitoIdentityId } from '@/utils/StorageObjectHelper'
@@ -111,7 +110,7 @@ export default {
         const user = await Auth.signIn(this.username, this.password)
         const credentials = await Auth.currentCredentials()
 
-        const dbUsers = await API.graphql(graphqlOperation(gqlToString(GetUserProfileData), {
+        const dbUsers = await API.graphql(graphqlOperation(GetUserProfileData, {
           username: user.username
         }))
 
@@ -120,7 +119,7 @@ export default {
         // Update DB record of the logged in user with cognito identity id
         const cognitoIdentityId = credentials.identityId
 
-        await API.graphql(graphqlOperation(gqlToString(UpdateUserCognitoIdentityId), {
+        await API.graphql(graphqlOperation(UpdateUserCognitoIdentityId, {
           userId: dbUser.id,
           cognitoIdentityId: cognitoIdentityId
         }))

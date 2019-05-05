@@ -26,9 +26,8 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import { API, graphqlOperation } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { ListPaginatedStreamComments } from '@/graphql/StreamReaction'
-import { GetElapsedTimeTillNow } from '@/utils/TimeUtils'
+// import { GetElapsedTimeTillNow } from '@/utils/TimeUtils'
 import { streamCommentFetchLength } from '@/utils/Constants'
 import TafalkStreamComment from '@/components/comment/stream/StreamComment.vue'
 
@@ -86,7 +85,7 @@ export default {
       if (this.paginatedStreamCommentNextToken == null) {
         $state.complete()
       } else {
-        const scrollEndNewFetchResult = await API.graphql(graphqlOperation(gqlToString(ListPaginatedStreamComments), {
+        const scrollEndNewFetchResult = await API.graphql(graphqlOperation(ListPaginatedStreamComments, {
           streamId: this.stream.id,
           limit: this.fetchLimit,
           nextToken: this.paginatedStreamCommentNextToken

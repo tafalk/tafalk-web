@@ -42,7 +42,6 @@
 </template>
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { WatchUser, UnblockUser } from '@/graphql/UserInteraction'
 import { GetFirstOrDefaultIdStr } from '@/utils/ArrayUtils'
@@ -82,7 +81,7 @@ export default {
     }),
     async onWatchThisUserClick () {
       try {
-        const graphqlWatchResult = await API.graphql(graphqlOperation(gqlToString(WatchUser), {
+        const graphqlWatchResult = await API.graphql(graphqlOperation(WatchUser, {
           currentAuthenticatedUserId: this.authenticatedUser.id,
           toBeWatchedUserId: this.visitedUser.id
         }))
@@ -101,7 +100,7 @@ export default {
         const blockId = this.visitedUser.connectionsWithAuthenticatedUser.inbound.blockId
 
         if (blockId && blockId.length > 0) {
-          await API.graphql(graphqlOperation(gqlToString(UnblockUser), {
+          await API.graphql(graphqlOperation(UnblockUser, {
             blockId
           }))
 

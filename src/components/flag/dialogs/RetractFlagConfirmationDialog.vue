@@ -23,7 +23,7 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { API, graphqlOperation, Logger } from 'aws-amplify'
-import { print as gqlToString } from 'graphql/language'
+
 import { DeleteFlag } from '@/graphql/Flag'
 
 const logger = new Logger('RetractFlagConfirmationDialog')
@@ -51,7 +51,7 @@ export default {
     }),
     async onRetractFlagConfirmClick () {
       try {
-        await API.graphql(graphqlOperation(gqlToString(DeleteFlag), {
+        await API.graphql(graphqlOperation(DeleteFlag, {
           id: this.getRetractFlag.retractFlagId
         }))
 
