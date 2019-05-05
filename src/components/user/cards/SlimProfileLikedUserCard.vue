@@ -54,14 +54,12 @@ export default {
       isLoading: false
     }
   },
-  mounted () {
+  async mounted () {
     this.userHue = GetUserHue(this.user.username)
 
-    if (this.authenticatedUser && this.user.profilePictureKey != null) {
-      Storage.get(this.user.profilePictureKey, {
-        level: 'protected'
-      }).then(resp => (this.userProfilePictureObjectUrl = resp))
-    }
+    this.userProfilePictureObjectUrl = (this.authenticatedUser && this.user.profilePictureKey != null)
+      ? await Storage.get(this.user.profilePictureKey, { level: 'protected' })
+      : null
   },
   computed: {
     ...mapGetters({

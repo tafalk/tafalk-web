@@ -362,11 +362,9 @@ export default {
         this.setPaginatedStreamComments(paginatedCommentsGraphqlResult.data.listPaginatedStreamComments)
 
         // set profile pic
-        if (this.stream.user.profilePictureKey != null) {
-          Storage.get(this.authenticatedUser && this.stream.user.profilePictureKey, {
-            level: 'protected'
-          }).then(resp => (this.streamUserProfilePictureObjectUrl = resp))
-        }
+        this.streamUserProfilePictureObjectUrl = this.stream.user.profilePictureKey != null
+          ? await Storage.get(this.authenticatedUser && this.stream.user.profilePictureKey, { level: 'protected' })
+          : null
 
         // Subscribe to stream itself for live content changes
         this.streamChangeSubscription = API.graphql(

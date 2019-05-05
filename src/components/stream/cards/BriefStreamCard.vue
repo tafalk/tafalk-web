@@ -67,14 +67,12 @@ export default {
       streamUserHue: null
     }
   },
-  mounted () {
+  async mounted () {
     this.streamUserHue = GetUserHue(this.stream.user.username)
 
-    if (this.authenticatedUser && this.stream.user.profilePictureKey != null) {
-      Storage.get(this.stream.user.profilePictureKey, {
-        level: 'protected'
-      }).then(resp => (this.streamUserProfilePictureObjectUrl = resp))
-    }
+    this.streamUserProfilePictureObjectUrl = (this.authenticatedUser && this.stream.user.profilePictureKey != null)
+      ? await Storage.get(this.stream.user.profilePictureKey, { level: 'protected' })
+      : null
   },
   computed: {
     ...mapGetters({
