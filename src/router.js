@@ -92,11 +92,10 @@ router.beforeEach(async (to, from, next) => {
 
     const authenticatedUserStoreObject = await GetStoreUser(dbUser)
 
-    if (authenticatedUserStoreObject == null) {
-      store.commit('authenticatedUser/clearUser')
-    } else {
-      store.commit('authenticatedUser/setUser', authenticatedUserStoreObject)
-    }
+    authenticatedUserStoreObject != null
+      ? store.commit('authenticatedUser/setUser', authenticatedUserStoreObject)
+      : store.commit('authenticatedUser/clearUser')
+
     next()
   } catch (err) {
     logger.error('Error getting autheticated user info before routing', err)
