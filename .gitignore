@@ -21,4 +21,4 @@ yarn-error.log*
 *.sw?
 
 # Site-specific data
-config/index.js
+src/config/index.js
