@@ -1,4 +1,18 @@
-const config = {
+// Google
+export const GooglePlacesConfig = {
+  apiKey: '{YOUR_GOOGLE_API_KEY}'
+}
+
+export const GoogleRecaptchaV3Config = {
+  siteKey: '{YOUR_GOOGLE_RECAPTCHA_V3_SITE_KEY}'
+}
+
+export const GoogleAnalyticsConfig = {
+  trackingId: '{YOUR_GOOGLE_ANALYTICS_TRACKING_ID}'
+}
+
+// AWS
+export const AwsConfig = {
   // S3
   Storage: {
     bucket: 'YOUR_S3_UPLOADS_BUCKET_REGION',
@@ -19,4 +33,7 @@ const config = {
   aws_appsync_apiKey: 'YOUR_APPSYNC_API_KEY'
 }
 
-export default config
+// Tilehosting Geocoder
+export const TilehostingGeooderConfig = {
+  apiKey: '{YOUR_TILEHOSTING_API_KEY}'
+}

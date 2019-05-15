@@ -6,8 +6,7 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import i18n from './i18n'
-import { GooglePlacesConfig, GoogleRecaptchaV3Config, GoogleAnalyticsConfig } from './config/google-services-config'
-import awsconfig from './config/aws-config'
+import { GooglePlacesConfig, GoogleRecaptchaV3Config, GoogleAnalyticsConfig, AwsConfig } from './config'
 
 import Amplify from 'aws-amplify'
 
@@ -44,7 +43,7 @@ Vue.use(VueAnalytics, {
 })
 
 // Configurations
-Amplify.configure(awsconfig)
+Amplify.configure(AwsConfig)
 
 // Other
 Amplify.Logger.LOG_LEVEL = 'INFO'

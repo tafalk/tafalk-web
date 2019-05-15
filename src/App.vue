@@ -19,16 +19,33 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import TafalkHeader from '@/components/shared/TheHeader.vue'
+// import TafalkFooter from '@/components/shared/TheFooter.vue'
+import TafalkSiteNotification from '@/components/shared/TheSiteNotification.vue'
+import CookieLaw from 'vue-cookie-law'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TafalkHeader,
+    // TafalkFooter,
+    TafalkSiteNotification,
+    CookieLaw
   },
   data () {
     return {
-      //
+    }
+  },
+  computed: {
+    ...mapGetters({
+      getAuthenticatedUser: 'authenticatedUser/getUser'
+    }),
+    authenticatedUser () {
+      return this.getAuthenticatedUser
+    },
+    userTheme () {
+      return (this.authenticatedUser != null && this.authenticatedUser.theme != null) ? this.authenticatedUser.theme : 'light'
     }
   }
 }
