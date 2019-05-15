@@ -21,5 +21,4 @@ yarn-error.log*
 *.sw?
 
 # Site-specific data
-google-services-config.js
-aws-config.js
+config/index.js
