@@ -30,9 +30,9 @@
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapMutations } from 'vuex'
 import { UpdateStreamTitle } from '@/graphql/Stream'
-import { GetKeyName } from '@/utils/IOUtils'
-import { pourStrikethroughTimeToIdle } from '@/utils/Constants'
-import { StrikethroughStr } from '@/utils/StringUtils'
+import { GetKeyName } from '@/utils/ioUtils'
+import { pourStrikethroughTimeToIdle } from '@/utils/constants'
+import { StrikethroughStr } from '@/utils/typeUtils'
 
 const logger = new Logger('AddTitleDialog')
 

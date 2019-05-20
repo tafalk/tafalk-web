@@ -52,8 +52,8 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import { GetElapsedTimeTillNow } from '@/utils/TimeUtils'
-import { streamCommentFetchLength } from '@/utils/Constants'
+import { GetElapsedTimeTillNow } from '@/utils/typeUtils'
+import { streamCommentFetchLength } from '@/utils/constants'
 
 export default {
   name: 'StreamComment',

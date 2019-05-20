@@ -42,7 +42,7 @@
 <script >
 import { Auth, Logger } from 'aws-amplify'
 import { mapActions } from 'vuex'
-import { minUsernameLength, maxUsernameLength } from '@/utils/Constants'
+import { minUsernameLength, maxUsernameLength } from '@/utils/constants'
 
 const logger = new Logger('ConfirmRegistrationView')
 

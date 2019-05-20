@@ -1,7 +1,7 @@
 import { API, graphqlOperation } from 'aws-amplify'
 import { UpdateUserTheme } from '../../graphql/Profile'
 import dialog from './dialog'
-import { themeOptions } from '../../utils/Constants'
+import { themeOptions } from '../../utils/constants'
 
 const state = {
   user: null

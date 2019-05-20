@@ -1,5 +1,5 @@
 import { API, graphqlOperation } from 'aws-amplify'
-import { minSiteSearchTextLength } from '../../utils/Constants'
+import { minSiteSearchTextLength } from '../../utils/constants'
 import { Search } from '../../graphql/SiteSearch'
 
 const state = {

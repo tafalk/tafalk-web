@@ -1,12 +1,11 @@
 import Vue from 'vue'
 import './plugins/vuetify'
-import TafalkGoogleFindAndAutocompletePlugin from './plugins/googlePlacesFindAndAutoComplete'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import i18n from './i18n'
-import { GooglePlacesConfig, GoogleRecaptchaV3Config, GoogleAnalyticsConfig, AwsConfig } from './config'
+import { GoogleRecaptchaV3Config, GoogleAnalyticsConfig, AwsConfig } from './config'
 
 import Amplify from 'aws-amplify'
 
@@ -32,10 +31,6 @@ Vue.use(VueReCaptcha, {
   loaderOptions: {
     autoHideBadge: true
   }
-})
-
-Vue.use(TafalkGoogleFindAndAutocompletePlugin, {
-  apiKey: GooglePlacesConfig.apiKey
 })
 
 Vue.use(VueAnalytics, {

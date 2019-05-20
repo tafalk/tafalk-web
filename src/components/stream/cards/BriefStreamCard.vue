@@ -55,8 +55,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Storage } from 'aws-amplify'
-import { GetUserHue } from '@/utils/DefaultProfilePainter'
-import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/TimeUtils'
+import { GetUserHue } from '@/utils/generators'
+import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {
   name: 'BriefStreamCard',

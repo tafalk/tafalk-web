@@ -52,3 +52,5 @@ export const streamPositionOptions = [
   { displayValue: i18n.t('stream.pouringMetadata.position.standing'), backendValue: 'Standing' },
   { displayValue: i18n.t('stream.pouringMetadata.position.walking'), backendValue: 'Walking' }
 ]
+
+export const geocodingRootUrl = 'https://geocoder.tilehosting.com'

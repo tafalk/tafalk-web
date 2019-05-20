@@ -23,7 +23,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Storage } from 'aws-amplify'
-import { GetUserHue } from '@/utils/DefaultProfilePainter'
+import { GetUserHue } from '@/utils/generators'
 
 export default {
   name: 'BriefUserCard',

@@ -44,7 +44,7 @@
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { WatchUser, UnblockUser } from '@/graphql/UserInteraction'
-import { GetFirstOrDefaultIdStr } from '@/utils/ArrayUtils'
+import { GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
 
 const logger = new Logger('UserInteractionButtonGroup')
 

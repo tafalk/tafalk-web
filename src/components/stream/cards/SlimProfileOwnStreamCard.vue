@@ -72,7 +72,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/TimeUtils'
+import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {
   name: 'SlimProfileOwnStreamCard',

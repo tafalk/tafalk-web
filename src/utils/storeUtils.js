@@ -1,4 +1,4 @@
-import { GetUserHue } from './DefaultProfilePainter'
+import { GetUserHue } from './generators'
 import { Storage } from 'aws-amplify'
 
 const GetStoreUserWithCognitoIdentityId = async (dbUser, cognitoIdentityId) => {

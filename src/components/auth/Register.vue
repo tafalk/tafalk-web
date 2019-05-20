@@ -125,8 +125,8 @@ import { Auth, Logger } from 'aws-amplify'
 import TafalkTermsOfServiceDialog from '@/components/shared/TheTermsOfServiceDialog.vue'
 import TafalkPrivacyPolicyDialog from '@/components/shared/ThePrivacyPolicyDialog.vue'
 import { mapMutations, mapActions } from 'vuex'
-import { minFirstNameLength, maxFirstNameLength, minLastNameLength, maxLastNameLength, minUsernameLength, maxUsernameLength, minPasswordLength } from '@/utils/Constants'
-import { CheckPassword } from '@/utils/Validator'
+import { minFirstNameLength, maxFirstNameLength, minLastNameLength, maxLastNameLength, minUsernameLength, maxUsernameLength, minPasswordLength } from '@/utils/constants'
+import { CheckPassword } from '@/utils/validator'
 
 const logger = new Logger('Register')
 

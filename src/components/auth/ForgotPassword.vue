@@ -102,8 +102,8 @@
 <script >
 import { API, graphqlOperation, Auth, Logger } from 'aws-amplify'
 import { mapActions } from 'vuex'
-import { minUsernameLength, maxUsernameLength, minPasswordLength } from '@/utils/Constants'
-import { CheckPassword } from '@/utils/Validator'
+import { minUsernameLength, maxUsernameLength, minPasswordLength } from '@/utils/constants'
+import { CheckPassword } from '@/utils/validator'
 import { GetRecaptchaTokenResult } from '@/graphql/RecaptchaToken'
 
 const logger = new Logger('ForgotPasswordView')

@@ -27,7 +27,7 @@
 import { mapGetters, mapMutations } from 'vuex'
 import { API, graphqlOperation } from 'aws-amplify'
 import { ListPaginatedStreamComments } from '@/graphql/StreamReaction'
-import { streamCommentFetchLength } from '@/utils/Constants'
+import { streamCommentFetchLength } from '@/utils/constants'
 import TafalkStreamComment from '@/components/comment/stream/StreamComment.vue'
 
 export default {

@@ -102,7 +102,7 @@ import { mapGetters } from 'vuex'
 import TafalkNewStreamFab from '@/components/home/buttons/NewStreamFab.vue'
 import TafalkBriefStreamCard from '@/components/stream/cards/BriefStreamCard.vue'
 import TafalkBriefUserCard from '@/components/user/cards/BriefUserCard.vue'
-import { homeStreamFetchLength } from '@/utils/Constants'
+import { homeStreamFetchLength } from '@/utils/constants'
 import { ListSealedBriefStreams, ListLiveBriefStreams } from '@/graphql/Stream'
 
 export default {

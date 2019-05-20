@@ -115,8 +115,8 @@
 import { mapGetters, mapActions } from 'vuex'
 import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
 import { DeleteLike } from '@/graphql/StreamReaction'
-import { GetUserHue } from '@/utils/DefaultProfilePainter'
-import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/TimeUtils'
+import { GetUserHue } from '@/utils/generators'
+import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 const logger = new Logger('SlimProfileLikedStreamCard')
 

@@ -1,6 +1,6 @@
 import { API, graphqlOperation, Storage } from 'aws-amplify'
 import { UpdateUserBasicProfileInfo, UpdateUserProfilePictureKey, UpdateUserProfilePrivacyInfo } from '../../graphql/Profile'
-import { GetStoreUserForProfilePictureChange, GetStoreUserForBasicInfoChange, GetStoreUserForPrivacyChange } from '../../utils/StorageObjectHelper'
+import { GetStoreUserForProfilePictureChange, GetStoreUserForBasicInfoChange, GetStoreUserForPrivacyChange } from '../../utils/storeUtils'
 import dialog from './dialog'
 
 const state = {

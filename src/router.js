@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from './store'
+
 import { Auth, API, graphqlOperation, Logger } from 'aws-amplify'
 import { GetUserProfileData } from './graphql/Profile'
-import { GetStoreUser } from './utils/StorageObjectHelper'
-import store from './store'
+import { GetStoreUser } from './utils/storeUtils'
+
 import Home from '@/components/home/Home.vue'
 import NotFound from '@/components/nocontent/NotFound.vue'
 import Profile from '@/components/user/Profile.vue'

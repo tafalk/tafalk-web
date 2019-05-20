@@ -54,7 +54,7 @@
 <script>
 import { Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { GenerateProfilePictureFileName } from '@/utils/FileNameGenerator'
+import { GenerateProfilePictureFileName } from '@/utils/generators'
 
 const logger = new Logger('UserChangeProfilePictureDialog')
 

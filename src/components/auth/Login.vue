@@ -54,8 +54,8 @@
 import { Auth, API, Logger, graphqlOperation } from 'aws-amplify'
 import { mapActions } from 'vuex'
 import { GetUserProfileData, UpdateUserCognitoIdentityId } from '@/graphql/Profile'
-import { minUsernameOrEmailLength, maxUsernameOrEmailLength, minPasswordLength } from '@/utils/Constants'
-import { GetStoreUserWithCognitoIdentityId } from '@/utils/StorageObjectHelper'
+import { minUsernameOrEmailLength, maxUsernameOrEmailLength, minPasswordLength } from '@/utils/constants'
+import { GetStoreUserWithCognitoIdentityId } from '@/utils/storeUtils'
 
 const logger = new Logger('Login')
 
@@ -63,17 +63,21 @@ export default {
   name: 'Login',
   data () {
     return {
+      user: null,
+      valid: true,
+      loader: null,
+      loading: false,
+
+      // Form data
       username: '',
       password: '',
 
-      user: null,
-
+      // Constraints
       minUsernameOrEmailLength: minUsernameOrEmailLength,
       maxUsernameOrEmailLength: maxUsernameOrEmailLength,
       minPasswordLength: minPasswordLength,
 
-      valid: true,
-
+      // Rules
       usernameRules: [
         v => !!v || this.$i18n.t('auth.message.validation.userNameOrEmailReq'),
         v => (v && v.length > 1) || this.$i18n.t('auth.message.validation.userNameLengthLowLimit'),
@@ -83,9 +87,7 @@ export default {
         v => !!v || this.$i18n.t('auth.message.validation.passwordReq')
       ],
 
-      loader: null,
-      loading: false,
-
+      // Messages
       userDoesNotExistError: this.$i18n.t('auth.message.validation.userDoesNotExist')
     }
   },
@@ -100,9 +102,12 @@ export default {
     }
   },
   methods: {
+    // Store
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError'
     }),
+
+    // Click
     async onLoginBtnClick () {
       this.loader = 'loading'
 
@@ -123,8 +128,6 @@ export default {
           userId: dbUser.id,
           cognitoIdentityId: cognitoIdentityId
         }))
-
-        logger.debug('sign in success', user)
 
         const loggedInUserStoreObject = await GetStoreUserWithCognitoIdentityId(dbUser, cognitoIdentityId)
 

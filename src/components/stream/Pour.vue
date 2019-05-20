@@ -93,10 +93,10 @@ import { mapGetters, mapActions, mapMutations } from 'vuex'
 import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
 import { CreateStream, UpdateStreamBody, UpdatePosition, UpdateMood, SealStreamForEver } from '@/graphql/Stream'
 import TafalkStreamAddTitleDialog from '@/components/stream/dialogs/AddTitleDialog.vue'
-import { GetUuid4 } from '@/utils/IdUtils'
-import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/StringUtils'
-import { streamMoodOptions, streamPositionOptions, pourStrikethroughTimeToIdle } from '@/utils/Constants'
-import { GetKeyName } from '@/utils/IOUtils'
+import { GenerateUuid4 } from '@/utils/generators'
+import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
+import { streamMoodOptions, streamPositionOptions, pourStrikethroughTimeToIdle } from '@/utils/constants'
+import { GetKeyName } from '@/utils/ioUtils'
 
 const logger = new Logger('Pour')
 
@@ -134,7 +134,7 @@ export default {
     // window.addEventListener('unload', () => this.sealForEver)
 
     // Create a UUID for the new stream
-    this.streamId = GetUuid4()
+    this.streamId = GenerateUuid4()
   },
   mounted () {
     // Require confirmation for accidental route changes

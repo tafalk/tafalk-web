@@ -24,7 +24,7 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { BlockUser } from '@/graphql/UserInteraction'
-import { GetFirstOrDefaultIdStr } from '@/utils/ArrayUtils'
+import { GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
 
 const logger = new Logger('BlockConfirmationDialog')
 

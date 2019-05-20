@@ -37,7 +37,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
 import { GetInteractionsBetweenUsers, StopWatchingUser } from '@/graphql/UserInteraction'
-import { GetUserHue } from '@/utils/DefaultProfilePainter'
+import { GetUserHue } from '@/utils/generators'
 
 const logger = new Logger('SlimProfileLikedUserCard')
 
