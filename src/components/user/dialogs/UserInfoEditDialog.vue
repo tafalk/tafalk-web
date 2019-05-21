@@ -156,13 +156,13 @@ export default {
       setUserBasicInfo: 'visitedUser/setBasicInfo',
       setNewSiteError: 'shared/setNewSiteError'
     }),
-    async searchLocations(text) {
+    async searchLocations (text) {
       const geocoderResp = await fetch(GenerateGeocoderRequestLink(text))
       const geocoderRespJson = geocoderResp.json()
       return geocoderRespJson.results.map(el => ({
-          name: el.display_name,
-          type: el.type
-        }))
+        name: el.display_name,
+        type: el.type
+      }))
     },
     async onSaveInfoEditClick () {
       await this.setUserBasicInfo({

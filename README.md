@@ -32,3 +32,6 @@ npm run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Deploy to S3
+https://medium.com/@rmossakowski/circleci-config-for-vue-js-with-s3-upload-7503057b435c
