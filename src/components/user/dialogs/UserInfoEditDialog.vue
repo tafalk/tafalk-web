@@ -34,8 +34,8 @@
           <!-- Location -->
           <v-autocomplete
             :label="$t('user.edit.info.dialog.locationLabel')"
-            v-model="autocompleteLocationModel"
-            :items="locationFoundItems"
+            v-model="locationModel"
+            :items="locationEntries"
             :search-input.sync="locationSearchText"
             :loading="isLocationDataLoading"
             item-text="displayName"
@@ -80,7 +80,9 @@
 <script>
 import { Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { GenerateGeocoderRequestLink } from '@/utils/constants'
+import debounce from 'debounce'
+import { postTypeDelay } from '@/utils/constants'
+import { GenerateGeocoderRequestLink } from '@/utils/generators'
 
 const logger = new Logger('UserInfoEditDialog')
 
@@ -103,25 +105,23 @@ export default {
       siteRules: [
         v => (v === null || v === undefined || v === '' || /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(v)) || this.$i18n.t('user.edit.info.rules.notValidSite')
       ],
-      autocompleteLocationModel: null,
+      locationModel: null,
       locationSearchText: null,
       locationEntries: [],
       isLocationDataLoading: false
     }
   },
   created () {
-    if (this.location) {
-      // TODO: Make this work properly
-      this.autocompleteLocationModel = this.location
-      this.locationEntries.push(this.location)
-    }
-
+    this.locationModel = this.location
     this.preferredNameModel = this.preferredName
     this.bioModel = this.bio
     this.siteModel = this.site
+
+    // Replace method with debounced version at start
+    this.searchLocations = debounce(this.searchLocations, postTypeDelay)
   },
   destroyed () {
-    this.autocompleteLocationModel = null
+    this.locationModel = null
     this.preferredNameModel = null
     this.bioModel = null
     this.siteModel = null
@@ -129,10 +129,7 @@ export default {
   computed: {
     ...mapGetters({
       getIsUserInfoEditDialogVisible: 'visitedUser/dialog/getIsUserInfoEditDialogVisible'
-    }),
-    locationFoundItems () {
-      return this.locationEntries
-    }
+    })
   },
   watch: {
     async locationSearchText (newVal) {
@@ -142,14 +139,7 @@ export default {
       this.isLocationDataLoading = true
 
       try {
-        const geocoderResp = await fetch(GenerateGeocoderRequestLink(newVal))
-        const geocoderRespJson = geocoderResp.json()
-        const resultList = geocoderRespJson.results.map(el => ({
-          name: el.display_name,
-          type: el.type
-        }))
-
-        this.locationEntries = resultList
+        this.locationEntries = this.searchLocations(newVal)
       } catch (err) {
         logger.error('An error occurred while stopping watching the user')
         this.setNewSiteError(err.message || err)
@@ -166,12 +156,20 @@ export default {
       setUserBasicInfo: 'visitedUser/setBasicInfo',
       setNewSiteError: 'shared/setNewSiteError'
     }),
+    async searchLocations(text) {
+      const geocoderResp = await fetch(GenerateGeocoderRequestLink(text))
+      const geocoderRespJson = geocoderResp.json()
+      return geocoderRespJson.results.map(el => ({
+          name: el.display_name,
+          type: el.type
+        }))
+    },
     async onSaveInfoEditClick () {
       await this.setUserBasicInfo({
         userId: this.userId,
         preferredName: this.preferredNameModel,
         bio: this.bioModel,
-        location: this.autocompleteLocationModel,
+        location: this.locationModel,
         site: this.siteModel
       })
 

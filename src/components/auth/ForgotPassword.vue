@@ -113,19 +113,21 @@ export default {
   data () {
     return {
       forgotPasswordCurrentStep: 0,
-
-      username: '',
-      code: '',
-      password: '',
-
-      minUsernameLength: minUsernameLength,
-      maxUsernameLength: maxUsernameLength,
-      minPasswordLength: minPasswordLength,
-
       step1Valid: true,
       step2Valid: true,
       step3Valid: true,
 
+      // Form Data
+      username: '',
+      code: '',
+      password: '',
+
+      // Constraints
+      minUsernameLength: minUsernameLength,
+      maxUsernameLength: maxUsernameLength,
+      minPasswordLength: minPasswordLength,
+
+      // Rules
       usernameRules: [
         v => !!v || this.$i18n.t('auth.message.validation.userNameReq'),
         v => (v && v.length > 1) || this.$i18n.t('auth.message.validation.userNameLengthLowLimit'),
@@ -136,9 +138,9 @@ export default {
         v => (v && CheckPassword(v)) || this.$i18n.t('auth.message.validation.passwordWeak')
       ],
 
+      // Loading
       loaderSend: null,
       loadingSend: false,
-
       loaderSubmit: null,
       loadingSubmit: false
     }

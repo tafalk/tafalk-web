@@ -50,23 +50,26 @@ export default {
   name: 'ConfirmRegistration',
   data () {
     return {
+      valid: true,
+      loader: null,
+      loading: false,
+      loaderResend: null,
+      loadingResend: false,
+
+      // Form Data
       username: '',
       verificationCode: '',
 
+      // Constraints
       minUsernameLength: minUsernameLength,
       maxUsernameLength: maxUsernameLength,
 
-      valid: true,
-
+      // Rules
       usernameRules: [
         v => !!v || this.$i18n.t('auth.message.validation.userNameReq'),
         v => (v && v.length > 1) || this.$i18n.t('auth.message.validation.userNameLengthLowLimit'),
         v => (v && v.length <= 24) || this.$i18n.t('auth.message.validation.userNameLengthUpLimit')
-      ],
-      loader: null,
-      loading: false,
-      loaderResend: null,
-      loadingResend: false
+      ]
     }
   },
   watch: {
@@ -88,10 +91,13 @@ export default {
     }
   },
   methods: {
+    // Store
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError',
       setNewNoTimeoutSiteSuccess: 'shared/setNewNoTimeoutSiteSuccess'
     }),
+
+    // Click
     async onConfirmBtnClick () {
       this.loader = 'loading'
       try {

@@ -16,6 +16,7 @@ export const pourStrikethroughTimeToIdle = 1000
 
 // search
 export const minSiteSearchTextLength = 3
+export const postTypeDelay = 300  // ms
 export const strikethroughChar = '\u0336'
 
 // theme
