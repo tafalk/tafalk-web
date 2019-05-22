@@ -100,7 +100,11 @@ router.beforeEach(async (to, from, next) => {
 
     next()
   } catch (err) {
-    logger.error('Error getting autheticated user info before routing', err)
+    if (err.toString() === 'not authenticated') {
+      logger.debug('No authenticated user found')
+    } else {
+      logger.error('Error getting autheticated user info before routing', err.toString())
+    }
     store.commit('authenticatedUser/clearUser')
     next()
   }
