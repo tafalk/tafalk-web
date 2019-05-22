@@ -39,7 +39,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 import TheLogo from '@/assets/logo.svg'
 import TheSmallLogo from '@/assets/smlogo.svg'
 import TheHeaderAuthenticatedUserItems from './items/TheHeaderAuthenticatedUserItems.vue'
-import TheHeaderUnauthenticatedUserItems from '@/items/TheHeaderUnauthenticatedUserItems.vue'
+import TheHeaderUnauthenticatedUserItems from './items/TheHeaderUnauthenticatedUserItems.vue'
 
 export default {
   name: 'Header',
