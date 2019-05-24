@@ -179,7 +179,7 @@ export default {
         userId: this.userId,
         preferredName: this.preferredNameModel,
         bio: this.bioModel,
-        location: this.locationModel,
+        location: this.location.name,
         site: this.siteModel
       })
 

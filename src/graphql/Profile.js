@@ -16,10 +16,7 @@ export const GetUserProfileData = gql`query GetUserProfileData($username: String
     bio
     birthDate
     theme
-    location {
-      id
-      value
-    }
+    location
     profilePictureKey
     profilePrivacy
     allowDirectMesages
