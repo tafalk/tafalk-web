@@ -38,14 +38,14 @@
             :items="locationEntries"
             :search-input.sync="locationSearchText"
             :loading="isLocationDataLoading"
-            item-text="displayName"
-            item-value="displayName"
+            item-text="name"
+            item-value="name"
             hide-no-data
             return-object
           >
             <template v-slot:item="{ item }">
               <v-list-tile-content>
-                <v-list-tile-title>{{ item.displayName }}</v-list-tile-title>
+                <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                 <v-list-tile-sub-title>{{ item.type }}</v-list-tile-sub-title>
               </v-list-tile-content>
             </template>
@@ -107,7 +107,7 @@ export default {
       ],
       locationModel: null,
       locationSearchText: null,
-      locationEntries: [],
+      foundItems: [],
       isLocationDataLoading: false
     }
   },
@@ -129,17 +129,25 @@ export default {
   computed: {
     ...mapGetters({
       getIsUserInfoEditDialogVisible: 'visitedUser/dialog/getIsUserInfoEditDialogVisible'
-    })
+    }),
+    locationEntries () {
+      return this.foundItems
+        .filter(el => el.type !== 'street')
+        .map(el => ({
+          name: el.display_name,
+          type: el.type
+        }))
+    }
   },
   watch: {
-    async locationSearchText (newVal) {
+    locationSearchText (newVal) {
       // If less than 3 chars typed, do not search
-      if (!newVal || newVal.length <= 3) return
+      if (!newVal || newVal.length < 3) return
 
       this.isLocationDataLoading = true
 
       try {
-        this.locationEntries = this.searchLocations(newVal)
+        this.searchLocations(newVal)
       } catch (err) {
         logger.error('An error occurred while stopping watching the user')
         this.setNewSiteError(err.message || err)
@@ -156,13 +164,15 @@ export default {
       setUserBasicInfo: 'visitedUser/setBasicInfo',
       setNewSiteError: 'shared/setNewSiteError'
     }),
-    async searchLocations (text) {
-      const geocoderResp = await fetch(GenerateGeocoderRequestLink(text))
-      const geocoderRespJson = geocoderResp.json()
-      return geocoderRespJson.results.map(el => ({
-        name: el.display_name,
-        type: el.type
-      }))
+    searchLocations (text) {
+      var vm = this
+      fetch(GenerateGeocoderRequestLink(text), {
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(resp => resp.json())
+        .then(resp => {
+          vm.foundItems = resp.results
+        })
     },
     async onSaveInfoEditClick () {
       await this.setUserBasicInfo({

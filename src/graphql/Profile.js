@@ -105,11 +105,11 @@ export const ListUserInteractionsByActorUserIdIndex = gql`query ListUserInteract
 }`
 
 // Mutate
-export const UpdateUserBasicProfileInfo = gql`mutation UpdateUserBasicProfileInfo($userId: ID!, $bio: String, $locationId: String, $site: String) {
+export const UpdateUserBasicProfileInfo = gql`mutation UpdateUserBasicProfileInfo($userId: ID!, $bio: String, $location: String, $site: String) {
   updateUser(input: {
     id: $userId
     bio: $bio
-    locationId: $locationId
+    location: $location
     site: $site
   }){
     id

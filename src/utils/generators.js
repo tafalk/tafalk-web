@@ -1,5 +1,5 @@
 import { geocodingRootUrl } from './constants'
-import { TilehostingGeooderConfig } from '../config'
+import { MapTilerGeooderConfig } from '../config'
 
 const GenerateProfilePictureFileName = (fileObject, userId) => {
   const profilePicSuffix = '_profilepic'
@@ -75,7 +75,7 @@ const GetStreamLink = (streamId) => {
 }
 
 const GenerateGeocoderRequestLink = (searchText) => {
-  return `${geocodingRootUrl}/q/${encodeURIComponent(searchText)}.js?key=${TilehostingGeooderConfig.apiKey}`
+  return `${geocodingRootUrl}/q/${encodeURIComponent(searchText)}.js?key=${MapTilerGeooderConfig.apiKey}`
 }
 
 export {

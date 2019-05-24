@@ -77,7 +77,7 @@ const actions = {
       // Setting the optional value to null, because DynamoDB rejects empty strings -but accepts null anyway
       // preferredName: (payload.preferredName) ? payload.preferredName : null,
       bio: (payload.bio) ? payload.bio : null,
-      locationId: (payload.location) ? payload.location.id : null,
+      location: (payload.location) ? payload.location : null,
       site: (payload.site) ? payload.site : null
     }))
 

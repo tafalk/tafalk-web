@@ -115,7 +115,7 @@ export const CreateStream = gql`mutation CreateStream(
   $privacy: StreamPrivacy!,
   $mood: [Mood],
   $position: [Position],
-  $locationId: String,
+  $location: String,
   $track: String,
   $startedAt: String!,
   $sealedAt: String!,
@@ -128,7 +128,7 @@ export const CreateStream = gql`mutation CreateStream(
     mood: $mood
     position: $position
     body: $body
-    locationId: $locationId
+    location: $location
     track: $track
     isSealed: 0
     startedAt: $startedAt
@@ -142,7 +142,7 @@ export const CreateStream = gql`mutation CreateStream(
     mood
     position
     body
-    locationId
+    location
     track
     startedAt
     isSealed
@@ -163,7 +163,7 @@ export const UpdateStreamTitle = gql`mutation UpdateStreamTitle($id: ID!, $title
     mood
     position
     body
-    locationId
+    location
     track
     startedAt
     isSealed
@@ -184,7 +184,7 @@ export const UpdateStreamBody = gql`mutation UpdateStreamBody($id: ID!, $body: S
     mood
     position
     body
-    locationId
+    location
     track
     startedAt
     isSealed
@@ -200,7 +200,7 @@ export const SealStreamForEver = gql`mutation SealStreamForEver(
   $privacy: StreamPrivacy,
   $mood: [Mood],
   $position: [Position],
-  $locationId: String,
+  $location: String,
   $track: String,
   $sealedAt: String) {
   updateStream(input: {
@@ -210,7 +210,7 @@ export const SealStreamForEver = gql`mutation SealStreamForEver(
     privacy: $privacy
     mood: $mood
     position: $position
-    locationId: $locationId
+    location: $location
     track: $track
     isSealed: 1
     sealedAt: $sealedAt
@@ -222,7 +222,7 @@ export const SealStreamForEver = gql`mutation SealStreamForEver(
     mood
     position
     body
-    locationId
+    location
     track
     startedAt
     isSealed
@@ -243,7 +243,7 @@ export const UpdateMood = gql`mutation UpdateMood($id: ID!, $mood: [Mood]) {
     mood
     position
     body
-    locationId
+    location
     track
     startedAt
     isSealed
@@ -264,7 +264,7 @@ export const UpdatePosition = gql`mutation UpdatePosition($id: ID!, $position: [
     mood
     position
     body
-    locationId
+    location
     track
     startedAt
     isSealed
@@ -283,7 +283,7 @@ export const OnUpdateStream = gql`subscription OnUpdateStream($id: ID!) {
     mood
     position
     body
-    locationId
+    location
     track
     startedAt
     isSealed

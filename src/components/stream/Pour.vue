@@ -199,7 +199,7 @@ export default {
             mood: (this.moodModel != null && this.moodModel.length > 0) ? this.moodModel.map(b => b.backendValue) : null,
             position: (this.positionModel != null && this.positionModel.length > 0) ? this.positionModel.map(b => b.backendValue) : null,
             body: newBody,
-            locationId: null,
+            location: null,
             track: null,
             startedAt: new Date().toISOString(),
             sealedAt: this.incompleteSealedAtValue,
@@ -445,7 +445,7 @@ export default {
             privacy: this.privacy,
             mood: (this.moodModel != null && this.moodModel.length > 0) ? this.moodModel.map(b => b.backendValue) : null,
             position: (this.positionModel != null && this.positionModel.length > 0) ? this.positionModel.map(b => b.backendValue) : null,
-            locationId: null,
+            location: null,
             track: null,
             sealedAt: new Date().toISOString()
           }))
