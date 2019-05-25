@@ -68,13 +68,14 @@
             <v-btn
               v-if="isSealed && authenticatedUserLikeId"
               flat
+              icon
               small
               :color="bookmarkButtonColor"
               :loading="isLikeLoading"
               :disabled="isLikeLoading"
               @click="onRemoveLikeClick"
             >
-                <v-icon >bookmark</v-icon>&nbsp;{{ likeCount }}
+                <v-icon>bookmark</v-icon>&nbsp;{{ likeCount }}
             </v-btn>
             &nbsp;
             <!-- Comment -->
@@ -432,7 +433,7 @@ export default {
           id: this.authenticatedUserLikeId
         }))
       } catch (err) {
-        logger.error('An error occurred while deleting the like')
+        logger.error('An error occurred while deleting the like', JSON.stringify(err))
         this.setNewUserInteractionResultError(this.$i18n.t('stream.likes.message.genericUncastError'))
       } finally {
         this.isLikeLoading = false
