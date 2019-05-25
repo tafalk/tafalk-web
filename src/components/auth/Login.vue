@@ -136,7 +136,7 @@ export default {
         // Push to home route
         this.$router.push({ name: 'home' })
       } catch (err) {
-        logger.error('an error occurred while logging in', err)
+        logger.error('an error occurred while logging in: ', JSON.stringify(err))
         this.setNewSiteError(err.message || err)
         if (err === this.userDoesNotExistError) {
           setTimeout(() => {

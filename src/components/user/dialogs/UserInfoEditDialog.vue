@@ -38,16 +38,17 @@
             :items="locationEntries"
             :search-input.sync="locationSearchText"
             :loading="isLocationDataLoading"
+            flat
+            dense
             item-text="name"
             item-value="name"
             hide-no-data
-            return-object
           >
             <template v-slot:item="{ item }">
               <v-list-tile-content>
                 <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ item.type }}</v-list-tile-sub-title>
               </v-list-tile-content>
+              <v-list-tile-action class="grey--text">{{ item.type }}</v-list-tile-action>
             </template>
           </v-autocomplete>
 
@@ -95,6 +96,7 @@ export default {
       preferredNameModel: '',
       bioModel: '',
       siteModel: '',
+      omittedPlaceTypes: ['subcity','street'],
       preferredNameRules: [
         v => !!v || this.$i18n.t('user.edit.info.rules.preferredNameReq'),
         v => v.length <= 24 || this.$i18n.t('user.edit.info.rules.preferredNameUpLimit')
@@ -132,7 +134,7 @@ export default {
     }),
     locationEntries () {
       return this.foundItems
-        .filter(el => el.type !== 'street')
+        .filter(el => !this.omittedPlaceTypes.includes(el.type))
         .map(el => ({
           name: el.display_name,
           type: el.type
@@ -179,7 +181,7 @@ export default {
         userId: this.userId,
         preferredName: this.preferredNameModel,
         bio: this.bioModel,
-        location: this.location.name,
+        location: this.locationModel,
         site: this.siteModel
       })
 

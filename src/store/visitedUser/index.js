@@ -1,7 +1,9 @@
-import { API, graphqlOperation, Storage } from 'aws-amplify'
+import { API, graphqlOperation, Storage, Logger } from 'aws-amplify'
 import { UpdateUserBasicProfileInfo, UpdateUserProfilePictureKey, UpdateUserProfilePrivacyInfo } from '../../graphql/Profile'
 import { GetStoreUserForProfilePictureChange, GetStoreUserForBasicInfoChange, GetStoreUserForPrivacyChange } from '../../utils/storeUtils'
 import dialog from './dialog'
+
+const logger = new Logger('VisitedUserStore')
 
 const state = {
   user: null
@@ -50,17 +52,21 @@ const mutations = {
 
 const actions = {
   async setProfilePicture ({ commit }, payload) {
-    // Upload to S3 storage
-    await Storage.put(payload.profilePicture.key, payload.profilePicture.fileObject, {
-      level: payload.profilePicture.level,
-      contentType: payload.profilePicture.type
-    })
+    try {
+      // Upload to S3 storage
+      await Storage.put(payload.profilePicture.key, payload.profilePicture.fileObject, {
+        level: payload.profilePicture.level,
+        contentType: payload.profilePicture.type
+      })
 
-    // Update User DB Table
-    await API.graphql(graphqlOperation(UpdateUserProfilePictureKey, {
-      userId: payload.userId,
-      profilePictureKey: payload.profilePicture.key
-    }))
+      // Update User DB Table
+      await API.graphql(graphqlOperation(UpdateUserProfilePictureKey, {
+        userId: payload.userId,
+        profilePictureKey: payload.profilePicture.key
+      }))
+    } catch (err) {
+      logger.error('confirm registration error', JSON.stringify(err))
+    }
 
     const storeObj = await GetStoreUserForProfilePictureChange(payload.profilePicture.key)
 

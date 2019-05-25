@@ -193,7 +193,7 @@ export default {
       if (this.visitedUser.location == null) {
         return this.defaultLocation
       }
-      return this.visitedUser.location.value
+      return this.visitedUser.location
     },
     visitedUserAccountCreationDateStr () {
       if (!this.visitedUser) {

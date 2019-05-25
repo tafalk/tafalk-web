@@ -12,20 +12,22 @@ export const GoogleAnalyticsConfig = {
 export const AwsConfig = {
   // S3
   Storage: {
-    bucket: process.env.VUE_APP_S3_USER_STORAGE_BUCKET,
-    region: process.env.AWS_REGION
+    AWSS3: {
+      bucket: process.env.VUE_APP_S3_USER_STORAGE_BUCKET,
+      region: process.env.VUE_APP_AWS_REGION
+    }
   },
   // Cognito
   Auth: {
     mandatorySignIn: false,
-    region: process.env.AWS_REGION,
+    region: process.env.VUE_APP_AWS_REGION,
     userPoolId: process.env.VUE_APP_COGNITO_USER_POOL_ID,
     identityPoolId: process.env.VUE_APP_COGNITO_IDENTITY_POOL_ID,
     userPoolWebClientId: process.env.VUE_APP_COGNITO_USER_POOL_CLIENT_ID
   },
   // AppSync
   aws_appsync_graphqlEndpoint: process.env.VUE_APP_APPSYNC_GRAPHQL_ENDPOINT,
-  aws_appsync_region: process.env.AWS_REGION,
+  aws_appsync_region: process.env.VUE_APP_AWS_REGION,
   aws_appsync_authenticationType: 'API_KEY',
   aws_appsync_apiKey: process.env.VUE_APP_APPSYNC_API_KEY
 }
