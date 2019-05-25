@@ -40,9 +40,9 @@ export const ListStreamsByUser = gql`query ListStreamsByUser($userId: ID!, $limi
       id
       title
       body
-      startedAt
+      startTime
       isSealed
-      sealedAt
+      sealTime
       likes {
         id
       }
@@ -61,9 +61,9 @@ export const ListLikesByUser = gql`query ListLikesByUser($userId: ID!, $limit: I
         id
         title
         body
-        startedAt
+        startTime
         isSealed
-        sealedAt
+        sealTime
         likes {
           id
           streamId

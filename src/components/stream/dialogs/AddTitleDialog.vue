@@ -46,7 +46,7 @@ export default {
       savedStateConstant: 'saved',
       savingStateConstant: 'saving',
       errorStateConstant: 'error',
-      incompleteSealedAtValue: 'NA',
+      incompleteSealTimeValue: 'NA',
       timeoutID: null,
       deleteTimeToIdle: pourStrikethroughTimeToIdle
     }

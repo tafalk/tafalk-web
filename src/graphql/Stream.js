@@ -16,9 +16,9 @@ export const GetStream = gql`query GetStream($streamId: ID!) {
     position
     uncloggerHintId
     track
-    startedAt
+    startTime
     isSealed
-    sealedAt
+    sealTime
     likes {
       id
       streamId
@@ -62,9 +62,9 @@ export const ListSealedBriefStreams = gql`query ListSealedBriefStreams($limit: I
       id
       title
       body
-      startedAt
+      startTime
       isSealed
-      sealedAt
+      sealTime
       user {
         id
         username
@@ -87,9 +87,9 @@ export const ListLiveBriefStreams = gql`query ListLiveBriefStreams($limit: Int, 
       id
       title
       body
-      startedAt
+      startTime
       isSealed
-      sealedAt
+      sealTime
       user {
         id
         username
@@ -117,8 +117,8 @@ export const CreateStream = gql`mutation CreateStream(
   $position: [Position],
   $location: String,
   $track: String,
-  $startedAt: String!,
-  $sealedAt: String!,
+  $startTime: String!,
+  $sealTime: String!,
   $visits: Int) {
   createStream(input: {
     id: $id
@@ -131,8 +131,8 @@ export const CreateStream = gql`mutation CreateStream(
     location: $location
     track: $track
     isSealed: 0
-    startedAt: $startedAt
-    sealedAt: $sealedAt
+    startTime: $startTime
+    sealTime: $sealTime
     visits: $visits
   }){
     id
@@ -144,9 +144,9 @@ export const CreateStream = gql`mutation CreateStream(
     body
     location
     track
-    startedAt
+    startTime
     isSealed
-    sealedAt
+    sealTime
     visits
   }
 }`
@@ -165,9 +165,9 @@ export const UpdateStreamTitle = gql`mutation UpdateStreamTitle($id: ID!, $title
     body
     location
     track
-    startedAt
+    startTime
     isSealed
-    sealedAt
+    sealTime
     visits
   }
 }`
@@ -186,9 +186,9 @@ export const UpdateStreamBody = gql`mutation UpdateStreamBody($id: ID!, $body: S
     body
     location
     track
-    startedAt
+    startTime
     isSealed
-    sealedAt
+    sealTime
     visits
   }
 }`
@@ -202,7 +202,7 @@ export const SealStreamForEver = gql`mutation SealStreamForEver(
   $position: [Position],
   $location: String,
   $track: String,
-  $sealedAt: String) {
+  $sealTime: String) {
   updateStream(input: {
     id: $id
     title: $title
@@ -213,7 +213,7 @@ export const SealStreamForEver = gql`mutation SealStreamForEver(
     location: $location
     track: $track
     isSealed: 1
-    sealedAt: $sealedAt
+    sealTime: $sealTime
   }){
     id
     userId
@@ -224,9 +224,9 @@ export const SealStreamForEver = gql`mutation SealStreamForEver(
     body
     location
     track
-    startedAt
+    startTime
     isSealed
-    sealedAt
+    sealTime
     visits
   }
 }`
@@ -245,9 +245,9 @@ export const UpdateMood = gql`mutation UpdateMood($id: ID!, $mood: [Mood]) {
     body
     location
     track
-    startedAt
+    startTime
     isSealed
-    sealedAt
+    sealTime
     visits
   }
 }`
@@ -266,9 +266,9 @@ export const UpdatePosition = gql`mutation UpdatePosition($id: ID!, $position: [
     body
     location
     track
-    startedAt
+    startTime
     isSealed
-    sealedAt
+    sealTime
     visits
   }
 }`
@@ -285,9 +285,9 @@ export const OnUpdateStream = gql`subscription OnUpdateStream($id: ID!) {
     body
     location
     track
-    startedAt
+    startTime
     isSealed
-    sealedAt
+    sealTime
     visits
     likes {
       id

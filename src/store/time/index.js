@@ -1,3 +1,5 @@
+import { timeRefreshIntervalSeconds } from '../../utils/constants'
+
 const state = {
   nowTime: new Date().getTime()
 }
@@ -18,7 +20,7 @@ const actions = {
   setNowTime ({ commit }) {
     setInterval(() => {
       commit('setNowTime')
-    }, 1000 * 60)
+    }, 1000 * timeRefreshIntervalSeconds)
   }
 }
 

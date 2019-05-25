@@ -283,13 +283,13 @@ export default {
       if (!this.isSealed) {
         return null
       }
-      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealedAt)
+      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealTime)
     },
     timeSpentForStream () {
       if (!this.isSealed) {
-        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startedAt)
+        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startTime)
       }
-      return GetElapsedTimeBetween(this.stream.startedAt, this.stream.sealedAt)
+      return GetElapsedTimeBetween(this.stream.startTime, this.stream.sealTime)
     },
     authenticatedUserFlagId () {
       return (((this.stream.flags || []).find(item => item.userId === this.authenticatedUser.id) || {})).id
@@ -308,8 +308,8 @@ export default {
     'streamChange.title' (val) {
       this.stream.title = val
     },
-    'streamChange.sealedAt' (val) {
-      this.stream.sealedAt = val
+    'streamChange.sealTime' (val) {
+      this.stream.sealTime = val
     },
     'streamChange.likes' (val) {
       // Not reached

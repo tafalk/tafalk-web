@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import TafalkHeader from '@/components/shared/TheHeader.vue'
 // import TafalkFooter from '@/components/shared/TheFooter.vue'
 import TafalkSiteNotification from '@/components/shared/TheSiteNotification.vue'
@@ -37,6 +37,9 @@ export default {
     return {
     }
   },
+  created () {
+    this.setNowTime()
+  },
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser'
@@ -47,6 +50,11 @@ export default {
     userTheme () {
       return (this.authenticatedUser != null && this.authenticatedUser.theme != null) ? this.authenticatedUser.theme : 'light'
     }
+  },
+  methods: {
+    ...mapActions({
+      setNowTime: 'time/setNowTime'
+    })
   }
 }
 </script>

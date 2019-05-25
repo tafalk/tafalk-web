@@ -101,14 +101,14 @@ export default {
       if (this.isSealed === 0) {
         return null
       }
-      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealedAt)
+      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealTime)
     },
     timeSpentForStream () {
       if (this.isSealed === 0) {
-        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startedAt)
+        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startTime)
       }
 
-      return GetElapsedTimeBetween(this.stream.startedAt, this.stream.sealedAt)
+      return GetElapsedTimeBetween(this.stream.startTime, this.stream.sealTime)
     }
   },
   methods: {

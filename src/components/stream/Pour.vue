@@ -117,7 +117,7 @@ export default {
       savedStateConstant: 'saved',
       savingStateConstant: 'saving',
       errorStateConstant: 'error',
-      incompleteSealedAtValue: 'NA',
+      incompleteSealTimeValue: 'NA',
       timeoutID: null,
       deleteTimeToIdle: pourStrikethroughTimeToIdle,
       loading: false,
@@ -201,8 +201,8 @@ export default {
             body: newBody,
             location: null,
             track: null,
-            startedAt: new Date().toISOString(),
-            sealedAt: this.incompleteSealedAtValue,
+            startTime: new Date().toISOString(),
+            sealTime: this.incompleteSealTimeValue,
             visits: 0
           }))
           this.processState = this.savedStateConstant
@@ -447,7 +447,7 @@ export default {
             position: (this.positionModel != null && this.positionModel.length > 0) ? this.positionModel.map(b => b.backendValue) : null,
             location: null,
             track: null,
-            sealedAt: new Date().toISOString()
+            sealTime: new Date().toISOString()
           }))
         } catch (err) {
           logger.error('An error occurred while sealing the stream', err.message || JSON.stringify(err))

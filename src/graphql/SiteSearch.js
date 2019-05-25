@@ -13,9 +13,9 @@ export const Search = gql`query Search($query: String!) {
       id
       title
       body
-      startedAt
+      startTime
       isSealed
-      sealedAt
+      sealTime
       likes {
         id
       }

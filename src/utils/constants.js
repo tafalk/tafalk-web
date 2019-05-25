@@ -16,7 +16,7 @@ export const pourStrikethroughTimeToIdle = 1000
 
 // search
 export const minSiteSearchTextLength = 3
-export const postTypeDelay = 300  // ms
+export const postTypeDelay = 300 // ms
 export const strikethroughChar = '\u0336'
 
 // theme
@@ -26,6 +26,8 @@ export const themeOptions = ['light', 'dark']
 export const homeStreamFetchLength = 5
 export const streamCommentFetchLength = 4
 
+// time
+export const timeRefreshIntervalSeconds = 60
 // other
 export const timeUnitChars = {
   second: i18n.t('common.time.second'),
