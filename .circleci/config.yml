@@ -71,7 +71,6 @@ jobs:
       - run:
           name: Deploy to AWS S3
           command: npm run deploy
-  deploy:
 
 # Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
 workflows:
@@ -113,6 +112,12 @@ workflows:
             - lint
             - unit-test
             - build
+          pre-steps:
+            - run:
+                command: echo "deploying..."
+          post-steps:
+            - run:
+                command: echo "successfully deployed!"
           filters:
             branches:
               only: master
