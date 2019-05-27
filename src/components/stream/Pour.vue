@@ -26,6 +26,7 @@
           outline
           v-model="body"
           auto-grow
+          autofocus
           :placeholder="$t('stream.pour.bodyPlaceholder')"
           rows="9"
           @keydown.delete.prevent="onBodyBackspaceOrDeleteKeydown"
