@@ -9,8 +9,8 @@ module.exports = {
     s3Deploy: {
       registry: undefined,
       awsProfile: 'default',
-      region: 'eu-central-1',
-      bucket: 'tafalk.com',
+      region: process.env.VUE_APP_AWS_REGION,
+      bucket: process.env.VUE_APP_S3_HOSTING_BUCKET,
       createBucket: false,
       staticHosting: true,
       staticIndexPage: 'index.html',
