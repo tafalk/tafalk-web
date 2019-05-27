@@ -96,7 +96,7 @@ export default {
       preferredNameModel: '',
       bioModel: '',
       siteModel: '',
-      omittedPlaceTypes: ['subcity','street'],
+      omittedPlaceTypes: ['subcity', 'street'],
       preferredNameRules: [
         v => !!v || this.$i18n.t('user.edit.info.rules.preferredNameReq'),
         v => v.length <= 24 || this.$i18n.t('user.edit.info.rules.preferredNameUpLimit')

@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils'
-import Login from '@/components/auth/Login.vue'
+// import { shallowMount } from '@vue/test-utils'
+// import Login from '@/components/auth/Login.vue'
 
 describe('Login.vue', () => {
   it('does nothing', () => {
