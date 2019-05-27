@@ -1,5 +1,7 @@
 # tafalk-web
 
+[![CircleCI](https://circleci.com/gh/tafalk/tafalk-web.svg?style=svg)](https://circleci.com/gh/tafalk/tafalk-web)
+
 ## Project setup
 
 ```
