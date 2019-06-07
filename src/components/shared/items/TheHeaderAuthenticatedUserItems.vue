@@ -22,7 +22,9 @@
     -->
 
     <!-- User Profile item -->
-    <v-chip @click="onProfileClick">
+    <v-chip
+      v-if="$vuetify.breakpoint.mdAndUp"
+      @click="onProfileClick">
       <v-avatar v-if="authenticatedUser.profilePictureObjectUrl">
         <img :src="authenticatedUser.profilePictureObjectUrl" />
       </v-avatar>
@@ -34,6 +36,24 @@
       </v-avatar>
         {{authenticatedUser.username}}
     </v-chip>
+
+    <v-avatar
+      @click="onProfileClick"
+      v-if="$vuetify.breakpoint.smAndDown && authenticatedUser.profilePictureObjectUrl"
+      size="28"
+      small
+    >
+      <img :src="authenticatedUser.profilePictureObjectUrl" />
+    </v-avatar>
+    <v-avatar
+      size="28"
+      v-else-if="$vuetify.breakpoint.smAndDown && !authenticatedUser.profilePictureObjectUrl"
+      @click="onProfileClick">
+      <img
+        src="@/assets/default-user-avatar.jpg"
+        alt="Virgina Woolf in Hue"
+        v-bind:style="userHue" />
+    </v-avatar>
 
     <v-menu :nudge-width="110">
       <v-btn slot="activator" icon>

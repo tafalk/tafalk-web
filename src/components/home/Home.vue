@@ -2,7 +2,7 @@
   <div class="home">
     <v-container grid-list-md>
       <!-- full page loader -->
-      <v-layout v-if="!pageReady" align-center fill-height>
+      <v-layout v-if="!getIsPageReady" align-center fill-height>
         <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
           <img  src="@/assets/page-preloader.gif" alt="">
         </v-flex>
@@ -72,7 +72,12 @@
       </v-layout>
     </v-container>
 
-    <v-bottom-nav fixed :value="true" :active.sync="footerEl">
+    <v-bottom-nav
+      v-if="$vuetify.breakpoint.mdAndUp"
+      fixed
+      :value="true"
+      :active.sync="footerEl"
+    >
       <v-btn flat color="teal" :value=recentValue>
         <span>{{ $t('home.bottomnav.all') }}</span>
         <v-icon>apps</v-icon>
@@ -97,20 +102,16 @@
 </template>
 
 <script>
-import { API, graphqlOperation } from 'aws-amplify'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 import TafalkNewStreamFab from '@/components/home/buttons/NewStreamFab.vue'
 import TafalkBriefStreamCard from '@/components/stream/cards/BriefStreamCard.vue'
 import TafalkBriefUserCard from '@/components/user/cards/BriefUserCard.vue'
 import { homeStreamFetchLength } from '@/utils/constants'
-import { ListSealedBriefStreams, ListLiveBriefStreams } from '@/graphql/Stream'
 
 export default {
   name: 'Home',
   data () {
     return {
-      pageReady: false,
-      // busy: false,
       userTypeName: 'User',
       streamTypeName: 'Stream',
       recentValue: 'recent',
@@ -119,7 +120,6 @@ export default {
       byFaveUsersValue: 'by-fave-users',
       streamList: [],
       footerEl: null,
-      nextToken: null,
       fetchLimit: homeStreamFetchLength
     }
   },
@@ -130,58 +130,23 @@ export default {
   },
   created () {
     this.footerEl = 'recent'
-    this.pageReady = true
+    this.setIsPageReady(true)
   },
   watch: {
     async footerEl (val, oldVal) {
       if (val == null || val === '' || val === oldVal) {
-        this.streamList = []
+        this.clearStreamList()
       }
 
-      this.pageReady = false
-
       if (this.recentValue === val) {
-        const rawFetch = this.streamList = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
-          limit: this.fetchLimit,
-          nextToken: null
-        }))
-        this.streamList = rawFetch.data.listSealedStreams.items
-        this.nextToken = rawFetch.data.listSealedStreams.nextToken
+        await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
       } else if (this.liveNowValue === val) {
-        const rawFetch = await API.graphql(graphqlOperation(ListLiveBriefStreams, {
-          limit: this.fetchLimit,
-          nextToken: null
-        }))
-        this.streamList = rawFetch.data.listLiveStreams.items
-        this.nextToken = rawFetch.data.listLiveStreams.nextToken
+        await this.fetchInitialLiveBriefStreams({ limit: this.fetchLimit, nextToken: null })
       } else if (this.byFaveUsersValue === val) {
-        const rawFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
-          limit: this.fetchLimit,
-          nextToken: null
-        }))
-        this.streamList = rawFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === this.authenticatedUser.id))
-        this.nextToken = rawFetch.data.listSealedStreams.nextToken
-
-        // If the filtered result is not enough fetch a new portion
-        /*
-        let countOfByFaveOthers = 0
-        while (countOfByFaveOthers < this.fetchLimit && this.nextToken != null) {
-          const rawNewFetch = await API.graphql(ListSealedBriefStreams, {
-            limit: this.fetchLimit,
-            nextToken: this.nextToken
-          }))
-
-          let newInitialFetch = rawNewFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === this.authenticatedUser.id))
-          this.streamList.push(...newInitialFetch)
-          this.nextToken = rawNewFetch.data.listSealedStreams.nextToken
-          countOfByFaveOthers += newInitialFetch.length
-        }
-        */
+        await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
       } else if (this.topRatedValue === val) {
         // popularism not implemeted yet :9
       }
-
-      this.pageReady = true
     }
   },
   computed: {
@@ -189,7 +154,9 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getSearchText: 'siteSearch/getSearchText',
       getIsSearchTextLongEnough: 'siteSearch/getIsSearchTextLongEnough',
-      getSearchSiteResults: 'siteSearch/getSearchResults'
+      getSearchSiteResults: 'siteSearch/getSearchResults',
+      getIsPageReady: 'getIsPageReady',
+      getNextStreamToken: 'getNextStreamToken'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
@@ -208,49 +175,37 @@ export default {
     },
     searchStreamTypeResults () {
       return this.searchResults.filter(r => r.__typename === this.streamTypeName)
+    },
+    nextToken () {
+      return this.getNextStreamToken
     }
   },
   methods: {
+    ...mapMutations({
+      setIsPageReady: 'setIsPageReady',
+      clearStreamList: 'clearStreamList'
+    }),
+    ...mapActions({
+      fetchInitialSealedBriefStreams: 'fetchInitialSealedBriefStreams',
+      fetchInitialLiveBriefStreams: 'fetchInitialLiveBriefStreams',
+      fetchInitialSealedBriefStreamsByFaveUsers: 'fetchInitialSealedBriefStreamsByFaveUsers',
+      fetchFurtherSealedBriefStreams: 'fetchFurtherSealedBriefStreams',
+      fetchFurtherLiveBriefStreams: 'fetchFurtherLiveBriefStreams',
+      fetchFurtherSealedBriefStreamsByFaveUsers: 'fetchFurtherSealedBriefStreamsByFaveUsers'
+    }),
     async infiniteHomeHandler ($state) {
       // if no new things to load, complete
       if (this.nextToken == null) {
         $state.complete()
       } else {
         if (this.footerEl === this.recentValue) {
-          const scrollEndNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
-            limit: this.fetchLimit,
-            nextToken: this.nextToken
-          }))
-          this.streamList.push(...scrollEndNewFetch.data.listSealedStreams.items)
-          this.nextToken = scrollEndNewFetch.data.listSealedStreams.nextToken
+          await this.fetchFurtherSealedBriefStreams({ limit: this.fetchLimit, nextToken: this.nextToken })
           $state.loaded()
         } else if (this.footerEl === this.liveNowValue) {
-          const scrollEndNewFetch = await API.graphql(graphqlOperation(ListLiveBriefStreams, {
-            limit: this.fetchLimit,
-            nextToken: this.nextToken
-          }))
-          this.streamList.push(...scrollEndNewFetch.data.listLiveStreams.items)
-          this.nextToken = scrollEndNewFetch.data.listLiveStreams.nextToken
+          await this.fetchFurtherLiveBriefStreams({ limit: this.fetchLimit, nextToken: this.nextToken })
           $state.loaded()
         } else if (this.footerEl === this.byFaveUsersValue) {
-          const scrollEndNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
-            limit: this.fetchLimit,
-            nextToken: this.nextToken
-          }))
-          this.streamList = scrollEndNewFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === this.authenticatedUser.id))
-          this.nextToken = scrollEndNewFetch.data.listSealedStreams.nextToke
-          // If the filtered result is not enough fetch a new portion
-          let countOfByFaveOthers = 0
-          while (countOfByFaveOthers < this.fetchLimit && this.nextToken != null) {
-            const rawNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
-              limit: this.fetchLimit,
-              nextToken: this.nextToken
-            }))
-            let newFetch = rawNewFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === this.authenticatedUser.id))
-            this.streamList.push(...newFetch)
-            this.nextToken = rawNewFetch.data.listSealedStreams.nextToken
-            countOfByFaveOthers += newFetch.length
-          }
+          await this.fetchFurtherSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: this.nextToken })
           $state.loaded()
         } else if (this.footerEl === this.topRatedValue) {
           // popularism not implemeted yet :9

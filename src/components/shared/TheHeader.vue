@@ -1,5 +1,13 @@
 <template>
-  <v-toolbar flat fixed app extended extension-height="2">
+<div>
+  <v-toolbar
+    clipped-left
+    flat
+    fixed
+    app
+    extended
+    extension-height="2"
+  >
     <!-- Progress bar to appear on route changes -->
     <v-progress-linear
       :active="isRouteChanging"
@@ -7,37 +15,92 @@
       slot="extension"
       :indeterminate="true">
     </v-progress-linear>
+    <!-- Toolbar side icon -->
+    <v-toolbar-side-icon
+      v-if="$vuetify.breakpoint.smAndDown && isHome"
+      @click.stop="drawer = !drawer"
+    ></v-toolbar-side-icon>
     <!-- Site name / logo -->
     <v-toolbar-title
       @click="onTitleClick"
       v-bind:style="{ 'cursor': 'pointer' }"
     >
-      <TheLogo v-if="$vuetify.breakpoint.smAndUp" class="logo" />
+      <TheLogo v-if="$vuetify.breakpoint.mdAndUp" class="logo" />
       <TheSmallLogo v-else class="logo" />
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <!-- Search Area -->
     <v-text-field
-      v-if="!isRouteChanging && isSearchBarVisible"
+      v-if="!isRouteChanging && isSearchBarVisible && $vuetify.breakpoint.mdAndUp"
       :placeholder="$t('common.toolbar.searchPlaceholder')"
       prepend-icon="search"
       hide-details single-line
       v-model="searchText"
       @input="search"
-    >
-    </v-text-field>
-    <v-spacer></v-spacer>
+    />
+    <v-btn
+      v-if="!isRouteChanging && isSearchBarVisible && $vuetify.breakpoint.smAndDown"
+      flat
+      icon
+      small
+    ><v-icon>search</v-icon></v-btn>
+    <v-spacer />
     <!-- Authenticated User Items -->
     <the-header-authenticated-user-items v-if="!isRouteChanging && authenticatedUser" />
     <!-- Unauthenticated User Items -->
     <the-header-unauthenticated-user-items v-else-if="!isRouteChanging && !authenticatedUser"/>
   </v-toolbar>
+  <v-navigation-drawer
+    clipped
+    v-model="drawer"
+    temporary
+    absolute
+    width = "200"
+    id = "drawer"
+  >
+    <v-list dense class="pt-0">
+      <v-list-tile
+        @click="onSealedStreamsClick"
+      >
+        <v-list-tile-action>
+          <v-icon color="teal">apps</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-sub-title class="teal--text">{{ $t('home.bottomnav.all') }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile
+        v-if="authenticatedUser"
+        @click="onLiveStreamsClick"
+      >
+        <v-list-tile-action>
+          <v-icon color="red darken-1">play_circle_outline</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-sub-title class="red--text text--darken-1">{{ $t('home.bottomnav.liveNow') }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile
+        v-if="authenticatedUser"
+        @click="onByFaveOtherStreamsClick"
+      >
+        <v-list-tile-action>
+          <v-icon color="purple darken-2">star</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-sub-title class="purple--text text--darken-2">{{ $t('home.bottomnav.byFaveUsers') }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list>
+  </v-navigation-drawer>
+</div>
 </template>
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import TheLogo from '@/assets/logo.svg'
 import TheSmallLogo from '@/assets/smlogo.svg'
+import { homeStreamFetchLength } from '@/utils/constants'
 import TheHeaderAuthenticatedUserItems from './items/TheHeaderAuthenticatedUserItems.vue'
 import TheHeaderUnauthenticatedUserItems from './items/TheHeaderUnauthenticatedUserItems.vue'
 
@@ -45,7 +108,9 @@ export default {
   name: 'Header',
   data () {
     return {
-      searchText: ''
+      searchText: '',
+      drawer: null,
+      fetchLimit: homeStreamFetchLength
     }
   },
   components: {
@@ -67,9 +132,11 @@ export default {
     isRouteChanging () {
       return this.getIsRouteChanging
     },
+    isHome () {
+      return this.getCurrentRoutePath === '/' // home page
+    },
     isSearchBarVisible () {
-      const isHome = this.getCurrentRoutePath === '/' // home page
-      return isHome && this.authenticatedUser != null
+      return this.isHome && this.authenticatedUser != null
     },
     searchResults () {
       return this.getSearchSiteResults
@@ -82,16 +149,34 @@ export default {
       clearSearchResults: 'siteSearch/clearSearchResults'
     }),
     ...mapActions({
-      setSearchSiteResults: 'siteSearch/search'
+      setSearchSiteResults: 'siteSearch/search',
+      fetchInitialSealedBriefStreams: 'fetchInitialSealedBriefStreams',
+      fetchInitialLiveBriefStreams: 'fetchInitialLiveBriefStreams',
+      fetchInitialSealedBriefStreamsByFaveUsers: 'fetchInitialSealedBriefStreamsByFaveUsers'
     }),
     async search () {
       await this.setSearchSiteResults(this.searchText)
     },
     onTitleClick () {
+      this.clearSearchComponents()
+      this.$router.push({ name: 'home' })
+    },
+    async onSealedStreamsClick () {
+      this.clearSearchComponents()
+      await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
+    },
+    async onLiveStreamsClick () {
+      this.clearSearchComponents()
+      await this.fetchInitialLiveBriefStreams({ limit: this.fetchLimit, nextToken: null })
+    },
+    async onByFaveOtherStreamsClick () {
+      this.clearSearchComponents()
+      await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
+    },
+    clearSearchComponents () {
       this.searchText = ''
       this.clearSearchText()
       this.clearSearchResults()
-      this.$router.push({ name: 'home' })
     }
   }
 }

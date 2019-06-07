@@ -1,6 +1,6 @@
 <template>
   <v-btn
-    large
+    :large="$vuetify.breakpoint.mdAndUp"
     dark
     fab
     fixed
