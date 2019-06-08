@@ -16,7 +16,7 @@
               <span class="grey--text headline">{{ stream.title }}</span>
             </v-toolbar-title>
             <v-spacer />
-            <v-chip @click="onAuthorProfileClick">
+            <v-chip @click="onAuthorProfileClick" small>
               <v-avatar v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null">
                 <img :src="streamUserProfilePictureObjectUrl" />
               </v-avatar>

@@ -8,7 +8,8 @@ const state = {
   siteNotificationTimeout: 3000,
   userInteractionResultNotificationText: null,
   userInteractionResultNotificationType: null,
-  userInteractionResultNotificationTimeout: 5000
+  userInteractionResultNotificationTimeout: 5000,
+  menuDrawer: false
 }
 
 const getters = {
@@ -57,6 +58,9 @@ const getters = {
       userInteractionResultNotificationNotificationType: state.userInteractionResultNotificationType,
       userInteractionResultNotificationTimeout: state.userInteractionResultNotificationTimeout
     }
+  },
+  getMenuDrawer (state) {
+    return state.menuDrawer
   }
 }
 
@@ -115,6 +119,12 @@ const mutations = {
   },
   setUserInteractionResultNotificationTimeout (state, userInteractionResultNotificationTimeout) {
     state.userInteractionResultNotificationTimeout = userInteractionResultNotificationTimeout
+  },
+  setMenuDrawer (state, menuDrawer) {
+    state.menuDrawer = menuDrawer
+  },
+  toggleMenuDrawer (state) {
+    state.menuDrawer = !(state.menuDrawer)
   }
 }
 

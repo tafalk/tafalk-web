@@ -1,5 +1,5 @@
 <template>
-<v-tabs left v-model="activeTabIndex">
+<v-tabs left v-model="activeTabIndex" show-arrows>
   <v-tabs-slider></v-tabs-slider>
   <v-tab href="#streams-tab">
     {{ $t('user.profilePage.tabs.streams') }}

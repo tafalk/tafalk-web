@@ -118,7 +118,6 @@ export default {
       topRatedValue: 'top-rated',
       liveNowValue: 'live-now',
       byFaveUsersValue: 'by-fave-users',
-      streamList: [],
       footerEl: null,
       fetchLimit: homeStreamFetchLength
     }
@@ -154,12 +153,16 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getSearchText: 'siteSearch/getSearchText',
       getIsSearchTextLongEnough: 'siteSearch/getIsSearchTextLongEnough',
+      getStreamList: 'getStreamList',
       getSearchSiteResults: 'siteSearch/getSearchResults',
       getIsPageReady: 'getIsPageReady',
       getNextStreamToken: 'getNextStreamToken'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
+    },
+    streamList () {
+      return this.getStreamList
     },
     searchText () {
       return this.getSearchText

@@ -1,6 +1,6 @@
 <template>
   <v-container grid-list-xl text-xs-center>
-    <v-layout row wrap>
+    <v-layout justify-center row wrap>
       <v-flex md6 sm12-and-down offset-md3>
         <v-form v-model="valid" @submit.prevent="onLoginBtnClick">
           <!-- Form Fields -->
@@ -37,7 +37,7 @@
           <a v-on:click="onForgotPassBtnClick">{{ $t('auth.login.forgotPasswordButtonText') }}</a>
         </v-form>
       </v-flex>
-      <v-flex md6 sm12-and-down offset-md3>
+      <v-flex offset-md3 md6 xs12>
         <v-divider></v-divider>
         <v-subheader>{{ $t('auth.login.signinSectionTitle') }}</v-subheader>
         <v-btn

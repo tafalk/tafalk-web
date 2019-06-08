@@ -12,7 +12,7 @@
   >
     {{ stream.title || $t('stream.noTitlePlaceholder') }}
     <v-spacer />
-    <v-chip @click.stop="onToAuthorProfileClick(stream.user.username)" class="text-lg-right">
+    <v-chip @click.stop="onToAuthorProfileClick(stream.user.username)" small>
       <v-avatar v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null" >
         <img
           :src="streamUserProfilePictureObjectUrl"
@@ -50,63 +50,30 @@
       </v-btn>
     </v-flex>
   </v-layout>
-  <v-card-actions class="pa-3 grey--text">
+  <v-card-actions class="pa-2 grey--text">
     <v-spacer />
     <div v-if="isSealed">
-      <v-btn
-        small
-        flat
-        color="grey"
-        disabled
-        class="text-lowercase"
-      >
-        <v-icon>airline_seat_flat</v-icon>&nbsp;{{ timeFromSealedToNow }}
-      </v-btn>
-      <v-btn
-        small
-        flat
-        color="grey"
-        disabled
-        class="text-lowercase"
-      >
-        <v-icon>timer</v-icon>&nbsp;{{ timeSpentForStream }}
-      </v-btn>
+      <span class="pa-2 grey--text caption">
+        <v-icon class="grey--text caption">airline_seat_flat</v-icon>{{ timeFromSealedToNow }}
+      </span>
+      <span class="pa-2 grey--text caption">
+        <v-icon class="grey--text caption">timer</v-icon>{{ timeSpentForStream }}
+      </span>
     </div>
     <div v-else>
-      <v-btn
-        small
-        flat
-        color="grey"
-        disabled
-      >
-        <v-icon>play_arrow</v-icon>&nbsp;Live Now
-      </v-btn>
-      <v-btn
-        small
-        flat
-        color="grey"
-        disabled
-        class="text-lowercase"
-      >
-        <v-icon>timer</v-icon>&nbsp;{{ timeSpentForStream }}
-      </v-btn>
+      <span class="pa-2 grey--text caption">
+        <v-icon class="grey--text caption">play_arrow</v-icon>&nbsp;Live Now
+      </span>
+      <span class="pa-2 grey--text caption">
+        <v-icon class="grey--text caption">timer</v-icon>&nbsp;{{ timeSpentForStream }}
+      </span>
     </div>
-    <v-btn
-      small
-      flat
-      color="grey"
-      disabled
-    >
-      <v-icon>bookmark</v-icon>&nbsp;{{ likeCount }}
-    </v-btn>
-    <v-btn
-      small
-      flat
-      color="grey"
-      disabled
-    >
-      <v-icon>comment</v-icon>&nbsp;{{ commentCount }}
-    </v-btn>
+    <span class="pa-2 grey--text caption">
+      <v-icon class="grey--text caption">bookmark</v-icon>&nbsp;{{ likeCount }}
+    </span>
+    <span class="pa-2 grey--text caption">
+      <v-icon class="grey--text caption">comment</v-icon>&nbsp;{{ commentCount }}
+    </span>
   </v-card-actions>
 </v-card>
 </template>

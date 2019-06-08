@@ -21,7 +21,7 @@
     &nbsp;
     -->
 
-    <!-- User Profile item -->
+    <!-- User Profile item (Large screen) -->
     <v-chip
       v-if="$vuetify.breakpoint.mdAndUp"
       @click="onProfileClick">
@@ -37,6 +37,7 @@
         {{authenticatedUser.username}}
     </v-chip>
 
+    <!-- User Profile item (Small screen) -->
     <v-avatar
       @click="onProfileClick"
       v-if="$vuetify.breakpoint.smAndDown && authenticatedUser.profilePictureObjectUrl"
@@ -55,26 +56,11 @@
         v-bind:style="userHue" />
     </v-avatar>
 
-    <v-menu :nudge-width="110">
-      <v-btn slot="activator" icon>
-        <v-icon>more_vert</v-icon>
-      </v-btn>
-      <v-list>
-        <v-list-tile @click="onAboutClick">
-          <v-list-tile-title>{{ $t('about.text') }}</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-title>{{ $t('theme.darkMode.text') }}</v-list-tile-title>
-          &nbsp;&nbsp;
-          <v-list-tile-action>
-            <v-switch color="primary" v-model="isDarkTheme"></v-switch>
-          </v-list-tile-action>
-        </v-list-tile>
-        <v-list-tile @click="setIsLogoutConfirmationDialogVisible(true)">
-          <v-list-tile-title>{{ $t('auth.logout.text') }}</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-menu>
+    <!-- Side drawer icon -->
+    <v-toolbar-side-icon
+      @click.stop="toggleDrawer"
+      clipped-right
+    ></v-toolbar-side-icon>
 
     <!-- The Logout confirmation dialog -->
     <logout-confirmation-dialog/>
@@ -82,7 +68,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import LogoutConfirmationDialog from '@/components/shared/dialogs/LogoutConfirmationDialog.vue'
 
 export default {
@@ -99,38 +85,26 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getAuthenticatedUser: 'authenticatedUser/getUser'
+      getAuthenticatedUser: 'authenticatedUser/getUser',
+      getMenuDrawer: 'shared/getMenuDrawer'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
     userHue () {
       return this.authenticatedUser.hue
-    }
-  },
-  created () {
-    this.isDarkTheme = this.authenticatedUser.theme === 'dark'
-  },
-  watch: {
-    async isDarkTheme (val) {
-      const selectedTheme = val ? 'dark' : 'light'
-
-      await this.setTheme({
-        userId: this.authenticatedUser.id,
-        theme: selectedTheme
-      })
+    },
+    menuDrawer () {
+      return this.menuDrawer
     }
   },
   methods: {
     ...mapMutations({
-      setIsLogoutConfirmationDialogVisible: 'authenticatedUser/dialog/setIsLogoutConfirmationDialogVisible'
+      setMenuDrawer: 'shared/setMenuDrawer',
+      toggleMenuDrawer: 'shared/toggleMenuDrawer'
     }),
-    ...mapActions({
-      setTheme: 'authenticatedUser/setTheme'
-    }),
-    onAboutClick () {
-      // redirect to metadata page
-      this.$router.push({ name: 'about' })
+    toggleDrawer () {
+      this.toggleMenuDrawer()
     },
     onProfileClick () {
       this.$router.push({ name: 'profile', params: { username: this.authenticatedUser.username } })

@@ -1,5 +1,5 @@
 <template>
-<v-container fluid grid-list-md>
+<v-container ma-0 pa-0>
   <!-- full page loader -->
   <v-layout v-if="!pageReady" align-center fill-height>
     <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
@@ -8,21 +8,23 @@
   </v-layout>
   <!-- regular content -->
   <v-layout row wrap v-else>
-    <v-flex d-flex xs12 sm12 offset-md2 md8>
+    <v-flex d-flex xs12 offset-md2 md8>
       <div v-if="isProfileAllowed">
-        <v-card>
+        <v-card
+          flat
+        >
           <!-- edit profile button -->
           <tafalk-profile-edit-speed-dial v-if="isVisitingOwnProfile" />
 
-          <v-container fluid grid-list-md>
+          <v-container fluid grid-list-xs>
             <v-layout row wrap>
-              <v-flex d-flex xs12 sm4 md4>
-                <v-container pa-3 fluid grid-list-md>
+              <v-flex d-flex xs12 md4>
+                <v-container pt-3 fluid grid-list-xs>
                   <v-layout align-center column>
-                    <v-avatar v-if="authenticatedUser && visitedUser.profilePictureObjectUrl != null" pt-1 size="200">
+                    <v-avatar v-if="authenticatedUser && visitedUser.profilePictureObjectUrl != null" pt-1 size="150">
                       <img :src="visitedUser.profilePictureObjectUrl" />
                     </v-avatar>
-                    <v-avatar v-else pt-1 size="200">
+                    <v-avatar v-else pt-1 size="150">
                       <img
                         src="@/assets/default-user-avatar.jpg"
                         alt="Woolf"
@@ -38,7 +40,7 @@
                   </v-layout>
                 </v-container>
               </v-flex>
-              <v-flex d-flex xs12 sm4 md4>
+              <v-flex d-flex xs12 md4>
                 <v-card-title primary-title>
                   <div v-if="visitedUser != null">
                     <div class="display-1 grey--text">@{{visitedUser.username}}</div><br/>
@@ -47,7 +49,7 @@
                   </div>
                 </v-card-title>
               </v-flex>
-              <v-flex d-flex xs12 sm4 md4>
+              <v-flex d-flex xs12 md4>
                 <v-card-title primary-title>
                   <div>
                     <span v-if="visitedUserAccountCreationDateStr" class="grey--text"><v-icon>assignment_ind</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</span><br/>

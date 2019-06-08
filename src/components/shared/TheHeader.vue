@@ -1,7 +1,6 @@
 <template>
 <div>
   <v-toolbar
-    clipped-left
     flat
     fixed
     app
@@ -15,13 +14,23 @@
       slot="extension"
       :indeterminate="true">
     </v-progress-linear>
-    <!-- Toolbar side icon -->
-    <v-toolbar-side-icon
-      v-if="$vuetify.breakpoint.smAndDown && isHome"
-      @click.stop="drawer = !drawer"
-    ></v-toolbar-side-icon>
+
+    <!-- Mobile search (removes all on small screens when on ) -->
+    <v-text-field
+      v-if="isMobileSearchHeaderOn && $vuetify.breakpoint.smAndDown"
+      single-line
+      clearable
+      prepend-icon="arrow_back"
+      :placeholder="$t('common.toolbar.searchPlaceholder')"
+      v-model="searchText"
+      @input="search"
+      @click:prepend="isMobileSearchHeaderOn = false"
+      @click:clear="searchText = ''"
+    ></v-text-field>
+
     <!-- Site name / logo -->
     <v-toolbar-title
+      v-if="!isMobileSearchHeaderOn"
       @click="onTitleClick"
       v-bind:style="{ 'cursor': 'pointer' }"
     >
@@ -34,32 +43,39 @@
       v-if="!isRouteChanging && isSearchBarVisible && $vuetify.breakpoint.mdAndUp"
       :placeholder="$t('common.toolbar.searchPlaceholder')"
       prepend-icon="search"
-      hide-details single-line
+      hide-details
+      single-line
       v-model="searchText"
       @input="search"
     />
     <v-btn
-      v-if="!isRouteChanging && isSearchBarVisible && $vuetify.breakpoint.smAndDown"
+      v-if="!isRouteChanging && isSearchBarVisible && $vuetify.breakpoint.smAndDown && !isMobileSearchHeaderOn"
       flat
       icon
       small
-    ><v-icon>search</v-icon></v-btn>
+      @click="onMobileSearchHeaderOnClick"
+    >
+      <v-icon>search</v-icon>
+    </v-btn>
     <v-spacer />
     <!-- Authenticated User Items -->
-    <the-header-authenticated-user-items v-if="!isRouteChanging && authenticatedUser" />
+    <the-header-authenticated-user-items v-if="!isRouteChanging && authenticatedUser && !isMobileSearchHeaderOn" />
     <!-- Unauthenticated User Items -->
-    <the-header-unauthenticated-user-items v-else-if="!isRouteChanging && !authenticatedUser"/>
+    <the-header-unauthenticated-user-items v-else-if="!isRouteChanging && !authenticatedUser && !isMobileSearchHeaderOn"/>
   </v-toolbar>
   <v-navigation-drawer
     clipped
-    v-model="drawer"
+    right
+    v-model="menuDrawer"
     temporary
     absolute
     width = "200"
     id = "drawer"
   >
     <v-list dense class="pt-0">
+      <!-- Mobile only stream filters -->
       <v-list-tile
+        v-if="$vuetify.breakpoint.smAndDown"
         @click="onSealedStreamsClick"
       >
         <v-list-tile-action>
@@ -70,7 +86,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
-        v-if="authenticatedUser"
+        v-if="$vuetify.breakpoint.smAndDown && authenticatedUser"
         @click="onLiveStreamsClick"
       >
         <v-list-tile-action>
@@ -81,7 +97,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
-        v-if="authenticatedUser"
+        v-if="$vuetify.breakpoint.smAndDown && authenticatedUser"
         @click="onByFaveOtherStreamsClick"
       >
         <v-list-tile-action>
@@ -90,6 +106,28 @@
         <v-list-tile-content>
           <v-list-tile-sub-title class="purple--text text--darken-2">{{ $t('home.bottomnav.byFaveUsers') }}</v-list-tile-sub-title>
         </v-list-tile-content>
+      </v-list-tile>
+      <v-divider v-if="$vuetify.breakpoint.smAndDown"/>
+      <!-- Site meta -->
+      <v-list-tile
+        @click="onAboutClick"
+      >
+        <v-list-tile-title>{{ $t('about.text') }}</v-list-tile-title>
+      </v-list-tile>
+      <v-list-tile
+        v-if="authenticatedUser"
+      >
+        <v-list-tile-title>{{ $t('theme.darkMode.text') }}</v-list-tile-title>
+        &nbsp;&nbsp;
+        <v-list-tile-action>
+          <v-switch color="primary" v-model="isDarkTheme"></v-switch>
+        </v-list-tile-action>
+      </v-list-tile>
+      <v-list-tile
+        v-if="authenticatedUser"
+        @click="setIsLogoutConfirmationDialogVisible(true)"
+      >
+        <v-list-tile-title>{{ $t('auth.logout.text') }}</v-list-tile-title>
       </v-list-tile>
     </v-list>
   </v-navigation-drawer>
@@ -109,8 +147,9 @@ export default {
   data () {
     return {
       searchText: '',
-      drawer: null,
-      fetchLimit: homeStreamFetchLength
+      fetchLimit: homeStreamFetchLength,
+      isDarkTheme: false,
+      isMobileSearchHeaderOn: false
     }
   },
   components: {
@@ -119,12 +158,17 @@ export default {
     TheHeaderAuthenticatedUserItems,
     TheHeaderUnauthenticatedUserItems
   },
+  created () {
+    if (!this.authenticatedUser) return
+    this.isDarkTheme = this.authenticatedUser.theme === 'dark'
+  },
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getCurrentRoutePath: 'route/getCurrentRoutePath',
       getIsRouteChanging: 'route/getIsRouteChanging',
-      getSearchSiteResults: 'siteSearch/getSearchResults'
+      getSearchSiteResults: 'siteSearch/getSearchResults',
+      getMenuDrawer: 'shared/getMenuDrawer'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
@@ -140,19 +184,40 @@ export default {
     },
     searchResults () {
       return this.getSearchSiteResults
+    },
+    menuDrawer: {
+      get: function () {
+        return this.getMenuDrawer
+      },
+      set: function (newVal) {
+        this.setMenuDrawer(newVal)
+      }
+    }
+  },
+  watch: {
+    async isDarkTheme (val) {
+      const selectedTheme = val ? 'dark' : 'light'
+
+      await this.setTheme({
+        userId: this.authenticatedUser.id,
+        theme: selectedTheme
+      })
     }
   },
   methods: {
     ...mapMutations({
       setAuthenticatedUser: 'authenticatedUser/setUser',
       clearSearchText: 'siteSearch/clearSearchText',
-      clearSearchResults: 'siteSearch/clearSearchResults'
+      clearSearchResults: 'siteSearch/clearSearchResults',
+      setIsLogoutConfirmationDialogVisible: 'authenticatedUser/dialog/setIsLogoutConfirmationDialogVisible',
+      setMenuDrawer: 'shared/setMenuDrawer'
     }),
     ...mapActions({
       setSearchSiteResults: 'siteSearch/search',
       fetchInitialSealedBriefStreams: 'fetchInitialSealedBriefStreams',
       fetchInitialLiveBriefStreams: 'fetchInitialLiveBriefStreams',
-      fetchInitialSealedBriefStreamsByFaveUsers: 'fetchInitialSealedBriefStreamsByFaveUsers'
+      fetchInitialSealedBriefStreamsByFaveUsers: 'fetchInitialSealedBriefStreamsByFaveUsers',
+      setTheme: 'authenticatedUser/setTheme'
     }),
     async search () {
       await this.setSearchSiteResults(this.searchText)
@@ -161,17 +226,26 @@ export default {
       this.clearSearchComponents()
       this.$router.push({ name: 'home' })
     },
+    onAboutClick () {
+      this.$router.push({ name: 'about' })
+    },
+    onMobileSearchHeaderOnClick () {
+      this.isMobileSearchHeaderOn = true
+    },
     async onSealedStreamsClick () {
       this.clearSearchComponents()
       await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
+      this.setMenuDrawer(false)
     },
     async onLiveStreamsClick () {
       this.clearSearchComponents()
       await this.fetchInitialLiveBriefStreams({ limit: this.fetchLimit, nextToken: null })
+      this.setMenuDrawer(false)
     },
     async onByFaveOtherStreamsClick () {
       this.clearSearchComponents()
       await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
+      this.setMenuDrawer(false)
     },
     clearSearchComponents () {
       this.searchText = ''

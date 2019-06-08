@@ -2,7 +2,8 @@
     <v-card
       hover
       :max-height="maxHeight"
-      @click.native="onToStreamButtonClick">
+      @click.native="onToStreamButtonClick"
+    >
         <v-card-title dense primary class="title grey--text">
           {{ stream.title || $t('stream.noTitlePlaceholder') }}
           <v-spacer />

@@ -7,7 +7,7 @@
   <v-card-title dense primary class="title grey--text">
     {{ stream.title || $t('stream.noTitlePlaceholder') }}
     <v-spacer />
-    <v-chip @click.stop="onToAuthorProfileClick(stream.user.username)">
+    <v-chip @click.stop="onToAuthorProfileClick(stream.user.username)" small>
       <v-avatar v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null" >
         <img
           :src="streamUserProfilePictureObjectUrl"

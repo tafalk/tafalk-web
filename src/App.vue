@@ -2,7 +2,7 @@
   <v-app :dark="userTheme === 'dark'">
     <tafalk-header/>
     <v-content>
-      <v-container fluid full-height>
+      <v-container fluid full-height mt-4 pa-0>
         <router-view/>
         <!-- site messages -->
         <tafalk-site-notification/>

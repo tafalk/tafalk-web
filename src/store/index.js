@@ -108,12 +108,12 @@ export default new Vuex.Store({
     async fetchInitialSealedBriefStreamsByFaveUsers ({ getters, commit }, payload) {
       commit('setIsPageReady', false)
       try {
-        const rawFetch = await API.graphql(graphqlOperation(ListLiveBriefStreams, payload))
+        const rawFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
 
         commit('setStreamList', rawFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === getters['authenticatedUser/getUser'].id)))
         commit('setNextStreamToken', rawFetch.data.listSealedStreams.nextToken)
       } catch (err) {
-        logger.error('error fetching sealed streams by fave others', JSON.stringify(err))
+        logger.error('error fetching sealed streams by fave others', err)
       } finally {
         commit('setIsPageReady', true)
       }
@@ -121,7 +121,7 @@ export default new Vuex.Store({
     async fetchFurtherSealedBriefStreamsByFaveUsers ({ getters, commit }, payload) {
       try {
         // commit('setIsPageReady', false)
-        const scrollEndNewFetch = await API.graphql(graphqlOperation(ListLiveBriefStreams, payload))
+        const scrollEndNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
 
         commit('setStreamList', scrollEndNewFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === getters['authenticatedUser/getUser'].id)))
         commit('setNextStreamToken', scrollEndNewFetch.data.listSealedStreams.nextToken)
@@ -139,7 +139,7 @@ export default new Vuex.Store({
           countOfByFaveOthers += newFetch.length
         }
       } catch (err) {
-        logger.error('error fetching sealed streams by fave others', JSON.stringify(err))
+        logger.error('error fetching sealed streams by fave others', err)
       } finally {
         // commit('setIsPageReady', true)
       }
