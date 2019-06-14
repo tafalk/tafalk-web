@@ -2,8 +2,7 @@
   <v-dialog v-model="getIsPrivacyPolicyDialogVisible" max-width="80%">
     <v-card>
       <v-card-title class="title">{{ $t('agreements.privacyPolicy.title') }}</v-card-title>
-      <v-card-text v-for="n in 5" :key="n">
-        {{ $t('agreements.privacyPolicy.body') }}
+      <v-card-text v-html="content">
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -18,13 +17,23 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'ThePrivacyPolicyDialog',
   data () {
     return {
+      content: null,
+      s3PrivacyPolicyFolder: 'privacy-policy'
     }
+  },
+  created () {
+    console.log(`Current vue-i18n language is: ${this.$i18n.locale}`)
+    this.$httpSitePoliciesStorage.get(`${this.s3PrivacyPolicyFolder}/${this.$i18n.locale}.html`).then(resp => {
+      this.content = resp.data
+    }).catch(err => {
+      this.setNewSiteError(err.message || err)
+    })
   },
   computed: {
     ...mapGetters({
@@ -34,6 +43,9 @@ export default {
   methods: {
     ...mapMutations({
       setIsPrivacyPolicyDialogVisible: 'shared/setIsPrivacyPolicyDialogVisible'
+    }),
+    ...mapActions({
+      setNewSiteError: 'shared/setNewSiteError'
     })
   }
 

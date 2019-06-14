@@ -6,14 +6,21 @@ import store from './store'
 import './registerServiceWorker'
 import i18n from './i18n'
 import { GoogleRecaptchaV3Config, GoogleAnalyticsConfig, AwsConfig } from './config'
+import { GetPolicyS3BucketRootUrl } from './utils/generators'
 
 import Amplify from 'aws-amplify'
 
+import axios from 'axios'
 import InfiniteLoading from 'vue-infinite-loading'
 import { VueReCaptcha } from 'vue-recaptcha-v3'
 import VueAnalytics from 'vue-analytics'
 
 Vue.config.productionTip = false
+
+// Instance Property for axios base objects
+Vue.prototype.$httpSitePoliciesStorage = axios.create({
+  baseURL: GetPolicyS3BucketRootUrl()
+})
 
 // Plugins
 Vue.use(InfiniteLoading, {
