@@ -16,6 +16,7 @@ const GetStoreUserWithCognitoIdentityId = async (dbUser, cognitoIdentityId) => {
     allowDirectMesages: dbUser.allowDirectMesages,
     site: dbUser.site,
     theme: dbUser.theme,
+    language: dbUser.language,
     createdAt: dbUser.createdAt,
     lastAccess: dbUser.lastAccess,
     hue: GetUserHue(dbUser.username)
@@ -42,6 +43,7 @@ const GetStoreUser = async dbUser => {
     allowDirectMesages: dbUser.allowDirectMesages,
     site: dbUser.site,
     theme: dbUser.theme,
+    language: dbUser.language,
     createdAt: dbUser.createdAt,
     lastAccess: dbUser.lastAccess,
     hue: GetUserHue(dbUser.username)

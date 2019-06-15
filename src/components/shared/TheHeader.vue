@@ -109,11 +109,15 @@
       </v-list-tile>
       <v-divider v-if="$vuetify.breakpoint.smAndDown"/>
       <!-- Site meta -->
+      <!-- Language -->
       <v-list-tile
-        @click="onAboutClick"
+        v-if="authenticatedUser"
+        @click="onShowLanguageChooseDialogClick"
       >
-        <v-list-tile-title>{{ $t('about.text') }}</v-list-tile-title>
+        <v-list-tile-title>{{ $t('siteLanguage.text') }}</v-list-tile-title>
       </v-list-tile>
+
+      <!-- Dark Mode Switch -->
       <v-list-tile
         v-if="authenticatedUser"
       >
@@ -123,6 +127,15 @@
           <v-switch color="primary" v-model="isDarkTheme"></v-switch>
         </v-list-tile-action>
       </v-list-tile>
+
+      <!-- About -->
+      <v-list-tile
+        @click="onAboutClick"
+      >
+        <v-list-tile-title>{{ $t('about.text') }}</v-list-tile-title>
+      </v-list-tile>
+
+      <!-- Log Out -->
       <v-list-tile
         v-if="authenticatedUser"
         @click="setIsLogoutConfirmationDialogVisible(true)"
@@ -210,6 +223,7 @@ export default {
       clearSearchText: 'siteSearch/clearSearchText',
       clearSearchResults: 'siteSearch/clearSearchResults',
       setIsLogoutConfirmationDialogVisible: 'authenticatedUser/dialog/setIsLogoutConfirmationDialogVisible',
+      setIsLanguageChooseDialogVisible: 'authenticatedUser/dialog/setIsLanguageChooseDialogVisible',
       setMenuDrawer: 'shared/setMenuDrawer'
     }),
     ...mapActions({
@@ -228,6 +242,10 @@ export default {
     },
     onAboutClick () {
       this.$router.push({ name: 'about' })
+    },
+    onShowLanguageChooseDialogClick () {
+      this.setMenuDrawer(false)
+      this.setIsLanguageChooseDialogVisible(true)
     },
     onMobileSearchHeaderOnClick () {
       this.isMobileSearchHeaderOn = true

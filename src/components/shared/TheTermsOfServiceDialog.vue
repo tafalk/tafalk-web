@@ -28,7 +28,6 @@ export default {
     }
   },
   created () {
-    console.log(`Current vue-i18n language is: ${this.$i18n.locale}`)
     this.$httpSitePoliciesStorage.get(`${this.s3TermsOfUseFolder}/${this.$i18n.locale}.html`).then(resp => {
       this.content = resp.data
     }).catch(err => {

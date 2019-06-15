@@ -151,7 +151,7 @@ export default {
       try {
         this.searchLocations(newVal)
       } catch (err) {
-        logger.error('An error occurred while stopping watching the user')
+        logger.error('An error occurred while stopping watching the user', err)
         this.setNewSiteError(err.message || err)
       } finally {
         this.isLocationDataLoading = false

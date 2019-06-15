@@ -56,4 +56,9 @@ export const streamPositionOptions = [
   { displayValue: i18n.t('stream.pouringMetadata.position.walking'), backendValue: 'Walking' }
 ]
 
+export const languageOptions = [
+  { displayValue: 'Default (Browser Language)', backendValue: '' },
+  { displayValue: 'English', backendValue: 'en' }
+]
+
 export const geocodingRootUrl = 'https://geocoder.tilehosting.com'

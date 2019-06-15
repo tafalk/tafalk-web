@@ -1,5 +1,5 @@
 import { API, graphqlOperation } from 'aws-amplify'
-import { UpdateUserTheme } from '../../graphql/Profile'
+import { UpdateUserTheme, UpdateUserLanguage } from '../../graphql/Profile'
 import dialog from './dialog'
 import { themeOptions } from '../../utils/constants'
 
@@ -27,6 +27,9 @@ const mutations = {
   setTheme (state, payload) {
     state.user.theme = payload
   },
+  setLanguage (state, payload) {
+    state.user.language = payload
+  },
   setBasicInfo (state, payload) {
     // state.user.preferredName = payload.preferredName
     state.user.bio = payload.bio
@@ -50,6 +53,14 @@ const actions = {
 
     // commit to this module
     commit('setTheme', validatedTheme)
+  },
+  async setLanguage ({ commit }, payload) {
+    // Update User DB Table
+    await API.graphql(graphqlOperation(UpdateUserLanguage, {
+      userId: payload.userId,
+      language: payload.language || null
+    }))
+    commit('setLanguage', payload.language)
   }
 }
 

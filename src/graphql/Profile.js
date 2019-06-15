@@ -21,6 +21,7 @@ export const GetUserProfileData = gql`query GetUserProfileData($username: String
     profilePrivacy
     allowDirectMesages
     site
+    language
     createdAt
     lastAccess
     userInteractions {
@@ -150,6 +151,16 @@ export const UpdateUserTheme = gql`mutation UpdateUserTheme($userId: ID!, $theme
   }){
     id
     theme
+  }
+}`
+
+export const UpdateUserLanguage = gql`mutation UpdateUserTheme($userId: ID!, $language: String) {
+  updateUser(input: {
+    id: $userId
+    language: $language
+  }){
+    id
+    language
   }
 }`
 

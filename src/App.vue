@@ -39,6 +39,9 @@ export default {
   },
   created () {
     this.setNowTime()
+    if (this.authenticatedUser && this.authenticatedUser.language) {
+      this.$i18n.locale = this.authenticatedUser.language
+    }
   },
   computed: {
     ...mapGetters({

@@ -399,8 +399,6 @@ export default {
       }
     },
     async onPositionChange () {
-      logger.info('Position changed:')
-      logger.info(JSON.stringify(this.positionModel))
       if (this.body == null || this.body.length === 0) {
         return
       }
