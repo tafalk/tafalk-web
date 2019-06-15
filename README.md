@@ -32,8 +32,8 @@ Some
 
  So, the following should be added to CircleCI environment variables beforehand:
 
-|  **Environment Variable Key**            | **Environment Variable Value**                                  |
-|--------------------------------------|-------------------------------------------------------------|
+|  **Environment Variable Key**        | **Environment Variable Value**                                |
+|--------------------------------------|---------------------------------------------------------------|
 | AWS_ACCESS_KEY_ID                    | `{YOUR_AWS_ACCESS_KEY_ID}`                                    |
 | AWS_SECRET_ACCESS_KEY                | `{SECRET_KEY_FOR_THE_ACCESS_KEY}`                             |
 | VUE_APP_AWS_REGION                   | `eu-central-1` *or another region*                            |
@@ -43,7 +43,8 @@ Some
 | VUE_APP_COGNITO_USER_POOL_CLIENT_ID  | `xxxxxxxxxxxxxxxxxxxxxxxxxx`                                  |
 | VUE_APP_COGNITO_USER_POOL_ID         | `{region}_xxxxxxxxx`                                          |
 | VUE_APP_GOOGLE_ANALYTICS_TRACKING_ID | `XX-xxxxxxxxx-x`                                              |
-| VUE_APP_GOOGLE_RECAPTCHA_V3_SITE_KEY | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`                   |
+| VUE_APP_GOOGLE_RECAPTCHA_V3_SITE_KEY | `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`                    |
 | VUE_APP_MAPTILER_GEOCODER_API_KEY    | `xxxxxxxxxxxxxxxxxxxx`                                        |
-| VUE_APP_S3_USER_STORAGE_BUCKET       | `{USER_STORAGE_BUCKET}`                                       |
-| VUE_APP_S3_HOSTING_BUCKET            | `{HOSTING_BUCKET}`                                            |
+| VUE_APP_S3_USER_STORAGE_BUCKET       | `{USER_STORAGE_BUCKET_NAME}`                                  |
+| VUE_APP_S3_SITE_POLICIES_BUCKET      | `{SITE_POLICIES_BUCKET_NAME}`                                 |
+| VUE_APP_S3_HOSTING_BUCKET            | `{HOSTING_BUCKET_NAME}`                                       |

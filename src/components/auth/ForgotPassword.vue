@@ -188,7 +188,6 @@ export default {
         }))
 
         if (!validationGraphqlResult.data.getRecaptchaTokenResult.success) {
-          console.log('It\'s robot or so')
           throw new Error('Could not verify you as human')
         }
 

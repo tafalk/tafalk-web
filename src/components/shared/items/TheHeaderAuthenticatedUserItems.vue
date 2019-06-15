@@ -64,24 +64,28 @@
 
     <!-- The Logout confirmation dialog -->
     <logout-confirmation-dialog/>
+
+    <!-- The user language edit dialog -->
+    <user-language-edit-dialog/>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import LogoutConfirmationDialog from '@/components/shared/dialogs/LogoutConfirmationDialog.vue'
+import UserLanguageEditDialog from '@/components/user/dialogs/UserLanguageEditDialog.vue'
 
 export default {
   name: 'TheHeaderAuthenticatedUserItems',
   data () {
     return {
-      isDarkTheme: false,
       userUnreadNotificationCount: 3,
       userUnreadMessageCount: 3
     }
   },
   components: {
-    LogoutConfirmationDialog
+    LogoutConfirmationDialog,
+    UserLanguageEditDialog
   },
   computed: {
     ...mapGetters({

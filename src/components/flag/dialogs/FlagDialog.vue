@@ -299,7 +299,6 @@ export default {
       this.isFlagLoading = true
       try {
         if (this.flag.type === 'stream') {
-          console.log('flagging stream ' + this.flagId)
           // stream flag
           const flagGraphqlResult = await API.graphql(graphqlOperation(CreateStreamFlag, {
             streamId: this.flag.streamId,

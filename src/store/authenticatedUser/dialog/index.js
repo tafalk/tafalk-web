@@ -3,7 +3,8 @@ const state = {
   isUserInfoEditDialogVisible: false,
   isUserPrivacyEditDialogVisible: false,
   isUserAccountDeleteConfirmationDialogVisible: false,
-  isUserProfilePictureChangeDialogVisible: false
+  isUserProfilePictureChangeDialogVisible: false,
+  isLanguageChooseDialogVisible: false
 }
 
 const getters = {
@@ -21,6 +22,9 @@ const getters = {
   },
   getIsUserProfilePictureChangeDialogVisible (state) {
     return state.isUserProfilePictureChangeDialogVisible
+  },
+  getIsLanguageChooseDialogVisible (state) {
+    return state.isLanguageChooseDialogVisible
   }
 }
 
@@ -39,6 +43,9 @@ const mutations = {
   },
   setIsUserProfilePictureChangeDialogVisible (state, isUserProfilePictureChangeDialogVisible) {
     state.isUserProfilePictureChangeDialogVisible = isUserProfilePictureChangeDialogVisible
+  },
+  setIsLanguageChooseDialogVisible (state, isLanguageChooseDialogVisible) {
+    state.isLanguageChooseDialogVisible = isLanguageChooseDialogVisible
   }
 }
 

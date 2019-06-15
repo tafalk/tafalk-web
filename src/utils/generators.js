@@ -1,6 +1,10 @@
 import { geocodingRootUrl } from './constants'
 import { MapTilerGeooderConfig } from '../config'
 
+const GetPolicyS3BucketRootUrl = () => {
+  return `https://${process.env.VUE_APP_S3_SITE_POLICIES_BUCKET}.s3.${process.env.VUE_APP_AWS_REGION}.amazonaws.com/`
+}
+
 const GenerateProfilePictureFileName = (fileObject, userId) => {
   const profilePicSuffix = '_profilepic'
   const fileExtension = fileObject.name.split('.').pop()
@@ -79,6 +83,7 @@ const GenerateGeocoderRequestLink = (searchText) => {
 }
 
 export {
+  GetPolicyS3BucketRootUrl,
   GenerateProfilePictureFileName,
   GenerateUuid4,
   GetUserHue,
