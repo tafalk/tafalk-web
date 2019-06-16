@@ -4,15 +4,15 @@
       <v-toolbar dense flat>
         <v-toolbar-title
           v-if="processState === 'saved'"
-        ><span class="grey--text"><v-icon>check_circle_outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
+        ><span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
         </v-toolbar-title>
         <v-toolbar-title
           v-else-if="processState === 'saving'"
-        ><span class="grey--text"><v-icon>cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
+        ><span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
         </v-toolbar-title>
         <v-toolbar-title
           v-else-if="processState === 'error'"
-        ><span class="grey--text"><v-icon>highlight_off</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
+        ><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <span class="grey--text">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>

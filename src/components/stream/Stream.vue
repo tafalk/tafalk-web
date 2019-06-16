@@ -49,7 +49,7 @@
               :color="shareButtonColor"
               @click="onShowShareStreamLinkDialog"
             >
-              <v-icon>share</v-icon>
+              <v-icon>mdi-share-variant</v-icon>
             </v-btn>
             &nbsp;
             <!-- Bookmark -->
@@ -63,7 +63,7 @@
               :disabled="isLikeLoading"
               @click="onLikeClick"
             >
-                <v-icon>bookmark_border</v-icon>&nbsp;{{ likeCount }}
+                <v-icon>mdi-bookmark-outline</v-icon>&nbsp;{{ likeCount }}
             </v-btn>
             <v-btn
               v-if="isSealed && authenticatedUserLikeId"
@@ -75,7 +75,7 @@
               :disabled="isLikeLoading"
               @click="onRemoveLikeClick"
             >
-                <v-icon>bookmark</v-icon>&nbsp;{{ likeCount }}
+                <v-icon>mdi-bookmark</v-icon>&nbsp;{{ likeCount }}
             </v-btn>
             &nbsp;
             <!-- Comment -->
@@ -87,7 +87,7 @@
               :color="commentButtonColor"
               @click="onCommentTextAreaToggleShowClick"
             >
-              <v-icon>comment</v-icon>
+              <v-icon>mdi-comment</v-icon>
             </v-btn>
             &nbsp;
             <!-- Flag -->
@@ -99,7 +99,7 @@
               :color="flagButtonColor"
               @click.stop="onFlagDialogShowClick"
             >
-              <v-icon>outlined_flag</v-icon>
+              <v-icon>mdi-flag-variant-outline</v-icon>
             </v-btn>
             <v-btn
               v-else-if="authenticatedUserFlagId"
@@ -109,7 +109,7 @@
               :color="flagButtonColor"
               @click.stop="onRetractFlagDialogShowClick"
             >
-              <v-icon>flag</v-icon>
+              <v-icon>mdi-flag-variant</v-icon>
             </v-btn>
           </v-card-actions>
           <!-- Add-comment sliding box -->

@@ -52,9 +52,9 @@
               <v-flex d-flex xs12 md4>
                 <v-card-title primary-title>
                   <div>
-                    <span v-if="visitedUserAccountCreationDateStr" class="grey--text"><v-icon>assignment_ind</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</span><br/>
-                    <span v-if="visitedUser != null" class="grey--text"><v-icon>location_on</v-icon>&nbsp;{{visitedUserLocationValue}}</span><br/>
-                    <span v-if="visitedUser != null" class="grey--text"><v-icon>lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</span><br/>
+                    <span v-if="visitedUserAccountCreationDateStr" class="grey--text"><v-icon>mdi-account-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</span><br/>
+                    <span v-if="visitedUser != null" class="grey--text"><v-icon>mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</span><br/>
+                    <span v-if="visitedUser != null" class="grey--text"><v-icon>mdi-lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</span><br/>
                   </div>
                 </v-card-title>
               </v-flex>

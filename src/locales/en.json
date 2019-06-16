@@ -237,7 +237,7 @@
       "defaultLocation": "Somewhere",
       "tabs": {
         "streams": "Streams",
-        "likedStreams": "Likes",
+        "likedContents": "Likes",
         "likedUsers": "Faves",
         "removeLikeButtonText": "Unlike",
         "removeLikeUserButtonText": "Unfave"

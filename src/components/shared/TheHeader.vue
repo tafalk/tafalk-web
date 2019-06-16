@@ -55,7 +55,7 @@
       small
       @click="onMobileSearchHeaderOnClick"
     >
-      <v-icon>search</v-icon>
+      <v-icon>mdi-magnify</v-icon>
     </v-btn>
     <v-spacer />
     <!-- Authenticated User Items -->

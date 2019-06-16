@@ -5,7 +5,7 @@
     {{ $t('user.profilePage.tabs.streams') }}
   </v-tab>
   <v-tab href="#liked-streams-tab">
-    {{ $t('user.profilePage.tabs.likedStreams') }}
+    {{ $t('user.profilePage.tabs.likedContents') }}
   </v-tab>
   <v-tab href="#liked-users-tab">
     {{ $t('user.profilePage.tabs.likedUsers') }}
@@ -112,7 +112,7 @@ export default {
 
     const initialFetchLikedStreams = visitedProfileLikedStreamsDbResult.items.map(item => item.stream)
     this.likedStreamFetchNextToken = visitedProfileLikedStreamsDbResult.nextToken
-    this.likedStreams.push(...initialFetchLikedStreams)
+    this.likedContents.push(...initialFetchLikedStreams)
 
     // load liked users
     const graphqlVisitedProfileOutboundInteractedUsersResult = await graphqlVisitedProfileOutboundInteractedUsersReq
@@ -171,7 +171,7 @@ export default {
         const newPaginatedLikeByUserType = scrollLikeEndNewFetchResult.data.listLikesByUser
 
         this.likedStreamFetchNextToken = newPaginatedLikeByUserType.nextToken
-        this.likedStreams.push(...newPaginatedLikeByUserType.items.map(item => item.stream))
+        this.likedContents.push(...newPaginatedLikeByUserType.items.map(item => item.stream))
 
         $state.loaded()
       }

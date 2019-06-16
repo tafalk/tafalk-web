@@ -80,7 +80,7 @@
     >
       <v-btn flat color="teal" :value=recentValue>
         <span>{{ $t('home.bottomnav.all') }}</span>
-        <v-icon>apps</v-icon>
+        <v-icon>mdi-apps</v-icon>
       </v-btn>
       <!--
       <v-btn flat color="deep-orange lighten-1" :value=topRatedValue>
@@ -90,11 +90,11 @@
       -->
       <v-btn v-if="authenticatedUser" flat color="red darken-1" :value=liveNowValue>
         <span>{{ $t('home.bottomnav.liveNow') }}</span>
-        <v-icon>play_circle_outline</v-icon>
+        <v-icon>mdi-play-circle-outline</v-icon>
       </v-btn>
       <v-btn v-if="authenticatedUser" flat color="purple darken-2" :value=byFaveUsersValue>
         <span>{{ $t('home.bottomnav.byFaveUsers') }}</span>
-        <v-icon>star</v-icon>
+        <v-icon>mdi-star</v-icon>
       </v-btn>
     </v-bottom-nav>
     <tafalk-new-stream-fab v-if="authenticatedUser"></tafalk-new-stream-fab>
