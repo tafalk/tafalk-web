@@ -34,7 +34,7 @@
           <v-card-actions>
             <!-- Stream metadata -->
             <span v-if="!isSealed" class="red--text">
-              <v-icon class="red--text">play_arrow</v-icon>
+              <v-icon class="red--text">mdi-play</v-icon>
               {{ $t('stream.metadata.liveLabel') }}
             </span>
             <span v-else class="grey--text">

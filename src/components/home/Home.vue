@@ -85,7 +85,7 @@
       <!--
       <v-btn flat color="deep-orange lighten-1" :value=topRatedValue>
         <span>Popular</span>
-        <v-icon>whatshot</v-icon>
+        <v-icon>mdi-fire</v-icon>
       </v-btn>
       -->
       <v-btn v-if="authenticatedUser" flat color="red darken-1" :value=liveNowValue>
@@ -97,13 +97,13 @@
         <v-icon>mdi-star</v-icon>
       </v-btn>
     </v-bottom-nav>
-    <tafalk-new-stream-fab v-if="authenticatedUser"></tafalk-new-stream-fab>
+    <tafalk-new-fab v-if="authenticatedUser"></tafalk-new-fab>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import TafalkNewStreamFab from '@/components/home/buttons/NewStreamFab.vue'
+import TafalkNewFab from '@/components/home/buttons/NewFab.vue'
 import TafalkBriefStreamCard from '@/components/stream/cards/BriefStreamCard.vue'
 import TafalkBriefUserCard from '@/components/user/cards/BriefUserCard.vue'
 import { homeStreamFetchLength } from '@/utils/constants'
@@ -123,7 +123,7 @@ export default {
     }
   },
   components: {
-    TafalkNewStreamFab,
+    TafalkNewFab,
     TafalkBriefStreamCard,
     TafalkBriefUserCard
   },

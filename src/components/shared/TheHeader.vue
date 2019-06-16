@@ -20,7 +20,7 @@
       v-if="isMobileSearchHeaderOn && $vuetify.breakpoint.smAndDown"
       single-line
       clearable
-      prepend-icon="arrow_back"
+      prepend-icon="mdi-arrow-left"
       :placeholder="$t('common.toolbar.searchPlaceholder')"
       v-model="searchText"
       @input="search"
@@ -42,7 +42,7 @@
     <v-text-field
       v-if="!isRouteChanging && isSearchBarVisible && $vuetify.breakpoint.mdAndUp"
       :placeholder="$t('common.toolbar.searchPlaceholder')"
-      prepend-icon="search"
+      prepend-icon="mdi-magnify"
       hide-details
       single-line
       v-model="searchText"
@@ -79,7 +79,7 @@
         @click="onSealedStreamsClick"
       >
         <v-list-tile-action>
-          <v-icon color="teal">apps</v-icon>
+          <v-icon color="teal">mdi-apps</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-sub-title class="teal--text">{{ $t('home.bottomnav.all') }}</v-list-tile-sub-title>
@@ -90,7 +90,7 @@
         @click="onLiveStreamsClick"
       >
         <v-list-tile-action>
-          <v-icon color="red darken-1">play_circle_outline</v-icon>
+          <v-icon color="red darken-1">mdi-play-circle-outline</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-sub-title class="red--text text--darken-1">{{ $t('home.bottomnav.liveNow') }}</v-list-tile-sub-title>
@@ -101,7 +101,7 @@
         @click="onByFaveOtherStreamsClick"
       >
         <v-list-tile-action>
-          <v-icon color="purple darken-2">star</v-icon>
+          <v-icon color="purple darken-2">mdi-star</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-sub-title class="purple--text text--darken-2">{{ $t('home.bottomnav.byFaveUsers') }}</v-list-tile-sub-title>

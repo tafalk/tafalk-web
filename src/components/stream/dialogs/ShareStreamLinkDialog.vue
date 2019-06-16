@@ -19,7 +19,7 @@
             <v-icon
               slot="activator"
               @click="onCopyLinkClick"
-            >file_copy</v-icon>
+            >mdi-content-copy</v-icon>
             {{ tooltipText }}
           </v-tooltip>
         </v-text-field>

@@ -27,7 +27,7 @@
             <v-list-tile-action
               v-if="isSelectedCategorySpam"
             >
-                <v-icon :color="selectedOptionIndicatorColor">check_circle</v-icon>
+                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
             </v-list-tile-action>
           </v-list-tile>
           <v-divider></v-divider>
@@ -41,7 +41,7 @@
             <v-list-tile-action
               v-if="isSelectedCategoryRude"
             >
-                <v-icon :color="selectedOptionIndicatorColor">check_circle</v-icon>
+                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
             </v-list-tile-action>
           </v-list-tile>
           <v-divider></v-divider>
@@ -55,7 +55,7 @@
             <v-list-tile-action
               v-if="isSelectedCategoryLowQuality"
             >
-                <v-icon :color="selectedOptionIndicatorColor">check_circle</v-icon>
+                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
             </v-list-tile-action>
           </v-list-tile>
         </v-list>
@@ -86,7 +86,7 @@
               <v-list-tile-action
                 v-if="isSelectedSpamDetailAd"
               >
-                <v-icon :color="selectedOptionIndicatorColor">check_circle</v-icon>
+                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
               </v-list-tile-action>
             </v-list-tile>
             <v-divider></v-divider>
@@ -99,7 +99,7 @@
               <v-list-tile-action
                 v-if="isSelectedSpamDetailHarmfulLink"
               >
-                <v-icon :color="selectedOptionIndicatorColor">check_circle</v-icon>
+                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
               </v-list-tile-action>
             </v-list-tile>
             <v-divider></v-divider>
@@ -116,7 +116,7 @@
               <v-list-tile-action
                 v-if="isSelectedRudeDetailHate"
               >
-                <v-icon :color="selectedOptionIndicatorColor">check_circle</v-icon>
+                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
               </v-list-tile-action>
             </v-list-tile>
             <v-divider></v-divider>
@@ -129,7 +129,7 @@
               <v-list-tile-action
                 v-if="isSelectedRudeDetailThreat"
               >
-                <v-icon :color="selectedOptionIndicatorColor">check_circle</v-icon>
+                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
               </v-list-tile-action>
             </v-list-tile>
             <v-divider></v-divider>
@@ -142,7 +142,7 @@
               <v-list-tile-action
                 v-if="isSelectedRudeDetailOffensive"
               >
-                <v-icon :color="selectedOptionIndicatorColor">check_circle</v-icon>
+                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
               </v-list-tile-action>
             </v-list-tile>
             <v-divider></v-divider>
@@ -155,7 +155,7 @@
               <v-list-tile-action
                 v-if="isSelectedRudeDetailPrivate"
               >
-                <v-icon :color="selectedOptionIndicatorColor">check_circle</v-icon>
+                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
               </v-list-tile-action>
             </v-list-tile>
         </template>

@@ -5,7 +5,7 @@
     <v-badge overlap>
       <span slot="badge">{{ userUnreadNotificationCount }}</span>
       <v-avatar size="28px" color="grey lighten-1">
-        <v-icon dark>notifications</v-icon>
+        <v-icon dark>mdi-bell</v-icon>
       </v-avatar>
     </v-badge>
 
@@ -14,7 +14,7 @@
     <v-badge overlap>
       <span slot="badge">{{ userUnreadMessageCount }}</span>
       <v-avatar size="28px" color="grey lighten-1">
-        <v-icon dark>inbox</v-icon>
+        <v-icon dark>mdi-inbox</v-icon>
       </v-avatar>
     </v-badge>
 

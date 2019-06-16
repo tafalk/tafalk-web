@@ -12,7 +12,7 @@
             :max="maxUsernameOrEmailLength"
             :maxlength="maxUsernameOrEmailLength"
             :rules="usernameRules"
-            prepend-icon="person"
+            prepend-icon="mdi-account"
             required
           ></v-text-field>
           <v-text-field
@@ -22,7 +22,7 @@
             :min="minPasswordLength"
             :rules="passwordRules"
             type="password"
-            prepend-icon="lock"
+            prepend-icon="mdi-lock"
             required
           ></v-text-field>
           <!-- Login Button -->

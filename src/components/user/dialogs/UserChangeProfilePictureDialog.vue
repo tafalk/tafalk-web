@@ -22,7 +22,7 @@
               :label="$t('user.profilePicture.selectImageLabel')"
               @click='onPickFile'
               v-model='imageFileName'
-              prepend-icon='attach_file'
+              prepend-icon="mdi-paperclip"
             ></v-text-field>
             <input
               type="file"

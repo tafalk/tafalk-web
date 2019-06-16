@@ -46,6 +46,14 @@
       "all": "All",
       "liveNow": "Live Now",
       "byFaveUsers": "By Fave Users"
+    },
+    "addFab" : {
+      "canto": {
+        "tooltip": "Canto"
+      },
+      "stream": {
+        "tooltip": "Stream"
+      }
     }
   },
   "agreements": {
