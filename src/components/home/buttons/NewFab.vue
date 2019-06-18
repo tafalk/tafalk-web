@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'NewFab',
   data () {
@@ -60,13 +62,21 @@ export default {
       cantoButtonColor: 'cyan darken-1'
     }
   },
+  computed: {
+    ...mapGetters({
+      getAuthenticatedUser: 'authenticatedUser/getUser'
+    }),
+    authenticatedUser () {
+      return this.getAuthenticatedUser
+    }
+  },
   methods: {
     onPourNewStreamClick () {
       // Route to Account Deleted Page
       this.$router.push({ name: 'pour' })
     },
     onOpenCantoClick () {
-
+      this.$router.push({ name: 'pourCanto', params: { username: this.authenticatedUser.username } })
     }
   }
 }

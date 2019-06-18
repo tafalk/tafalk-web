@@ -24,6 +24,9 @@ export const GetUserProfileData = gql`query GetUserProfileData($username: String
     language
     createdAt
     lastAccess
+    canto {
+      body
+    }
     userInteractions {
       items {
         id
