@@ -1,99 +1,104 @@
 <template>
   <tafalk-stream-authorization-required v-if="!authenticatedUser"></tafalk-stream-authorization-required>
-  <v-card flat v-else>
-      <v-toolbar dense flat>
-        <v-toolbar-title
-          v-if="processState === 'saved'"
-        ><span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
-        </v-toolbar-title>
-        <v-toolbar-title
-          v-else-if="processState === 'saving'"
-        ><span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
-        </v-toolbar-title>
-        <v-toolbar-title
-          v-else-if="processState === 'error'"
-        ><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <span class="grey--text">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
-      </v-toolbar>
-      <v-form
-        class="pa-3 pt-4"
-      >
-        <!-- body -->
-        <v-textarea
-          ref="pourBody"
-          outline
-          v-model="body"
-          auto-grow
-          autofocus
-          :placeholder="$t('stream.pour.bodyPlaceholder')"
-          rows="9"
-          @keydown.delete.prevent="onBodyBackspaceOrDeleteKeydown"
-          @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
-          @paste="onPaste"
-          @cut="onCut"
-          @keydown="onDefaultKeydown"
-        ></v-textarea>
-
-        <!-- title -->
-        <tafalk-stream-add-title-dialog
-          :streamId="streamId"
-        ></tafalk-stream-add-title-dialog>
-
-        <v-layout align-center wrap>
-          <v-flex xs12 sm5 md5>
-            <v-select
-              dense
-              flat
-              @change="onMoodChange"
-              :label="$t('stream.pour.moodSelectLabel')"
-              v-model="moodModel"
-              :items="moodOptions"
-              item-text="displayValue"
-              item-value="backendValue"
-              chips
-              multiple
-              menu-props="top"
-              return-object
-            ></v-select>
-          </v-flex>
+  <div v-else>
+    <tafalk-stream-introduction v-if="isFirstStreamOfUser"></tafalk-stream-introduction>
+    <v-card flat>
+        <v-toolbar dense flat>
+          <v-toolbar-title
+            v-if="processState === 'saved'"
+          ><span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
+          </v-toolbar-title>
+          <v-toolbar-title
+            v-else-if="processState === 'saving'"
+          ><span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
+          </v-toolbar-title>
+          <v-toolbar-title
+            v-else-if="processState === 'error'"
+          ><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
+          </v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-flex xs12 sm5 md5>
-            <v-select
-              dense
+          <span class="grey--text">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
+        </v-toolbar>
+        <v-form
+          class="pa-3 pt-4"
+        >
+          <!-- body -->
+          <v-textarea
+            ref="pourBody"
+            outline
+            v-model="body"
+            auto-grow
+            autofocus
+            :placeholder="$t('stream.pour.bodyPlaceholder')"
+            rows="9"
+            @keydown.delete.prevent="onBodyBackspaceOrDeleteKeydown"
+            @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
+            @paste="onPaste"
+            @cut="onCut"
+            @keydown="onDefaultKeydown"
+          ></v-textarea>
+
+          <!-- title -->
+          <tafalk-stream-add-title-dialog
+            :streamId="streamId"
+          ></tafalk-stream-add-title-dialog>
+
+          <v-layout align-center wrap>
+            <v-flex xs12 sm5 md5>
+              <v-select
+                dense
+                flat
+                @change="onMoodChange"
+                :label="$t('stream.pour.moodSelectLabel')"
+                v-model="moodModel"
+                :items="moodOptions"
+                item-text="displayValue"
+                item-value="backendValue"
+                chips
+                multiple
+                menu-props="top"
+                return-object
+              ></v-select>
+            </v-flex>
+            <v-spacer></v-spacer>
+            <v-flex xs12 sm5 md5>
+              <v-select
+                dense
+                flat
+                @change="onPositionChange"
+                :label="$t('stream.pour.positionSelectLabel')"
+                v-model="positionModel"
+                :items="positionOptions"
+                item-text="displayValue"
+                item-value="backendValue"
+                chips
+                multiple
+                menu-props="top"
+                return-object
+              ></v-select>
+            </v-flex>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              @click="onDoneClick"
+              :disabled="body == null || body.length === 0"
+              :loading="loading"
               flat
-              @change="onPositionChange"
-              :label="$t('stream.pour.positionSelectLabel')"
-              v-model="positionModel"
-              :items="positionOptions"
-              item-text="displayValue"
-              item-value="backendValue"
-              chips
-              multiple
-              menu-props="top"
-              return-object
-            ></v-select>
-          </v-flex>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            @click="onDoneClick"
-            :disabled="body == null || body.length === 0"
-            :loading="loading"
-            flat
-          >{{ $t('stream.pour.sealButtonText') }}</v-btn>
-        </v-layout>
-      </v-form>
-  </v-card>
+            >{{ $t('stream.pour.sealButtonText') }}</v-btn>
+          </v-layout>
+        </v-form>
+    </v-card>
+  </div>
 </template>
 
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
+import { ListStreamsByUser } from '@/graphql/Profile'
 import { CreateStream, UpdateStreamBody, UpdatePosition, UpdateMood, SealStreamForEver } from '@/graphql/Stream'
+import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
 import TafalkStreamAddTitleDialog from '@/components/stream/dialogs/AddTitleDialog.vue'
+import TafalkStreamIntroduction from '@/components/stream/dialogs/StreamIntroduction.vue'
 import { GenerateUuid4 } from '@/utils/generators'
 import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
 import { streamMoodOptions, streamPositionOptions, pourStrikethroughTimeToIdle } from '@/utils/constants'
@@ -113,6 +118,7 @@ export default {
       positionModel: null,
       moodOptions: streamMoodOptions,
       positionOptions: streamPositionOptions,
+      isFirstStreamOfUser: false,
       streamId: '',
       processState: '',
       savedStateConstant: 'saved',
@@ -127,9 +133,10 @@ export default {
   },
   components: {
     TafalkStreamAuthorizationRequired,
-    TafalkStreamAddTitleDialog
+    TafalkStreamAddTitleDialog,
+    TafalkStreamIntroduction
   },
-  created () {
+  async created () {
     // In case of the need to add it globally, see https://forum.vuejs.org/t/detect-browser-close/5001
     window.addEventListener('beforeunload', this.onBeforeUnload)
     // window.addEventListener('unload', () => this.sealForEver)
@@ -137,7 +144,14 @@ export default {
     // Create a UUID for the new stream
     this.streamId = GenerateUuid4()
   },
-  mounted () {
+  async mounted () {
+    // Check if first stream of user
+    const graphqlVisitedProfileStreamsResult = await API.graphql(graphqlOperation(ListStreamsByUser, { userId: this.authenticatedUserId, limit: 1, nextToken: null }))
+    const userStreamsShortList = graphqlVisitedProfileStreamsResult.data.listStreamsByUser.items
+    if (userStreamsShortList == null || userStreamsShortList.length === 0) {
+      this.isFirstStreamOfUser = true
+    }
+
     // Require confirmation for accidental route changes
     this.setIsRouteChangeSafe(false)
   },

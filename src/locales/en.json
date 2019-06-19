@@ -223,6 +223,11 @@
       }
     },
     "pour": {
+      "introduction": {
+        "title": "You are about to create your first stream",
+        "body": "Streams are the main content Tafalk! has. Just go along and pour your head here.",
+        "closeButtonText": "Go"
+      },
       "savedLabel": "Saved",
       "savingLabel": "Saving",
       "saveErrorLabel": "Error",
@@ -235,6 +240,15 @@
       "sealButtonText": "Seal",
       "message": {
         "beforeRouteConfirmationText": "Do you really want to leave? Your stream will be sealed!"
+      }
+    }
+  },
+  "canto": {
+    "pour": {
+      "introduction": {
+        "title": "Your own canto starts here",
+        "body": "This concept is inspired by The Cantos of Ezra Pound. So, it never ends and lives along yourself (or your Tafalk! account, at least). Ah yes, your canto is not meant to be backspaced just like the streams here. Enjoy the ride!",
+        "closeButtonText": "Go"
       }
     }
   },
