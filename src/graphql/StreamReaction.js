@@ -47,7 +47,7 @@ export const ListPaginatedStreamComments = gql`query ListPaginatedStreamComments
 
 // Mutations
 export const CreateLike = gql`mutation CreateLike(
-  $streamId: String!,
+  $streamId: String,
   $userId: String!,
   $time: String) {
     createLike(input: {

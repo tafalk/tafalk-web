@@ -244,6 +244,18 @@
     }
   },
   "canto": {
+    "metadata": {
+      "title": "Canto",
+      "timeInfoLabel": "created {created}, last updated: {lastUpdated}"
+    },
+    "share": {
+      "dialog": {
+        "copyLinkTooltip": "Click to copy",
+        "copiedLinkTooltip": "Copied",
+        "tooltip": "Click to copy"
+      },
+      "buttonText": "Share"
+    },
     "pour": {
       "introduction": {
         "title": "Your own canto starts here",
@@ -433,6 +445,9 @@
       "title": "You are not authorized to see the content"
     },
     "streamNotAllowed": {
+      "title": "You are not authorized to see the content"
+    },
+    "cantoNotAllowed": {
       "title": "You are not authorized to see the content"
     }
   }
