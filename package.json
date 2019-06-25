@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "aws-amplify": "^1.1.29",
+    "aws-sdk": "^2.482.0",
     "axios": "^0.19.0",
     "core-js": "^2.6.9",
     "debounce": "^1.2.0",

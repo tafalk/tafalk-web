@@ -10,7 +10,7 @@
     <!-- Page itself -->
     <v-layout row wrap v-else>
       <tafalk-canto-introduction v-if="isCantoNew"></tafalk-canto-introduction>
-      <v-flex xs12 sm12 offset-md2 md8>
+      <v-flex xs12>
         <v-card flat>
           <v-toolbar dense flat>
             <v-toolbar-title v-if="processState === 'saved'">
@@ -26,7 +26,8 @@
             <!-- body -->
             <v-textarea
               ref="pourBody"
-              outline
+              solo
+              flat
               v-model="body"
               auto-grow
               autofocus
@@ -48,7 +49,7 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { API, graphqlOperation, Logger } from 'aws-amplify'
-import { GetCantoBody, CreateCanto, UpdateCanto } from '@/graphql/Canto'
+import { GetCantoBody, CreateCanto, UpdateCantoBody } from '@/graphql/Canto'
 import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
 import TafalkCantoIntroduction from '@/components/canto/dialogs/CantoIntroduction.vue'
 import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
@@ -77,9 +78,7 @@ export default {
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
-      getCanto: 'canto/getCanto',
-      getIsFlaggedByAuthenticatedUser: 'canto/getIsFlaggedByAuthenticatedUser',
-      getNowTime: 'time/getNowTime'
+      getCanto: 'canto/getCanto'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
@@ -93,6 +92,7 @@ export default {
   },
   watch: {
     '$route.params.username' (username) {
+      // console.log('username: ' + username + ', this.$route.params.username: ' + this.$route.params.username)
       this.authorUsername = username
     },
     // whenever 'canto' changes, this function will run
@@ -124,7 +124,7 @@ export default {
         // Update the entry
         try {
           this.processState = this.savingStateConstant
-          await API.graphql(graphqlOperation(UpdateCanto, {
+          await API.graphql(graphqlOperation(UpdateCantoBody, {
             id: this.authenticatedUserId,
             body: newBody,
             lastUpdateTime: new Date().toISOString()
@@ -141,6 +141,7 @@ export default {
   async created () {
     try {
       window.addEventListener('beforeunload', this.onBeforeUnload)
+      this.authorUsername = this.$route.params.username
       const cantoId = this.authenticatedUser.id
       // console.log('cantoId: ' + cantoId)
       const cantoGraphqlResult = await API.graphql(graphqlOperation(GetCantoBody, { id: cantoId }))

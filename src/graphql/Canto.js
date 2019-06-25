@@ -33,37 +33,32 @@ export const CreateCanto = gql`mutation CreateCanto(
   $startTime: String!,
   $lastUpdateTime: String,
   $visits: Int) {
-  createCanto(input: {
-    id: $id
-    body: $body
-    startTime: $startTime
-    lastUpdateTime: $lastUpdateTime
-    visits: $visits
-  }){
-    id
-    body
-    startTime
-    lastUpdateTime
-    visits
+    createCanto(input: {
+      id: $id
+      body: $body
+      startTime: $startTime
+      lastUpdateTime: $lastUpdateTime
+      visits: $visits
+      }){
+        id
+        body
+        startTime
+        lastUpdateTime
+        visits
   }
 }`
 
-export const UpdateCanto = gql`mutation UpdateCanto(
+export const UpdateCantoBody = gql`mutation UpdateCantoBody(
   $id: ID!,
   $body: String!,
-  $lastUpdateTime: String!,
-  $visits: Int) {
-  updateCanto(input: {
-    id: $id
-    body: $body
-    lastUpdateTime: $lastUpdateTime
-    visits: $visits
-  }){
-    id
-    body
-    lastUpdateTime
-    visits
-  }
+  $lastUpdateTime: String!) {
+    updateCanto(input: {
+      id: $id
+      body: $body
+      lastUpdateTime: $lastUpdateTime
+    }){
+      id
+    }
 }`
 
 // Subscribe
