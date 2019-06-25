@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-xl text-xs-center>
+  <v-container grid-list-lg text-xs-center>
     <v-layout row wrap>
       <v-flex xs6 offset-xs3>
         <v-form v-model="valid" @submit.prevent="onConfirmBtnClick">

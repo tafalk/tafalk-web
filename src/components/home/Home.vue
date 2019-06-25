@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <v-container grid-list-md>
+    <v-container grid-list-lg>
       <!-- full page loader -->
       <v-layout v-if="!getIsPageReady" align-center fill-height>
         <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>

@@ -3,90 +3,84 @@
   <div v-else>
     <tafalk-stream-introduction v-if="isFirstStreamOfUser"></tafalk-stream-introduction>
     <v-card flat>
-        <v-toolbar dense flat>
-          <v-toolbar-title
-            v-if="processState === 'saved'"
-          ><span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
-          </v-toolbar-title>
-          <v-toolbar-title
-            v-else-if="processState === 'saving'"
-          ><span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
-          </v-toolbar-title>
-          <v-toolbar-title
-            v-else-if="processState === 'error'"
-          ><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
-          </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <span class="grey--text">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
-        </v-toolbar>
-        <v-form
-          class="pa-3 pt-4"
-        >
-          <!-- body -->
-          <v-textarea
-            ref="pourBody"
-            outline
-            v-model="body"
-            auto-grow
-            autofocus
-            :placeholder="$t('stream.pour.bodyPlaceholder')"
-            rows="9"
-            @keydown.delete.prevent="onBodyBackspaceOrDeleteKeydown"
-            @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
-            @paste="onPaste"
-            @cut="onCut"
-            @keydown="onDefaultKeydown"
-          ></v-textarea>
+      <v-toolbar dense flat>
+        <v-toolbar-title v-if="processState === 'saved'">
+          <span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
+        </v-toolbar-title>
+        <v-toolbar-title v-else-if="processState === 'saving'">
+          <span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
+        </v-toolbar-title>
+        <v-toolbar-title v-else-if="processState === 'error'"><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
+        </v-toolbar-title>
+        <v-spacer/>
+        <span class="grey--text">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
+      </v-toolbar>
+      <v-form class="pa-3 pt-4">
+        <!-- body -->
+        <v-textarea
+          ref="pourBody"
+          outline
+          v-model="body"
+          auto-grow
+          autofocus
+          :placeholder="$t('stream.pour.bodyPlaceholder')"
+          rows="9"
+          @keydown.delete.prevent="onBodyBackspaceOrDeleteKeydown"
+          @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
+          @paste="onPaste"
+          @cut="onCut"
+          @keydown="onDefaultKeydown"
+        ></v-textarea>
 
-          <!-- title -->
-          <tafalk-stream-add-title-dialog
-            :streamId="streamId"
-          ></tafalk-stream-add-title-dialog>
+        <!-- title -->
+        <tafalk-stream-add-title-dialog
+          :streamId="streamId"
+        ></tafalk-stream-add-title-dialog>
 
-          <v-layout align-center wrap>
-            <v-flex xs12 sm5 md5>
-              <v-select
-                dense
-                flat
-                @change="onMoodChange"
-                :label="$t('stream.pour.moodSelectLabel')"
-                v-model="moodModel"
-                :items="moodOptions"
-                item-text="displayValue"
-                item-value="backendValue"
-                chips
-                multiple
-                menu-props="top"
-                return-object
-              ></v-select>
-            </v-flex>
-            <v-spacer></v-spacer>
-            <v-flex xs12 sm5 md5>
-              <v-select
-                dense
-                flat
-                @change="onPositionChange"
-                :label="$t('stream.pour.positionSelectLabel')"
-                v-model="positionModel"
-                :items="positionOptions"
-                item-text="displayValue"
-                item-value="backendValue"
-                chips
-                multiple
-                menu-props="top"
-                return-object
-              ></v-select>
-            </v-flex>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              @click="onDoneClick"
-              :disabled="body == null || body.length === 0"
-              :loading="loading"
+        <v-layout align-center wrap>
+          <v-flex xs12 sm5 md5>
+            <v-select
+              dense
               flat
-            >{{ $t('stream.pour.sealButtonText') }}</v-btn>
-          </v-layout>
-        </v-form>
+              @change="onMoodChange"
+              :label="$t('stream.pour.moodSelectLabel')"
+              v-model="moodModel"
+              :items="moodOptions"
+              item-text="displayValue"
+              item-value="backendValue"
+              chips
+              multiple
+              menu-props="top"
+              return-object
+            ></v-select>
+          </v-flex>
+          <v-spacer/>
+          <v-flex xs12 sm5 md5>
+            <v-select
+              dense
+              flat
+              @change="onPositionChange"
+              :label="$t('stream.pour.positionSelectLabel')"
+              v-model="positionModel"
+              :items="positionOptions"
+              item-text="displayValue"
+              item-value="backendValue"
+              chips
+              multiple
+              menu-props="top"
+              return-object
+            ></v-select>
+          </v-flex>
+          <v-spacer/>
+          <v-btn
+            color="primary"
+            @click="onDoneClick"
+            :disabled="body == null || body.length === 0"
+            :loading="loading"
+            flat
+          >{{ $t('stream.pour.sealButtonText') }}</v-btn>
+        </v-layout>
+      </v-form>
     </v-card>
   </div>
 </template>
@@ -104,10 +98,10 @@ import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
 import { streamMoodOptions, streamPositionOptions, pourStrikethroughTimeToIdle } from '@/utils/constants'
 import { GetKeyName } from '@/utils/ioUtils'
 
-const logger = new Logger('Pour')
+const logger = new Logger('PourStream')
 
 export default {
-  name: 'Pour',
+  name: 'PourStream',
   data () {
     return {
       valid: false,
