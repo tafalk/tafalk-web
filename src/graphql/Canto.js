@@ -32,19 +32,19 @@ export const CreateCanto = gql`mutation CreateCanto(
   $body: String,
   $startTime: String!,
   $lastUpdateTime: String,
-  $visits: Int) {
+  $status: String!) {
     createCanto(input: {
       id: $id
       body: $body
       startTime: $startTime
       lastUpdateTime: $lastUpdateTime
-      visits: $visits
+      status: $status
       }){
         id
         body
         startTime
         lastUpdateTime
-        visits
+        status
   }
 }`
 
@@ -65,11 +65,9 @@ export const UpdateCantoBody = gql`mutation UpdateCantoBody(
 export const OnUpdateCanto = gql`subscription OnUpdateCanto($id: ID!) {
   onUpdateCanto(id: $id) {
     id
-    userId
     body
     startTime
     lastUpdateTime
-    visits
     likes {
       id
       cantoId

@@ -122,6 +122,7 @@ import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetCanto, OnUpdateCanto } from '@/graphql/Canto'
 import { ListCantoLikes, CreateLike, DeleteLike, OnCreateOrDeleteCantoLike } from '@/graphql/CantoReaction'
+import { GetUserIdByUserName } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
 import { GetUserHue, GetCantoLink } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
@@ -248,7 +249,7 @@ export default {
     }
   },
   created () {
-    this.getInitialInfo(this.$route.params.id)
+    this.getInitialInfo(this.$route.params.username)
       .then(() => {
         this.pageReady = true
       })
@@ -274,9 +275,14 @@ export default {
       setNewUserInteractionResultError: 'shared/setNewUserInteractionResultError'
     }),
     async getInitialInfo (username) {
+      console.log('getting info for ' + username)
       try {
-        const cantoId = this.author.id
+        const getUserIdByUserNameGraphqlReq = await API.graphql(graphqlOperation(GetUserIdByUserName, { username }))
+        const getUserIdByUserNameGraphqlResult = getUserIdByUserNameGraphqlReq.data.getUserByUsername[0]
+        const cantoId = getUserIdByUserNameGraphqlResult.id
+
         const cantoGraphqlResult = await API.graphql(graphqlOperation(GetCanto, { id: cantoId }))
+        console.log('cantoGraphqlResult: ' + cantoGraphqlResult)
 
         // add to the vuex store
         this.setCanto(cantoGraphqlResult.data.getCanto)
@@ -323,7 +329,7 @@ export default {
         this.outboundWatchId = GetFirstOrDefaultIdStr(outboundWatchingTypeConnections)
         this.outboundBlockId = GetFirstOrDefaultIdStr(outboundBlockingTypeConnections)
       } catch (err) {
-        logger.error('Error occurred while getting user info', JSON.stringify(err))
+        logger.error('Error occurred while getting canto info', JSON.stringify(err.message || err))
         this.setNewSiteError(err.message || err)
       }
     },

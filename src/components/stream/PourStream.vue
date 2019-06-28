@@ -211,8 +211,7 @@ export default {
             location: null,
             track: null,
             startTime: new Date().toISOString(),
-            sealTime: this.incompleteSealTimeValue,
-            visits: 0
+            sealTime: this.incompleteSealTimeValue
           }))
           this.processState = this.savedStateConstant
         } catch (err) {

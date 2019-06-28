@@ -63,6 +63,7 @@ export default {
     return {
       pageReady: false,
       body: null,
+      cantoStatus: 'OK',
       authorUsername: null,
       isCantoNew: false,
       processState: '',
@@ -112,7 +113,7 @@ export default {
             body: newBody,
             startTime: new Date().toISOString(),
             lastUpdateTime: new Date().toISOString(),
-            visits: 0
+            status: this.cantoStatus
           }))
           this.processState = this.savedStateConstant
         } catch (err) {
@@ -143,7 +144,7 @@ export default {
       window.addEventListener('beforeunload', this.onBeforeUnload)
       this.authorUsername = this.$route.params.username
       const cantoId = this.authenticatedUser.id
-      // console.log('cantoId: ' + cantoId)
+
       const cantoGraphqlResult = await API.graphql(graphqlOperation(GetCantoBody, { id: cantoId }))
       if (!(cantoGraphqlResult.data.getCanto || {}).body) {
         this.isCantoNew = true
