@@ -38,6 +38,8 @@
               @paste="onPaste"
               @cut="onCut"
               @keydown="onDefaultKeydown"
+              @mousedown="onMouseDown"
+              @mouseup="onMouseUp"
             ></v-textarea>
           </v-form>
         </v-card>
@@ -91,6 +93,34 @@ export default {
       return this.authenticatedUser && this.authenticatedUser.username === this.authorUsername
     }
   },
+  async created () {
+    try {
+      window.addEventListener('beforeunload', this.onBeforeUnload)
+      this.authorUsername = this.$route.params.username
+      const cantoId = this.authenticatedUser.id
+
+      const cantoGraphqlResult = await API.graphql(graphqlOperation(GetCantoBody, { id: cantoId }))
+      const currentBody = (cantoGraphqlResult.data.getCanto || {}).body
+      if (!currentBody) {
+        this.isCantoNew = true
+      } else {
+        // There's already a canto
+        this.body = currentBody
+      }
+    } catch (err) {
+      logger.error('Error occurred while getting canto info', JSON.stringify(err))
+      this.setNewSiteError(err.message || err)
+    } finally {
+      this.pageReady = true
+    }
+  },
+  async mounted () {
+    // Require confirmation for accidental route changes
+    this.setIsRouteChangeSafe(false)
+  },
+  async beforeDestroy () {
+    window.removeEventListener('beforeunload', this.onBeforeUnload)
+  },
   watch: {
     '$route.params.username' (username) {
       // console.log('username: ' + username + ', this.$route.params.username: ' + this.$route.params.username)
@@ -99,9 +129,7 @@ export default {
     // whenever 'canto' changes, this function will run
     async body (newBody, oldBody) {
       // Check if the text is all whitespace
-      if (IsNullOrWhitespace(newBody)) {
-        return
-      }
+      if (IsNullOrWhitespace(newBody)) return
 
       if (oldBody == null || oldBody.length === 0) {
         // Old body is null or empty, so create the entry here
@@ -138,30 +166,6 @@ export default {
         }
       }
     }
-  },
-  async created () {
-    try {
-      window.addEventListener('beforeunload', this.onBeforeUnload)
-      this.authorUsername = this.$route.params.username
-      const cantoId = this.authenticatedUser.id
-
-      const cantoGraphqlResult = await API.graphql(graphqlOperation(GetCantoBody, { id: cantoId }))
-      if (!(cantoGraphqlResult.data.getCanto || {}).body) {
-        this.isCantoNew = true
-      }
-    } catch (err) {
-      logger.error('Error occurred while getting canto info', JSON.stringify(err))
-      this.setNewSiteError(err.message || err)
-    } finally {
-      this.pageReady = true
-    }
-  },
-  async mounted () {
-    // Require confirmation for accidental route changes
-    this.setIsRouteChangeSafe(false)
-  },
-  async beforeDestroy () {
-    window.removeEventListener('beforeunload', this.onBeforeUnload)
   },
   methods: {
     ...mapMutations({
@@ -241,6 +245,12 @@ export default {
     },
     // disable cutting
     onCut (event) {
+      event.preventDefault()
+    },
+    onMouseDown (event) {
+      event.preventDefault()
+    },
+    onMouseUp (event) {
       event.preventDefault()
     },
     onDefaultKeydown (event) {

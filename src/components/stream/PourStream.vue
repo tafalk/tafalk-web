@@ -30,6 +30,8 @@
           @paste="onPaste"
           @cut="onCut"
           @keydown="onDefaultKeydown"
+          @mousedown="onMouseDown"
+          @mouseup="onMouseUp"
         ></v-textarea>
 
         <!-- title -->
@@ -376,6 +378,12 @@ export default {
     },
     // disable cutting
     onCut (event) {
+      event.preventDefault()
+    },
+    onMouseDown (event) {
+      event.preventDefault()
+    },
+    onMouseUp (event) {
       event.preventDefault()
     },
     onDefaultKeydown (event) {
