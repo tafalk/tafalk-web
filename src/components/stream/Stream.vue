@@ -1,5 +1,5 @@
 <template>
-<v-container fluid grid-list-lg>
+<v-container fluid grid-list-lg px-2>
   <!-- full page loader -->
   <v-layout v-if="!pageReady || stream == null" align-center fill-height row>
     <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
@@ -8,7 +8,7 @@
   </v-layout>
   <!-- regular content -->
   <v-layout row wrap v-else>
-    <v-flex xs12 sm12 offset-md2 md8 infinite-wrapper>
+    <v-flex xs12 infinite-wrapper>
       <div v-if="isStreamAllowed">
         <v-card flat>
           <v-toolbar dense flat>
