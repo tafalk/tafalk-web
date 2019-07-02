@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { ListSealedBriefStreams, ListLiveBriefStreams } from '../graphql/Stream'
+import { ListBriefCantos } from '../graphql/Canto'
 
 import shared from './shared'
 import authenticatedUser from './authenticatedUser'
@@ -22,7 +23,9 @@ export default new Vuex.Store({
     appName: 'Tafalk!',
     isPageReady: false,
     streamList: [],
-    nextStreamToken: null
+    cantoList: [],
+    nextStreamToken: null,
+    nextCantoToken: null
   },
   getters: {
     getIsPageReady (state) {
@@ -31,8 +34,14 @@ export default new Vuex.Store({
     getStreamList (state) {
       return state.streamList
     },
+    getCantoList (state) {
+      return state.cantoList
+    },
     getNextStreamToken (state) {
       return state.nextStreamToken
+    },
+    getNextCantoToken (state) {
+      return state.nextCantoToken
     }
   },
   mutations: {
@@ -42,15 +51,26 @@ export default new Vuex.Store({
     setStreamList (state, streamList) {
       state.streamList = streamList
     },
+    setCantoList (state, cantoList) {
+      state.cantoList = cantoList
+    },
     clearStreamList (state) {
       state.streamList = []
     },
+    clearCantoList (state) {
+      state.cantoList = []
+    },
     appendStreamList (state, appendStreamList) {
       state.streamList.push(...appendStreamList)
-      // state.streamList = state.streamList.push(...appendStreamList)
+    },
+    appendCantoList (state, appendCantoList) {
+      state.cantoList.push(...appendCantoList)
     },
     setNextStreamToken (state, nextStreamToken) {
       state.nextStreamToken = nextStreamToken
+    },
+    setNextCantoToken (state, nextCantoToken) {
+      state.nextCantoToken = nextCantoToken
     }
   },
   actions: {
@@ -69,15 +89,12 @@ export default new Vuex.Store({
     },
     async fetchFurtherSealedBriefStreams ({ commit }, payload) {
       try {
-        // commit('setIsPageReady', false)
         const rawFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
 
         commit('appendStreamList', rawFetch.data.listSealedStreams.items)
         commit('setNextStreamToken', rawFetch.data.listSealedStreams.nextToken)
       } catch (err) {
         logger.error('error fetching sealed streams', JSON.stringify(err))
-      } finally {
-        // commit('setIsPageReady', true)
       }
     },
     async fetchInitialLiveBriefStreams ({ commit }, payload) {
@@ -95,15 +112,12 @@ export default new Vuex.Store({
     },
     async fetchFurtherLiveBriefStreams ({ commit }, payload) {
       try {
-        // commit('setIsPageReady', false)
         const rawFetch = await API.graphql(graphqlOperation(ListLiveBriefStreams, payload))
 
         commit('appendStreamList', rawFetch.data.listLiveStreams.items)
         commit('setNextStreamToken', rawFetch.data.listLiveStreams.nextToken)
       } catch (err) {
         logger.error('error fetching live streams', JSON.stringify(err))
-      } finally {
-        // commit('setIsPageReady', true)
       }
     },
     async fetchInitialSealedBriefStreamsByFaveUsers ({ getters, commit }, payload) {
@@ -121,7 +135,6 @@ export default new Vuex.Store({
     },
     async fetchFurtherSealedBriefStreamsByFaveUsers ({ getters, commit }, payload) {
       try {
-        // commit('setIsPageReady', false)
         const scrollEndNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
 
         commit('setStreamList', scrollEndNewFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === getters['authenticatedUser/getUser'].id)))
@@ -141,9 +154,34 @@ export default new Vuex.Store({
         }
       } catch (err) {
         logger.error('error fetching sealed streams by fave others', err)
-      } finally {
-        // commit('setIsPageReady', true)
       }
+    },
+    async fetchInitialBriefCantos ({ commit }, payload) {
+      try {
+        commit('setIsPageReady', false)
+        const rawFetch = await API.graphql(graphqlOperation(ListBriefCantos, payload))
+
+        commit('setCantoList', rawFetch.data.listCantos.items)
+        commit('setNextCantoToken', rawFetch.data.listCantos.nextToken)
+      } catch (err) {
+        logger.error('error fetching initial cantos', JSON.stringify(err))
+      } finally {
+        commit('setIsPageReady', true)
+      }
+    },
+    async fetchFurtherBriefCantos ({ commit }, payload) {
+      try {
+        const rawFetch = await API.graphql(graphqlOperation(ListBriefCantos, payload))
+
+        commit('appendCantoList', rawFetch.data.listCantos.items)
+        commit('setNextCantoToken', rawFetch.data.listCantos.nextToken)
+      } catch (err) {
+        logger.error('error fetching further cantos', JSON.stringify(err))
+      }
+    },
+    clearAll ({ commit }) {
+      commit('clearStreamList')
+      commit('clearCantoList')
     }
   },
   modules: {

@@ -27,30 +27,23 @@
       </v-avatar>
       {{ stream.user.username }}
     </v-chip>
-    <v-spacer />
   </v-card-title>
-  <v-layout>
-    <v-flex xs10>
-      <v-card-text class="text-truncate">
-        {{ stream.body }}
-      </v-card-text>
-    </v-flex>
-    <v-flex xs2>
-      <v-btn
-        v-if="isVisitingOwnProfile"
-        flat
-        small
-        depressed
-        color="error"
-        :loading="isLoading"
-        :disabled="isLoading"
-        @click.stop="unlikeStream"
-      >
-        {{ $t('user.profilePage.tabs.removeLikeButtonText') }}
-      </v-btn>
-    </v-flex>
-  </v-layout>
+  <v-card-text class="text-truncate">
+    {{ stream.body }}
+  </v-card-text>
   <v-card-actions class="pa-2 grey--text">
+    <v-btn
+      v-if="isVisitingOwnProfile"
+      flat
+      small
+      depressed
+      color="error"
+      :loading="isLoading"
+      :disabled="isLoading"
+      @click.stop="unlikeStream"
+    >
+      {{ $t('user.profilePage.tabs.removeLikeButtonText') }}
+    </v-btn>
     <v-spacer />
     <div v-if="isSealed">
       <span class="pa-2 grey--text caption">

@@ -132,7 +132,7 @@ export default {
     TafalkStreamAddTitleDialog,
     TafalkStreamIntroduction
   },
-  async created () {
+  created () {
     // In case of the need to add it globally, see https://forum.vuejs.org/t/detect-browser-close/5001
     window.addEventListener('beforeunload', this.onBeforeUnload)
     // window.addEventListener('unload', () => this.sealForEver)

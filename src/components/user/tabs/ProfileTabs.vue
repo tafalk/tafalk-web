@@ -112,7 +112,7 @@ export default {
 
     const initialFetchLikedStreams = visitedProfileLikedStreamsDbResult.items.map(item => item.stream)
     this.likedStreamFetchNextToken = visitedProfileLikedStreamsDbResult.nextToken
-    this.likedContents.push(...initialFetchLikedStreams)
+    this.likedStreams.push(...initialFetchLikedStreams)
 
     // load liked users
     const graphqlVisitedProfileOutboundInteractedUsersResult = await graphqlVisitedProfileOutboundInteractedUsersReq
@@ -171,7 +171,7 @@ export default {
         const newPaginatedLikeByUserType = scrollLikeEndNewFetchResult.data.listLikesByUser
 
         this.likedStreamFetchNextToken = newPaginatedLikeByUserType.nextToken
-        this.likedContents.push(...newPaginatedLikeByUserType.items.map(item => item.stream))
+        this.likedStreams.push(...newPaginatedLikeByUserType.items.map(item => item.stream))
 
         $state.loaded()
       }

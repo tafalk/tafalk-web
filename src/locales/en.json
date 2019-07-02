@@ -39,13 +39,15 @@
       "noResult": "No Results Found for '{searchText}'",
       "result": {
         "userTitle": "Users ({resultCount})",
-        "streamTitle": "Streams ({resultCount})"
+        "streamTitle": "Streams ({resultCount})",
+        "cantoTitle":  "Cantos ({resultCount})"
       }
     },
     "bottomnav": {
-      "all": "All",
+      "sealed": "Sealed",
       "liveNow": "Live Now",
-      "byFaveUsers": "By Fave Users"
+      "byFaveUsers": "By Fave Users",
+      "cantos": "Cantos"
     },
     "addFab" : {
       "canto": {

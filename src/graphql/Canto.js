@@ -26,6 +26,23 @@ export const GetCanto = gql`query GetCanto($id: ID!) {
   }
 }`
 
+export const ListBriefCantos = gql`query ListBriefCantos($limit: Int, $nextToken: String) {
+  listCantos(first: $limit, after: $nextToken) {
+    items {
+      id
+      body
+      startTime
+      lastUpdateTime
+      user {
+        id
+        username
+        profilePictureKey
+      }
+    }
+    nextToken
+  }
+}`
+
 // Mutate
 export const CreateCanto = gql`mutation CreateCanto(
   $id: ID!,
