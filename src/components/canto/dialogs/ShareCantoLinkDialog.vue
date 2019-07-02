@@ -1,12 +1,12 @@
 <template>
-  <v-dialog v-model="getIsShareStreamLinkDialogVisible" persistent max-width="400">
+  <v-dialog v-model="getIsShareCantoLinkDialogVisible" persistent max-width="400">
     <v-card>
       <v-card-title class="headline">{{ $t('common.share.title') }}</v-card-title>
       <v-card-text>
         <v-text-field
           ref="linktext"
           dense
-          v-model="getShareStreamLink"
+          v-model="getShareCantoLink"
           outline
           readonly
           label="Link"
@@ -39,26 +39,26 @@
 import { mapGetters, mapMutations } from 'vuex'
 
 export default {
-  name: 'ShareStreamLinkDialog',
+  name: 'ShareCantoLinkDialog',
   data () {
     return {
       showCopiedTooltip: false,
-      defaultCopyTooltipValue: this.$i18n.t('stream.share.dialog.copyLinkTooltip'),
-      copiedTooltipValue: this.$i18n.t('stream.share.dialog.copiedLinkTooltip'),
-      tooltipText: this.$i18n.t('stream.share.dialog.tooltip'),
+      defaultCopyTooltipValue: this.$i18n.t('canto.share.dialog.copyLinkTooltip'),
+      copiedTooltipValue: this.$i18n.t('canto.share.dialog.copiedLinkTooltip'),
+      tooltipText: this.$i18n.t('canto.share.dialog.tooltip'),
       copiedTooltipTimeout: 3000
     }
   },
   computed: {
     ...mapGetters({
-      getIsShareStreamLinkDialogVisible: 'stream/dialog/getIsShareStreamLinkDialogVisible',
-      getShareStreamLink: 'stream/getShareStreamLink'
+      getIsShareCantoLinkDialogVisible: 'canto/dialog/getIsShareCantoLinkDialogVisible',
+      getShareCantoLink: 'canto/getShareCantoLink'
     })
   },
   methods: {
     ...mapMutations({
-      hideShareStreamLinkDialog: 'stream/dialog/hideShareStreamLinkDialog',
-      clearShareStreamLink: 'stream/clearShareStreamLink'
+      hideShareCantoLinkDialog: 'canto/dialog/hideShareCantoLinkDialog',
+      clearShareCantoLink: 'canto/clearShareCantoLink'
     }),
     async onCopyLinkClick (e) {
       // Select the text
@@ -72,8 +72,8 @@ export default {
       this.tooltipText = this.defaultCopyTooltipValue
     },
     onDoneClick () {
-      this.clearShareStreamLink()
-      this.hideShareStreamLinkDialog()
+      this.clearShareCantoLink()
+      this.hideShareCantoLinkDialog()
     },
     sleep (ms) {
       return new Promise((resolve, reject) => setTimeout(resolve, ms))

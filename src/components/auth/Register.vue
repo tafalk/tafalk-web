@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-xl text-xs-center>
+  <v-container grid-list-lg text-xs-center>
     <v-layout row wrap>
       <v-flex md6 sm12-and-down offset-md3>
         <v-form v-model="valid" @submit.prevent="onRegisterBtnClick">
@@ -36,14 +36,14 @@
             :max="maxUsernameLength"
             :maxlength="maxUsernameLength"
             :rules="usernameRules"
-            prepend-icon="person"
+            prepend-icon="mdi-account"
             required
           ></v-text-field>
           <v-text-field
             :label="$t('auth.signup.emailLabel')"
             v-model="email"
             :rules="emailRules"
-            prepend-icon="mail"
+            prepend-icon="mdi-mail"
             required
           ></v-text-field>
           <v-text-field
@@ -52,7 +52,7 @@
             name="password"
             :min="minPasswordLength"
             :rules="passwordRules"
-            prepend-icon="lock"
+            prepend-icon="mdi-lock"
             type="password"
             required
           ></v-text-field>
@@ -63,7 +63,7 @@
             v-model="retypePassword"
             :rules="retypePasswordRules"
             type="password"
-            prepend-icon="lock"
+            prepend-icon="mdi-lock"
             required
           ></v-text-field>
           <v-menu
@@ -82,7 +82,7 @@
               :label="$t('auth.signup.birthDateLabel')"
               v-model="birthDate"
               :rules="birthDateRules"
-              prepend-icon="event"
+              prepend-icon="mdi-calendar"
               readonly
             ></v-text-field>
             <v-date-picker

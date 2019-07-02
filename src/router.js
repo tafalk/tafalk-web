@@ -9,8 +9,10 @@ import { GetStoreUser } from './utils/storeUtils'
 import Home from '@/components/home/Home.vue'
 import NotFound from '@/components/nocontent/NotFound.vue'
 import Profile from '@/components/user/Profile.vue'
-import Pour from '@/components/stream/Pour.vue'
+import PourStream from '@/components/stream/PourStream.vue'
 import Stream from '@/components/stream/Stream.vue'
+import PourCanto from '@/components/canto/PourCanto.vue'
+import Canto from '@/components/canto/Canto.vue'
 
 Vue.use(Router)
 
@@ -61,9 +63,19 @@ const router = new Router({
       component: Profile
     },
     {
+      path: '/user/:username/canto',
+      name: 'canto',
+      component: Canto
+    },
+    {
+      path: '/user/:username/canto/pour',
+      name: 'pourCanto',
+      component: PourCanto
+    },
+    {
       path: '/pour',
       name: 'pour',
-      component: Pour
+      component: PourStream
     },
     {
       path: '/stream/:id',

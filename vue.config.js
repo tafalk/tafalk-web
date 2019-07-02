@@ -26,6 +26,7 @@ module.exports = {
     }
   },
   chainWebpack: (config) => {
+    // svg loader
     const svgRule = config.module.rule('svg')
     svgRule.uses.clear()
     svgRule

@@ -16,7 +16,7 @@
       :color="flagButtonColor"
       @click.stop="onFlagDialogShowClick"
     >
-      <v-icon>outlined_flag</v-icon>
+      <v-icon>mdi-flag-outline</v-icon>
     </v-btn>
     <v-btn
       v-else-if="authenticatedUserFlagId"
@@ -26,7 +26,7 @@
       :color="flagButtonColor"
       @click.stop="onRetractFlagDialogShowClick"
     >
-      <v-icon>flag</v-icon>
+      <v-icon>mdi-flag</v-icon>
     </v-btn>
     <!-- timestamp -->
     <v-tooltip right>

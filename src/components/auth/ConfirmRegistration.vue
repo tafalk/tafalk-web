@@ -1,42 +1,42 @@
 <template>
-  <v-container grid-list-xl text-xs-center>
-    <v-layout row wrap>
-      <v-flex xs6 offset-xs3>
-        <v-form v-model="valid" @submit.prevent="onConfirmBtnClick">
-          <v-text-field
-            :label="$t('auth.confirmRegistration.userNameLabel')"
-            v-model="username"
-            autofocus
-            :counter="maxUsernameLength"
-            :min="minUsernameLength"
-            :max="maxUsernameLength"
-            :maxlength="maxUsernameLength"
-            :rules="usernameRules"
-            prepend-icon="lock"
-            required
-          ></v-text-field>
-          <v-text-field
-            :label="$t('auth.confirmRegistration.verificationCodeLabel')"
-            v-model="verificationCode"
-            prepend-icon="chat_bubble"
-            required
-          ></v-text-field>
-          <v-btn
-            color="primary"
-            :loading="loading"
-            :disabled="!valid || loading"
-            type="submit"
-          >
-            {{ $t('auth.confirmRegistration.confirmButtonText') }}
-          </v-btn>
-          <v-btn
-            :loading="loadingResend"
-            :disabled="loadingResend"
-            @click="onResendBtnClick">{{ $t('auth.confirmRegistration.resendButtonText') }}</v-btn>
-        </v-form>
-      </v-flex>
-    </v-layout>
-  </v-container>
+<v-container grid-list-lg text-xs-center>
+  <v-layout row wrap>
+    <v-flex xs6 offset-xs3>
+      <v-form v-model="valid" @submit.prevent="onConfirmBtnClick">
+        <v-text-field
+          :label="$t('auth.confirmRegistration.userNameLabel')"
+          v-model="username"
+          autofocus
+          :counter="maxUsernameLength"
+          :min="minUsernameLength"
+          :max="maxUsernameLength"
+          :maxlength="maxUsernameLength"
+          :rules="usernameRules"
+          prepend-icon="mdi-lock"
+          required
+        ></v-text-field>
+        <v-text-field
+          :label="$t('auth.confirmRegistration.verificationCodeLabel')"
+          v-model="verificationCode"
+          prepend-icon="mdi-message-processing"
+          required
+        ></v-text-field>
+        <v-btn
+          color="primary"
+          :loading="loading"
+          :disabled="!valid || loading"
+          type="submit"
+        >
+          {{ $t('auth.confirmRegistration.confirmButtonText') }}
+        </v-btn>
+        <v-btn
+          :loading="loadingResend"
+          :disabled="loadingResend"
+          @click="onResendBtnClick">{{ $t('auth.confirmRegistration.resendButtonText') }}</v-btn>
+      </v-form>
+    </v-flex>
+  </v-layout>
+</v-container>
 </template>
 
 <script >

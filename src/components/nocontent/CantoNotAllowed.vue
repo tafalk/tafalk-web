@@ -4,7 +4,7 @@
       <v-container pa-3 fluid grid-list-lg>
         <v-layout align-center column>
           <span class="grey--text"><v-icon size="100">mdi-lock</v-icon></span><br/>
-          <span class="grey--text headline">{{ $t('nocontent.profileNotAllowed.title') }}</span>
+          <span class="grey--text headline">{{ $t('nocontent.cantoNotAllowed.title') }}</span>
         </v-layout>
       </v-container>
     </v-card-title>
@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'ProfileNotAllowed',
+  name: 'CantoNotAllowed',
   data () {
     return {
     }

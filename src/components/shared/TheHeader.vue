@@ -20,12 +20,12 @@
       v-if="isMobileSearchHeaderOn && $vuetify.breakpoint.smAndDown"
       single-line
       clearable
-      prepend-icon="arrow_back"
+      prepend-icon="mdi-arrow-left"
       :placeholder="$t('common.toolbar.searchPlaceholder')"
       v-model="searchText"
       @input="search"
-      @click:prepend="isMobileSearchHeaderOn = false"
-      @click:clear="searchText = ''"
+      @click:prepend="onSearchBackButtonClick"
+      @click:clear="clearSearchText"
     ></v-text-field>
 
     <!-- Site name / logo -->
@@ -42,7 +42,7 @@
     <v-text-field
       v-if="!isRouteChanging && isSearchBarVisible && $vuetify.breakpoint.mdAndUp"
       :placeholder="$t('common.toolbar.searchPlaceholder')"
-      prepend-icon="search"
+      prepend-icon="mdi-magnify"
       hide-details
       single-line
       v-model="searchText"
@@ -55,7 +55,7 @@
       small
       @click="onMobileSearchHeaderOnClick"
     >
-      <v-icon>search</v-icon>
+      <v-icon>mdi-magnify</v-icon>
     </v-btn>
     <v-spacer />
     <!-- Authenticated User Items -->
@@ -79,10 +79,10 @@
         @click="onSealedStreamsClick"
       >
         <v-list-tile-action>
-          <v-icon color="teal">apps</v-icon>
+          <v-icon color="teal">mdi-ghost-off</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
-          <v-list-tile-sub-title class="teal--text">{{ $t('home.bottomnav.all') }}</v-list-tile-sub-title>
+          <v-list-tile-sub-title class="teal--text">{{ $t('home.bottomnav.sealed') }}</v-list-tile-sub-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
@@ -90,7 +90,7 @@
         @click="onLiveStreamsClick"
       >
         <v-list-tile-action>
-          <v-icon color="red darken-1">play_circle_outline</v-icon>
+          <v-icon color="red darken-1">mdi-play-circle-outline</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-sub-title class="red--text text--darken-1">{{ $t('home.bottomnav.liveNow') }}</v-list-tile-sub-title>
@@ -101,10 +101,21 @@
         @click="onByFaveOtherStreamsClick"
       >
         <v-list-tile-action>
-          <v-icon color="purple darken-2">star</v-icon>
+          <v-icon color="purple darken-2">mdi-star</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-sub-title class="purple--text text--darken-2">{{ $t('home.bottomnav.byFaveUsers') }}</v-list-tile-sub-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile
+        v-if="$vuetify.breakpoint.smAndDown"
+        @click="onCantosClick"
+      >
+        <v-list-tile-action>
+          <v-icon color="cyan">mdi-music</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-sub-title class="teal--text">{{ $t('home.bottomnav.cantos') }}</v-list-tile-sub-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-divider v-if="$vuetify.breakpoint.smAndDown"/>
@@ -159,7 +170,6 @@ export default {
   name: 'Header',
   data () {
     return {
-      searchText: '',
       fetchLimit: homeStreamFetchLength,
       isDarkTheme: false,
       isMobileSearchHeaderOn: false
@@ -180,9 +190,18 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getCurrentRoutePath: 'route/getCurrentRoutePath',
       getIsRouteChanging: 'route/getIsRouteChanging',
+      getSearchText: 'siteSearch/getSearchText',
       getSearchSiteResults: 'siteSearch/getSearchResults',
       getMenuDrawer: 'shared/getMenuDrawer'
     }),
+    searchText: {
+      get: function () {
+        return this.getSearchText
+      },
+      set: function (val) {
+        this.setSearchText(val)
+      }
+    },
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
@@ -220,6 +239,7 @@ export default {
   methods: {
     ...mapMutations({
       setAuthenticatedUser: 'authenticatedUser/setUser',
+      setSearchText: 'siteSearch/setSearchText',
       clearSearchText: 'siteSearch/clearSearchText',
       clearSearchResults: 'siteSearch/clearSearchResults',
       setIsLogoutConfirmationDialogVisible: 'authenticatedUser/dialog/setIsLogoutConfirmationDialogVisible',
@@ -231,6 +251,7 @@ export default {
       fetchInitialSealedBriefStreams: 'fetchInitialSealedBriefStreams',
       fetchInitialLiveBriefStreams: 'fetchInitialLiveBriefStreams',
       fetchInitialSealedBriefStreamsByFaveUsers: 'fetchInitialSealedBriefStreamsByFaveUsers',
+      fetchInitialBriefCantos: 'fetchInitialBriefCantos',
       setTheme: 'authenticatedUser/setTheme'
     }),
     async search () {
@@ -265,8 +286,16 @@ export default {
       await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
       this.setMenuDrawer(false)
     },
+    async onCantosClick () {
+      this.clearSearchComponents()
+      await this.fetchInitialBriefCantos({ limit: this.fetchLimit, nextToken: null })
+      this.setMenuDrawer(false)
+    },
+    onSearchBackButtonClick () {
+      this.clearSearchComponents()
+      this.isMobileSearchHeaderOn = false
+    },
     clearSearchComponents () {
-      this.searchText = ''
       this.clearSearchText()
       this.clearSearchResults()
     }

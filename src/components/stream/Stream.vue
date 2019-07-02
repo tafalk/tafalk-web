@@ -1,5 +1,5 @@
 <template>
-<v-container fluid grid-list-md>
+<v-container fluid grid-list-lg px-2>
   <!-- full page loader -->
   <v-layout v-if="!pageReady || stream == null" align-center fill-height row>
     <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
@@ -8,7 +8,7 @@
   </v-layout>
   <!-- regular content -->
   <v-layout row wrap v-else>
-    <v-flex xs12 sm12 offset-md2 md8 infinite-wrapper>
+    <v-flex xs12 infinite-wrapper>
       <div v-if="isStreamAllowed">
         <v-card flat>
           <v-toolbar dense flat>
@@ -34,7 +34,7 @@
           <v-card-actions>
             <!-- Stream metadata -->
             <span v-if="!isSealed" class="red--text">
-              <v-icon class="red--text">play_arrow</v-icon>
+              <v-icon class="red--text">mdi-play</v-icon>
               {{ $t('stream.metadata.liveLabel') }}
             </span>
             <span v-else class="grey--text">
@@ -49,7 +49,7 @@
               :color="shareButtonColor"
               @click="onShowShareStreamLinkDialog"
             >
-              <v-icon>share</v-icon>
+              <v-icon>mdi-share-variant</v-icon>
             </v-btn>
             &nbsp;
             <!-- Bookmark -->
@@ -63,7 +63,7 @@
               :disabled="isLikeLoading"
               @click="onLikeClick"
             >
-                <v-icon>bookmark_border</v-icon>&nbsp;{{ likeCount }}
+                <v-icon>mdi-bookmark-outline</v-icon>&nbsp;{{ likeCount }}
             </v-btn>
             <v-btn
               v-if="isSealed && authenticatedUserLikeId"
@@ -75,7 +75,7 @@
               :disabled="isLikeLoading"
               @click="onRemoveLikeClick"
             >
-                <v-icon>bookmark</v-icon>&nbsp;{{ likeCount }}
+                <v-icon>mdi-bookmark</v-icon>&nbsp;{{ likeCount }}
             </v-btn>
             &nbsp;
             <!-- Comment -->
@@ -87,7 +87,7 @@
               :color="commentButtonColor"
               @click="onCommentTextAreaToggleShowClick"
             >
-              <v-icon>comment</v-icon>
+              <v-icon>mdi-comment</v-icon>
             </v-btn>
             &nbsp;
             <!-- Flag -->
@@ -99,7 +99,7 @@
               :color="flagButtonColor"
               @click.stop="onFlagDialogShowClick"
             >
-              <v-icon>outlined_flag</v-icon>
+              <v-icon>mdi-flag-variant-outline</v-icon>
             </v-btn>
             <v-btn
               v-else-if="authenticatedUserFlagId"
@@ -109,7 +109,7 @@
               :color="flagButtonColor"
               @click.stop="onRetractFlagDialogShowClick"
             >
-              <v-icon>flag</v-icon>
+              <v-icon>mdi-flag-variant</v-icon>
             </v-btn>
           </v-card-actions>
           <!-- Add-comment sliding box -->

@@ -118,8 +118,7 @@ export const CreateStream = gql`mutation CreateStream(
   $location: String,
   $track: String,
   $startTime: String!,
-  $sealTime: String!,
-  $visits: Int) {
+  $sealTime: String!) {
   createStream(input: {
     id: $id
     userId: $userId
@@ -133,7 +132,6 @@ export const CreateStream = gql`mutation CreateStream(
     isSealed: 0
     startTime: $startTime
     sealTime: $sealTime
-    visits: $visits
   }){
     id
     userId
@@ -147,7 +145,6 @@ export const CreateStream = gql`mutation CreateStream(
     startTime
     isSealed
     sealTime
-    visits
   }
 }`
 
@@ -168,7 +165,6 @@ export const UpdateStreamTitle = gql`mutation UpdateStreamTitle($id: ID!, $title
     startTime
     isSealed
     sealTime
-    visits
   }
 }`
 
@@ -189,7 +185,6 @@ export const UpdateStreamBody = gql`mutation UpdateStreamBody($id: ID!, $body: S
     startTime
     isSealed
     sealTime
-    visits
   }
 }`
 
@@ -227,7 +222,6 @@ export const SealStreamForEver = gql`mutation SealStreamForEver(
     startTime
     isSealed
     sealTime
-    visits
   }
 }`
 
@@ -248,7 +242,6 @@ export const UpdateMood = gql`mutation UpdateMood($id: ID!, $mood: [Mood]) {
     startTime
     isSealed
     sealTime
-    visits
   }
 }`
 
@@ -269,7 +262,6 @@ export const UpdatePosition = gql`mutation UpdatePosition($id: ID!, $position: [
     startTime
     isSealed
     sealTime
-    visits
   }
 }`
 
@@ -288,7 +280,6 @@ export const OnUpdateStream = gql`subscription OnUpdateStream($id: ID!) {
     startTime
     isSealed
     sealTime
-    visits
     likes {
       id
       streamId

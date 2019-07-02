@@ -78,6 +78,10 @@ const GetStreamLink = (streamId) => {
   return `https://tafalk.com/stream/${streamId}`
 }
 
+const GetCantoLink = (username) => {
+  return `https://tafalk.com/user/${username}/canto`
+}
+
 const GenerateGeocoderRequestLink = (searchText) => {
   return `${geocodingRootUrl}/q/${encodeURIComponent(searchText)}.js?key=${MapTilerGeooderConfig.apiKey}`
 }
@@ -89,5 +93,6 @@ export {
   GetUserHue,
   GetUserHsl,
   GetStreamLink,
+  GetCantoLink,
   GenerateGeocoderRequestLink
 }

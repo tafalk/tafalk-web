@@ -9,25 +9,25 @@
           <v-spacer />
           <div v-if="isSealed">
             <span class="pa-2 grey--text caption">
-              <v-icon class="grey--text caption">airline_seat_flat</v-icon>{{ timeFromSealedToNow }}
+              <v-icon class="grey--text caption">mdi-seat-flat</v-icon>{{ timeFromSealedToNow }}
             </span>
             <span class="pa-2 grey--text caption">
-              <v-icon class="grey--text caption">timer</v-icon>{{ timeSpentForStream }}
+              <v-icon class="grey--text caption">mdi-timer</v-icon>{{ timeSpentForStream }}
             </span>
           </div>
           <div v-else>
             <span class="pa-2 grey--text caption">
-              <v-icon class="grey--text caption">play_arrow</v-icon>&nbsp;Live Now
+              <v-icon class="grey--text caption">mdi-play</v-icon>&nbsp;Live Now
             </span>
             <span class="pa-2 grey--text caption">
-              <v-icon class="grey--text caption">timer</v-icon>&nbsp;{{ timeSpentForStream }}
+              <v-icon class="grey--text caption">mdi-timer</v-icon>&nbsp;{{ timeSpentForStream }}
             </span>
           </div>
           <span class="pa-2 grey--text caption">
-            <v-icon class="grey--text caption">bookmark</v-icon>&nbsp;{{ likeCount }}
+            <v-icon class="grey--text caption">mdi-bookmark</v-icon>&nbsp;{{ likeCount }}
           </span>
           <span class="pa-2 grey--text caption">
-            <v-icon class="grey--text caption">comment</v-icon>&nbsp;{{ commentCount }}
+            <v-icon class="grey--text caption">mdi-comment</v-icon>&nbsp;{{ commentCount }}
           </span>
         </v-card-title>
         <v-card-text class="text-truncate">{{ stream.body }}</v-card-text>

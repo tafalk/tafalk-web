@@ -5,7 +5,7 @@
     <v-btn
       depressed
       dark
-    ><v-icon>email</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.message') }}
+    ><v-icon>mdi-email</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.message') }}
     </v-btn>
     -->
 
@@ -13,7 +13,7 @@
     <v-btn v-if="inboundWatchIdFromAuthenticatedUser == null || inboundWatchIdFromAuthenticatedUser.length === 0"
       color="warning"
       @click="onWatchThisUserClick"
-    ><v-icon>star_border</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watch') }}
+    ><v-icon>mdi-star-outline</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watch') }}
     </v-btn>
 
     <v-btn v-else
@@ -21,7 +21,7 @@
       color="grey"
       class="white--text"
       @click="stopWatchingDialog = true"
-    ><v-icon>star</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watching') }}
+    ><v-icon>mdi-star</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watching') }}
     </v-btn>
 
     <!-- block/unblock button -->
@@ -29,14 +29,14 @@
       color="grey"
       :disabled="inboundBlockIdFromAuthenticatedUser != null && inboundWatchIdFromAuthenticatedUser.length > 0"
       @click="blockUserDialog = true"
-    ><v-icon>block</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.block') }}
+    ><v-icon>mdi-cancel</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.block') }}
     </v-btn>
 
     <v-btn v-else-if="inboundWatchIdFromAuthenticatedUser == null || inboundWatchIdFromAuthenticatedUser.length === 0"
       depressed
       color="error"
       @click="onUnblockThisUserClick"
-    ><v-icon>adjust</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.unblock') }}
+    ><v-icon>mdi-adjust</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.unblock') }}
     </v-btn>
   </v-flex>
 </template>

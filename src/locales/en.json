@@ -39,13 +39,23 @@
       "noResult": "No Results Found for '{searchText}'",
       "result": {
         "userTitle": "Users ({resultCount})",
-        "streamTitle": "Streams ({resultCount})"
+        "streamTitle": "Streams ({resultCount})",
+        "cantoTitle":  "Cantos ({resultCount})"
       }
     },
     "bottomnav": {
-      "all": "All",
+      "sealed": "Sealed",
       "liveNow": "Live Now",
-      "byFaveUsers": "By Fave Users"
+      "byFaveUsers": "By Fave Users",
+      "cantos": "Cantos"
+    },
+    "addFab" : {
+      "canto": {
+        "tooltip": "Canto"
+      },
+      "stream": {
+        "tooltip": "Stream"
+      }
     }
   },
   "agreements": {
@@ -215,6 +225,11 @@
       }
     },
     "pour": {
+      "introduction": {
+        "title": "You are about to create your first stream",
+        "body": "Streams are the main content Tafalk! has. Just go along and pour your head here.",
+        "closeButtonText": "Go"
+      },
       "savedLabel": "Saved",
       "savingLabel": "Saving",
       "saveErrorLabel": "Error",
@@ -230,6 +245,27 @@
       }
     }
   },
+  "canto": {
+    "metadata": {
+      "title": "Canto",
+      "timeInfoLabel": "created {created}, last updated: {lastUpdated}"
+    },
+    "share": {
+      "dialog": {
+        "copyLinkTooltip": "Click to copy",
+        "copiedLinkTooltip": "Copied",
+        "tooltip": "Click to copy"
+      },
+      "buttonText": "Share"
+    },
+    "pour": {
+      "introduction": {
+        "title": "Your own canto starts here",
+        "body": "This concept is inspired by The Cantos of Ezra Pound. So, it never ends and lives along yourself (or your Tafalk! account, at least). Ah yes, your canto is not meant to be backspaced just like the streams here. Enjoy the ride!",
+        "closeButtonText": "Go"
+      }
+    }
+  },
   "user": {
     "profilePage": {
       "changeProfilePictureButtonText": "Change Profile Pic",
@@ -237,7 +273,7 @@
       "defaultLocation": "Somewhere",
       "tabs": {
         "streams": "Streams",
-        "likedStreams": "Likes",
+        "likedContents": "Likes",
         "likedUsers": "Faves",
         "removeLikeButtonText": "Unlike",
         "removeLikeUserButtonText": "Unfave"
@@ -411,6 +447,9 @@
       "title": "You are not authorized to see the content"
     },
     "streamNotAllowed": {
+      "title": "You are not authorized to see the content"
+    },
+    "cantoNotAllowed": {
       "title": "You are not authorized to see the content"
     }
   }

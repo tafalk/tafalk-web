@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <v-container grid-list-md>
+    <v-container grid-list-lg>
       <!-- full page loader -->
       <v-layout v-if="!getIsPageReady" align-center fill-height>
         <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
@@ -8,12 +8,24 @@
         </v-flex>
       </v-layout>
       <v-layout v-else-if="!searchText || searchText.length === 0" row wrap>
-        <v-flex offset-md2 md8 xs12 infinite-wrapper>
+        <!-- Streams -->
+        <v-flex offset-md2 md8 xs12 infinite-wrapper v-if="isStreamListType">
           <v-layout row wrap>
             <v-flex md12 v-for="stream in streamList" :key="stream.id">
               <tafalk-brief-stream-card
                 :stream="stream"
               ></tafalk-brief-stream-card>
+            </v-flex>
+            <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
+          </v-layout>
+        </v-flex>
+        <!-- Cantos -->
+        <v-flex offset-md2 md8 xs12 infinite-wrapper v-else-if="isCantoListType">
+          <v-layout row wrap>
+            <v-flex md12 v-for="canto in cantoList" :key="canto.id">
+              <tafalk-brief-canto-card
+                :canto="canto"
+              ></tafalk-brief-canto-card>
             </v-flex>
             <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
           </v-layout>
@@ -38,6 +50,7 @@
         </v-flex>
       </v-layout>
       <v-layout v-else row wrap>
+        <!-- Search Result (Users) -->
         <v-flex offset-md2 md8 class="mb-4">
           <span class="title grey--text">{{ $t('home.search.result.userTitle', { resultCount: searchUserTypeResults.length }) }}</span>
           <v-layout row wrap>
@@ -54,7 +67,8 @@
           </v-layout>
         </v-flex>
         <br />
-        <v-flex offset-md2 md8>
+        <!-- Search Result (Streams) -->
+        <v-flex offset-md2 md8 class="mb-4">
           <span class="title grey--text">{{ $t('home.search.result.streamTitle', { resultCount: searchStreamTypeResults.length }) }}</span>
           <v-layout row wrap>
             <v-flex
@@ -69,6 +83,23 @@
             </v-flex>
           </v-layout>
         </v-flex>
+        <br />
+        <!-- Search Result (Cantos) -->
+        <v-flex offset-md2 md8>
+          <span class="title grey--text">{{ $t('home.search.result.cantoTitle', { resultCount: searchCantoTypeResults.length }) }}</span>
+          <v-layout row wrap>
+            <v-flex
+              class="mt-2"
+              md12
+              v-for="searchCantoTypeResult in searchCantoTypeResults"
+              :key="searchCantoTypeResult.id"
+            >
+              <tafalk-brief-canto-card
+                :canto="searchCantoTypeResult"
+              ></tafalk-brief-canto-card>
+            </v-flex>
+          </v-layout>
+        </v-flex>
       </v-layout>
     </v-container>
 
@@ -78,33 +109,38 @@
       :value="true"
       :active.sync="footerEl"
     >
-      <v-btn flat color="teal" :value=recentValue>
-        <span>{{ $t('home.bottomnav.all') }}</span>
-        <v-icon>apps</v-icon>
+      <v-btn flat color="teal" :value=sealedValue>
+        <span>{{ $t('home.bottomnav.sealed') }}</span>
+        <v-icon>mdi-ghost-off</v-icon>
       </v-btn>
       <!--
       <v-btn flat color="deep-orange lighten-1" :value=topRatedValue>
         <span>Popular</span>
-        <v-icon>whatshot</v-icon>
+        <v-icon>mdi-fire</v-icon>
       </v-btn>
       -->
       <v-btn v-if="authenticatedUser" flat color="red darken-1" :value=liveNowValue>
         <span>{{ $t('home.bottomnav.liveNow') }}</span>
-        <v-icon>play_circle_outline</v-icon>
+        <v-icon>mdi-play-circle-outline</v-icon>
       </v-btn>
       <v-btn v-if="authenticatedUser" flat color="purple darken-2" :value=byFaveUsersValue>
         <span>{{ $t('home.bottomnav.byFaveUsers') }}</span>
-        <v-icon>star</v-icon>
+        <v-icon>mdi-star</v-icon>
+      </v-btn>
+      <v-btn flat color="cyan" :value=cantoValue>
+        <span>{{ $t('home.bottomnav.cantos') }}</span>
+        <v-icon>mdi-music</v-icon>
       </v-btn>
     </v-bottom-nav>
-    <tafalk-new-stream-fab v-if="authenticatedUser"></tafalk-new-stream-fab>
+    <tafalk-new-fab v-if="authenticatedUser"></tafalk-new-fab>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import TafalkNewStreamFab from '@/components/home/buttons/NewStreamFab.vue'
+import TafalkNewFab from '@/components/home/buttons/NewFab.vue'
 import TafalkBriefStreamCard from '@/components/stream/cards/BriefStreamCard.vue'
+import TafalkBriefCantoCard from '@/components/canto/cards/BriefCantoCard.vue'
 import TafalkBriefUserCard from '@/components/user/cards/BriefUserCard.vue'
 import { homeStreamFetchLength } from '@/utils/constants'
 
@@ -114,35 +150,45 @@ export default {
     return {
       userTypeName: 'User',
       streamTypeName: 'Stream',
-      recentValue: 'recent',
+      cantoTypeName: 'Canto',
+      sealedValue: 'sealed',
       topRatedValue: 'top-rated',
       liveNowValue: 'live-now',
       byFaveUsersValue: 'by-fave-users',
+      cantoValue: 'cantos',
       footerEl: null,
       fetchLimit: homeStreamFetchLength
     }
   },
   components: {
-    TafalkNewStreamFab,
+    TafalkNewFab,
     TafalkBriefStreamCard,
+    TafalkBriefCantoCard,
     TafalkBriefUserCard
   },
   created () {
-    this.footerEl = 'recent'
+    this.footerEl = 'sealed'
     this.setIsPageReady(true)
   },
   watch: {
     async footerEl (val, oldVal) {
       if (val == null || val === '' || val === oldVal) {
-        this.clearStreamList()
+        this.clearAll()
       }
 
-      if (this.recentValue === val) {
+      // Clear search text if changed
+      if (val !== oldVal) {
+        this.clearSearchText()
+      }
+
+      if (this.sealedValue === val) {
         await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
       } else if (this.liveNowValue === val) {
         await this.fetchInitialLiveBriefStreams({ limit: this.fetchLimit, nextToken: null })
       } else if (this.byFaveUsersValue === val) {
         await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
+      } else if (this.cantoValue === val) {
+        await this.fetchInitialBriefCantos({ limit: this.fetchLimit, nextToken: null })
       } else if (this.topRatedValue === val) {
         // popularism not implemeted yet :9
       }
@@ -154,15 +200,20 @@ export default {
       getSearchText: 'siteSearch/getSearchText',
       getIsSearchTextLongEnough: 'siteSearch/getIsSearchTextLongEnough',
       getStreamList: 'getStreamList',
+      getCantoList: 'getCantoList',
       getSearchSiteResults: 'siteSearch/getSearchResults',
       getIsPageReady: 'getIsPageReady',
-      getNextStreamToken: 'getNextStreamToken'
+      getNextStreamToken: 'getNextStreamToken',
+      getNextCantoToken: 'getNextCantoToken'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
     streamList () {
       return this.getStreamList
+    },
+    cantoList () {
+      return this.getCantoList
     },
     searchText () {
       return this.getSearchText
@@ -179,36 +230,54 @@ export default {
     searchStreamTypeResults () {
       return this.searchResults.filter(r => r.__typename === this.streamTypeName)
     },
-    nextToken () {
+    searchCantoTypeResults () {
+      return this.searchResults.filter(r => r.__typename === this.cantoTypeName)
+    },
+    isStreamListType () {
+      return [this.sealedValue, this.liveNowValue, this.byFaveUsersValue].includes(this.footerEl)
+    },
+    isCantoListType () {
+      return [this.cantoValue].includes(this.footerEl)
+    },
+    nextStreamToken () {
       return this.getNextStreamToken
+    },
+    nextCantoToken () {
+      return this.getNextCantoToken
     }
   },
   methods: {
     ...mapMutations({
       setIsPageReady: 'setIsPageReady',
-      clearStreamList: 'clearStreamList'
+      clearSearchText: 'siteSearch/clearSearchText'
     }),
     ...mapActions({
       fetchInitialSealedBriefStreams: 'fetchInitialSealedBriefStreams',
       fetchInitialLiveBriefStreams: 'fetchInitialLiveBriefStreams',
       fetchInitialSealedBriefStreamsByFaveUsers: 'fetchInitialSealedBriefStreamsByFaveUsers',
+      fetchInitialBriefCantos: 'fetchInitialBriefCantos',
       fetchFurtherSealedBriefStreams: 'fetchFurtherSealedBriefStreams',
       fetchFurtherLiveBriefStreams: 'fetchFurtherLiveBriefStreams',
-      fetchFurtherSealedBriefStreamsByFaveUsers: 'fetchFurtherSealedBriefStreamsByFaveUsers'
+      fetchFurtherSealedBriefStreamsByFaveUsers: 'fetchFurtherSealedBriefStreamsByFaveUsers',
+      fetchFurtherBriefCantos: 'fetchFurtherBriefCantos',
+      clearAll: 'clearAll'
     }),
     async infiniteHomeHandler ($state) {
       // if no new things to load, complete
-      if (this.nextToken == null) {
+      if ((this.isStreamListType && this.nextStreamToken == null) || (this.isCantoListType && this.nextCantoToken == null)) {
         $state.complete()
       } else {
-        if (this.footerEl === this.recentValue) {
-          await this.fetchFurtherSealedBriefStreams({ limit: this.fetchLimit, nextToken: this.nextToken })
+        if (this.footerEl === this.sealedValue) {
+          await this.fetchFurtherSealedBriefStreams({ limit: this.fetchLimit, nextToken: this.nextStreamToken })
           $state.loaded()
         } else if (this.footerEl === this.liveNowValue) {
-          await this.fetchFurtherLiveBriefStreams({ limit: this.fetchLimit, nextToken: this.nextToken })
+          await this.fetchFurtherLiveBriefStreams({ limit: this.fetchLimit, nextToken: this.nextStreamToken })
           $state.loaded()
         } else if (this.footerEl === this.byFaveUsersValue) {
-          await this.fetchFurtherSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: this.nextToken })
+          await this.fetchFurtherSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: this.nextStreamToken })
+          $state.loaded()
+        } else if (this.footerEl === this.cantoValue) {
+          await this.fetchFurtherBriefCantos({ limit: this.fetchLimit, nextToken: this.nextCantoToken })
           $state.loaded()
         } else if (this.footerEl === this.topRatedValue) {
           // popularism not implemeted yet :9

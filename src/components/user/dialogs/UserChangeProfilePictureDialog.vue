@@ -14,7 +14,7 @@
           </div>
         </v-card-title>
         <v-card-text>
-          <v-container grid-list-md text-xs-center>
+          <v-container grid-list-lg text-xs-center>
             <v-avatar pt-1 size="200" color="grey" v-if="imageUrl">
               <img :src=imageUrl height="200" />
             </v-avatar>
@@ -22,7 +22,7 @@
               :label="$t('user.profilePicture.selectImageLabel')"
               @click='onPickFile'
               v-model='imageFileName'
-              prepend-icon='attach_file'
+              prepend-icon="mdi-paperclip"
             ></v-text-field>
             <input
               type="file"

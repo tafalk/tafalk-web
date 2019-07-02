@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-xl text-xs-center>
+  <v-container grid-list-lg text-xs-center>
     <v-layout row wrap>
       <v-flex md6 sm12-and-down offset-md3>
         <v-stepper v-model="forgotPasswordCurrentStep">
@@ -31,7 +31,7 @@
                   :max="maxUsernameLength"
                   :maxlength="maxUsernameLength"
                   :rules="usernameRules"
-                  prepend-icon="person"
+                  prepend-icon="mdi-account"
                   required
                 ></v-text-field>
                 <v-btn
@@ -47,7 +47,7 @@
                 <v-text-field
                   :label="$t('auth.forgotPassword.codeLabel')"
                   v-model="code"
-                  prepend-icon="chat_bubble"
+                  prepend-icon="mdi-message-processing"
                   required
                 ></v-text-field>
                 <v-btn
@@ -71,7 +71,7 @@
                   :min="minPasswordLength"
                   :rules="passwordRules"
                   type="password"
-                  prepend-icon="lock"
+                  prepend-icon="mdi-lock"
                   required
                 ></v-text-field>
                 <v-btn

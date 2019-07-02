@@ -1,25 +1,21 @@
 <template>
   <tafalk-stream-authorization-required v-if="!authenticatedUser"></tafalk-stream-authorization-required>
-  <v-card flat v-else>
+  <div v-else>
+    <tafalk-stream-introduction v-if="isFirstStreamOfUser"></tafalk-stream-introduction>
+    <v-card flat>
       <v-toolbar dense flat>
-        <v-toolbar-title
-          v-if="processState === 'saved'"
-        ><span class="grey--text"><v-icon>check_circle_outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
+        <v-toolbar-title v-if="processState === 'saved'">
+          <span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
         </v-toolbar-title>
-        <v-toolbar-title
-          v-else-if="processState === 'saving'"
-        ><span class="grey--text"><v-icon>cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
+        <v-toolbar-title v-else-if="processState === 'saving'">
+          <span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
         </v-toolbar-title>
-        <v-toolbar-title
-          v-else-if="processState === 'error'"
-        ><span class="grey--text"><v-icon>highlight_off</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
+        <v-toolbar-title v-else-if="processState === 'error'"><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
         </v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-spacer/>
         <span class="grey--text">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
       </v-toolbar>
-      <v-form
-        class="pa-3 pt-4"
-      >
+      <v-form class="pa-3 pt-4">
         <!-- body -->
         <v-textarea
           ref="pourBody"
@@ -34,6 +30,8 @@
           @paste="onPaste"
           @cut="onCut"
           @keydown="onDefaultKeydown"
+          @mousedown="onMouseDown"
+          @mouseup="onMouseUp"
         ></v-textarea>
 
         <!-- title -->
@@ -58,7 +56,7 @@
               return-object
             ></v-select>
           </v-flex>
-          <v-spacer></v-spacer>
+          <v-spacer/>
           <v-flex xs12 sm5 md5>
             <v-select
               dense
@@ -75,7 +73,7 @@
               return-object
             ></v-select>
           </v-flex>
-          <v-spacer></v-spacer>
+          <v-spacer/>
           <v-btn
             color="primary"
             @click="onDoneClick"
@@ -85,24 +83,27 @@
           >{{ $t('stream.pour.sealButtonText') }}</v-btn>
         </v-layout>
       </v-form>
-  </v-card>
+    </v-card>
+  </div>
 </template>
 
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
+import { ListStreamsByUser } from '@/graphql/Profile'
 import { CreateStream, UpdateStreamBody, UpdatePosition, UpdateMood, SealStreamForEver } from '@/graphql/Stream'
+import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
 import TafalkStreamAddTitleDialog from '@/components/stream/dialogs/AddTitleDialog.vue'
+import TafalkStreamIntroduction from '@/components/stream/dialogs/StreamIntroduction.vue'
 import { GenerateUuid4 } from '@/utils/generators'
 import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
 import { streamMoodOptions, streamPositionOptions, pourStrikethroughTimeToIdle } from '@/utils/constants'
 import { GetKeyName } from '@/utils/ioUtils'
 
-const logger = new Logger('Pour')
+const logger = new Logger('PourStream')
 
 export default {
-  name: 'Pour',
+  name: 'PourStream',
   data () {
     return {
       valid: false,
@@ -113,6 +114,7 @@ export default {
       positionModel: null,
       moodOptions: streamMoodOptions,
       positionOptions: streamPositionOptions,
+      isFirstStreamOfUser: false,
       streamId: '',
       processState: '',
       savedStateConstant: 'saved',
@@ -127,7 +129,8 @@ export default {
   },
   components: {
     TafalkStreamAuthorizationRequired,
-    TafalkStreamAddTitleDialog
+    TafalkStreamAddTitleDialog,
+    TafalkStreamIntroduction
   },
   created () {
     // In case of the need to add it globally, see https://forum.vuejs.org/t/detect-browser-close/5001
@@ -137,7 +140,14 @@ export default {
     // Create a UUID for the new stream
     this.streamId = GenerateUuid4()
   },
-  mounted () {
+  async mounted () {
+    // Check if first stream of user
+    const graphqlVisitedProfileStreamsResult = await API.graphql(graphqlOperation(ListStreamsByUser, { userId: this.authenticatedUserId, limit: 1, nextToken: null }))
+    const userStreamsShortList = graphqlVisitedProfileStreamsResult.data.listStreamsByUser.items
+    if (userStreamsShortList == null || userStreamsShortList.length === 0) {
+      this.isFirstStreamOfUser = true
+    }
+
     // Require confirmation for accidental route changes
     this.setIsRouteChangeSafe(false)
   },
@@ -203,8 +213,7 @@ export default {
             location: null,
             track: null,
             startTime: new Date().toISOString(),
-            sealTime: this.incompleteSealTimeValue,
-            visits: 0
+            sealTime: this.incompleteSealTimeValue
           }))
           this.processState = this.savedStateConstant
         } catch (err) {
@@ -369,6 +378,12 @@ export default {
     },
     // disable cutting
     onCut (event) {
+      event.preventDefault()
+    },
+    onMouseDown (event) {
+      event.preventDefault()
+    },
+    onMouseUp (event) {
       event.preventDefault()
     },
     onDefaultKeydown (event) {

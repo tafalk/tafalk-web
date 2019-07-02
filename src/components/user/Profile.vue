@@ -16,10 +16,10 @@
           <!-- edit profile button -->
           <tafalk-profile-edit-speed-dial v-if="isVisitingOwnProfile" />
 
-          <v-container fluid grid-list-xs>
+          <v-container fluid grid-list-lg>
             <v-layout row wrap>
               <v-flex d-flex xs12 md4>
-                <v-container pt-3 fluid grid-list-xs>
+                <v-container pt-3 fluid grid-list-lg>
                   <v-layout align-center column>
                     <v-avatar v-if="authenticatedUser && visitedUser.profilePictureObjectUrl != null" pt-1 size="150">
                       <img :src="visitedUser.profilePictureObjectUrl" />
@@ -52,9 +52,9 @@
               <v-flex d-flex xs12 md4>
                 <v-card-title primary-title>
                   <div>
-                    <span v-if="visitedUserAccountCreationDateStr" class="grey--text"><v-icon>assignment_ind</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</span><br/>
-                    <span v-if="visitedUser != null" class="grey--text"><v-icon>location_on</v-icon>&nbsp;{{visitedUserLocationValue}}</span><br/>
-                    <span v-if="visitedUser != null" class="grey--text"><v-icon>lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</span><br/>
+                    <span v-if="visitedUserAccountCreationDateStr" class="grey--text"><v-icon>mdi-account-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</span><br/>
+                    <span v-if="visitedUser != null" class="grey--text"><v-icon>mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</span><br/>
+                    <span v-if="visitedUser != null" class="grey--text"><v-icon>mdi-lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</span><br/>
                   </div>
                 </v-card-title>
               </v-flex>
