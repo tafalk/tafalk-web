@@ -32,6 +32,7 @@
           @keydown="onDefaultKeydown"
           @mousedown="onMouseDown"
           @mouseup="onMouseUp"
+          @contextmenu.prevent="onRightClick"
         ></v-textarea>
 
         <!-- title -->
@@ -391,6 +392,9 @@ export default {
       if (event.ctrlKey && event.key === 'z') {
         event.preventDefault()
       }
+    },
+    onRightClick (event) {
+      // already prevented. do nothing
     },
     async onMoodChange () {
       logger.info('Mood changed:')

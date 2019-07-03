@@ -40,6 +40,7 @@
               @keydown="onDefaultKeydown"
               @mousedown="onMouseDown"
               @mouseup="onMouseUp"
+              @contextmenu.prevent="onRightClick"
             ></v-textarea>
           </v-form>
         </v-card>
@@ -253,6 +254,9 @@ export default {
       if (event.ctrlKey && event.key === 'z') {
         event.preventDefault()
       }
+    },
+    onRightClick (event) {
+      // already prevented. do nothing
     },
     async onBeforeUnload (event) {
       // An attempt to leave? Save last state immediately
