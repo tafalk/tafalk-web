@@ -1,5 +1,7 @@
 import i18n from '../i18n'
 
+export const copyrightStartYear = 2019
+
 // auth
 export const minFirstNameLength = 1
 export const maxFirstNameLength = 50

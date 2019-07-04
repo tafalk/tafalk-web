@@ -30,7 +30,17 @@ const router = new Router({
     {
       path: '/about',
       name: 'about',
-      component: () => import(/* webpackChunkName: "about" */ './components/meta/About.vue')
+      component: () => import(/* webpackChunkName: "meta" */ './components/meta/About.vue')
+    },
+    {
+      path: '/privacyPolicy',
+      name: 'privacyPolicy',
+      component: () => import(/* webpackChunkName: "meta" */ './components/meta/PrivacyPolicy.vue')
+    },
+    {
+      path: '/termsOfService',
+      name: 'termsOfService',
+      component: () => import(/* webpackChunkName: "meta" */ './components/meta/TermsOfService.vue')
     },
     {
       path: '/auth/register',
