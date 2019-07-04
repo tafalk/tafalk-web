@@ -1,7 +1,7 @@
 <template>
 <div>
   <v-card flat>
-    <v-card-title class="display-1 font-weight-bold">{{ $t('about.text') }}</v-card-title>
+    <v-card-title class="display-1 font-weight-bold">{{ $t('agreements.privacyPolicy.title') }}</v-card-title>
     <v-card-text v-html="content"></v-card-text>
   </v-card>
   <v-footer absolute height="auto" color="primary lighten-1">
@@ -28,16 +28,16 @@ import { mapActions } from 'vuex'
 import { copyrightStartYear } from '@/utils/constants'
 
 export default {
-  name: 'About',
+  name: 'PrivacyPolicy',
   data () {
     return {
       content: null,
-      s3AboutFolder: 'about',
+      s3PrivacyPolicyFolder: 'privacy-policy',
       copyrightStartYear
     }
   },
   created () {
-    this.$httpSitePoliciesStorage.get(`${this.s3AboutFolder}/${this.$i18n.locale}.html`).then(resp => {
+    this.$httpSitePoliciesStorage.get(`${this.s3PrivacyPolicyFolder}/${this.$i18n.locale}.html`).then(resp => {
       this.content = resp.data
     }).catch(err => {
       this.setNewSiteError(err.message || err)

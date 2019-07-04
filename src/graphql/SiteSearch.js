@@ -27,5 +27,16 @@ export const Search = gql`query Search($query: String!) {
         profilePictureKey
       }
     }
+    ... on Canto {
+      __typename
+      id
+      body
+      startTime
+      lastUpdateTime
+      user {
+        username
+        profilePictureKey
+      }
+    }
   }
 }`
