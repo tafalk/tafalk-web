@@ -122,8 +122,8 @@
 
 <script>
 import { Auth, Logger } from 'aws-amplify'
-import TafalkTermsOfServiceDialog from '@/components/shared/TheTermsOfServiceDialog.vue'
-import TafalkPrivacyPolicyDialog from '@/components/shared/ThePrivacyPolicyDialog.vue'
+import TafalkTermsOfServiceDialog from '@/components/shared/dialogs/TheTermsOfServiceDialog.vue'
+import TafalkPrivacyPolicyDialog from '@/components/shared/dialogs/ThePrivacyPolicyDialog.vue'
 import { mapMutations, mapActions } from 'vuex'
 import { minFirstNameLength, maxFirstNameLength, minLastNameLength, maxLastNameLength, minUsernameLength, maxUsernameLength, minPasswordLength } from '@/utils/constants'
 import { CheckPassword } from '@/utils/validator'

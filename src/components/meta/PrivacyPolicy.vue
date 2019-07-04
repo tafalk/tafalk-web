@@ -12,11 +12,11 @@ export default {
   data () {
     return {
       content: null,
-      s3AboutFolder: 'about'
+      s3PrivacyPolicyFolder: 'privacy-policy'
     }
   },
   created () {
-    this.$httpSitePoliciesStorage.get(`${this.s3AboutFolder}/${this.$i18n.locale}.html`).then(resp => {
+    this.$httpSitePoliciesStorage.get(`${this.s3PrivacyPolicyFolder}/${this.$i18n.locale}.html`).then(resp => {
       this.content = resp.data
     }).catch(err => {
       this.setNewSiteError(err.message || err)
