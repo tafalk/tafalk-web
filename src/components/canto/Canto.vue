@@ -275,14 +275,12 @@ export default {
       setNewUserInteractionResultError: 'shared/setNewUserInteractionResultError'
     }),
     async getInitialInfo (username) {
-      console.log('getting info for ' + username)
       try {
         const getUserIdByUserNameGraphqlReq = await API.graphql(graphqlOperation(GetUserIdByUserName, { username }))
         const getUserIdByUserNameGraphqlResult = getUserIdByUserNameGraphqlReq.data.getUserByUsername[0]
         const cantoId = getUserIdByUserNameGraphqlResult.id
 
         const cantoGraphqlResult = await API.graphql(graphqlOperation(GetCanto, { id: cantoId }))
-        console.log('cantoGraphqlResult: ' + cantoGraphqlResult)
 
         // add to the vuex store
         this.setCanto(cantoGraphqlResult.data.getCanto)

@@ -8,7 +8,8 @@
       "uploadButtonText": "Upload",
       "postButtonText": "Post",
       "closeButtonText": "Close",
-      "saveButtonText": "Save"
+      "saveButtonText": "Save",
+      "skipButtonText": "Skip"
     },
     "toolbar": {
       "searchPlaceholder": "Search.."
@@ -32,6 +33,21 @@
         "message": "This website uses cookies to ensure you get the best experience on our website."
       }
     }
+  },
+  "intro": {
+    "item1": {
+      "title": "",
+      "body": "Welcome, this site utilizes only forward-typing. It is indifferent to errors, typos or finger thickness."
+    },
+    "item2": {
+      "title": "",
+      "body": "The main option is the streams, texts are saved as you type. No deleting but striking through the input."
+    },
+    "item3": {
+      "title": "",
+      "body": "Cantos are similar but every user has one. You can add up your canto until whenever you like, but again no deleting."
+    },
+    "closeButtonText": "Ok, I See"
   },
   "home": {
     "search": {

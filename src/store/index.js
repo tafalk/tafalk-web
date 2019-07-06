@@ -22,6 +22,7 @@ export default new Vuex.Store({
   state: {
     appName: 'Tafalk!',
     isPageReady: false,
+    hasVisitedBefore: true,
     streamList: [],
     cantoList: [],
     nextStreamToken: null,
@@ -30,6 +31,9 @@ export default new Vuex.Store({
   getters: {
     getIsPageReady (state) {
       return state.isPageReady
+    },
+    getHasVisitedBefore (state) {
+      return state.hasVisitedBefore
     },
     getStreamList (state) {
       return state.streamList
@@ -47,6 +51,9 @@ export default new Vuex.Store({
   mutations: {
     setIsPageReady (state, isPageReady) {
       state.isPageReady = isPageReady
+    },
+    setHasVisitedBefore (state, hasVisitedBefore) {
+      state.hasVisitedBefore = hasVisitedBefore
     },
     setStreamList (state, streamList) {
       state.streamList = streamList
@@ -74,6 +81,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    setHasVisitedBefore ({ commit }, hasVisitedBeforeStr) {
+      localStorage.setItem('intro:dismissed', hasVisitedBeforeStr === 'true')
+      commit('setHasVisitedBefore', hasVisitedBeforeStr)
+    },
     async fetchInitialSealedBriefStreams ({ commit }, payload) {
       try {
         commit('setIsPageReady', false)
