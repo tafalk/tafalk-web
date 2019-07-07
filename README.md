@@ -4,17 +4,19 @@
 
 This is the frontend project for [tafalk.com](https://tafalk.com) featuring:
 
-- [Vue](https://vuejs.org/)
+- [Vue](https://vuejs.org/) for making the site live, talk back and sleepwalk
 
-- [Vuetify](https://vuetifyjs.com/)
+- [Vuetify](https://vuetifyjs.com/) for UI components
 
-- [AWS Amplify](https://aws-amplify.github.io/)
+- [AWS Amplify](https://aws-amplify.github.io/) for connecting to the AWS backend resources
 
-- [MapTiler Geocoding](https://cloud.maptiler.com/geocoding/)
+- [MapTiler Geocoding](https://cloud.maptiler.com/geocoding/) for location autocomplete
 
-- [Google Analytics](https://analytics.google.com/analytics/web/)
+- [Google Analytics](https://analytics.google.com/analytics/web/) for collecting data, or serving a better user experience?
 
-- [Google Recaptcha V3](https://developers.google.com/recaptcha/docs/v3)
+- [Google Recaptcha V3](https://developers.google.com/recaptcha/docs/v3) for kindly warning robots
+
+- [Autodraw](https://www.autodraw.com/) for most of the doodles
 
 and many other precious facilities.
 

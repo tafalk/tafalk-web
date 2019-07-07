@@ -37,6 +37,7 @@
               @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
               @paste="onPaste"
               @cut="onCut"
+              @keyup="onDefaultKeyup"
               @keydown="onDefaultKeydown"
               @mousedown="onMouseDown"
               @mouseup="onMouseUp"
@@ -67,6 +68,7 @@ export default {
       pageReady: false,
       body: null,
       cantoStatus: 'OK',
+      isCantoCreated: false,
       authorUsername: null,
       isCantoNew: false,
       processState: '',
@@ -107,6 +109,7 @@ export default {
         } else {
           // There's already a canto
           this.body = currentBody
+          this.isCantoCreated = true
         }
       }).catch(err => {
         logger.error('Error occurred while getting canto info', JSON.stringify(err))
@@ -140,23 +143,9 @@ export default {
             status: this.cantoStatus
           }))
           this.processState = this.savedStateConstant
+          this.isCantoCreated = true
         } catch (err) {
           logger.error('An error occurred while creating the canto', err.message || JSON.stringify(err))
-          this.processState = this.errorStateConstant
-          this.setNewSiteError(err.message || err)
-        }
-      } else {
-        // Update the entry
-        try {
-          this.processState = this.savingStateConstant
-          await API.graphql(graphqlOperation(UpdateCantoBody, {
-            id: this.authenticatedUserId,
-            body: newBody,
-            lastUpdateTime: new Date().toISOString()
-          }))
-          this.processState = this.savedStateConstant
-        } catch (err) {
-          logger.error('An error occurred while updating the canto', err.message || JSON.stringify(err))
           this.processState = this.errorStateConstant
           this.setNewSiteError(err.message || err)
         }
@@ -248,6 +237,23 @@ export default {
     },
     onMouseUp (event) {
       event.preventDefault()
+    },
+    async onDefaultKeyup (event) {
+      if (IsNullOrWhitespace(this.body) || !this.isCantoCreated) return
+
+      try {
+        this.processState = this.savingStateConstant
+        await API.graphql(graphqlOperation(UpdateCantoBody, {
+          id: this.authenticatedUserId,
+          body: this.body,
+          lastUpdateTime: new Date().toISOString()
+        }))
+        this.processState = this.savedStateConstant
+      } catch (err) {
+        logger.error('An error occurred while updating the canto', err.message || JSON.stringify(err))
+        this.processState = this.errorStateConstant
+        this.setNewSiteError(err.message || err)
+      }
     },
     onDefaultKeydown (event) {
       // Disable Undo with keyboard

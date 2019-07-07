@@ -29,6 +29,7 @@
           @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
           @paste="onPaste"
           @cut="onCut"
+          @keyup="onDefaultKeyup"
           @keydown="onDefaultKeydown"
           @mousedown="onMouseDown"
           @mouseup="onMouseUp"
@@ -110,6 +111,7 @@ export default {
       valid: false,
       title: null,
       body: null,
+      isStreamCreated: false,
       privacy: 'Public', // Default
       moodModel: null,
       positionModel: null,
@@ -193,9 +195,7 @@ export default {
     // whenever 'stream' changes, this function will run
     async body (newBody, oldBody) {
       // Check if the text is all whitespace
-      if (IsNullOrWhitespace(newBody)) {
-        return
-      }
+      if (IsNullOrWhitespace(newBody)) return
 
       if (oldBody == null || oldBody.length === 0) {
         // Old body is null or empty, so create the entry here
@@ -217,22 +217,9 @@ export default {
             sealTime: this.incompleteSealTimeValue
           }))
           this.processState = this.savedStateConstant
+          this.isStreamCreated = true
         } catch (err) {
           logger.error('An error occurred while creating the stream', err.message || JSON.stringify(err))
-          this.processState = this.errorStateConstant
-          this.setNewSiteError(err.message || err)
-        }
-      } else {
-        // Update the entry
-        try {
-          this.processState = this.savingStateConstant
-          await API.graphql(graphqlOperation(UpdateStreamBody, {
-            id: this.streamId,
-            body: newBody
-          }))
-          this.processState = this.savedStateConstant
-        } catch (err) {
-          logger.error('An error occurred while updating the stream', err.message || JSON.stringify(err))
           this.processState = this.errorStateConstant
           this.setNewSiteError(err.message || err)
         }
@@ -386,6 +373,21 @@ export default {
     },
     onMouseUp (event) {
       event.preventDefault()
+    },
+    async onDefaultKeyup (event) {
+      if (IsNullOrWhitespace(this.body) || !this.isStreamCreated) return
+      try {
+        this.processState = this.savingStateConstant
+        await API.graphql(graphqlOperation(UpdateStreamBody, {
+          id: this.streamId,
+          body: this.body
+        }))
+        this.processState = this.savedStateConstant
+      } catch (err) {
+        logger.error('An error occurred while updating the stream', err.message || JSON.stringify(err))
+        this.processState = this.errorStateConstant
+        this.setNewSiteError(err.message || err)
+      }
     },
     onDefaultKeydown (event) {
       // Disable Undo with keyboard
