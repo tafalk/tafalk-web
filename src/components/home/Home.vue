@@ -103,13 +103,14 @@
       </v-layout>
     </v-container>
 
-    <v-bottom-nav
+    <v-bottom-navigation
       v-if="$vuetify.breakpoint.mdAndUp"
+      color="teal"
       fixed
       :value="true"
       :active.sync="footerEl"
     >
-      <v-btn flat color="teal" :value=sealedValue>
+      <v-btn :value=sealedValue>
         <span>{{ $t('home.bottomnav.sealed') }}</span>
         <v-icon>mdi-ghost-off</v-icon>
       </v-btn>
@@ -119,19 +120,19 @@
         <v-icon>mdi-fire</v-icon>
       </v-btn>
       -->
-      <v-btn v-if="authenticatedUser" flat color="red darken-1" :value=liveNowValue>
+      <v-btn v-if="authenticatedUser" :value=liveNowValue>
         <span>{{ $t('home.bottomnav.liveNow') }}</span>
         <v-icon>mdi-play-circle-outline</v-icon>
       </v-btn>
-      <v-btn v-if="authenticatedUser" flat color="purple darken-2" :value=byFaveUsersValue>
+      <v-btn v-if="authenticatedUser" :value=byFaveUsersValue>
         <span>{{ $t('home.bottomnav.byFaveUsers') }}</span>
         <v-icon>mdi-star</v-icon>
       </v-btn>
-      <v-btn flat color="cyan" :value=cantoValue>
+      <v-btn :value=cantoValue>
         <span>{{ $t('home.bottomnav.cantos') }}</span>
         <v-icon>mdi-music</v-icon>
       </v-btn>
-    </v-bottom-nav>
+    </v-bottom-navigation>
     <tafalk-new-fab v-if="authenticatedUser"></tafalk-new-fab>
   </div>
 </template>

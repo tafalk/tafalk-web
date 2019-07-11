@@ -14,8 +14,8 @@
         dark
         fab
       >
-        <v-icon>mdi-plus</v-icon>
-        <v-icon>mdi-close</v-icon>
+        <v-icon v-if="!fab">mdi-plus</v-icon>
+        <v-icon v-else>mdi-close</v-icon>
       </v-btn>
     </template>
     <v-tooltip left dark :color="streamButtonColor">

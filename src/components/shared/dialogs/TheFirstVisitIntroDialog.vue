@@ -1,10 +1,21 @@
 <template>
-  <v-dialog v-model="isFirstVisitIntroDialogVisible" persistent max-width="600">
+  <v-dialog v-model="isFirstVisitIntroDialogVisible"
+    persistent
+    fullscreen
+    hide-overlay
+    transition="dialog-bottom-transition">
     <v-card flat>
-      <v-window height="auto" v-model="itemNum">
+      <v-window
+        height="auto"
+        v-model="itemNum">
         <v-window-item v-for="item in windowItems" :key="item.id">
           <v-card flat color="transparent" height="auto">
-            <v-img :src="item.img"></v-img>
+            <v-img
+              contain
+              max-width="100"
+              max-height="100vh"
+              height="auto"
+              :src="item.img"></v-img>
             <v-card-text>
               <span class="blue-grey--text">{{ item.body }}</span>
             </v-card-text>
