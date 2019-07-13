@@ -1,5 +1,5 @@
 <template>
-<v-container fluid grid-list-lg px-2>
+<v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
   <v-layout v-if="!pageReady || stream == null" align-center fill-height row>
     <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
@@ -22,9 +22,9 @@
               </v-avatar>
               <v-avatar left v-else>
                 <img
-                  src="@/assets/default-user-avatar.jpg"
+                  src="@/assets/default-user-avatar.webp"
                   alt="Virgina Woolf in Hue"
-                  v-bind:style="streamUserHue"
+                  :class="streamUserColor"
                 />
               </v-avatar> {{stream.user.username}}
             </v-chip>
@@ -163,7 +163,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetStream, OnUpdateStream } from '@/graphql/Stream'
 import { ListStreamLikes, CreateLike, DeleteLike, OnCreateOrDeleteStreamLike, CreateComment, ListPaginatedStreamComments } from '@/graphql/StreamReaction'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
-import { GetUserHue, GetStreamLink } from '@/utils/generators'
+import { GetHexColorOfString, GetStreamLink } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
 import { streamCommentFetchLength } from '@/utils/constants'
 import TafalkNotAllowedStream from '@/components/nocontent/StreamNotAllowed.vue'
@@ -224,8 +224,8 @@ export default {
     comments () {
       return this.stream.comments
     },
-    streamUserHue () {
-      return GetUserHue(this.stream.user.username)
+    streamUserColor () {
+      return GetHexColorOfString(this.stream.user.username)
     },
     authenticatedUser () {
       return this.getAuthenticatedUser

@@ -1,5 +1,5 @@
 <template>
-<v-container fluid grid-list-lg>
+<v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
   <v-layout v-if="!pageReady || canto == null" align-center fill-height row>
     <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
@@ -24,9 +24,9 @@
               </v-avatar>
               <v-avatar left v-else>
                 <img
-                  src="@/assets/default-user-avatar.jpg"
+                  src="@/assets/default-user-avatar.webp"
                   alt="Virgina Woolf in Hue"
-                  v-bind:style="cantoUserHue"
+                  :class="cantoUserColor"
                 />
               </v-avatar> {{canto.user.username}}
             </v-chip>
@@ -124,7 +124,7 @@ import { GetCanto, OnUpdateCanto } from '@/graphql/Canto'
 import { ListCantoLikes, CreateLike, DeleteLike, OnCreateOrDeleteCantoLike } from '@/graphql/CantoReaction'
 import { GetUserIdByUserName } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
-import { GetUserHue, GetCantoLink } from '@/utils/generators'
+import { GetHexColorOfString, GetCantoLink } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
 import TafalkNotAllowedCanto from '@/components/nocontent/CantoNotAllowed.vue'
 import TafalkShareCantoLinkDialog from '@/components/canto/dialogs/ShareCantoLinkDialog.vue'
@@ -172,8 +172,8 @@ export default {
     likes () {
       return this.canto.likes
     },
-    cantoUserHue () {
-      return GetUserHue(this.canto.user.username)
+    cantoUserColor () {
+      return GetHexColorOfString(this.canto.user.username)
     },
     authenticatedUser () {
       return this.getAuthenticatedUser

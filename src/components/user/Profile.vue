@@ -1,5 +1,5 @@
 <template>
-<v-container ma-0 pa-0>
+<v-container ma-0 pt-5>
   <!-- full page loader -->
   <v-layout v-if="!pageReady" align-center fill-height>
     <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
@@ -24,9 +24,9 @@
                     </v-avatar>
                     <v-avatar v-else pt-1 size="150">
                       <img
-                        src="@/assets/default-user-avatar.jpg"
+                        src="@/assets/default-user-avatar.webp"
                         alt="Woolf"
-                        v-bind:style="visitedUser.hue"
+                        :class="visitedUser.color"
                       />
                     </v-avatar>
                     <v-btn

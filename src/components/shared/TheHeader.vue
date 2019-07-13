@@ -1,7 +1,7 @@
 <template>
 <div>
-  <v-system-bar app height="30" color="deep-purple darken-3"></v-system-bar>
   <v-app-bar
+    dense
     flat
     fixed
     extended
@@ -32,7 +32,7 @@
     <v-toolbar-title
       v-if="!isMobileSearchHeaderOn"
       @click="onTitleClick"
-      v-bind:style="{ 'cursor': 'pointer' }"
+      :style="{ 'cursor': 'pointer' }"
     >
       <TheLogo v-if="$vuetify.breakpoint.mdAndUp" class="logo" />
       <TheSmallLogo v-else class="logo" />

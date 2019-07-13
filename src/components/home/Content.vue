@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <v-container grid-list-lg>
+    <v-container grid-list-lg pt-5>
       <!-- full page loader -->
       <v-layout v-if="!getIsPageReady" align-center fill-height>
         <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
@@ -195,6 +195,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      getHasAcceptedCookies: 'getHasAcceptedCookies',
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getSearchText: 'siteSearch/getSearchText',
       getIsSearchTextLongEnough: 'siteSearch/getIsSearchTextLongEnough',

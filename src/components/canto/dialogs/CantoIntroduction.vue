@@ -6,12 +6,23 @@
   >
     <v-card>
       <v-img
-        :src="ezraPoundDoodle"
+        :src="ezraPoundDoodleSrc"
         contain
         aspect-ratio="2.25"
-      ></v-img>
+      >
+        <template v-slot:placeholder>
+          <v-layout
+            fill-height
+            align-center
+            justify-center
+            ma-0
+          >
+            <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+          </v-layout>
+        </template>
+      </v-img>
       <v-card-title
-        class="headline grey lighten-2"
+        class="headline grey darken-2 white--text"
         primary-title
       >
         {{ $t('canto.pour.introduction.title') }}
@@ -38,12 +49,13 @@
 </template>
 
 <script>
+import { siteImagesBaseUrl } from '@/utils/constants'
 export default {
   name: 'CantoIntroduction',
   data () {
     return {
       isCantoIntroductionDialogVisible: true,
-      ezraPoundDoodle: require('@/assets/ezra-pound-doodle.png')
+      ezraPoundDoodleSrc: siteImagesBaseUrl + '/webp/ezra-pound-doodle.webp'
     }
   }
 }

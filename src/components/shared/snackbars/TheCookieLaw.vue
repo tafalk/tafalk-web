@@ -10,9 +10,9 @@
     <v-btn
       dark
       color="success"
-      @click.native="onAcceptCookiesClick"
+      @click.stop="onAcceptCookiesClick"
     >
-      {{ $t('common.cookieLaw.button') }}
+      🍪&nbsp;{{ $t('common.cookieLaw.button') }}
     </v-btn>
   </v-snackbar>
 </template>

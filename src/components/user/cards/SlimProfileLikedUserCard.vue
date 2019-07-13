@@ -10,9 +10,9 @@
     </v-avatar>
     <v-avatar v-else size="60">
       <img
-        src="@/assets/default-user-avatar.jpg"
+        src="@/assets/default-user-avatar.webp"
         alt="Virgina Woolf in Hue"
-        v-bind:style="userHue"
+        :class="userColor"
       />
     </v-avatar>
     <span class="display-1 grey--text">&nbsp;@{{ user.username }}</span>
@@ -37,7 +37,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
 import { GetInteractionsBetweenUsers, StopWatchingUser } from '@/graphql/UserInteraction'
-import { GetUserHue } from '@/utils/generators'
+import { GetHexColorOfString } from '@/utils/generators'
 
 const logger = new Logger('SlimProfileLikedUserCard')
 
@@ -50,12 +50,12 @@ export default {
       watchTypeUserConnectionValue: 'Watch',
       maxHeight: 125,
       userProfilePictureObjectUrl: null,
-      userHue: null,
+      userColor: null,
       isLoading: false
     }
   },
   async mounted () {
-    this.userHue = GetUserHue(this.user.username)
+    this.userColor = GetHexColorOfString(this.user.username)
 
     this.userProfilePictureObjectUrl = (this.authenticatedUser && this.user.profilePictureKey != null)
       ? await Storage.get(this.user.profilePictureKey, { level: 'protected' })

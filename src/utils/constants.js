@@ -63,4 +63,6 @@ export const languageOptions = [
   { displayValue: 'English', backendValue: 'en' }
 ]
 
+export const siteImagesBaseUrl = 'https://tafalk-sitefiles.s3.eu-central-1.amazonaws.com/images'
+
 export const geocodingRootUrl = 'https://geocoder.tilehosting.com'

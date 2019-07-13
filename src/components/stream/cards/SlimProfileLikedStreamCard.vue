@@ -18,9 +18,9 @@
       </v-avatar>
       <v-avatar left v-else>
         <img
-          src="@/assets/default-user-avatar.jpg"
+          src="@/assets/default-user-avatar.webp"
           alt="Virgina Woolf in Hue"
-          v-bind:style="streamUserHue"
+          :class="streamUserColor"
         />
       </v-avatar>
       {{ stream.user.username }}
@@ -73,7 +73,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
 import { DeleteLike } from '@/graphql/StreamReaction'
-import { GetUserHue } from '@/utils/generators'
+import { GetHexColorOfString } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 const logger = new Logger('SlimProfileLikedStreamCard')
@@ -86,12 +86,12 @@ export default {
       isUnliked: false,
       maxHeight: 185,
       streamUserProfilePictureObjectUrl: null,
-      streamUserHue: null,
+      streamUserColor: null,
       isLoading: false
     }
   },
   async mounted () {
-    this.streamUserHue = GetUserHue(this.stream.user.username)
+    this.streamUserColor = GetHexColorOfString(this.stream.user.username)
 
     this.streamUserProfilePictureObjectUrl = (this.authenticatedUser && this.stream.user.profilePictureKey != null)
       ? await Storage.get(this.stream.user.profilePictureKey, { level: 'protected' })

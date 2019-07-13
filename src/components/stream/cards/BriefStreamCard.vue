@@ -13,9 +13,9 @@
       </v-avatar>
       <v-avatar left v-else>
         <img
-          src="@/assets/default-user-avatar.jpg"
+          src="@/assets/default-user-avatar.webp"
           alt="Virgina Woolf in Hue"
-          v-bind:style="streamUserHue"
+          :class="streamUserColor"
         />
       </v-avatar>
       {{ stream.user.username }}
@@ -53,7 +53,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Storage } from 'aws-amplify'
-import { GetUserHue } from '@/utils/generators'
+import { GetHexColorOfString } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {
@@ -62,11 +62,11 @@ export default {
   data () {
     return {
       streamUserProfilePictureObjectUrl: null,
-      streamUserHue: null
+      streamUserColor: null
     }
   },
   async mounted () {
-    this.streamUserHue = GetUserHue(this.stream.user.username)
+    this.streamUserColor = GetHexColorOfString(this.stream.user.username)
 
     this.streamUserProfilePictureObjectUrl = (this.authenticatedUser && this.stream.user.profilePictureKey != null)
       ? await Storage.get(this.stream.user.profilePictureKey, { level: 'protected' })

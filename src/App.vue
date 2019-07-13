@@ -2,18 +2,19 @@
   <v-app>
     <tafalk-header/>
     <v-content>
-      <v-container fluid mt-4 pa-0>
+      <v-container fluid my-4 py-2>
+
+        <!-- content -->
         <router-view/>
         <!-- site messages -->
         <tafalk-site-notification-snackbar/>
-        <!-- site messages -->
-        <tafalk-cookie-law-snackbar v-if="hasAcceptedCookies === 'false'"/>
         <!-- first visit intro dialog -->
         <tafalk-first-visit-intro-dialog v-if="hasVisitedBefore === 'false'"/>
+        <!-- cookie law -->
+        <tafalk-cookie-law-snackbar v-if="hasVisitedBefore === 'true' && hasAcceptedCookies === 'false'"/>
       </v-container>
     </v-content>
-    <footer app>
-    </footer>
+
   </v-app>
 </template>
 
@@ -41,9 +42,16 @@ export default {
   created () {
     // Set time
     this.setNowTime()
-    // Set language
-    if (this.authenticatedUser && this.authenticatedUser.language) {
-      this.$i18n.locale = this.authenticatedUser.language
+
+    if (this.authenticatedUser) {
+      // Set language
+      if (this.authenticatedUser.language) {
+        this.$i18n.locale = this.authenticatedUser.language
+      }
+      // Set theme
+      if (this.authenticatedUser.theme) {
+        this.$vuetify.theme.dark = this.authenticatedUser.theme === 'dark'
+      }
     }
   },
   mounted () {

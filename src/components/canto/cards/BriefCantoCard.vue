@@ -12,9 +12,9 @@
       </v-avatar>
       <v-avatar left v-else>
         <img
-          src="@/assets/default-user-avatar.jpg"
+          src="@/assets/default-user-avatar.webp"
           alt="Virgina Woolf in Hue"
-          v-bind:style="cantoUserHue"
+          :class="cantoUserColor"
         />
       </v-avatar>
       {{ canto.user.username }}
@@ -33,7 +33,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Storage } from 'aws-amplify'
-import { GetUserHue } from '@/utils/generators'
+import { GetHexColorOfString } from '@/utils/generators'
 import { GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {
@@ -42,11 +42,11 @@ export default {
   data () {
     return {
       cantoUserProfilePictureObjectUrl: null,
-      cantoUserHue: null
+      cantoUserColor: null
     }
   },
   async mounted () {
-    this.cantoUserHue = GetUserHue(this.canto.user.username)
+    this.cantoUserColor = GetHexColorOfString(this.canto.user.username)
 
     this.cantoUserProfilePictureObjectUrl = (this.authenticatedUser && this.canto.user.profilePictureKey != null)
       ? await Storage.get(this.canto.user.profilePictureKey, { level: 'protected' })

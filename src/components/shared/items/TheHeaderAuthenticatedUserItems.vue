@@ -31,9 +31,9 @@
       </v-avatar>
       <v-avatar left size="200" v-else>
         <img
-          src="@/assets/default-user-avatar.jpg"
+          src="@/assets/default-user-avatar.webp"
           alt="Virgina Woolf in Hue"
-          v-bind:style="userHue" />
+          :class="userColor" />
       </v-avatar>
         {{authenticatedUser.username}}
     </v-chip>
@@ -52,9 +52,9 @@
       v-else-if="$vuetify.breakpoint.smAndDown && !authenticatedUser.profilePictureObjectUrl"
       @click="onProfileClick">
       <img
-        src="@/assets/default-user-avatar.jpg"
+        src="@/assets/default-user-avatar.webp"
         alt="Virgina Woolf in Hue"
-        v-bind:style="userHue" />
+        :class="userColor" />
     </v-avatar>
 
     <!-- Side drawer icon -->
@@ -95,8 +95,8 @@ export default {
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
-    userHue () {
-      return this.authenticatedUser.hue
+    userColor () {
+      return this.authenticatedUser.color
     },
     menuDrawer () {
       return this.menuDrawer

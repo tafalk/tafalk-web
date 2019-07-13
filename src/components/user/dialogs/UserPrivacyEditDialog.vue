@@ -19,7 +19,6 @@
             persistent-hint
           ></v-select>
           <br/>
-          <br/>
           <!-- Allow Direct Messages -->
           <v-select
             :label="$t('user.edit.privacy.dialog.allowDmLabel')"
