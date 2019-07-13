@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="getIsChangeProfilePictureDialogVisible" lazy persistent max-width="750px">
+    <v-dialog v-model="getIsChangeProfilePictureDialogVisible" persistent max-width="750px">
       <!--
         Taken from: https://jsfiddle.net/meyubaraj/fLbe7r72/
       -->
@@ -36,7 +36,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            flat
+            text
             color="primary"
             @click.stop="closeAndClearDialog"
           >{{ $t('common.options.cancelButtonText') }}</v-btn>

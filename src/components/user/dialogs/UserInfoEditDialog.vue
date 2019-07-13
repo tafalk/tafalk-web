@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="getIsUserInfoEditDialogVisible" lazy persistent max-width="750px">
+    <v-dialog v-model="getIsUserInfoEditDialogVisible" persistent max-width="750px">
       <v-card>
         <v-card-title class="headline" primary-title>{{ $t('user.edit.info.dialog.title') }}</v-card-title>
         <v-card-text>
@@ -15,7 +15,6 @@
             max="24"
             maxlength="24"
             :label="$t('user.edit.info.dialog.preferredNameLabel')"
-            required
           ></v-text-field>
           -->
 
@@ -45,10 +44,10 @@
             hide-no-data
           >
             <template v-slot:item="{ item }">
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-              </v-list-tile-content>
-              <v-list-tile-action class="grey--text">{{ item.type }}</v-list-tile-action>
+              <v-list-item-content>
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+              </v-list-item-content>
+              <v-list-item-action class="grey--text">{{ item.type }}</v-list-item-action>
             </template>
           </v-autocomplete>
 
@@ -64,12 +63,12 @@
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
-            flat
+            text
             @click.native="setIsUserInfoEditDialogVisible(false)"
           >{{ $t('common.options.closeButtonText') }}</v-btn>
           <v-btn
             color="blue darken-1"
-            flat
+            text
             @click.native="onSaveInfoEditClick"
           >{{ $t('common.options.saveButtonText') }}</v-btn>
         </v-card-actions>

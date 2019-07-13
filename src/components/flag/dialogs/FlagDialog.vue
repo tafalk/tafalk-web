@@ -17,47 +17,47 @@
         <v-subheader class="grey--text"
         >{{ $t('flag.dialog.steps.category.header') }}</v-subheader>
         <v-list two-line>
-          <v-list-tile
+          <v-list-item
             :disabled="isSelectedCategorySpam"
           >
-            <v-list-tile-content @click="onClickCategory(spamCategoryValue)">
-              <v-list-tile-title>{{ $t('flag.dialog.steps.category.options.spam.header') }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ $t('flag.dialog.steps.category.options.spam.detail') }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action
+            <v-list-item-content @click="onClickCategory(spamCategoryValue)">
+              <v-list-item-title>{{ $t('flag.dialog.steps.category.options.spam.header') }}</v-list-item-title>
+              <v-list-item-subtitle>{{ $t('flag.dialog.steps.category.options.spam.detail') }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action
               v-if="isSelectedCategorySpam"
             >
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
+            </v-list-item-action>
+          </v-list-item>
           <v-divider></v-divider>
-          <v-list-tile
+          <v-list-item
             :disabled="isSelectedCategoryRude"
           >
-            <v-list-tile-content @click="onClickCategory(rudeCategoryValue)">
-              <v-list-tile-title>{{ $t('flag.dialog.steps.category.options.rude.header') }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ $t('flag.dialog.steps.category.options.rude.detail') }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action
+            <v-list-item-content @click="onClickCategory(rudeCategoryValue)">
+              <v-list-item-title>{{ $t('flag.dialog.steps.category.options.rude.header') }}</v-list-item-title>
+              <v-list-item-subtitle>{{ $t('flag.dialog.steps.category.options.rude.detail') }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action
               v-if="isSelectedCategoryRude"
             >
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
+            </v-list-item-action>
+          </v-list-item>
           <v-divider></v-divider>
-          <v-list-tile
+          <v-list-item
             :disabled="isSelectedCategoryLowQuality"
           >
-            <v-list-tile-content @click="onClickCategory(lowQualityCategoryValue)">
-              <v-list-tile-title>{{ $t('flag.dialog.steps.category.options.lowQuality.header') }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ $t('flag.dialog.steps.category.options.lowQuality.detail') }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action
+            <v-list-item-content @click="onClickCategory(lowQualityCategoryValue)">
+              <v-list-item-title>{{ $t('flag.dialog.steps.category.options.lowQuality.header') }}</v-list-item-title>
+              <v-list-item-subtitle>{{ $t('flag.dialog.steps.category.options.lowQuality.detail') }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action
               v-if="isSelectedCategoryLowQuality"
             >
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-            </v-list-tile-action>
-          </v-list-tile>
+            </v-list-item-action>
+          </v-list-item>
         </v-list>
         <v-btn
           color="primary"
@@ -65,7 +65,7 @@
           @click="flagCurrentStep = 2"
         >{{ $t('flag.dialog.steps.category.buttons.continue') }}</v-btn>
         <v-btn
-          flat
+          text
           @click="onCancelFlagButtonClick"
         >{{ $t('flag.dialog.steps.category.buttons.cancel') }}</v-btn>
       </v-stepper-content>
@@ -77,95 +77,95 @@
           <v-subheader class="grey--text"
           >{{ $t('flag.dialog.steps.detail.spam.header') }}</v-subheader>
           <v-list two-line>
-            <v-list-tile
+            <v-list-item
               :disabled="isSelectedSpamDetailAd"
             >
-              <v-list-tile-content @click="onClickSpamDetail(spamAdDetailValue)">
-                <v-list-tile-sub-title>{{ $t('flag.dialog.steps.detail.spam.options.ad.detail') }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action
+              <v-list-item-content @click="onClickSpamDetail(spamAdDetailValue)">
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.spam.options.ad.detail') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action
                 v-if="isSelectedSpamDetailAd"
               >
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
             <v-divider></v-divider>
-            <v-list-tile
+            <v-list-item
               :disabled="isSelectedSpamDetailHarmfulLink"
             >
-              <v-list-tile-content @click="onClickSpamDetail(spamHarmfulLinkDetailValue)">
-                <v-list-tile-sub-title>{{ $t('flag.dialog.steps.detail.spam.options.harmful.detail') }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action
+              <v-list-item-content @click="onClickSpamDetail(spamHarmfulLinkDetailValue)">
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.spam.options.harmful.detail') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action
                 v-if="isSelectedSpamDetailHarmfulLink"
               >
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
             <v-divider></v-divider>
           </v-list>
         </template>
         <!-- Rude Content details -->
         <template v-else-if="isSelectedCategoryRude">
-            <v-list-tile
+            <v-list-item
               :disabled="isSelectedRudeDetailHate"
             >
-              <v-list-tile-content @click="onClickRudeDetail(rudeHateDetailValue)">
-                <v-list-tile-sub-title>{{ $t('flag.dialog.steps.detail.rude.options.hate.detail') }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action
+              <v-list-item-content @click="onClickRudeDetail(rudeHateDetailValue)">
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.rude.options.hate.detail') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action
                 v-if="isSelectedRudeDetailHate"
               >
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
             <v-divider></v-divider>
-            <v-list-tile
+            <v-list-item
               :disabled="isSelectedRudeDetailThreat"
             >
-              <v-list-tile-content @click="onClickRudeDetail(rudeThreatDetailValue)">
-                <v-list-tile-sub-title>{{ $t('flag.dialog.steps.detail.rude.options.threat.detail') }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action
+              <v-list-item-content @click="onClickRudeDetail(rudeThreatDetailValue)">
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.rude.options.threat.detail') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action
                 v-if="isSelectedRudeDetailThreat"
               >
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
             <v-divider></v-divider>
-            <v-list-tile
+            <v-list-item
               :disabled="isSelectedRudeDetailOffensive"
             >
-              <v-list-tile-content @click="onClickRudeDetail(rudeOffensiveDetailValue)">
-                <v-list-tile-sub-title>{{ $t('flag.dialog.steps.detail.rude.options.offensive.detail') }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action
+              <v-list-item-content @click="onClickRudeDetail(rudeOffensiveDetailValue)">
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.rude.options.offensive.detail') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action
                 v-if="isSelectedRudeDetailOffensive"
               >
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
             <v-divider></v-divider>
-            <v-list-tile
+            <v-list-item
               :disabled="isSelectedRudeDetailPrivate"
             >
-              <v-list-tile-content @click="onClickRudeDetail(rudePrivateDetailValue)">
-                <v-list-tile-sub-title>{{ $t('flag.dialog.steps.detail.rude.options.private.detail') }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action
+              <v-list-item-content @click="onClickRudeDetail(rudePrivateDetailValue)">
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.rude.options.private.detail') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action
                 v-if="isSelectedRudeDetailPrivate"
               >
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
         </template>
         <!-- Low Quality Content details -->
         <template v-else>
-          <v-list-tile>
-            <v-list-tile-content>
-              <v-list-tile-sub-title>{{ $t('flag.dialog.steps.detail.lowQuality.options.default.detail') }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.lowQuality.options.default.detail') }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
         </template>
         <v-textarea
             v-model="additionalInfo"
@@ -180,7 +180,7 @@
           @click="onFlagCompletionClick"
         >{{ $t('flag.dialog.steps.detail.buttons.done') }}</v-btn>
         <v-btn
-          flat
+          text
           @click="flagCurrentStep = 1"
         >{{ $t('flag.dialog.steps.detail.buttons.previous') }}</v-btn>
       </v-stepper-content>

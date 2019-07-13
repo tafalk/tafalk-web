@@ -6,7 +6,6 @@ import { Auth, API, graphqlOperation, Logger } from 'aws-amplify'
 import { GetUserProfileData } from './graphql/Profile'
 import { GetStoreUser } from './utils/storeUtils'
 
-import Home from '@/components/home/Home.vue'
 import NotFound from '@/components/nocontent/NotFound.vue'
 import Profile from '@/components/user/Profile.vue'
 import PourStream from '@/components/stream/PourStream.vue'
@@ -25,7 +24,12 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: () => import(/* webpackChunkName: "home" */ './components/home/Content.vue')
+    },
+    {
+      path: '/content',
+      name: 'content',
+      component: () => import(/* webpackChunkName: "home" */ './components/home/Content.vue')
     },
     {
       path: '/about',

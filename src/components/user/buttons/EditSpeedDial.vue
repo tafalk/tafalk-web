@@ -18,8 +18,8 @@
       large
       fab
     >
-      <v-icon>mdi-account-circle</v-icon>
-      <v-icon>mdi-close</v-icon>
+      <v-icon v-if="!fab">mdi-account-circle</v-icon>
+      <v-icon v-else>mdi-close</v-icon>
     </v-btn>
 
     <v-btn
@@ -37,7 +37,7 @@
       color="brown"
       @click.stop="onEditPrivacyFabClick"
     >
-      <v-icon>mdi-shield-lock</v-icon>
+      <v-icon>mdi-shield-half-full</v-icon>
     </v-btn>
 
     <v-btn
@@ -46,7 +46,7 @@
       color="red"
       @click.stop="onDeleteAccountFabClick"
     >
-      <v-icon>mdi-delete-circle</v-icon>
+      <v-icon>mdi-delete</v-icon>
     </v-btn>
   </v-speed-dial>
 </template>

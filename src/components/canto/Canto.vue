@@ -10,7 +10,7 @@
   <v-layout row wrap v-else>
     <v-flex xs12 sm12 offset-md2 md8>
       <div v-if="isCantoAllowed">
-        <v-card flat>
+        <v-card text>
           <v-toolbar dense flat>
             <!-- Title -->
             <v-toolbar-title flat>
@@ -18,11 +18,11 @@
             </v-toolbar-title>
             <v-spacer />
             <!-- User avatar -->
-            <v-chip @click="onAuthorProfileClick" small>
-              <v-avatar v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null">
+            <v-chip @click="onAuthorProfileClick" small pill>
+              <v-avatar left v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null">
                 <img :src="cantoUserProfilePictureObjectUrl" />
               </v-avatar>
-              <v-avatar v-else size="200">
+              <v-avatar left v-else>
                 <img
                   src="@/assets/default-user-avatar.jpg"
                   alt="Virgina Woolf in Hue"
@@ -43,7 +43,7 @@
             <v-spacer />
             <!-- Share -->
             <v-btn
-              flat
+              text
               icon
               small
               :color="shareButtonColor"
@@ -55,7 +55,7 @@
             <!-- Bookmark -->
             <v-btn
               v-if="!authenticatedUserLikeId"
-              flat
+              text
               icon
               small
               :color="bookmarkButtonColor"
@@ -67,7 +67,7 @@
             </v-btn>
             <v-btn
               v-if="authenticatedUserLikeId"
-              flat
+              text
               icon
               small
               :color="bookmarkButtonColor"
@@ -81,7 +81,7 @@
             <!-- Flag -->
             <v-btn
               v-if="authenticatedUser != null && !isVisitingOwnCanto && !authenticatedUserFlagId"
-              flat
+              text
               icon
               small
               :color="flagButtonColor"
@@ -91,7 +91,7 @@
             </v-btn>
             <v-btn
               v-else-if="authenticatedUserFlagId"
-              flat
+              text
               icon
               small
               :color="flagButtonColor"

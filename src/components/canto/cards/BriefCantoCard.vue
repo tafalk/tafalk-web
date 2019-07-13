@@ -6,13 +6,11 @@
 >
   <v-card-title dense primary class="title grey--text">
     <v-spacer />
-    <v-chip @click.stop="onToAuthorProfileClick(canto.user.username)" small>
-      <v-avatar v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null" >
-        <img
-          :src="cantoUserProfilePictureObjectUrl"
-        />
+    <v-chip @click.stop="onToAuthorProfileClick(canto.user.username)" small pill>
+      <v-avatar left v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null" >
+        <img :src="cantoUserProfilePictureObjectUrl"/>
       </v-avatar>
-      <v-avatar v-else>
+      <v-avatar left v-else>
         <img
           src="@/assets/default-user-avatar.jpg"
           alt="Virgina Woolf in Hue"

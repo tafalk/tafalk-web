@@ -27,11 +27,9 @@
       "hour": "h",
       "day": "d"
     },
-    "footer": {
-      "cookieLaw": {
-        "buttonText": "Got It!",
-        "message": "This website uses cookies to ensure you get the best experience on our website."
-      }
+    "cookieLaw": {
+      "button": "Got It!",
+      "message": "This website uses cookies to ensure you get the best experience on our website."
     }
   },
   "intro": {

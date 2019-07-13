@@ -1,10 +1,9 @@
 <template>
   <v-dialog v-model="isFirstVisitIntroDialogVisible"
-    persistent
-    fullscreen
-    hide-overlay
-    transition="dialog-bottom-transition">
-    <v-card flat>
+    transition="dialog-bottom-transition"
+    max-width="80%">
+    <v-card max-width="inherit">
+      <!--
       <v-window
         height="auto"
         v-model="itemNum">
@@ -22,8 +21,9 @@
           </v-card>
         </v-window-item>
       </v-window>
-      <v-card-actions class="justify-center">
-        <v-item-group v-model="itemNum" class="text-xs-center" mandatory>
+      -->
+      <v-card-actions class="justify-center" max-width="inherit">
+        <v-item-group v-model="itemNum" mandatory>
           <v-item v-for="item in windowItems" :key="item.id">
             <v-btn
               small
@@ -38,8 +38,8 @@
           </v-item>
         </v-item-group>
       </v-card-actions>
-      <v-card-actions class="justify-center">
-        <v-btn color="primary" class="mono" flat @click.native="onEndIntroClick">{{ $t('intro.closeButtonText') }}</v-btn>
+      <v-card-actions class="justify-center" max-width="inherit">
+        <v-btn color="primary" class="mono" text @click.native="onEndIntroClick">{{ $t('intro.closeButtonText') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

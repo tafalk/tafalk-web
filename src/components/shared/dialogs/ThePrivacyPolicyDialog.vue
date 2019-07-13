@@ -7,7 +7,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
-          flat
+          text
           color="purple"
           @click="setIsPrivacyPolicyDialogVisible(false)"
         >{{ $t('common.options.okButtonText') }}</v-btn>

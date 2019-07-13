@@ -24,11 +24,12 @@
     <!-- User Profile item (Large screen) -->
     <v-chip
       v-if="$vuetify.breakpoint.mdAndUp"
-      @click="onProfileClick">
-      <v-avatar v-if="authenticatedUser.profilePictureObjectUrl">
+      @click="onProfileClick"
+      pill>
+      <v-avatar left v-if="authenticatedUser.profilePictureObjectUrl">
         <img :src="authenticatedUser.profilePictureObjectUrl" />
       </v-avatar>
-      <v-avatar size="200" v-else>
+      <v-avatar left size="200" v-else>
         <img
           src="@/assets/default-user-avatar.jpg"
           alt="Virgina Woolf in Hue"
@@ -57,10 +58,9 @@
     </v-avatar>
 
     <!-- Side drawer icon -->
-    <v-toolbar-side-icon
+    <v-app-bar-nav-icon
       @click.stop="toggleDrawer"
-      clipped-right
-    ></v-toolbar-side-icon>
+    ></v-app-bar-nav-icon>
 
     <!-- The Logout confirmation dialog -->
     <logout-confirmation-dialog/>

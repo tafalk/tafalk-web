@@ -16,11 +16,11 @@
               <span class="grey--text headline">{{ stream.title }}</span>
             </v-toolbar-title>
             <v-spacer />
-            <v-chip @click="onAuthorProfileClick" small>
-              <v-avatar v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null">
+            <v-chip @click="onAuthorProfileClick" small pill>
+              <v-avatar left v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null">
                 <img :src="streamUserProfilePictureObjectUrl" />
               </v-avatar>
-              <v-avatar v-else size="200">
+              <v-avatar left v-else>
                 <img
                   src="@/assets/default-user-avatar.jpg"
                   alt="Virgina Woolf in Hue"
@@ -43,7 +43,7 @@
             <v-spacer />
             <!-- Share -->
             <v-btn
-              flat
+              text
               icon
               small
               :color="shareButtonColor"
@@ -55,7 +55,7 @@
             <!-- Bookmark -->
             <v-btn
               v-if="isSealed && !authenticatedUserLikeId"
-              flat
+              text
               icon
               small
               :color="bookmarkButtonColor"
@@ -67,7 +67,7 @@
             </v-btn>
             <v-btn
               v-if="isSealed && authenticatedUserLikeId"
-              flat
+              text
               icon
               small
               :color="bookmarkButtonColor"
@@ -81,7 +81,7 @@
             <!-- Comment -->
             <v-btn
               v-if="isSealed"
-              flat
+              text
               icon
               small
               :color="commentButtonColor"
@@ -93,7 +93,7 @@
             <!-- Flag -->
             <v-btn
               v-if="isSealed && authenticatedUser != null && !isVisitingOwnStream && !authenticatedUserFlagId"
-              flat
+              text
               icon
               small
               :color="flagButtonColor"
@@ -103,7 +103,7 @@
             </v-btn>
             <v-btn
               v-else-if="authenticatedUserFlagId"
-              flat
+              text
               icon
               small
               :color="flagButtonColor"
@@ -117,7 +117,7 @@
             <v-card flat v-show="showCommentBox">
               <v-card-text>
                 <v-textarea
-                  box
+                  filled
                   :label="$t('stream.comments.addNewTextareaLabel')"
                   v-model="comment"
                   :min="minCommentLength"
@@ -127,10 +127,10 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn flat
+                <v-btn text
                   @click="onCommentTextAreaToggleShowClick"
                 >{{ $t('common.options.cancelButtonText') }}</v-btn>
-                <v-btn flat
+                <v-btn text
                   :loading="isCommentLoading"
                   :disabled="!isCommentLengthValid || isCommentLoading"
                   @click="onCommentSaveClick"

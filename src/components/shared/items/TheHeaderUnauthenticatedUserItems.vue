@@ -1,20 +1,18 @@
 <template>
-  <v-toolbar-items>
+  <div>
     <v-btn
       @click="onLoginBtnClick"
-      flat
+      text
     >{{ $t('auth.login.text') }}</v-btn>
     <v-btn
       v-if="$vuetify.breakpoint.mdAndUp"
       @click="onRegisterBtnClick"
-      flat
+      text
     >{{ $t('auth.signup.text') }}</v-btn>
-    <v-toolbar-side-icon
-      v-if="$vuetify.breakpoint.smAndDown"
+    <v-app-bar-nav-icon
       @click.stop="toggleDrawer"
-      clipped-right
-    ></v-toolbar-side-icon>
-  </v-toolbar-items>
+    ></v-app-bar-nav-icon>
+  </div>
 </template>
 
 <script>

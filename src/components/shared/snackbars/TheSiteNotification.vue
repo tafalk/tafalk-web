@@ -2,16 +2,17 @@
   <v-snackbar
     v-model="isSiteNotificationVisible"
     :color="siteNotificationType"
-    multi-line
+    auto-height
     :timeout="siteNotificationTimeout"
   >
   {{ siteNotificationText }}
     <v-btn
       dark
-      flat
+      text
+      icon
       @click="setIsSiteNotificationVisible(false)"
     >
-      Close
+      mdi-close-circle
     </v-btn>
   </v-snackbar>
 </template>

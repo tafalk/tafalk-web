@@ -32,7 +32,6 @@
                   :maxlength="maxUsernameLength"
                   :rules="usernameRules"
                   prepend-icon="mdi-account"
-                  required
                 ></v-text-field>
                 <v-btn
                   color="primary"
@@ -48,10 +47,9 @@
                   :label="$t('auth.forgotPassword.codeLabel')"
                   v-model="code"
                   prepend-icon="mdi-message-processing"
-                  required
                 ></v-text-field>
                 <v-btn
-                  flat
+                  text
                   @click="forgotPasswordCurrentStep = 1"
                 >{{ $t('auth.forgotPassword.steps.returnPreviousStepButtonText') }}</v-btn>
                 <v-btn
@@ -72,10 +70,9 @@
                   :rules="passwordRules"
                   type="password"
                   prepend-icon="mdi-lock"
-                  required
                 ></v-text-field>
                 <v-btn
-                  flat
+                  text
                   @click="forgotPasswordCurrentStep = 2"
                 >{{ $t('auth.forgotPassword.steps.returnPreviousStepButtonText') }}</v-btn>
                 <v-btn

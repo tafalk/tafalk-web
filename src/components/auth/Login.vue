@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-lg text-xs-center>
-    <v-layout justify-center row wrap>
-      <v-flex md6 sm12-and-down offset-md3>
+    <v-layout row wrap>
+      <v-flex xs12 md6 offset-md3>
         <v-form v-model="valid" @submit.prevent="onLoginBtnClick">
           <!-- Form Fields -->
           <v-text-field
@@ -13,7 +13,6 @@
             :maxlength="maxUsernameOrEmailLength"
             :rules="usernameRules"
             prepend-icon="mdi-account"
-            required
           ></v-text-field>
           <v-text-field
             :label="$t('auth.login.passwordLabel')"
@@ -23,7 +22,6 @@
             :rules="passwordRules"
             type="password"
             prepend-icon="mdi-lock"
-            required
           ></v-text-field>
           <!-- Login Button -->
           <v-btn

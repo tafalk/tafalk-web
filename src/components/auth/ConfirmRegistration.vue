@@ -13,13 +13,11 @@
           :maxlength="maxUsernameLength"
           :rules="usernameRules"
           prepend-icon="mdi-lock"
-          required
         ></v-text-field>
         <v-text-field
           :label="$t('auth.confirmRegistration.verificationCodeLabel')"
           v-model="verificationCode"
           prepend-icon="mdi-message-processing"
-          required
         ></v-text-field>
         <v-btn
           color="primary"

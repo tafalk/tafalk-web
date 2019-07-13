@@ -1,9 +1,9 @@
 <template>
 <div>
-  <v-toolbar
+  <v-system-bar app height="30" color="deep-purple darken-3"></v-system-bar>
+  <v-app-bar
     flat
     fixed
-    app
     extended
     extension-height="2"
   >
@@ -50,7 +50,7 @@
     />
     <v-btn
       v-if="!isRouteChanging && isSearchBarVisible && $vuetify.breakpoint.smAndDown && !isMobileSearchHeaderOn"
-      flat
+      text
       icon
       small
       @click="onMobileSearchHeaderOnClick"
@@ -62,97 +62,96 @@
     <the-header-authenticated-user-items v-if="!isRouteChanging && authenticatedUser && !isMobileSearchHeaderOn" />
     <!-- Unauthenticated User Items -->
     <the-header-unauthenticated-user-items v-else-if="!isRouteChanging && !authenticatedUser && !isMobileSearchHeaderOn"/>
-  </v-toolbar>
+  </v-app-bar>
   <v-navigation-drawer
+    app
     clipped
     right
     v-model="menuDrawer"
     temporary
-    absolute
-    width = "200"
     id = "drawer"
   >
-    <v-list dense class="pt-0">
+    <v-list rounded class="pt-0">
       <!-- Mobile only stream filters -->
-      <v-list-tile
+      <v-list-item
         v-if="$vuetify.breakpoint.smAndDown"
         @click="onSealedStreamsClick"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon color="teal">mdi-ghost-off</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-sub-title class="teal--text">{{ $t('home.bottomnav.sealed') }}</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-subtitle class="teal--text">{{ $t('home.bottomnav.sealed') }}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         v-if="$vuetify.breakpoint.smAndDown && authenticatedUser"
         @click="onLiveStreamsClick"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon color="red darken-1">mdi-play-circle-outline</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-sub-title class="red--text text--darken-1">{{ $t('home.bottomnav.liveNow') }}</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-subtitle class="red--text text--darken-1">{{ $t('home.bottomnav.liveNow') }}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         v-if="$vuetify.breakpoint.smAndDown && authenticatedUser"
         @click="onByFaveOtherStreamsClick"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon color="purple darken-2">mdi-star</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-sub-title class="purple--text text--darken-2">{{ $t('home.bottomnav.byFaveUsers') }}</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-subtitle class="purple--text text--darken-2">{{ $t('home.bottomnav.byFaveUsers') }}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         v-if="$vuetify.breakpoint.smAndDown"
         @click="onCantosClick"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon color="cyan">mdi-music</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-sub-title class="teal--text">{{ $t('home.bottomnav.cantos') }}</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-subtitle class="teal--text">{{ $t('home.bottomnav.cantos') }}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
       <v-divider v-if="$vuetify.breakpoint.smAndDown"/>
       <!-- Site meta -->
       <!-- Language -->
-      <v-list-tile
+      <v-list-item
         v-if="authenticatedUser"
         @click="onShowLanguageChooseDialogClick"
       >
-        <v-list-tile-title>{{ $t('siteLanguage.text') }}</v-list-tile-title>
-      </v-list-tile>
+        <v-list-item-title>{{ $t('siteLanguage.text') }}</v-list-item-title>
+      </v-list-item>
 
       <!-- Dark Mode Switch -->
-      <v-list-tile
+      <v-list-item
         v-if="authenticatedUser"
       >
-        <v-list-tile-title>{{ $t('theme.darkMode.text') }}</v-list-tile-title>
+        <v-list-item-title>{{ $t('theme.darkMode.text') }}</v-list-item-title>
         &nbsp;&nbsp;
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-switch color="primary" v-model="isDarkTheme"></v-switch>
-        </v-list-tile-action>
-      </v-list-tile>
+        </v-list-item-action>
+      </v-list-item>
 
       <!-- About -->
-      <v-list-tile
+      <v-list-item
         @click="onAboutClick"
       >
-        <v-list-tile-title>{{ $t('about.text') }}</v-list-tile-title>
-      </v-list-tile>
+        <v-list-item-title>{{ $t('about.text') }}</v-list-item-title>
+      </v-list-item>
 
       <!-- Log Out -->
-      <v-list-tile
+      <v-list-item
         v-if="authenticatedUser"
         @click="setIsLogoutConfirmationDialogVisible(true)"
       >
-        <v-list-tile-title>{{ $t('auth.logout.text') }}</v-list-tile-title>
-      </v-list-tile>
+        <v-list-item-title>{{ $t('auth.logout.text') }}</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </div>
@@ -183,7 +182,9 @@ export default {
   },
   created () {
     if (!this.authenticatedUser) return
-    this.isDarkTheme = this.authenticatedUser.theme === 'dark'
+    const isUserThemeDark = this.authenticatedUser.theme === 'dark'
+    this.$vuetify.theme.dark = isUserThemeDark
+    this.isDarkTheme = isUserThemeDark
   },
   computed: {
     ...mapGetters({
@@ -209,7 +210,7 @@ export default {
       return this.getIsRouteChanging
     },
     isHome () {
-      return this.getCurrentRoutePath === '/' // home page
+      return this.getCurrentRoutePath === '/' || this.getCurrentRoutePath.startsWith('/content')
     },
     isSearchBarVisible () {
       return this.isHome && this.authenticatedUser != null
@@ -234,6 +235,8 @@ export default {
         userId: this.authenticatedUser.id,
         theme: selectedTheme
       })
+
+      this.$vuetify.theme.dark = val
     }
   },
   methods: {

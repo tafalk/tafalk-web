@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog v-model="getIsUserPrivacyEditDialogVisible" lazy persistent max-width="750px">
+    <v-dialog v-model="getIsUserPrivacyEditDialogVisible" persistent max-width="750px">
       <v-card>
         <v-card-title class="headline" primary-title>
           {{ $t('user.edit.privacy.dialog.title') }}
@@ -36,12 +36,12 @@
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
-            flat
+            text
             @click.native="setIsUserPrivacyEditDialogVisible(false)"
           >{{ $t('common.options.closeButtonText') }}</v-btn>
           <v-btn
             color="blue darken-1"
-            flat
+            text
             @click.native="onSavePrivacyEditClick"
           >{{ $t('common.options.saveButtonText') }}</v-btn>
         </v-card-actions>

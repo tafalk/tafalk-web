@@ -104,18 +104,19 @@
     </v-container>
 
     <v-bottom-navigation
+      app
       v-if="$vuetify.breakpoint.mdAndUp"
       color="teal"
       fixed
       :value="true"
-      :active.sync="footerEl"
+      v-model="footerEl"
     >
       <v-btn :value=sealedValue>
         <span>{{ $t('home.bottomnav.sealed') }}</span>
         <v-icon>mdi-ghost-off</v-icon>
       </v-btn>
       <!--
-      <v-btn flat color="deep-orange lighten-1" :value=topRatedValue>
+      <v-btn text color="deep-orange lighten-1" :value=topRatedValue>
         <span>Popular</span>
         <v-icon>mdi-fire</v-icon>
       </v-btn>
@@ -146,18 +147,18 @@ import TafalkBriefUserCard from '@/components/user/cards/BriefUserCard.vue'
 import { homeStreamFetchLength } from '@/utils/constants'
 
 export default {
-  name: 'Home',
+  name: 'Content',
   data () {
     return {
       userTypeName: 'User',
       streamTypeName: 'Stream',
       cantoTypeName: 'Canto',
+      footerEl: 'sealed',
       sealedValue: 'sealed',
-      topRatedValue: 'top-rated',
-      liveNowValue: 'live-now',
-      byFaveUsersValue: 'by-fave-users',
+      topRatedValue: 'toprated',
+      liveNowValue: 'livenow',
+      byFaveUsersValue: 'byfaveusers',
       cantoValue: 'cantos',
-      footerEl: null,
       fetchLimit: homeStreamFetchLength
     }
   },
@@ -167,21 +168,12 @@ export default {
     TafalkBriefCantoCard,
     TafalkBriefUserCard
   },
-  created () {
-    this.footerEl = 'sealed'
+  async created () {
+    await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
     this.setIsPageReady(true)
   },
   watch: {
-    async footerEl (val, oldVal) {
-      if (val == null || val === '' || val === oldVal) {
-        this.clearAll()
-      }
-
-      // Clear search text if changed
-      if (val !== oldVal) {
-        this.clearSearchText()
-      }
-
+    async '$route.query.type' (val) {
       if (this.sealedValue === val) {
         await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
       } else if (this.liveNowValue === val) {
@@ -190,9 +182,15 @@ export default {
         await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
       } else if (this.cantoValue === val) {
         await this.fetchInitialBriefCantos({ limit: this.fetchLimit, nextToken: null })
-      } else if (this.topRatedValue === val) {
-        // popularism not implemeted yet :9
       }
+    },
+    footerEl (val, oldVal) {
+      if (val == null || val === '' || val === oldVal) this.clearAll()
+
+      // Clear search text if changed
+      if (val !== oldVal) this.clearSearchText()
+
+      this.$router.push({ name: 'content', query: { type: val } })
     }
   },
   computed: {

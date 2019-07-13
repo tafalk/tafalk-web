@@ -13,10 +13,9 @@
                 :max="maxFirstNameLength"
                 :maxlength="maxFirstNameLength"
                 :rules="firstNameRules"
-                required
-            ></v-text-field>
-          </v-flex>
-          <v-flex md6 sm12-and-down>
+              ></v-text-field>
+            </v-flex>
+            <v-flex md6 sm12-and-down>
               <v-text-field
                 :label="$t('auth.signup.lastNameLabel')"
                 v-model="lastName"
@@ -24,10 +23,9 @@
                 :max="maxLastNameLength"
                 :maxlength="maxLastNameLength"
                 :rules="lastNameRules"
-                required
-            ></v-text-field>
-          </v-flex>
-           </v-layout>
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
           <v-text-field
             :label="$t('auth.signup.userNameLabel')"
             v-model="username"
@@ -37,14 +35,12 @@
             :maxlength="maxUsernameLength"
             :rules="usernameRules"
             prepend-icon="mdi-account"
-            required
           ></v-text-field>
           <v-text-field
             :label="$t('auth.signup.emailLabel')"
             v-model="email"
             :rules="emailRules"
-            prepend-icon="mdi-mail"
-            required
+            prepend-icon="mdi-email"
           ></v-text-field>
           <v-text-field
             :label="$t('auth.signup.passwordLabel')"
@@ -54,7 +50,6 @@
             :rules="passwordRules"
             prepend-icon="mdi-lock"
             type="password"
-            required
           ></v-text-field>
           <!-- TODO: Add Custom progress bar for strength -->
           <!-- https://vuetifyjs.com/en/components/text-fields#example-progress-bar -->
@@ -63,12 +58,10 @@
             v-model="retypePassword"
             :rules="retypePasswordRules"
             type="password"
-            prepend-icon="mdi-lock"
-            required
+            prepend-icon="mdi-lock-reset"
           ></v-text-field>
           <v-menu
             ref="menu"
-            lazy
             :close-on-content-click="false"
             v-model="menu"
             transition="scale-transition"
@@ -77,14 +70,16 @@
             :nudge-right="40"
             min-width="290px"
           >
-            <v-text-field
-              slot="activator"
-              :label="$t('auth.signup.birthDateLabel')"
-              v-model="birthDate"
-              :rules="birthDateRules"
-              prepend-icon="mdi-calendar"
-              readonly
-            ></v-text-field>
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                :label="$t('auth.signup.birthDateLabel')"
+                v-model="birthDate"
+                :rules="birthDateRules"
+                prepend-icon="mdi-calendar"
+                readonly
+                v-on="on"
+              ></v-text-field>
+            </template>
             <v-date-picker
               ref="picker"
               v-model="birthDate"
@@ -97,7 +92,6 @@
             v-model="termsAgreed"
             :rules="termsAgreedRules"
             type="checkbox"
-            required
           >
             <div slot="label" @click.stop >
               <i18n path="auth.signup.agreeLabelText">
@@ -114,8 +108,8 @@
             >{{ $t('auth.signup.signupButtonText') }}</v-btn>
         </v-form>
       </v-flex>
-    <tafalk-terms-of-service-dialog></tafalk-terms-of-service-dialog>
-    <tafalk-privacy-policy-dialog></tafalk-privacy-policy-dialog>
+      <tafalk-terms-of-service-dialog></tafalk-terms-of-service-dialog>
+      <tafalk-privacy-policy-dialog></tafalk-privacy-policy-dialog>
     </v-layout>
   </v-container>
 </template>

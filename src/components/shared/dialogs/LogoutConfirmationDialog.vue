@@ -5,8 +5,8 @@
       <v-card-text>{{ $t('auth.logout.dialog.body') }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="red darken-1" flat @click.native="onLogoutConfirmBtnClick">{{ $t('common.options.yesButtonText') }}</v-btn>
-        <v-btn color="light-blue darken-1" flat @click.native="setIsLogoutConfirmationDialogVisible(false)">{{ $t('common.options.noButtonText') }}</v-btn>
+        <v-btn color="red darken-1" text @click.native="onLogoutConfirmBtnClick">{{ $t('common.options.yesButtonText') }}</v-btn>
+        <v-btn color="light-blue darken-1" text @click.native="setIsLogoutConfirmationDialogVisible(false)">{{ $t('common.options.noButtonText') }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

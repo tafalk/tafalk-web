@@ -28,7 +28,7 @@
         <v-spacer></v-spacer>
         <v-btn
           color="light-blue darken-1"
-          flat
+          text
           @click.native="onDoneClick">{{ $t('common.options.okButtonText') }}</v-btn>
       </v-card-actions>
     </v-card>

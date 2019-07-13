@@ -19,7 +19,7 @@
     <v-spacer />
     <v-btn
       v-if="isVisitingOwnProfile"
-      flat
+      text
       small
       depressed
       color="error"

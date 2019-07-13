@@ -27,7 +27,7 @@
         <v-spacer></v-spacer>
         <v-btn
           color="primary"
-          flat
+          text
           @click="isCantoIntroductionDialogVisible = false"
         >
           {{ $t('stream.pour.introduction.closeButtonText') }}

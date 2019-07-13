@@ -7,13 +7,11 @@
   <v-card-title dense primary class="title grey--text">
     {{ stream.title || $t('stream.noTitlePlaceholder') }}
     <v-spacer />
-    <v-chip @click.stop="onToAuthorProfileClick(stream.user.username)" small>
-      <v-avatar v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null" >
-        <img
-          :src="streamUserProfilePictureObjectUrl"
-        />
+    <v-chip @click.stop="onToAuthorProfileClick(stream.user.username)" small pill>
+      <v-avatar left v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null" >
+        <img :src="streamUserProfilePictureObjectUrl"/>
       </v-avatar>
-      <v-avatar v-else>
+      <v-avatar left v-else>
         <img
           src="@/assets/default-user-avatar.jpg"
           alt="Virgina Woolf in Hue"

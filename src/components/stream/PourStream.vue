@@ -81,7 +81,7 @@
             @click="onDoneClick"
             :disabled="body == null || body.length === 0"
             :loading="loading"
-            flat
+            text
           >{{ $t('stream.pour.sealButtonText') }}</v-btn>
         </v-layout>
       </v-form>
