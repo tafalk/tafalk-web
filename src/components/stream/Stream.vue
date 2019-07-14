@@ -1,11 +1,7 @@
 <template>
 <v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
-  <v-layout v-if="!pageReady || stream == null" align-center fill-height row>
-    <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
-      <img src="@/assets/page-preloader.gif" alt="">
-    </v-flex>
-  </v-layout>
+  <tafalk-page-loading-progress v-if="!pageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
     <v-flex xs12 infinite-wrapper>
@@ -18,10 +14,10 @@
             <v-spacer />
             <v-chip @click="onAuthorProfileClick" small pill>
               <v-avatar left v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null">
-                <img :src="streamUserProfilePictureObjectUrl" />
+                <v-img :src="streamUserProfilePictureObjectUrl" />
               </v-avatar>
               <v-avatar left v-else>
-                <img
+                <v-img
                   src="@/assets/default-user-avatar.webp"
                   alt="Virgina Woolf in Hue"
                   :class="streamUserColor"
@@ -171,6 +167,7 @@ import TafalkShareStreamLinkDialog from '@/components/stream/dialogs/ShareStream
 import TafalkStreamCommentList from '@/components/comment/stream/StreamCommentList.vue'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
+import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('Stream')
 
@@ -181,7 +178,8 @@ export default {
     TafalkShareStreamLinkDialog,
     TafalkStreamCommentList,
     TafalkFlagDialog,
-    TafalkRetractFlagConfirmationDialog
+    TafalkRetractFlagConfirmationDialog,
+    TafalkPageLoadingProgress
   },
   data () {
     return {

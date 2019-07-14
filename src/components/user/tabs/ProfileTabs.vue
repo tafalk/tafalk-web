@@ -4,7 +4,7 @@
   <v-tab href="#streams-tab">
     {{ $t('user.profilePage.tabs.streams') }}
   </v-tab>
-  <v-tab href="#liked-streams-tab">
+  <v-tab href="#bookmarked-streams-tab">
     {{ $t('user.profilePage.tabs.likedContents') }}
   </v-tab>
   <v-tab href="#liked-users-tab">
@@ -25,19 +25,19 @@
     ></infinite-loading>
   </v-tab-item>
 
-  <v-tab-item :value="likedStreamsTabName">
+  <v-tab-item :value="bookmarkedStreamsTabName">
     <v-flex class="pt-2"
-      v-for="likedStream in likedStreams"
-      :key="'L-' + likedStream.id"
+      v-for="bookmarkedStream in bookmarkedStreams"
+      :key="'L-' + bookmarkedStream.id"
     >
-      <tafalk-slim-profile-liked-stream-card
-        :stream="likedStream"
+      <tafalk-slim-profile-bookmarked-stream-card
+        :stream="bookmarkedStream"
         :isVisitingOwnProfile="isVisitingOwnProfile"
-      ></tafalk-slim-profile-liked-stream-card>
+      ></tafalk-slim-profile-bookmarked-stream-card>
     </v-flex>
     <infinite-loading
       force-use-infinite-wrapper="true"
-      @infinite="infiniteLikedStreamTabHandler"
+      @infinite="infiniteBookmarkedStreamTabHandler"
     ></infinite-loading>
   </v-tab-item>
 
@@ -63,7 +63,7 @@
 import { API, graphqlOperation } from 'aws-amplify'
 import { ListStreamsByUser, ListLikesByUser, ListUserInteractionsByActorUserIdIndex } from '@/graphql/Profile'
 import TafalkSlimProfileOwnStreamCard from '@/components/stream/cards/SlimProfileOwnStreamCard.vue'
-import TafalkSlimProfileLikedStreamCard from '@/components/stream/cards/SlimProfileLikedStreamCard.vue'
+import TafalkSlimProfileBookmarkedStreamCard from '@/components/stream/cards/SlimProfileBookmarkedStreamCard.vue'
 import TafalkSlimProfileLikedUserCard from '@/components/user/cards/SlimProfileLikedUserCard.vue'
 
 export default {
@@ -72,22 +72,22 @@ export default {
   data () {
     return {
       streamsTabName: 'streams-tab',
-      likedStreamsTabName: 'liked-streams-tab',
+      bookmarkedStreamsTabName: 'bookmarked-streams-tab',
       likedUsersTabName: 'liked-users-tab',
       activeTabIndex: this.streamsTabName,
       userStreams: [],
-      likedStreams: [],
+      bookmarkedStreams: [],
       likedUsers: [],
       fetchLimit: 3,
       userStreamFetchNextToken: '',
-      likedStreamFetchNextToken: '',
+      bookmarkedStreamFetchNextToken: '',
       likedUserFetchNextToken: '',
       watchTypeUserConnectionValue: 'Watch'
     }
   },
   components: {
     TafalkSlimProfileOwnStreamCard,
-    TafalkSlimProfileLikedStreamCard,
+    TafalkSlimProfileBookmarkedStreamCard,
     TafalkSlimProfileLikedUserCard
   },
   computed: {
@@ -95,7 +95,7 @@ export default {
   async mounted () {
     // send async queries
     const graphqlVisitedProfileStreamsReq = API.graphql(graphqlOperation(ListStreamsByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.userStreamFetchNextToken }))
-    const graphqlVisitedProfileLikedStreamsReq = API.graphql(graphqlOperation(ListLikesByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedStreamFetchNextToken }))
+    const graphqlVisitedProfileBookmarkedStreamsReq = API.graphql(graphqlOperation(ListLikesByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.bookmarkedStreamFetchNextToken }))
     const graphqlVisitedProfileOutboundInteractedUsersReq = API.graphql(graphqlOperation(ListUserInteractionsByActorUserIdIndex, { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedUserFetchNextToken }))
 
     // load own streams
@@ -107,12 +107,12 @@ export default {
     this.userStreams.push(...initialFetchUserStreams)
 
     // load liked streams
-    const graphqlVisitedProfileLikedStreamsResult = await graphqlVisitedProfileLikedStreamsReq
-    const visitedProfileLikedStreamsDbResult = graphqlVisitedProfileLikedStreamsResult.data.listLikesByUser
+    const graphqlVisitedProfileBookmarkedStreamsResult = await graphqlVisitedProfileBookmarkedStreamsReq
+    const visitedProfileBookmarkedStreamsDbResult = graphqlVisitedProfileBookmarkedStreamsResult.data.listLikesByUser
 
-    const initialFetchLikedStreams = visitedProfileLikedStreamsDbResult.items.map(item => item.stream)
-    this.likedStreamFetchNextToken = visitedProfileLikedStreamsDbResult.nextToken
-    this.likedStreams.push(...initialFetchLikedStreams)
+    const initialFetchBookmarkedStreams = visitedProfileBookmarkedStreamsDbResult.items.map(item => item.stream)
+    this.bookmarkedStreamFetchNextToken = visitedProfileBookmarkedStreamsDbResult.nextToken
+    this.bookmarkedStreams.push(...initialFetchBookmarkedStreams)
 
     // load liked users
     const graphqlVisitedProfileOutboundInteractedUsersResult = await graphqlVisitedProfileOutboundInteractedUsersReq
@@ -157,21 +157,21 @@ export default {
         $state.loaded()
       }
     },
-    async infiniteLikedStreamTabHandler ($state) {
+    async infiniteBookmarkedStreamTabHandler ($state) {
       // if no new things to load, complete
-      if (!this.likedStreamFetchNextToken) {
+      if (!this.bookmarkedStreamFetchNextToken) {
         $state.complete()
       } else {
         const scrollLikeEndNewFetchResult = await API.graphql(graphqlOperation(ListLikesByUser, {
           userId: this.userId,
           limit: this.fetchLimit,
-          nextToken: this.likedStreamFetchNextToken
+          nextToken: this.bookmarkedStreamFetchNextToken
         }))
 
         const newPaginatedLikeByUserType = scrollLikeEndNewFetchResult.data.listLikesByUser
 
-        this.likedStreamFetchNextToken = newPaginatedLikeByUserType.nextToken
-        this.likedStreams.push(...newPaginatedLikeByUserType.items.map(item => item.stream))
+        this.bookmarkedStreamFetchNextToken = newPaginatedLikeByUserType.nextToken
+        this.bookmarkedStreams.push(...newPaginatedLikeByUserType.items.map(item => item.stream))
 
         $state.loaded()
       }

@@ -45,7 +45,23 @@
         </v-item-group>
       </v-card-actions>
       <v-card-actions class="justify-center">
-        <v-btn color="primary" class="mono" text @click.stop="onEndIntroClick">{{ $t('intro.closeButtonText') }}</v-btn>
+        <v-btn
+          v-if="itemNum + 1 !== itemCount"
+          color="primary"
+          class="mono"
+          text
+          @click.stop="next"
+        >
+          {{ $t('intro.nextButtonText') }}
+        </v-btn>
+        <v-btn
+          v-else
+          color="primary"
+          class="mono"
+          @click.stop="onEndIntroClick"
+        >
+          {{ $t('intro.closeButtonText') }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

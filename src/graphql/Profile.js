@@ -24,6 +24,7 @@ export const GetUserProfileData = gql`query GetUserProfileData($username: String
     language
     createdAt
     lastAccess
+    accountStatus
     userInteractions {
       items {
         id
@@ -161,6 +162,16 @@ export const UpdateUserLanguage = gql`mutation UpdateUserTheme($userId: ID!, $la
   }){
     id
     language
+  }
+}`
+
+export const UpdateUserAccountStatus = gql`mutation UpdateUserAccountStatus($userId: ID!, $accountStatus: String) {
+  updateUser(input: {
+    id: $userId
+    accountStatus: $accountStatus
+  }){
+    id
+    accountStatus
   }
 }`
 

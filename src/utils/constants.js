@@ -13,6 +13,8 @@ export const minUsernameOrEmailLength = 2
 export const maxUsernameOrEmailLength = 254
 export const minPasswordLength = 8
 
+// user
+export const activeUserAccountStatus = 'active'
 // pour
 export const pourStrikethroughTimeToIdle = 1000
 

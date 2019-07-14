@@ -45,6 +45,7 @@
       "title": "",
       "body": "Cantos are similar but every user has one. You can add up your canto until whenever you like, but again no deleting."
     },
+    "nextButtonText": "Next",
     "closeButtonText": "Ok, I See"
   },
   "home": {
@@ -364,7 +365,7 @@
     "deleteAccount": {
       "dialog": {
         "title": "Delete Account",
-        "body": "Are you sure? Your username may be unavailable to you forever!"
+        "body": "Are you sure? Your username may be unavailable to you forever! -anyone can get it"
       }
     }
   },

@@ -1,26 +1,35 @@
 <template>
 <v-card
   hover
-  max-height=200
+  :max-height="maxHeight"
   @click.native="onToStreamButtonClick"
 >
   <v-card-title dense primary class="title grey--text">
+    <!-- Stream Header -->
     {{ stream.title || $t('stream.noTitlePlaceholder') }}
     <v-spacer />
-    <v-chip @click.stop="onToAuthorProfileClick(stream.user.username)" small pill>
-      <v-avatar left v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null" >
-        <img :src="streamUserProfilePictureObjectUrl"/>
-      </v-avatar>
-      <v-avatar left v-else>
-        <img
+    <!-- Stream Author Chip -->
+    <v-chip @click.stop="onToAuthorProfileClick" small pill>
+      <v-avatar left>
+        <!-- Author is not active -->
+        <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
+        <!-- Author active but no prifile picture set -->
+        <v-img
+          v-else-if="!authorProfilePictureObjectUrl"
           src="@/assets/default-user-avatar.webp"
           alt="Virgina Woolf in Hue"
-          :class="streamUserColor"
-        />
+          :class="authorColor"
+        ></v-img>
+        <!-- Author active and has profile pic -->
+        <v-img
+          v-else
+          :src="authorProfilePictureObjectUrl"
+        ></v-img>
       </v-avatar>
-      {{ stream.user.username }}
+      {{ authorDisplayUsername }}
     </v-chip>
   </v-card-title>
+  <!-- Stream Body -->
   <v-card-text class="text-truncate">{{ stream.body }}</v-card-text>
   <v-card-actions class="pa-2 grey--text">
     <v-spacer />
@@ -41,7 +50,7 @@
       </span>
     </div>
     <span class="pa-2 grey--text caption">
-      <v-icon class="grey--text caption">mdi-bookmark</v-icon>&nbsp;{{ likeCount }}
+      <v-icon class="grey--text caption">mdi-bookmark</v-icon>&nbsp;{{ bookmarkCount }}
     </span>
     <span class="pa-2 grey--text caption">
       <v-icon class="grey--text caption">mdi-comment</v-icon>&nbsp;{{ commentCount }}
@@ -53,6 +62,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Storage } from 'aws-amplify'
+import { activeUserAccountStatus } from '@/utils/constants'
 import { GetHexColorOfString } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
@@ -61,56 +71,61 @@ export default {
   props: ['stream'],
   data () {
     return {
-      streamUserProfilePictureObjectUrl: null,
-      streamUserColor: null
+      maxHeight: 200,
+      activeUserAccountStatus,
+      authorProfilePictureObjectUrl: null,
+      authorColor: null
     }
   },
   async mounted () {
-    this.streamUserColor = GetHexColorOfString(this.stream.user.username)
+    if (this.author) {
+      // the author is active
+      this.authorColor = GetHexColorOfString(this.author.username)
 
-    this.streamUserProfilePictureObjectUrl = (this.authenticatedUser && this.stream.user.profilePictureKey != null)
-      ? await Storage.get(this.stream.user.profilePictureKey, { level: 'protected' })
-      : null
+      this.authorProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
+        ? await Storage.get(this.stream.user.profilePictureKey, { level: 'protected' })
+        : null
+    }
   },
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getNowTime: 'time/getNowTime'
     }),
+    author () {
+      return (this.stream.user && this.stream.user.accountStatus === this.activeUserAccountStatus) ? this.stream.user : null
+    },
+    authorDisplayUsername () {
+      if (!this.stream.user) return null
+      else if (this.stream.user.accountStatus !== this.activeUserAccountStatus) return this.stream.user.id
+      else return this.author.username
+    },
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
-    likeCount () {
-      if (this.stream.likes == null) return 0
-      return this.stream.likes.length
+    bookmarkCount () {
+      return this.stream.bookmarks ? this.stream.bookmarks.length : 0
     },
     commentCount () {
-      if (this.stream.comments == null) return 0
-      return this.stream.comments.length
+      return this.stream.comments ? this.stream.comments.length : 0
     },
     isSealed () {
       return this.stream.isSealed
     },
     timeFromSealedToNow () {
-      if (this.isSealed === 0) {
-        return null
-      }
-      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealTime)
+      return this.isSealed !== 0 ? GetElapsedTimeTillNow(this.getNowTime, this.stream.sealTime) : null
     },
     timeSpentForStream () {
-      if (this.isSealed === 0) {
-        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startTime)
-      }
-
-      return GetElapsedTimeBetween(this.stream.startTime, this.stream.sealTime)
+      return this.isSealed === 0 ? GetElapsedTimeTillNow(this.getNowTime, this.stream.startTime) : GetElapsedTimeBetween(this.stream.startTime, this.stream.sealTime)
     }
   },
   methods: {
     onToStreamButtonClick () {
       this.$router.push({ name: 'stream', params: { id: this.stream.id } })
     },
-    onToAuthorProfileClick (username) {
-      this.$router.push({ name: 'profile', params: { username: username } })
+    onToAuthorProfileClick () {
+      if (!this.author) return
+      this.$router.push({ name: 'profile', params: { username: this.author.username } })
     }
   }
 }

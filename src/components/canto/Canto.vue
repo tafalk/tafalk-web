@@ -1,11 +1,7 @@
 <template>
 <v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
-  <v-layout v-if="!pageReady || canto == null" align-center fill-height row>
-    <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
-      <img src="@/assets/page-preloader.gif" alt="">
-    </v-flex>
-  </v-layout>
+  <tafalk-page-loading-progress v-if="!pageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
     <v-flex xs12 sm12 offset-md2 md8>
@@ -20,10 +16,10 @@
             <!-- User avatar -->
             <v-chip @click="onAuthorProfileClick" small pill>
               <v-avatar left v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null">
-                <img :src="cantoUserProfilePictureObjectUrl" />
+                <v-img :src="cantoUserProfilePictureObjectUrl" />
               </v-avatar>
               <v-avatar left v-else>
-                <img
+                <v-img
                   src="@/assets/default-user-avatar.webp"
                   alt="Virgina Woolf in Hue"
                   :class="cantoUserColor"
@@ -130,6 +126,7 @@ import TafalkNotAllowedCanto from '@/components/nocontent/CantoNotAllowed.vue'
 import TafalkShareCantoLinkDialog from '@/components/canto/dialogs/ShareCantoLinkDialog.vue'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
+import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('Canto')
 
@@ -139,7 +136,8 @@ export default {
     TafalkNotAllowedCanto,
     TafalkShareCantoLinkDialog,
     TafalkFlagDialog,
-    TafalkRetractFlagConfirmationDialog
+    TafalkRetractFlagConfirmationDialog,
+    TafalkPageLoadingProgress
   },
   data () {
     return {

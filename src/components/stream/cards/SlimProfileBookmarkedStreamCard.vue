@@ -12,18 +12,25 @@
   >
     {{ stream.title || $t('stream.noTitlePlaceholder') }}
     <v-spacer />
-    <v-chip @click.stop="onToAuthorProfileClick(stream.user.username)" small pill>
-      <v-avatar left v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null" >
-        <img :src="streamUserProfilePictureObjectUrl"/>
-      </v-avatar>
-      <v-avatar left v-else>
-        <img
+    <!-- Stream Author Chip -->
+    <v-chip @click.stop="onToAuthorProfileClick" small pill>
+      <v-avatar left>
+        <!-- Author is not active -->
+        <v-icon left v-if="!author" class="white-text">mdi-account-circle</v-icon>
+        <!-- Author active but no prifile picture set -->
+        <v-img
+          v-else-if="!authorProfilePictureObjectUrl"
           src="@/assets/default-user-avatar.webp"
           alt="Virgina Woolf in Hue"
-          :class="streamUserColor"
-        />
+          :class="authorColor"
+        ></v-img>
+        <!-- Author active and has profile pic -->
+        <v-img
+          v-else
+          :src="authorProfilePictureObjectUrl"
+        ></v-img>
       </v-avatar>
-      {{ stream.user.username }}
+      {{ authorDisplayUsername }}
     </v-chip>
   </v-card-title>
   <v-card-text class="text-truncate">
@@ -38,7 +45,7 @@
       color="error"
       :loading="isLoading"
       :disabled="isLoading"
-      @click.stop="unlikeStream"
+      @click.stop="unbookmarkStream"
     >
       {{ $t('user.profilePage.tabs.removeLikeButtonText') }}
     </v-btn>
@@ -60,7 +67,7 @@
       </span>
     </div>
     <span class="pa-2 grey--text caption">
-      <v-icon class="grey--text caption">mdi-bookmark</v-icon>&nbsp;{{ likeCount }}
+      <v-icon class="grey--text caption">mdi-bookmark</v-icon>&nbsp;{{ bookmarkCount }}
     </span>
     <span class="pa-2 grey--text caption">
       <v-icon class="grey--text caption">mdi-comment</v-icon>&nbsp;{{ commentCount }}
@@ -76,26 +83,29 @@ import { DeleteLike } from '@/graphql/StreamReaction'
 import { GetHexColorOfString } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
-const logger = new Logger('SlimProfileLikedStreamCard')
+const logger = new Logger('SlimProfileBookmarkedStreamCard')
 
 export default {
-  name: 'SlimProfileLikedStreamCard',
+  name: 'SlimProfileBookmarkedStreamCard',
   props: ['stream', 'isVisitingOwnProfile'],
   data () {
     return {
       isUnliked: false,
+      isLoading: false,
       maxHeight: 185,
-      streamUserProfilePictureObjectUrl: null,
-      streamUserColor: null,
-      isLoading: false
+      authorProfilePictureObjectUrl: null,
+      authorColor: null
     }
   },
   async mounted () {
-    this.streamUserColor = GetHexColorOfString(this.stream.user.username)
+    if (this.author) {
+      // the author is active
+      this.authorColor = GetHexColorOfString(this.author.username)
 
-    this.streamUserProfilePictureObjectUrl = (this.authenticatedUser && this.stream.user.profilePictureKey != null)
-      ? await Storage.get(this.stream.user.profilePictureKey, { level: 'protected' })
-      : null
+      this.authorProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
+        ? await Storage.get(this.stream.user.profilePictureKey, { level: 'protected' })
+        : null
+    }
   },
   computed: {
     ...mapGetters({
@@ -103,43 +113,41 @@ export default {
       getVisitedUser: 'visitedUser/getUser',
       getNowTime: 'time/getNowTime'
     }),
+    author () {
+      return (this.stream.user && this.stream.user.accountStatus === this.activeUserAccountStatus) ? this.stream.user : null
+    },
+    authorDisplayUsername () {
+      if (!this.stream.user) return null
+      else if (this.stream.user.accountStatus !== this.activeUserAccountStatus) return this.stream.user.id
+      else return this.author.username
+    },
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
     visitedUser () {
       return this.getVisitedUser
     },
-    likes () {
-      return this.stream.likes
+    bookmarks () {
+      return this.stream.bookmarks
     },
-    likeCount () {
-      if (this.likes == null) return 0
-      return this.likes.length
+    bookmarkCount () {
+      return this.bookmarks ? this.bookmarks.length : 0
     },
     profileUserLikeId () {
-      const userLike = this.likes.filter(l => l.userId === this.visitedUser.id)[0]
-
-      return (userLike) ? userLike.id : ''
+      const userLike = this.bookmarks.filter(l => l.userId === this.visitedUser.id)[0]
+      return userLike ? userLike.id : ''
     },
     commentCount () {
-      if (this.stream.comments == null) return 0
-      return this.stream.comments.length
+      return this.stream.comments ? this.stream.comments.length : 0
     },
     isSealed () {
       return this.stream.isSealed
     },
     timeFromSealedToNow () {
-      if (this.isSealed === 0) {
-        return null
-      }
-      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealTime)
+      return this.isSealed !== 0 ? GetElapsedTimeTillNow(this.getNowTime, this.stream.sealTime) : null
     },
     timeSpentForStream () {
-      if (this.isSealed === 0) {
-        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startTime)
-      }
-
-      return GetElapsedTimeBetween(this.stream.startTime, this.stream.sealTime)
+      return this.isSealed === 0 ? GetElapsedTimeTillNow(this.getNowTime, this.stream.startTime) : GetElapsedTimeBetween(this.stream.startTime, this.stream.sealTime)
     }
   },
   methods: {
@@ -148,7 +156,7 @@ export default {
       setNewUserInteractionResultSuccess: 'shared/setNewUserInteractionResultSuccess',
       setNewUserInteractionResultError: 'shared/setNewUserInteractionResultError'
     }),
-    async unlikeStream () {
+    async unbookmarkStream () {
       this.isLoading = true
       try {
         await API.graphql(graphqlOperation(DeleteLike, {
@@ -165,8 +173,9 @@ export default {
     onToStreamButtonClick () {
       this.$router.push({ name: 'stream', params: { id: this.stream.id } })
     },
-    onToAuthorProfileClick (username) {
-      this.$router.push({ name: 'profile', params: { username: username } })
+    onToAuthorProfileClick () {
+      if (!this.author) return
+      this.$router.push({ name: 'profile', params: { username: this.author.username } })
     }
   }
 }

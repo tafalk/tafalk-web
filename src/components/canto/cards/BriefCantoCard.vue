@@ -8,10 +8,10 @@
     <v-spacer />
     <v-chip @click.stop="onToAuthorProfileClick(canto.user.username)" small pill>
       <v-avatar left v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null" >
-        <img :src="cantoUserProfilePictureObjectUrl"/>
+        <v-img :src="cantoUserProfilePictureObjectUrl"/>
       </v-avatar>
       <v-avatar left v-else>
-        <img
+        <v-img
           src="@/assets/default-user-avatar.webp"
           alt="Virgina Woolf in Hue"
           :class="cantoUserColor"

@@ -27,10 +27,10 @@
       @click="onProfileClick"
       pill>
       <v-avatar left v-if="authenticatedUser.profilePictureObjectUrl">
-        <img :src="authenticatedUser.profilePictureObjectUrl" />
+        <v-img :src="authenticatedUser.profilePictureObjectUrl" />
       </v-avatar>
       <v-avatar left size="200" v-else>
-        <img
+        <v-img
           src="@/assets/default-user-avatar.webp"
           alt="Virgina Woolf in Hue"
           :class="userColor" />
@@ -45,13 +45,13 @@
       size="28"
       small
     >
-      <img :src="authenticatedUser.profilePictureObjectUrl" />
+      <v-img :src="authenticatedUser.profilePictureObjectUrl" />
     </v-avatar>
     <v-avatar
       size="28"
       v-else-if="$vuetify.breakpoint.smAndDown && !authenticatedUser.profilePictureObjectUrl"
       @click="onProfileClick">
-      <img
+      <v-img
         src="@/assets/default-user-avatar.webp"
         alt="Virgina Woolf in Hue"
         :class="userColor" />

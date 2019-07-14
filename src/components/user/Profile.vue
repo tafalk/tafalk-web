@@ -1,15 +1,14 @@
 <template>
 <v-container ma-0 pt-5>
   <!-- full page loader -->
-  <v-layout v-if="!pageReady" align-center fill-height>
-    <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
-      <img  src="@/assets/page-preloader.gif" alt="">
-    </v-flex>
-  </v-layout>
+  <tafalk-page-loading-progress v-if="!pageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
     <v-flex d-flex xs12 offset-md2 md8>
-      <div v-if="isProfileAllowed">
+      <!-- Not Allowed To See -->
+      <tafalk-not-allowed-profile v-if="!isProfileAllowed" />
+      <!-- Allowed -->
+      <div v-else>
         <v-card flat>
           <!-- edit profile button -->
           <tafalk-profile-edit-speed-dial v-if="isVisitingOwnProfile" />
@@ -19,14 +18,16 @@
               <v-flex d-flex xs12 md4>
                 <v-container pt-3 fluid grid-list-md>
                   <v-layout align-center column>
-                    <v-avatar v-if="authenticatedUser && visitedUser.profilePictureObjectUrl != null" pt-1 size="150">
-                      <img :src="visitedUser.profilePictureObjectUrl" />
-                    </v-avatar>
-                    <v-avatar v-else pt-1 size="150">
-                      <img
+                    <v-avatar pt-1 size="150">
+                      <v-img
+                        v-if="authenticatedUser && visitedUser.profilePictureObjectUrl"
+                        :src="visitedUser.profilePictureObjectUrl"
+                      />
+                      <v-img
+                        v-else
                         src="@/assets/default-user-avatar.webp"
                         alt="Woolf"
-                        :class="visitedUser.color"
+                        class="#E91E63"
                       />
                     </v-avatar>
                     <v-btn
@@ -95,7 +96,6 @@
           :userId="visitedUser.id">
         </tafalk-user-delete-account-confirmation-dialog>
       </div>
-      <tafalk-not-allowed-profile v-else></tafalk-not-allowed-profile>
     </v-flex>
   </v-layout>
 </v-container>
@@ -118,6 +118,7 @@ import TafalkUserBlockConfirmationDialog from '@/components/user/dialogs/BlockCo
 import TafalkUserInfoEditDialog from '@/components/user/dialogs/UserInfoEditDialog.vue'
 import TafalkUserPrivacyEditDialog from '@/components/user/dialogs/UserPrivacyEditDialog'
 import TafalkUserDeleteAccountConfirmationDialog from '@/components/user/dialogs/DeleteAccountConfirmationDialog.vue'
+import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('Profile')
 
@@ -134,6 +135,7 @@ export default {
     }
   },
   components: {
+    TafalkPageLoadingProgress,
     TafalkUserChangeProfilePictureDialog,
     TafalkNotAllowedProfile,
     TafalkUserInteractionButtonGroup,

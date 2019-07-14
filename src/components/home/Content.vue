@@ -2,11 +2,7 @@
   <div class="home">
     <v-container grid-list-lg pt-5>
       <!-- full page loader -->
-      <v-layout v-if="!getIsPageReady" align-center fill-height>
-        <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
-          <img  src="@/assets/page-preloader.gif" alt="">
-        </v-flex>
-      </v-layout>
+      <tafalk-page-loading-progress v-if="!getIsPageReady" />
       <v-layout v-else-if="!searchText || searchText.length === 0" row wrap>
         <!-- Streams -->
         <v-flex offset-md2 md8 xs12 infinite-wrapper v-if="isStreamListType">
@@ -144,6 +140,7 @@ import TafalkNewFab from '@/components/home/buttons/NewFab.vue'
 import TafalkBriefStreamCard from '@/components/stream/cards/BriefStreamCard.vue'
 import TafalkBriefCantoCard from '@/components/canto/cards/BriefCantoCard.vue'
 import TafalkBriefUserCard from '@/components/user/cards/BriefUserCard.vue'
+import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 import { homeStreamFetchLength } from '@/utils/constants'
 
 export default {
@@ -166,7 +163,8 @@ export default {
     TafalkNewFab,
     TafalkBriefStreamCard,
     TafalkBriefCantoCard,
-    TafalkBriefUserCard
+    TafalkBriefUserCard,
+    TafalkPageLoadingProgress
   },
   async created () {
     await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })

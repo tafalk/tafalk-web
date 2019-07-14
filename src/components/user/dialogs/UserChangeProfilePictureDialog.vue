@@ -1,9 +1,6 @@
 <template>
   <v-layout row justify-center>
     <v-dialog v-model="getIsChangeProfilePictureDialogVisible" persistent max-width="750px">
-      <!--
-        Taken from: https://jsfiddle.net/meyubaraj/fLbe7r72/
-      -->
       <v-card>
         <v-card-title primary-title>
           <div>
@@ -16,8 +13,15 @@
         <v-card-text>
           <v-container grid-list-lg text-xs-center>
             <v-avatar pt-1 size="200" color="grey" v-if="imageUrl">
-              <img :src=imageUrl height="200" />
+              <v-img :src="imageUrl" height="200" />
             </v-avatar>
+            <!--
+            <v-file-input
+              v-model="imageFileName"
+              :label="$t('user.profilePicture.selectImageLabel')"
+              accept="image/*"
+            ></v-file-input>
+            -->
             <v-text-field
               :label="$t('user.profilePicture.selectImageLabel')"
               @click='onPickFile'
@@ -113,6 +117,8 @@ export default {
       }
     },
     async onUploadSelectedProfilePictureClick () {
+      // console.log(JSON.stringify(this.imageFileName))
+
       this.loading = true
       this.loader = 'loading'
       const imageFileObjectToUpload = this.imageFileObject

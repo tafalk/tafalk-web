@@ -2,11 +2,7 @@
   <tafalk-stream-authorization-required v-if="!isAllowed"></tafalk-stream-authorization-required>
   <v-container v-else fluid grid-list-lg>
     <!-- full page loader -->
-    <v-layout v-if="!pageReady" align-center fill-height row>
-      <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
-        <img src="@/assets/page-preloader.gif" alt="">
-      </v-flex>
-    </v-layout>
+    <tafalk-page-loading-progress v-if="!pageReady" />
     <!-- Page itself -->
     <v-layout row wrap v-else>
       <tafalk-canto-introduction v-if="isCantoNew"></tafalk-canto-introduction>
@@ -58,6 +54,7 @@ import TafalkStreamAuthorizationRequired from '@/components/nocontent/Authorizat
 import TafalkCantoIntroduction from '@/components/canto/dialogs/CantoIntroduction.vue'
 import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
 import { GetKeyName } from '@/utils/ioUtils'
+import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('PourCanto')
 
@@ -79,7 +76,8 @@ export default {
   },
   components: {
     TafalkStreamAuthorizationRequired,
-    TafalkCantoIntroduction
+    TafalkCantoIntroduction,
+    TafalkPageLoadingProgress
   },
   computed: {
     ...mapGetters({

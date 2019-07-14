@@ -5,10 +5,10 @@
       @click.native="onToUserProfileClick">
         <v-card-title dense primary>
           <v-avatar v-if="authenticatedUser && userProfilePictureObjectUrl != null" size="60">
-            <img :src="userProfilePictureObjectUrl" />
+            <v-img :src="userProfilePictureObjectUrl" />
           </v-avatar>
           <v-avatar v-else size="60">
-            <img
+            <v-img
               src="@/assets/default-user-avatar.webp"
               alt="Virgina Woolf in Hue"
               :class="userColor"

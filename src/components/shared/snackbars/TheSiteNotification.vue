@@ -12,7 +12,7 @@
       icon
       @click="setIsSiteNotificationVisible(false)"
     >
-      mdi-close-circle
+      <v-icon>mdi-close-circle</v-icon>
     </v-btn>
   </v-snackbar>
 </template>
