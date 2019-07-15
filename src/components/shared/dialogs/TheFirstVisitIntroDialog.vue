@@ -1,6 +1,8 @@
 <template>
   <v-dialog v-model="isFirstVisitIntroDialogVisible"
     transition="dialog-bottom-transition"
+    :fullscreen="$vuetify.breakpoint.xsOnly"
+    :hide-overlay="$vuetify.breakpoint.xsOnly"
     max-width="600">
     <v-card>
       <v-window v-model="itemNum">

@@ -16,9 +16,9 @@
         <!-- Author active but no prifile picture set -->
         <v-img
           v-else-if="!authorProfilePictureObjectUrl"
-          src="@/assets/default-user-avatar.webp"
+          :src="require('@/assets/default-user-avatar.webp')"
           alt="Virgina Woolf in Hue"
-          :class="authorColor"
+          :style="{backgroundColor: authorColor}"
         ></v-img>
         <!-- Author active and has profile pic -->
         <v-img
@@ -83,7 +83,7 @@ export default {
       this.authorColor = GetHexColorOfString(this.author.username)
 
       this.authorProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
-        ? await Storage.get(this.stream.user.profilePictureKey, { level: 'protected' })
+        ? await Storage.get(this.author.profilePictureKey, { level: 'protected' })
         : null
     }
   },
@@ -96,9 +96,13 @@ export default {
       return (this.stream.user && this.stream.user.accountStatus === this.activeUserAccountStatus) ? this.stream.user : null
     },
     authorDisplayUsername () {
-      if (!this.stream.user) return null
-      else if (this.stream.user.accountStatus !== this.activeUserAccountStatus) return this.stream.user.id
-      else return this.author.username
+      if (!this.stream.user) {
+        return null
+      } else if (this.stream.user.accountStatus !== this.activeUserAccountStatus) {
+        return this.stream.user.id
+      } else {
+        return this.author.username
+      }
     },
     authenticatedUser () {
       return this.getAuthenticatedUser

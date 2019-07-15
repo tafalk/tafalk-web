@@ -20,9 +20,9 @@
         <!-- Author active but no prifile picture set -->
         <v-img
           v-else-if="!authorProfilePictureObjectUrl"
-          src="@/assets/default-user-avatar.webp"
+          :src="require('@/assets/default-user-avatar.webp')"
           alt="Virgina Woolf in Hue"
-          :class="authorColor"
+          :style="{backgroundColor: authorColor}"
         ></v-img>
         <!-- Author active and has profile pic -->
         <v-img

@@ -1,8 +1,8 @@
 <template>
   <tafalk-stream-authorization-required v-if="!authenticatedUser"></tafalk-stream-authorization-required>
-  <div v-else>
+  <v-container v-else fluid grid-list-lg>
     <tafalk-stream-introduction v-if="isFirstStreamOfUser"></tafalk-stream-introduction>
-    <v-card flat>
+    <v-card flat mt-5>
       <v-toolbar dense flat>
         <v-toolbar-title v-if="processState === 'saved'">
           <span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
@@ -86,7 +86,7 @@
         </v-layout>
       </v-form>
     </v-card>
-  </div>
+  </v-container>
 </template>
 
 <script>

@@ -16,17 +16,18 @@
     </v-progress-linear>
 
     <!-- Mobile search (removes all on small screens when on ) -->
-    <v-text-field
-      v-if="isMobileSearchHeaderOn && $vuetify.breakpoint.smAndDown"
-      single-line
-      clearable
-      prepend-icon="mdi-arrow-left"
-      :placeholder="$t('common.toolbar.searchPlaceholder')"
-      v-model="searchText"
-      @input="search"
-      @click:prepend="onSearchBackButtonClick"
-      @click:clear="clearSearchText"
-    ></v-text-field>
+    <v-container fluid v-if="isMobileSearchHeaderOn && $vuetify.breakpoint.smAndDown">
+      <v-text-field
+        single-line
+        clearable
+        prepend-icon="mdi-arrow-left"
+        :placeholder="$t('common.toolbar.searchPlaceholder')"
+        v-model="searchText"
+        @input="search"
+        @click:prepend="onSearchBackButtonClick"
+        @click:clear="clearSearchText"
+      ></v-text-field>
+    </v-container>
 
     <!-- Site name / logo -->
     <v-toolbar-title
@@ -73,60 +74,61 @@
   >
     <v-list rounded class="pt-0">
       <!-- Mobile only stream filters -->
-      <v-list-item
-        v-if="$vuetify.breakpoint.smAndDown"
-        @click="onSealedStreamsClick"
-      >
-        <v-list-item-action>
-          <v-icon color="teal">mdi-ghost-off</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-subtitle class="teal--text">{{ $t('home.bottomnav.sealed') }}</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item
-        v-if="$vuetify.breakpoint.smAndDown && authenticatedUser"
-        @click="onLiveStreamsClick"
-      >
-        <v-list-item-action>
-          <v-icon color="red darken-1">mdi-play-circle-outline</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-subtitle class="red--text text--darken-1">{{ $t('home.bottomnav.liveNow') }}</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item
-        v-if="$vuetify.breakpoint.smAndDown && authenticatedUser"
-        @click="onByFaveOtherStreamsClick"
-      >
-        <v-list-item-action>
-          <v-icon color="purple darken-2">mdi-star</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-subtitle class="purple--text text--darken-2">{{ $t('home.bottomnav.byFaveUsers') }}</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item
-        v-if="$vuetify.breakpoint.smAndDown"
-        @click="onCantosClick"
-      >
-        <v-list-item-action>
-          <v-icon color="cyan">mdi-music</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-subtitle class="teal--text">{{ $t('home.bottomnav.cantos') }}</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-divider v-if="$vuetify.breakpoint.smAndDown"/>
+      <v-subheader v-if="$vuetify.breakpoint.smAndDown">{{ $t('common.toolbar.menu.contentsSubheader') }}</v-subheader>
+      <v-list-item-group v-model="menuContentEl" v-if="$vuetify.breakpoint.smAndDown">
+        <v-list-item
+          @click="onSealedStreamsClick"
+        >
+          <v-list-item-action>
+            <v-icon color="teal">mdi-ghost-off</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-subtitle class="teal--text">{{ $t('home.bottomnav.sealed') }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          v-if="authenticatedUser"
+          @click="onLiveStreamsClick"
+        >
+          <v-list-item-action>
+            <v-icon color="red darken-1">mdi-play-circle-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-subtitle class="red--text text--darken-1">{{ $t('home.bottomnav.liveNow') }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          v-if="authenticatedUser"
+          @click="onByFaveOtherStreamsClick"
+        >
+          <v-list-item-action>
+            <v-icon color="purple darken-2">mdi-star</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-subtitle class="purple--text text--darken-2">{{ $t('home.bottomnav.byFaveUsers') }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          @click="onCantosClick"
+        >
+          <v-list-item-action>
+            <v-icon color="cyan">mdi-music</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-subtitle class="teal--text">{{ $t('home.bottomnav.cantos') }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
       <!-- Site meta -->
       <!-- Language -->
+      <v-divider v-if="$vuetify.breakpoint.smAndDown"/>
+      <v-subheader>{{ $t('common.toolbar.menu.settingsSubheader') }}</v-subheader>
       <v-list-item
         v-if="authenticatedUser"
         @click="onShowLanguageChooseDialogClick"
       >
         <v-list-item-title>{{ $t('siteLanguage.text') }}</v-list-item-title>
       </v-list-item>
-
       <!-- Dark Mode Switch -->
       <v-list-item
         v-if="authenticatedUser"
@@ -134,17 +136,15 @@
         <v-list-item-title>{{ $t('theme.darkMode.text') }}</v-list-item-title>
         &nbsp;&nbsp;
         <v-list-item-action>
-          <v-switch color="primary" v-model="isDarkTheme"></v-switch>
+          <v-switch color="primary" v-model="authenticatedUserTheme"></v-switch>
         </v-list-item-action>
       </v-list-item>
-
       <!-- About -->
       <v-list-item
         @click="onAboutClick"
       >
         <v-list-item-title>{{ $t('about.text') }}</v-list-item-title>
       </v-list-item>
-
       <!-- Log Out -->
       <v-list-item
         v-if="authenticatedUser"
@@ -170,8 +170,13 @@ export default {
   data () {
     return {
       fetchLimit: homeStreamFetchLength,
-      isDarkTheme: false,
-      isMobileSearchHeaderOn: false
+      isMobileSearchHeaderOn: false,
+      menuContentEl: null,
+      sealedValue: 'sealed',
+      topRatedValue: 'toprated',
+      liveNowValue: 'livenow',
+      byFaveUsersValue: 'byfaveusers',
+      cantoValue: 'cantos'
     }
   },
   components: {
@@ -181,10 +186,6 @@ export default {
     TheHeaderUnauthenticatedUserItems
   },
   created () {
-    if (!this.authenticatedUser) return
-    const isUserThemeDark = this.authenticatedUser.theme === 'dark'
-    this.$vuetify.theme.dark = isUserThemeDark
-    this.isDarkTheme = isUserThemeDark
   },
   computed: {
     ...mapGetters({
@@ -205,6 +206,20 @@ export default {
     },
     authenticatedUser () {
       return this.getAuthenticatedUser
+    },
+    authenticatedUserTheme: {
+      get: function () {
+        return this.authenticatedUser && this.authenticatedUser.theme === 'dark'
+      },
+      set: async function (val) {
+        const selectedTheme = val ? 'dark' : 'light'
+        this.setTheme({
+          userId: this.authenticatedUser.id,
+          theme: selectedTheme
+        }).finally(() => {
+          this.$vuetify.theme.dark = val
+        })
+      }
     },
     isRouteChanging () {
       return this.getIsRouteChanging
@@ -228,15 +243,9 @@ export default {
     }
   },
   watch: {
-    async isDarkTheme (val) {
-      const selectedTheme = val ? 'dark' : 'light'
-
-      await this.setTheme({
-        userId: this.authenticatedUser.id,
-        theme: selectedTheme
-      })
-
-      this.$vuetify.theme.dark = val
+    '$route.query.type' (val) {
+      // TODO: programmatically highlight
+      // this.menuContentEl = val ? this.menuContentDict[val] : this.menuContentDict[this.sealedValue]
     }
   },
   methods: {
@@ -247,7 +256,8 @@ export default {
       clearSearchResults: 'siteSearch/clearSearchResults',
       setIsLogoutConfirmationDialogVisible: 'authenticatedUser/dialog/setIsLogoutConfirmationDialogVisible',
       setIsLanguageChooseDialogVisible: 'authenticatedUser/dialog/setIsLanguageChooseDialogVisible',
-      setMenuDrawer: 'shared/setMenuDrawer'
+      setMenuDrawer: 'shared/setMenuDrawer',
+      setIsPageReady: 'setIsPageReady'
     }),
     ...mapActions({
       setSearchSiteResults: 'siteSearch/search',
@@ -255,7 +265,8 @@ export default {
       fetchInitialLiveBriefStreams: 'fetchInitialLiveBriefStreams',
       fetchInitialSealedBriefStreamsByFaveUsers: 'fetchInitialSealedBriefStreamsByFaveUsers',
       fetchInitialBriefCantos: 'fetchInitialBriefCantos',
-      setTheme: 'authenticatedUser/setTheme'
+      setTheme: 'authenticatedUser/setTheme',
+      clearAll: 'clearAll'
     }),
     async search () {
       await this.setSearchSiteResults(this.searchText)
@@ -276,22 +287,26 @@ export default {
     },
     async onSealedStreamsClick () {
       this.clearSearchComponents()
-      await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
+      this.clearAll()
+      this.$router.push({ name: 'content', query: { type: this.sealedValue } })
       this.setMenuDrawer(false)
     },
     async onLiveStreamsClick () {
       this.clearSearchComponents()
-      await this.fetchInitialLiveBriefStreams({ limit: this.fetchLimit, nextToken: null })
+      this.clearAll()
+      this.$router.push({ name: 'content', query: { type: this.liveNowValue } })
       this.setMenuDrawer(false)
     },
     async onByFaveOtherStreamsClick () {
       this.clearSearchComponents()
-      await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
+      this.clearAll()
+      this.$router.push({ name: 'content', query: { type: this.byFaveUsersValue } })
       this.setMenuDrawer(false)
     },
     async onCantosClick () {
       this.clearSearchComponents()
-      await this.fetchInitialBriefCantos({ limit: this.fetchLimit, nextToken: null })
+      this.clearAll()
+      this.$router.push({ name: 'content', query: { type: this.cantoValue } })
       this.setMenuDrawer(false)
     },
     onSearchBackButtonClick () {

@@ -1,6 +1,6 @@
 <template>
   <tafalk-stream-authorization-required v-if="!isAllowed"></tafalk-stream-authorization-required>
-  <v-container v-else fluid grid-list-lg>
+  <v-container v-else fluid grid-list-lg pt-5>
     <!-- full page loader -->
     <tafalk-page-loading-progress v-if="!pageReady" />
     <!-- Page itself -->

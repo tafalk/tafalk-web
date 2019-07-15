@@ -31,9 +31,10 @@
       </v-avatar>
       <v-avatar left size="200" v-else>
         <v-img
-          src="@/assets/default-user-avatar.webp"
+          :src="require('@/assets/default-user-avatar.webp')"
           alt="Virgina Woolf in Hue"
-          :class="userColor" />
+          :style="{backgroundColor: userColor}"
+        />
       </v-avatar>
         {{authenticatedUser.username}}
     </v-chip>
@@ -52,9 +53,10 @@
       v-else-if="$vuetify.breakpoint.smAndDown && !authenticatedUser.profilePictureObjectUrl"
       @click="onProfileClick">
       <v-img
-        src="@/assets/default-user-avatar.webp"
+        :src="require('@/assets/default-user-avatar.webp')"
         alt="Virgina Woolf in Hue"
-        :class="userColor" />
+        :style="{backgroundColor: userColor}"
+      />
     </v-avatar>
 
     <!-- Side drawer icon -->
@@ -80,7 +82,7 @@ export default {
   data () {
     return {
       userUnreadNotificationCount: 3,
-      userUnreadMessageCount: 3
+      userUnreadMessageCount: 3,
     }
   },
   components: {

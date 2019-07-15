@@ -150,7 +150,7 @@ export default {
       userTypeName: 'User',
       streamTypeName: 'Stream',
       cantoTypeName: 'Canto',
-      footerEl: 'sealed',
+      footerEl: null,
       sealedValue: 'sealed',
       topRatedValue: 'toprated',
       liveNowValue: 'livenow',
@@ -167,20 +167,14 @@ export default {
     TafalkPageLoadingProgress
   },
   async created () {
-    await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
+    const typeQueryVal = this.$route.query.type
+    this.footerEl = typeQueryVal || this.sealedValue
+    await this.fetchInitial(typeQueryVal)
     this.setIsPageReady(true)
   },
   watch: {
     async '$route.query.type' (val) {
-      if (this.sealedValue === val) {
-        await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
-      } else if (this.liveNowValue === val) {
-        await this.fetchInitialLiveBriefStreams({ limit: this.fetchLimit, nextToken: null })
-      } else if (this.byFaveUsersValue === val) {
-        await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
-      } else if (this.cantoValue === val) {
-        await this.fetchInitialBriefCantos({ limit: this.fetchLimit, nextToken: null })
-      }
+      await this.fetchInitial(val)
     },
     footerEl (val, oldVal) {
       if (val == null || val === '' || val === oldVal) this.clearAll()
@@ -260,6 +254,17 @@ export default {
       fetchFurtherBriefCantos: 'fetchFurtherBriefCantos',
       clearAll: 'clearAll'
     }),
+    async fetchInitial (val) {
+      if (this.sealedValue === val) {
+        await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
+      } else if (this.liveNowValue === val) {
+        await this.fetchInitialLiveBriefStreams({ limit: this.fetchLimit, nextToken: null })
+      } else if (this.byFaveUsersValue === val) {
+        await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
+      } else if (this.cantoValue === val) {
+        await this.fetchInitialBriefCantos({ limit: this.fetchLimit, nextToken: null })
+      }
+    },
     async infiniteHomeHandler ($state) {
       // if no new things to load, complete
       if ((this.isStreamListType && this.nextStreamToken == null) || (this.isCantoListType && this.nextCantoToken == null)) {

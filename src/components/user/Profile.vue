@@ -15,6 +15,8 @@
 
           <v-container fluid grid-list-md>
             <v-layout row wrap>
+
+              <!-- Profile Pic Section -->
               <v-flex d-flex xs12 md4>
                 <v-container pt-3 fluid grid-list-md>
                   <v-layout align-center column>
@@ -25,9 +27,9 @@
                       />
                       <v-img
                         v-else
-                        src="@/assets/default-user-avatar.webp"
+                        :src="require('@/assets/default-user-avatar.webp')"
                         alt="Woolf"
-                        class="#E91E63"
+                        :style="{backgroundColor: visitedUserColor}"
                       />
                     </v-avatar>
                     <v-btn
@@ -39,23 +41,30 @@
                   </v-layout>
                 </v-container>
               </v-flex>
-              <v-flex d-flex xs12 md4>
-                <v-card-title>
-                  <div v-if="visitedUser != null">
-                    <div class="display-1 grey--text">@{{visitedUser.username}}</div><br/>
-                    <span class="grey--text">Bio:&nbsp;{{visitedUserBio}}</span><br/>
-                    <span class="grey--text">Site:&nbsp;{{visitedUser.site}}</span>
-                  </div>
-                </v-card-title>
-              </v-flex>
-              <v-flex d-flex xs12 md4>
-                <v-card-title primary-title>
-                  <div>
-                    <span v-if="visitedUserAccountCreationDateStr" class="grey--text"><v-icon>mdi-calendar-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</span><br/>
-                    <span v-if="visitedUser != null" class="grey--text"><v-icon>mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</span><br/>
-                    <span v-if="visitedUser != null" class="grey--text"><v-icon>mdi-lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</span><br/>
-                  </div>
-                </v-card-title>
+              <!-- username, bio, site etc. section -->
+              <v-flex d-flex xs12 md8>
+                <v-card-text>
+                  <v-container fluid v-if="visitedUser">
+                    <v-layout row wrap>
+                      <v-flex d-flex xs12>
+                        <div class="display-1 text-xs-center text-sm-right grey--text">
+                          @{{visitedUser.username}}
+                        </div>
+                      </v-flex>
+                      <v-flex d-flex xs12>
+                        <div class="text-xs-left grey--text"><v-icon color="grey">mdi-bio</v-icon>&nbsp;{{visitedUserBio}}</div>
+                      </v-flex>
+                      <v-flex xs12 sm6>
+                        <p class="text-xs-left grey--text"><v-icon color="grey">mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</p>
+                        <p class="text-xs-left grey--text"><v-icon color="grey">mdi-web</v-icon>&nbsp;{{visitedUser.site}}</p>
+                      </v-flex>
+                      <v-flex xs12 sm6>
+                        <p v-if="visitedUserAccountCreationDateStr" class="text-xs-left grey--text"><v-icon color="grey">mdi-calendar-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</p>
+                        <p class="text-xs-left grey--text"><v-icon color="grey">mdi-lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</p>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card-text>
               </v-flex>
               <tafalk-user-interaction-button-group
                 v-if="authenticatedUser && !isVisitingOwnProfile"
@@ -108,6 +117,7 @@ import { GetUserProfileData } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
 import { GetStoreUser } from '@/utils/storeUtils'
 import { GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
+import { GetHexColorOfString } from '@/utils/generators'
 import TafalkNotAllowedProfile from '@/components/nocontent/ProfileNotAllowed.vue'
 import TafalkUserInteractionButtonGroup from '@/components/user/buttons/UserInteractionButtonGroup.vue'
 import TafalkProfileTabs from '@/components/user/tabs/ProfileTabs.vue'
@@ -186,22 +196,16 @@ export default {
       return this.isVisitingOwnProfile || this.isVisitorAllowed
     },
     visitedUserBio () {
-      if (this.visitedUser.bio == null || this.visitedUser.bio.length === 0) {
-        return this.defaultBio
-      }
-      return this.visitedUser.bio
+      return (this.visitedUser.bio != null && this.visitedUser.bio.length > 0) ? this.visitedUser.bio : this.defaultBio
+    },
+    visitedUserColor () {
+      return GetHexColorOfString(this.visitedUser.username)
     },
     visitedUserLocationValue () {
-      if (this.visitedUser.location == null) {
-        return this.defaultLocation
-      }
-      return this.visitedUser.location
+      return this.visitedUser.location || this.defaultLocation
     },
     visitedUserAccountCreationDateStr () {
-      if (!this.visitedUser) {
-        return null
-      }
-      return (new Date(this.visitedUser.createdAt)).toISOString().slice(0, 10)
+      return this.visitedUser ? (new Date(this.visitedUser.createdAt)).toISOString().slice(0, 10) : null
     }
   },
   watch: {

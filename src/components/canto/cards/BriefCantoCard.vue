@@ -6,15 +6,17 @@
 >
   <v-card-title dense primary class="title grey--text">
     <v-spacer />
-    <v-chip @click.stop="onToAuthorProfileClick(canto.user.username)" small pill>
-      <v-avatar left v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null" >
-        <v-img :src="cantoUserProfilePictureObjectUrl"/>
-      </v-avatar>
-      <v-avatar left v-else>
+    <v-chip @click.stop="onToAuthorProfileClick" small pill>
+      <v-avatar left>
         <v-img
-          src="@/assets/default-user-avatar.webp"
+          v-if="authenticatedUser && cantoUserProfilePictureObjectUrl"
+          :src="cantoUserProfilePictureObjectUrl"
+        />
+        <v-img
+          v-else
+          :src="require('@/assets/default-user-avatar.webp')"
           alt="Virgina Woolf in Hue"
-          :class="cantoUserColor"
+          :style="{backgroundColor: cantoUserColor}"
         />
       </v-avatar>
       {{ canto.user.username }}
@@ -68,8 +70,8 @@ export default {
     onToCantoButtonClick () {
       this.$router.push({ name: 'canto', params: { id: this.canto.id } })
     },
-    onToAuthorProfileClick (username) {
-      this.$router.push({ name: 'profile', params: { username: username } })
+    onToAuthorProfileClick () {
+      this.$router.push({ name: 'profile', params: { username: this.canto.user.username } })
     }
   }
 }

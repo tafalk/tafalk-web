@@ -20,9 +20,9 @@
               </v-avatar>
               <v-avatar left v-else>
                 <v-img
-                  src="@/assets/default-user-avatar.webp"
+                  :src="require('@/assets/default-user-avatar.webp')"
                   alt="Virgina Woolf in Hue"
-                  :class="cantoUserColor"
+                  :style="{backgroundColor: cantoUserColor}"
                 />
               </v-avatar> {{canto.user.username}}
             </v-chip>

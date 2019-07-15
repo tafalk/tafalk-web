@@ -9,9 +9,9 @@
           </v-avatar>
           <v-avatar v-else size="60">
             <v-img
-              src="@/assets/default-user-avatar.webp"
+              :src="require('@/assets/default-user-avatar.webp')"
               alt="Virgina Woolf in Hue"
-              :class="userColor"
+              :style="{backgroundColor: userColor}"
             />
           </v-avatar>
           <span class="display-1 grey--text">&nbsp;@{{ user.username }}</span>

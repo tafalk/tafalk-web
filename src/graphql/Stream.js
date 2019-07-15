@@ -8,6 +8,7 @@ export const GetStream = gql`query GetStream($streamId: ID!) {
       id
       username
       profilePictureKey
+      accountStatus
     }
     title
     body
@@ -31,6 +32,7 @@ export const GetStream = gql`query GetStream($streamId: ID!) {
       userId
       user {
         username
+        accountStatus
       }
       content
       time
@@ -69,6 +71,7 @@ export const ListSealedBriefStreams = gql`query ListSealedBriefStreams($limit: I
         id
         username
         profilePictureKey
+        accountStatus
       }
       likes {
         id
@@ -94,6 +97,7 @@ export const ListLiveBriefStreams = gql`query ListLiveBriefStreams($limit: Int, 
         id
         username
         profilePictureKey
+        accountStatus
       }
       likes {
         id

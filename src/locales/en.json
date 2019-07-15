@@ -12,7 +12,11 @@
       "skipButtonText": "Skip"
     },
     "toolbar": {
-      "searchPlaceholder": "Search.."
+      "searchPlaceholder": "Search..",
+      "menu": {
+        "contentsSubheader": "Contents",
+        "settingsSubheader": "Settings"
+      }
     },
     "share": {
       "title": "Share"
@@ -287,6 +291,7 @@
       "defaultBio": "Who knows",
       "defaultLocation": "Somewhere",
       "tabs": {
+        "canto": "Canto",
         "streams": "Streams",
         "likedContents": "Likes",
         "likedUsers": "Faves",

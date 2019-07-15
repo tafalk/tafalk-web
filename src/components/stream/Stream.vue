@@ -12,28 +12,36 @@
               <span class="grey--text headline">{{ stream.title }}</span>
             </v-toolbar-title>
             <v-spacer />
-            <v-chip @click="onAuthorProfileClick" small pill>
-              <v-avatar left v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null">
-                <v-img :src="streamUserProfilePictureObjectUrl" />
-              </v-avatar>
-              <v-avatar left v-else>
+            <!-- Stream Author Chip -->
+            <v-chip @click.stop="onToAuthorProfileClick" small pill>
+              <v-avatar left>
+                <!-- Author is not active -->
+                <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
+                <!-- Author active but no prifile picture set -->
                 <v-img
-                  src="@/assets/default-user-avatar.webp"
+                  v-else-if="!authorProfilePictureObjectUrl"
+                  :src="require('@/assets/default-user-avatar.webp')"
                   alt="Virgina Woolf in Hue"
-                  :class="streamUserColor"
-                />
-              </v-avatar> {{stream.user.username}}
+                  :style="{backgroundColor: authorColor}"
+                ></v-img>
+                <!-- Author active and has profile pic -->
+                <v-img
+                  v-else
+                  :src="authorProfilePictureObjectUrl"
+                ></v-img>
+              </v-avatar>
+              {{ authorDisplayUsername }}
             </v-chip>
           </v-toolbar>
           <v-card-text>{{ stream.body }}</v-card-text>
           <v-divider />
           <v-card-actions>
             <!-- Stream metadata -->
-            <span v-if="!isSealed" class="red--text">
-              <v-icon class="red--text">mdi-play</v-icon>
+            <span v-if="!isSealed" class="red--text caption">
+              <v-icon color="red">mdi-play</v-icon>
               {{ $t('stream.metadata.liveLabel') }}
             </span>
-            <span v-else class="grey--text">
+            <span v-else class="grey--text caption">
               {{ $t('stream.metadata.sealedLabel') }}: {{ timeFromSealedToNow }} in {{ timeSpentForStream }}
             </span>
             <v-spacer />
@@ -161,7 +169,7 @@ import { ListStreamLikes, CreateLike, DeleteLike, OnCreateOrDeleteStreamLike, Cr
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
 import { GetHexColorOfString, GetStreamLink } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
-import { streamCommentFetchLength } from '@/utils/constants'
+import { streamCommentFetchLength, activeUserAccountStatus } from '@/utils/constants'
 import TafalkNotAllowedStream from '@/components/nocontent/StreamNotAllowed.vue'
 import TafalkShareStreamLinkDialog from '@/components/stream/dialogs/ShareStreamLinkDialog.vue'
 import TafalkStreamCommentList from '@/components/comment/stream/StreamCommentList.vue'
@@ -184,11 +192,12 @@ export default {
   data () {
     return {
       pageReady: false,
+      activeUserAccountStatus,
       outboundBlockId: null,
       outboundWatchId: null,
       watchTypeUserConnectionValue: 'Watch',
       blockTypeUserConnectionValue: 'Block',
-      streamUserProfilePictureObjectUrl: null,
+      authorProfilePictureObjectUrl: null,
       streamChangeSubscription: null,
       streamChange: null,
       likeObjects: null,
@@ -222,14 +231,23 @@ export default {
     comments () {
       return this.stream.comments
     },
-    streamUserColor () {
-      return GetHexColorOfString(this.stream.user.username)
-    },
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
     author () {
       return this.stream.user || null
+    },
+    authorDisplayUsername () {
+      if (!this.stream.user) {
+        return null
+      } else if (this.author.accountStatus !== this.activeUserAccountStatus) {
+        return this.author.id
+      } else {
+        return this.author.username
+      }
+    },
+    authorColor () {
+      return GetHexColorOfString(this.stream.user.username)
     },
     // visibilty deciders
     isVisitingOwnStream () {
@@ -360,8 +378,8 @@ export default {
         this.setPaginatedStreamComments(paginatedCommentsGraphqlResult.data.listPaginatedStreamComments)
 
         // set profile pic
-        this.streamUserProfilePictureObjectUrl = this.stream.user.profilePictureKey != null
-          ? await Storage.get(this.authenticatedUser && this.stream.user.profilePictureKey, { level: 'protected' })
+        this.streamUserProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
+          ? await Storage.get(this.author.profilePictureKey, { level: 'protected' })
           : null
 
         // Subscribe to stream itself for live content changes
@@ -437,8 +455,9 @@ export default {
         this.isLikeLoading = false
       }
     },
-    onAuthorProfileClick () {
-      this.$router.push({ name: 'profile', params: { username: this.stream.user.username } })
+    onToAuthorProfileClick () {
+      if (!this.author) return
+      this.$router.push({ name: 'profile', params: { username: this.author.username } })
     },
     onCommentTextAreaToggleShowClick () {
       this.comment = ''

@@ -1,15 +1,31 @@
 <template>
-<v-tabs left v-model="activeTabIndex" show-arrows>
+<v-tabs left v-model="activeTabIndex" show-arrows grow>
   <v-tabs-slider></v-tabs-slider>
+  <!-- Tabs -->
+  <v-tab href="#canto-tab">
+    {{ $t('user.profilePage.tabs.canto') }}
+  </v-tab>
   <v-tab href="#streams-tab">
     {{ $t('user.profilePage.tabs.streams') }}
   </v-tab>
-  <v-tab href="#bookmarked-streams-tab">
+  <v-tab href="#bookmarked-streams-tab" v-if="isVisitingOwnProfile">
     {{ $t('user.profilePage.tabs.likedContents') }}
   </v-tab>
-  <v-tab href="#liked-users-tab">
+  <v-tab href="#liked-users-tab" v-if="isVisitingOwnProfile">
     {{ $t('user.profilePage.tabs.likedUsers') }}
   </v-tab>
+
+  <!-- Tab Contents -->
+  <v-tab-item :value="cantoTabName">
+    <v-flex class="pt-2">
+      <!--
+      <tafalk-slim-profile-own-stream-card
+        :canto="userCanto"
+      ></tafalk-slim-profile-own-stream-card>
+      -->
+    </v-flex>
+  </v-tab-item>
+
   <v-tab-item :value="streamsTabName">
     <v-flex class="pt-2"
       v-for="userStream in userStreams"
@@ -62,6 +78,7 @@
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
 import { ListStreamsByUser, ListLikesByUser, ListUserInteractionsByActorUserIdIndex } from '@/graphql/Profile'
+import { GetCanto } from '@/graphql/Canto'
 import TafalkSlimProfileOwnStreamCard from '@/components/stream/cards/SlimProfileOwnStreamCard.vue'
 import TafalkSlimProfileBookmarkedStreamCard from '@/components/stream/cards/SlimProfileBookmarkedStreamCard.vue'
 import TafalkSlimProfileLikedUserCard from '@/components/user/cards/SlimProfileLikedUserCard.vue'
@@ -71,10 +88,12 @@ export default {
   props: ['userId', 'isVisitingOwnProfile'],
   data () {
     return {
+      cantoTabName: 'canto-tab',
       streamsTabName: 'streams-tab',
       bookmarkedStreamsTabName: 'bookmarked-streams-tab',
       likedUsersTabName: 'liked-users-tab',
-      activeTabIndex: this.streamsTabName,
+      activeTabIndex: this.cantoTabName,
+      userCanto: null,
       userStreams: [],
       bookmarkedStreams: [],
       likedUsers: [],
@@ -94,9 +113,14 @@ export default {
   },
   async mounted () {
     // send async queries
+    const graphqlVisitedProfileCantoReq = API.graphql(graphqlOperation(GetCanto, { id: this.userId }))
     const graphqlVisitedProfileStreamsReq = API.graphql(graphqlOperation(ListStreamsByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.userStreamFetchNextToken }))
     const graphqlVisitedProfileBookmarkedStreamsReq = API.graphql(graphqlOperation(ListLikesByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.bookmarkedStreamFetchNextToken }))
     const graphqlVisitedProfileOutboundInteractedUsersReq = API.graphql(graphqlOperation(ListUserInteractionsByActorUserIdIndex, { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedUserFetchNextToken }))
+
+    // load canto
+    const graphqlVisitedProfileCantoResult = await graphqlVisitedProfileCantoReq
+    this.userCanto = graphqlVisitedProfileCantoResult.data.getCanto
 
     // load own streams
     const graphqlVisitedProfileStreamsResult = await graphqlVisitedProfileStreamsReq

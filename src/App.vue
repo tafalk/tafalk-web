@@ -3,7 +3,6 @@
     <tafalk-header/>
     <v-content>
       <v-container fluid my-4 py-2>
-
         <!-- content -->
         <router-view/>
         <!-- site messages -->
@@ -49,9 +48,8 @@ export default {
         this.$i18n.locale = this.authenticatedUser.language
       }
       // Set theme
-      if (this.authenticatedUser.theme) {
-        this.$vuetify.theme.dark = this.authenticatedUser.theme === 'dark'
-      }
+      console.log('App Created: new theme:' + this.authenticatedUserTheme)
+      this.$vuetify.theme.dark = this.authenticatedUserTheme === 'dark'
     }
   },
   mounted () {
@@ -71,6 +69,9 @@ export default {
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
+    authenticatedUserTheme () {
+      return this.authenticatedUser ? this.authenticatedUser.theme : 'light'
+    },
     hasVisitedBefore: {
       get: function () {
         return this.getHasVisitedBefore
@@ -86,6 +87,11 @@ export default {
       set: function (val) {
         this.setHasAcceptedCookies(val)
       }
+    }
+  },
+  watch: {
+    authenticatedUserTheme (val) {
+      this.$vuetify.theme.dark = val === 'dark'
     }
   },
   methods: {
