@@ -1,12 +1,20 @@
 <template>
 <v-card
-  hover
-  max-height=200
+  flat
+  :max-height="maxHeight"
   @click.native="onToCantoButtonClick"
 >
-  <v-card-title dense primary class="title grey--text">
+  <v-card-title
+    :dense="dense"
+    class="title grey--text"
+  >
     <v-spacer />
-    <v-chip @click.stop="onToAuthorProfileClick" small pill>
+    <v-chip
+      @click.stop="onToAuthorProfileClick"
+      :small="dense"
+      v-if="avatared"
+      pill
+    >
       <v-avatar left>
         <v-img
           v-if="authenticatedUser && cantoUserProfilePictureObjectUrl"
@@ -40,7 +48,7 @@ import { GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {
   name: 'BriefCantoCard',
-  props: ['canto'],
+  props: ['canto', 'dense', 'avatared'],
   data () {
     return {
       cantoUserProfilePictureObjectUrl: null,
@@ -59,6 +67,9 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getNowTime: 'time/getNowTime'
     }),
+    maxHeight () {
+      return this.dense ? 180 : 200
+    },
     authenticatedUser () {
       return this.getAuthenticatedUser
     },

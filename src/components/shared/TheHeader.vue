@@ -98,17 +98,6 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item
-          v-if="authenticatedUser"
-          @click="onByFaveOtherStreamsClick"
-        >
-          <v-list-item-action>
-            <v-icon color="purple darken-2">mdi-star</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-subtitle class="purple--text text--darken-2">{{ $t('home.bottomnav.byFaveUsers') }}</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item
           @click="onCantosClick"
         >
           <v-list-item-action>
@@ -295,12 +284,6 @@ export default {
       this.clearSearchComponents()
       this.clearAll()
       this.$router.push({ name: 'content', query: { type: this.liveNowValue } })
-      this.setMenuDrawer(false)
-    },
-    async onByFaveOtherStreamsClick () {
-      this.clearSearchComponents()
-      this.clearAll()
-      this.$router.push({ name: 'content', query: { type: this.byFaveUsersValue } })
       this.setMenuDrawer(false)
     },
     async onCantosClick () {

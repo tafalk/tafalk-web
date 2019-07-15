@@ -33,7 +33,7 @@
           <!-- Acions -->
           <v-card-actions>
             <!-- Canto metadata -->
-            <span class="grey--text">
+            <span class="grey--text caption">
               {{ $t('canto.metadata.timeInfoLabel', { created: timeFromCreatedToNow, lastUpdated: timeFromLastUpdatedToNow }) }}
             </span>
             <v-spacer />

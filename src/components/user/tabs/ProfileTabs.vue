@@ -16,25 +16,70 @@
   </v-tab>
 
   <!-- Tab Contents -->
+  <!-- Canto -->
   <v-tab-item :value="cantoTabName">
-    <v-flex class="pt-2">
-      <!--
-      <tafalk-slim-profile-own-stream-card
-        :canto="userCanto"
-      ></tafalk-slim-profile-own-stream-card>
-      -->
-    </v-flex>
+    <v-list-item-group>
+      <v-list-item
+        three-line
+        @click.native="onToCantoClick"
+      >
+        <v-list-item-content>
+          <v-list-item-subtitle v-text="userCanto.body"></v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-list-item-action-text>
+            <v-icon class="grey--text caption">mdi-timer</v-icon>&nbsp;{{ timeSpentForCanto }}
+          </v-list-item-action-text>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list-item-group>
   </v-tab-item>
 
+  <!-- Streams -->
   <v-tab-item :value="streamsTabName">
-    <v-flex class="pt-2"
-      v-for="userStream in userStreams"
-      :key="'S-' + userStream.id"
-    >
-      <tafalk-slim-profile-own-stream-card
-        :stream="userStream"
-      ></tafalk-slim-profile-own-stream-card>
-    </v-flex>
+    <v-list three-line>
+      <v-list-item-group>
+        <template v-for="(userStream, index) in userStreams">
+          <v-list-item :key="'S-' + userStream.id">
+            <v-list-item-content>
+              <v-list-item-title
+                v-if="userStream.title"
+                v-text="userStream.title"
+              ></v-list-item-title>
+              <v-list-item-subtitle
+                v-if="userStream.body"
+                v-text="userStream.body"
+              ></v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-list-item-action-text v-if="userStream.isSealed !== 0">
+                <v-icon class="grey--text caption">mdi-seat-flat</v-icon>{{ getTimeFromSealedToNow(userStream.sealTime) }}
+              </v-list-item-action-text>
+              <v-list-item-action-text v-if="userStream.isSealed !== 0">
+                <v-icon class="grey--text caption">mdi-timer</v-icon>{{ getTimeSpentForSealedStream(userStream.startTime, userStream.sealTime) }}
+              </v-list-item-action-text>
+              <v-list-item-action-text v-if="userStream.isSealed === 0">
+                <v-icon class="grey--text caption">mdi-play</v-icon>&nbsp;Live Now
+              </v-list-item-action-text>
+              <v-list-item-action-text v-if="userStream.isSealed === 0">
+                <v-icon class="grey--text caption">mdi-timer</v-icon>{{ getTimeSpentForLiveStream(userStream.startTime) }}
+              </v-list-item-action-text>
+              <v-list-item-action-text>
+                <v-icon class="grey--text caption">mdi-bookmark</v-icon>{{ userStream.likes ? userStream.likes.length : 0 }}
+              </v-list-item-action-text>
+              <v-list-item-action-text>
+                <v-icon class="grey--text caption">mdi-comment</v-icon>{{ userStream.comments ? userStream.comments.length : 0 }}
+              </v-list-item-action-text>
+            </v-list-item-action>
+          </v-list-item>
+          <v-divider
+            v-if="index + 1 < userStreams.length"
+            :key="index"
+          ></v-divider>
+
+        </template>
+      </v-list-item-group>
+    </v-list>
     <infinite-loading
       force-use-infinite-wrapper="true"
       @infinite="infiniteStreamTabHandler"
@@ -77,11 +122,12 @@
 
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
+import { mapGetters } from 'vuex'
 import { ListStreamsByUser, ListLikesByUser, ListUserInteractionsByActorUserIdIndex } from '@/graphql/Profile'
 import { GetCanto } from '@/graphql/Canto'
-import TafalkSlimProfileOwnStreamCard from '@/components/stream/cards/SlimProfileOwnStreamCard.vue'
 import TafalkSlimProfileBookmarkedStreamCard from '@/components/stream/cards/SlimProfileBookmarkedStreamCard.vue'
 import TafalkSlimProfileLikedUserCard from '@/components/user/cards/SlimProfileLikedUserCard.vue'
+import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {
   name: 'ProfileTabs',
@@ -105,11 +151,16 @@ export default {
     }
   },
   components: {
-    TafalkSlimProfileOwnStreamCard,
     TafalkSlimProfileBookmarkedStreamCard,
     TafalkSlimProfileLikedUserCard
   },
   computed: {
+    ...mapGetters({
+      getNowTime: 'time/getNowTime'
+    }),
+    timeSpentForCanto () {
+      return GetElapsedTimeBetween(this.userCanto.startTime, this.userCanto.lastUpdateTime)
+    }
   },
   async mounted () {
     // send async queries
@@ -162,6 +213,18 @@ export default {
     }
   },
   methods: {
+    onToCantoClick () {
+      this.$router.push({ name: 'canto', params: { id: this.userCanto.id } })
+    },
+    getTimeFromSealedToNow (sealTime) {
+      return GetElapsedTimeTillNow(this.getNowTime, sealTime)
+    },
+    getTimeSpentForSealedStream (startTime, sealTime) {
+      return GetElapsedTimeBetween(startTime, sealTime)
+    },
+    getTimeSpentForLiveStream (startTime) {
+      return GetElapsedTimeTillNow(this.getNowTime, startTime)
+    },
     async infiniteStreamTabHandler ($state) {
       // if no new things to load, complete
       if (!this.userStreamFetchNextToken) {

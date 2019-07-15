@@ -1,5 +1,5 @@
 <template>
-  <tafalk-stream-authorization-required v-if="!authenticatedUser"></tafalk-stream-authorization-required>
+  <tafalk-stream-authorization-required v-if="!authenticatedUser" />
   <v-container v-else fluid grid-list-lg>
     <tafalk-stream-introduction v-if="isFirstStreamOfUser"></tafalk-stream-introduction>
     <v-card flat mt-5>
@@ -13,77 +13,91 @@
         <v-toolbar-title v-else-if="processState === 'error'"><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
         </v-toolbar-title>
         <v-spacer/>
-        <span class="grey--text">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
+        <span class="grey--text caption">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
       </v-toolbar>
-      <v-form class="pa-3 pt-4">
-        <!-- body -->
-        <v-textarea
-          ref="pourBody"
-          outline
-          v-model="body"
-          auto-grow
-          autofocus
-          :placeholder="$t('stream.pour.bodyPlaceholder')"
-          rows="9"
-          @keydown.delete.prevent="onBodyBackspaceOrDeleteKeydown"
-          @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
-          @paste="onPaste"
-          @cut="onCut"
-          @keyup="onDefaultKeyup"
-          @keydown="onDefaultKeydown"
-          @mousedown="onMouseDown"
-          @mouseup="onMouseUp"
-          @contextmenu.prevent="onRightClick"
-        ></v-textarea>
-
-        <!-- title -->
-        <tafalk-stream-add-title-dialog
-          :streamId="streamId"
-        ></tafalk-stream-add-title-dialog>
-
-        <v-layout align-center wrap>
-          <v-flex xs12 sm5 md5>
-            <v-select
-              dense
-              flat
-              @change="onMoodChange"
-              :label="$t('stream.pour.moodSelectLabel')"
-              v-model="moodModel"
-              :items="moodOptions"
-              item-text="displayValue"
-              item-value="backendValue"
-              chips
-              multiple
-              menu-props="top"
-              return-object
-            ></v-select>
-          </v-flex>
-          <v-spacer/>
-          <v-flex xs12 sm5 md5>
-            <v-select
-              dense
-              flat
-              @change="onPositionChange"
-              :label="$t('stream.pour.positionSelectLabel')"
-              v-model="positionModel"
-              :items="positionOptions"
-              item-text="displayValue"
-              item-value="backendValue"
-              chips
-              multiple
-              menu-props="top"
-              return-object
-            ></v-select>
-          </v-flex>
-          <v-spacer/>
-          <v-btn
-            color="primary"
-            @click="onDoneClick"
-            :disabled="body == null || body.length === 0"
-            :loading="loading"
-            text
-          >{{ $t('stream.pour.sealButtonText') }}</v-btn>
-        </v-layout>
+      <v-form class="pt-0">
+        <v-container grid-list-lg fluid pt-0>
+          <v-layout wrap>
+            <v-flex xs12>
+              <!-- body -->
+              <v-textarea
+                ref="pourBody"
+                outline
+                v-model="body"
+                auto-grow
+                autofocus
+                :placeholder="$t('stream.pour.bodyPlaceholder')"
+                rows="9"
+                @keydown.delete.prevent="onBodyBackspaceOrDeleteKeydown"
+                @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
+                @paste="onPaste"
+                @cut="onCut"
+                @keyup="onDefaultKeyup"
+                @keydown="onDefaultKeydown"
+                @mousedown="onMouseDown"
+                @mouseup="onMouseUp"
+                @contextmenu.prevent="onRightClick"
+              ></v-textarea>
+            </v-flex>
+            <!-- title, mood etc -->
+            <v-flex xs12 sm4>
+              <v-select
+                dense
+                flat
+                @change="onMoodChange"
+                :label="$t('stream.pour.moodSelectLabel')"
+                v-model="moodModel"
+                :items="moodOptions"
+                item-text="displayValue"
+                item-value="backendValue"
+                chips
+                multiple
+                menu-props="top"
+                return-object
+              ></v-select>
+            </v-flex>
+            <v-flex xs12 sm4>
+              <v-select
+                dense
+                flat
+                @change="onPositionChange"
+                :label="$t('stream.pour.positionSelectLabel')"
+                v-model="positionModel"
+                :items="positionOptions"
+                item-text="displayValue"
+                item-value="backendValue"
+                chips
+                multiple
+                menu-props="top"
+                return-object
+              ></v-select>
+            </v-flex>
+            <v-flex xs12 sm4>
+              <v-text-field
+                ref="pourTitle"
+                :label="$t('stream.pour.titleLabel')"
+                :disabled="body == null || body.length === 0"
+                v-model="title"
+                @keydown.delete.prevent="onTitleBackspaceOrDeleteKeydown"
+                @keyup.delete="onTitleBackspaceOrDeleteKeyup"
+                @paste="onPaste"
+                @cut="onCut"
+                @keydown="onDefaultKeydown"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm2 offset-sm10>
+              <v-btn
+                block
+                color="primary"
+                @click="onDoneClick"
+                :disabled="body == null || body.length === 0"
+                :loading="loading"
+              >
+                {{ $t('stream.pour.sealButtonText') }}
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </v-form>
     </v-card>
   </v-container>
@@ -93,9 +107,8 @@
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { ListStreamsByUser } from '@/graphql/Profile'
-import { CreateStream, UpdateStreamBody, UpdatePosition, UpdateMood, SealStreamForEver } from '@/graphql/Stream'
+import { CreateStream, UpdateStreamBody, UpdateStreamTitle, UpdatePosition, UpdateMood, SealStreamForEver } from '@/graphql/Stream'
 import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
-import TafalkStreamAddTitleDialog from '@/components/stream/dialogs/AddTitleDialog.vue'
 import TafalkStreamIntroduction from '@/components/stream/dialogs/StreamIntroduction.vue'
 import { GenerateUuid4 } from '@/utils/generators'
 import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
@@ -132,7 +145,6 @@ export default {
   },
   components: {
     TafalkStreamAuthorizationRequired,
-    TafalkStreamAddTitleDialog,
     TafalkStreamIntroduction
   },
   created () {
@@ -224,7 +236,23 @@ export default {
           this.setNewSiteError(err.message || err)
         }
       }
+    },
+    async title (newTitle, oldTitle) {
+      // Update the title, if body is not null
+      try {
+        this.processState = this.savingStateConstant
+        await API.graphql(graphqlOperation(UpdateStreamTitle, {
+          id: this.streamId,
+          title: newTitle
+        }))
+        this.processState = this.savedStateConstant
+      } catch (err) {
+        logger.error('An error occurred while updating the stream title', err.message || JSON.stringify(err))
+        this.processState = this.errorStateConstant
+        this.setNewSiteError(err.message || err)
+      }
     }
+
   },
   methods: {
     ...mapMutations({
@@ -305,7 +333,6 @@ export default {
       const exactKey = GetKeyName(event.keyCode)
 
       // get the selected text
-      // See https://stackoverflow.com/questions/48145727/insert-character-at-cursor-position-in-vue-js
       const titleTextField = this.$refs.pourTitle.$el.querySelector('input')
       const selectionStartPos = titleTextField.selectionStart
       const selectionEndPos = titleTextField.selectionEnd
@@ -446,12 +473,12 @@ export default {
         await this.sealForEver()
       } catch (err) {
         logger.error('Error occurred while sealing the stream', err)
-        throw err
+        this.setNewSiteError(err.message || err)
       } finally {
-        this.setIsRouteChangeSafe(true)
-        this.showAddTitleDialog()
         this.loading = false
         this.loader = null
+        this.$router.push({ name: 'stream', params: { id: this.streamId } })
+        this.setIsRouteChangeSafe(false)
       }
     },
     async sealForEver () {

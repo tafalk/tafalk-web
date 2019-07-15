@@ -1,10 +1,10 @@
 <template>
-<v-container ma-0 pt-5>
+<v-container fluid pt-5>
   <!-- full page loader -->
   <tafalk-page-loading-progress v-if="!pageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
-    <v-flex d-flex xs12 offset-md2 md8>
+    <v-flex xs12 offset-md2 md8>
       <!-- Not Allowed To See -->
       <tafalk-not-allowed-profile v-if="!isProfileAllowed" />
       <!-- Allowed -->
@@ -13,7 +13,7 @@
           <!-- edit profile button -->
           <tafalk-profile-edit-speed-dial v-if="isVisitingOwnProfile" />
 
-          <v-container fluid grid-list-md>
+          <v-container fluid grid-list-lg>
             <v-layout row wrap>
 
               <!-- Profile Pic Section -->

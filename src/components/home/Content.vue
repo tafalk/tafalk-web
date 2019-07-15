@@ -10,6 +10,8 @@
             <v-flex md12 v-for="stream in streamList" :key="stream.id">
               <tafalk-brief-stream-card
                 :stream="stream"
+                :dense="denseCards"
+                :avatared="avataredCards"
               ></tafalk-brief-stream-card>
             </v-flex>
             <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
@@ -21,6 +23,8 @@
             <v-flex md12 v-for="canto in cantoList" :key="canto.id">
               <tafalk-brief-canto-card
                 :canto="canto"
+                :dense="denseCards"
+                :avatared="avataredCards"
               ></tafalk-brief-canto-card>
             </v-flex>
             <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
@@ -111,24 +115,24 @@
         <span>{{ $t('home.bottomnav.sealed') }}</span>
         <v-icon>mdi-ghost-off</v-icon>
       </v-btn>
-      <!--
-      <v-btn text color="deep-orange lighten-1" :value=topRatedValue>
-        <span>Popular</span>
-        <v-icon>mdi-fire</v-icon>
-      </v-btn>
-      -->
       <v-btn v-if="authenticatedUser" :value=liveNowValue>
         <span>{{ $t('home.bottomnav.liveNow') }}</span>
         <v-icon>mdi-play-circle-outline</v-icon>
-      </v-btn>
-      <v-btn v-if="authenticatedUser" :value=byFaveUsersValue>
-        <span>{{ $t('home.bottomnav.byFaveUsers') }}</span>
-        <v-icon>mdi-star</v-icon>
       </v-btn>
       <v-btn :value=cantoValue>
         <span>{{ $t('home.bottomnav.cantos') }}</span>
         <v-icon>mdi-music</v-icon>
       </v-btn>
+      <!--
+      <v-btn text color="deep-orange lighten-1" :value=topRatedValue>
+        <span>Popular</span>
+        <v-icon>mdi-fire</v-icon>
+      </v-btn>
+      <v-btn v-if="authenticatedUser" :value=byFaveUsersValue>
+        <span>{{ $t('home.bottomnav.byFaveUsers') }}</span>
+        <v-icon>mdi-star</v-icon>
+      </v-btn>
+      -->
     </v-bottom-navigation>
     <tafalk-new-fab v-if="authenticatedUser"></tafalk-new-fab>
   </div>
@@ -156,7 +160,9 @@ export default {
       liveNowValue: 'livenow',
       byFaveUsersValue: 'byfaveusers',
       cantoValue: 'cantos',
-      fetchLimit: homeStreamFetchLength
+      fetchLimit: homeStreamFetchLength,
+      denseCards: false,
+      avataredCards: true
     }
   },
   components: {
@@ -226,7 +232,7 @@ export default {
       return this.searchResults.filter(r => r.__typename === this.cantoTypeName)
     },
     isStreamListType () {
-      return [this.sealedValue, this.liveNowValue, this.byFaveUsersValue].includes(this.footerEl)
+      return [this.sealedValue, this.liveNowValue].includes(this.footerEl)
     },
     isCantoListType () {
       return [this.cantoValue].includes(this.footerEl)
