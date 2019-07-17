@@ -2,7 +2,7 @@
   <tafalk-stream-authorization-required v-if="!isAllowed"></tafalk-stream-authorization-required>
   <v-container v-else fluid grid-list-lg pt-5>
     <!-- full page loader -->
-    <tafalk-page-loading-progress v-if="!pageReady" />
+    <tafalk-page-loading-progress v-if="!getIsPageReady" />
     <!-- Page itself -->
     <v-layout row wrap v-else>
       <tafalk-canto-introduction v-if="isCantoNew"></tafalk-canto-introduction>
@@ -62,7 +62,6 @@ export default {
   name: 'PourCanto',
   data () {
     return {
-      pageReady: false,
       body: null,
       cantoStatus: 'OK',
       isCantoCreated: false,
@@ -82,7 +81,8 @@ export default {
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
-      getCanto: 'canto/getCanto'
+      getCanto: 'canto/getCanto',
+      getIsPageReady: 'getIsPageReady'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
@@ -96,6 +96,7 @@ export default {
   },
   created () {
     window.addEventListener('beforeunload', this.onBeforeUnload)
+    this.setIsPageReady(false)
     this.authorUsername = this.$route.params.username
     const cantoId = this.authenticatedUser.id
 
@@ -113,7 +114,7 @@ export default {
         logger.error('Error occurred while getting canto info', JSON.stringify(err))
         this.setNewSiteError(err.message || err)
       }).finally(() => {
-        this.pageReady = true
+        this.setIsPageReady(true)
       })
   },
   async mounted () {
@@ -126,7 +127,7 @@ export default {
   watch: {
     // whenever 'canto' changes, this function will run
     async body (newBody, oldBody) {
-      if (!this.pageReady || IsNullOrWhitespace(newBody)) return
+      if (!this.getIsPageReady || IsNullOrWhitespace(newBody)) return
 
       if (oldBody == null || oldBody.length === 0) {
         // Old body is null or empty, so create the entry here
@@ -152,6 +153,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setIsPageReady: 'setIsPageReady',
       setIsRouteChangeSafe: 'stream/setIsRouteChangeSafe'
     }),
     ...mapActions({

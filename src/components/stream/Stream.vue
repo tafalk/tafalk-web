@@ -1,7 +1,7 @@
 <template>
 <v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
-  <tafalk-page-loading-progress v-if="!pageReady" />
+  <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
     <v-flex xs12 infinite-wrapper>
@@ -191,7 +191,6 @@ export default {
   },
   data () {
     return {
-      pageReady: false,
       activeUserAccountStatus,
       outboundBlockId: null,
       outboundWatchId: null,
@@ -220,7 +219,8 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getStream: 'stream/getStream',
       getIsFlaggedByAuthenticatedUser: 'stream/getIsFlaggedByAuthenticatedUser',
-      getNowTime: 'time/getNowTime'
+      getNowTime: 'time/getNowTime',
+      getIsPageReady: 'getIsPageReady'
     }),
     stream () {
       return this.getStream
@@ -314,9 +314,10 @@ export default {
   },
   watch: {
     '$route.params.id' (streamId) {
+      this.setIsPageReady(false)
       this.getInitialInfo(this.$route.params.id)
         .then(() => {
-          this.pageReady = true
+          this.setIsPageReady(true)
         })
     },
     'streamChange.body' (val) {
@@ -336,9 +337,10 @@ export default {
     }
   },
   created () {
+    this.setIsPageReady(false)
     this.getInitialInfo(this.$route.params.id)
       .then(() => {
-        this.pageReady = true
+        this.setIsPageReady(true)
       })
   },
   beforeDestroy () {
@@ -355,7 +357,8 @@ export default {
       setStreamLikes: 'stream/setStreamLikes',
       setPaginatedStreamComments: 'stream/setPaginatedStreamComments',
       setFlag: 'flag/setFlag',
-      setRetractFlag: 'flag/setRetractFlag'
+      setRetractFlag: 'flag/setRetractFlag',
+      setIsPageReady: 'setIsPageReady'
     }),
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError',

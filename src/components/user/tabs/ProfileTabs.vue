@@ -125,8 +125,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { mapGetters } from 'vuex'
 import { ListStreamsByUser, ListLikesByUser, ListUserInteractionsByActorUserIdIndex } from '@/graphql/Profile'
 import { GetCanto } from '@/graphql/Canto'
-import TafalkSlimProfileBookmarkedStreamCard from '@/components/stream/cards/SlimProfileBookmarkedStreamCard.vue'
-import TafalkSlimProfileLikedUserCard from '@/components/user/cards/SlimProfileLikedUserCard.vue'
+import TafalkUserListItem from '@/components/user/listitems/UserListItem.vue'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {
@@ -151,8 +150,7 @@ export default {
     }
   },
   components: {
-    TafalkSlimProfileBookmarkedStreamCard,
-    TafalkSlimProfileLikedUserCard
+    TafalkUserListItem
   },
   computed: {
     ...mapGetters({

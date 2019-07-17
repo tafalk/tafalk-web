@@ -5,25 +5,27 @@
     v-model="fab"
     bottom
     right
-    large
-    color="cyan"
-    direction="top"
+    open-on-hover
     transition="slide-y-reverse-transition"
   >
-    <v-btn
-      slot="activator"
-      v-model="fab"
-      color="blue darken-2"
-      dark
-      large
-      fab
-    >
-      <v-icon v-if="!fab">mdi-account-circle</v-icon>
-      <v-icon v-else>mdi-close</v-icon>
-    </v-btn>
+    <template v-slot:activator>
+      <v-btn
+        v-model="fab"
+        :x-large="$vuetify.breakpoint.smAndUp"
+        :large="$vuetify.breakpoint.xsOnly"
+        :color="mainButtonColor"
+        dark
+        depressed
+        fab
+      >
+        <v-icon v-if="!fab">mdi-account-circle</v-icon>
+        <v-icon v-else>mdi-close</v-icon>
+      </v-btn>
+    </template>
 
     <v-btn
       fab
+      :large="$vuetify.breakpoint.smAndUp"
       dark
       color="green"
       @click.stop="onEditInfoFabClick"
@@ -33,6 +35,7 @@
 
     <v-btn
       fab
+      :large="$vuetify.breakpoint.smAndUp"
       dark
       color="brown"
       @click.stop="onEditPrivacyFabClick"
@@ -42,6 +45,7 @@
 
     <v-btn
       fab
+      :large="$vuetify.breakpoint.smAndUp"
       dark
       color="red"
       @click.stop="onDeleteAccountFabClick"
@@ -58,7 +62,8 @@ export default {
   name: 'EditSpeedDial',
   data () {
     return {
-      fab: false
+      fab: false,
+      mainButtonColor: 'cyan'
     }
   },
   methods: {

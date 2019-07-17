@@ -245,8 +245,7 @@ export default {
       clearSearchResults: 'siteSearch/clearSearchResults',
       setIsLogoutConfirmationDialogVisible: 'authenticatedUser/dialog/setIsLogoutConfirmationDialogVisible',
       setIsLanguageChooseDialogVisible: 'authenticatedUser/dialog/setIsLanguageChooseDialogVisible',
-      setMenuDrawer: 'shared/setMenuDrawer',
-      setIsPageReady: 'setIsPageReady'
+      setMenuDrawer: 'shared/setMenuDrawer'
     }),
     ...mapActions({
       setSearchSiteResults: 'siteSearch/search',

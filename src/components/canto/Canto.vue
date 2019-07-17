@@ -1,7 +1,7 @@
 <template>
 <v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
-  <tafalk-page-loading-progress v-if="!pageReady" />
+  <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
     <v-flex xs12 sm12 offset-md2 md8>
@@ -141,7 +141,6 @@ export default {
   },
   data () {
     return {
-      pageReady: false,
       outboundBlockId: null,
       outboundWatchId: null,
       watchTypeUserConnectionValue: 'Watch',
@@ -162,7 +161,8 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getCanto: 'canto/getCanto',
       getIsFlaggedByAuthenticatedUser: 'canto/getIsFlaggedByAuthenticatedUser',
-      getNowTime: 'time/getNowTime'
+      getNowTime: 'time/getNowTime',
+      getIsPageReady: 'getIsPageReady'
     }),
     canto () {
       return this.getCanto
@@ -228,9 +228,10 @@ export default {
   },
   watch: {
     '$route.params.username' (username) {
+      this.setIsPageReady(false)
       this.getInitialInfo(this.$route.params.username)
         .then(() => {
-          this.pageReady = true
+          this.setIsPageReady(true)
         })
     },
     'cantoChange.body' (val) {
@@ -247,9 +248,10 @@ export default {
     }
   },
   created () {
+    this.setIsPageReady(false)
     this.getInitialInfo(this.$route.params.username)
       .then(() => {
-        this.pageReady = true
+        this.setIsPageReady(true)
       })
   },
   beforeDestroy () {
@@ -265,6 +267,7 @@ export default {
       setCanto: 'canto/setCanto',
       setCantoLikes: 'canto/setCantoLikes',
       setFlag: 'flag/setFlag',
+      setIsPageReady: 'setIsPageReady',
       setRetractFlag: 'flag/setRetractFlag'
     }),
     ...mapActions({

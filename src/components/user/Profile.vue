@@ -1,7 +1,7 @@
 <template>
 <v-container fluid pt-5>
   <!-- full page loader -->
-  <tafalk-page-loading-progress v-if="!pageReady" />
+  <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
     <v-flex xs12 offset-md2 md8>
@@ -136,7 +136,6 @@ export default {
   name: 'Profile',
   data () {
     return {
-      pageReady: false,
       changeProfilePictureDialog: false,
       watchTypeUserConnectionValue: 'Watch',
       blockTypeUserConnectionValue: 'Block',
@@ -160,7 +159,8 @@ export default {
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
-      getVisitedUser: 'visitedUser/getUser'
+      getVisitedUser: 'visitedUser/getUser',
+      getIsPageReady: 'getIsPageReady'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
@@ -210,16 +210,18 @@ export default {
   },
   watch: {
     '$route.params.username' (username) {
+      this.setIsPageReady(false)
       this.getInitialInfo(this.$route.params.username)
         .then(() => {
-          this.pageReady = true
+          this.setIsPageReady(true)
         })
     }
   },
   created () {
+    this.setIsPageReady(false)
     this.getInitialInfo(this.$route.params.username)
       .then(() => {
-        this.pageReady = true
+        this.setIsPageReady(true)
       })
   },
   destroyed () {
@@ -227,6 +229,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setIsPageReady: 'setIsPageReady',
       setVisitedUser: 'visitedUser/setUser',
       clearVisitedUser: 'visitedUser/clearUser',
       setIsChangeProfilePictureDialogVisible: 'visitedUser/dialog/setIsChangeProfilePictureDialogVisible'

@@ -3,34 +3,57 @@
     <v-container grid-list-lg pt-5>
       <!-- full page loader -->
       <tafalk-page-loading-progress v-if="!getIsPageReady" />
+      <!-- Regular Content -->
       <v-layout v-else-if="!searchText || searchText.length === 0" row wrap>
-        <!-- Streams -->
+        <!-- Streams (No search) -->
         <v-flex offset-md2 md8 xs12 infinite-wrapper v-if="isStreamListType">
           <v-layout row wrap>
-            <v-flex md12 v-for="stream in streamList" :key="stream.id">
-              <tafalk-brief-stream-card
-                :stream="stream"
-                :dense="denseCards"
-                :avatared="avataredCards"
-              ></tafalk-brief-stream-card>
+            <v-flex md12>
+              <v-list>
+                <template v-for="(stream, index) in streamList">
+                  <tafalk-stream-list-item
+                    :key="stream.id"
+                    :displayType="listItemDisplayType"
+                    :stream="stream"
+                    :dense="denseItems"
+                    :displayUserInfo="displayUserInfoInItems"
+                  ></tafalk-stream-list-item>
+                  <v-divider
+                    v-if="index + 1 < streamList.length"
+                    :key="index"
+                  ></v-divider>
+                </template>
+              </v-list>
             </v-flex>
             <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
           </v-layout>
         </v-flex>
-        <!-- Cantos -->
+        <!-- Cantos (No search) -->
         <v-flex offset-md2 md8 xs12 infinite-wrapper v-else-if="isCantoListType">
           <v-layout row wrap>
-            <v-flex md12 v-for="canto in cantoList" :key="canto.id">
-              <tafalk-brief-canto-card
-                :canto="canto"
-                :dense="denseCards"
-                :avatared="avataredCards"
-              ></tafalk-brief-canto-card>
+            <v-flex md12>
+              <v-list>
+                <template v-for="(canto, index) in cantoList">
+                  <tafalk-canto-list-item
+                    :key="canto.id"
+                    :displayType="listItemDisplayType"
+                    :canto="canto"
+                    :dense="denseItems"
+                    :displayUserInfo="displayUserInfoInItems"
+                    :showUserInteractionData="showUserInteractionDataForCantoItems"
+                  ></tafalk-canto-list-item>
+                  <v-divider
+                    v-if="index + 1 < cantoList.length"
+                    :key="index"
+                  ></v-divider>
+                </template>
+              </v-list>
             </v-flex>
             <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
           </v-layout>
         </v-flex>
       </v-layout>
+      <!-- Search Text Not Long Enough -->
       <v-layout v-else-if="!isSearchTextLongEnough" row wrap>
         <v-flex offset-md2 md8>
           <v-layout row wrap>
@@ -40,6 +63,7 @@
           </v-layout>
         </v-flex>
       </v-layout>
+      <!-- No Results matching search -->
       <v-layout v-else-if="searchResults.length === 0" row wrap>
         <v-flex offset-md2 md8>
           <v-layout row wrap>
@@ -49,54 +73,76 @@
           </v-layout>
         </v-flex>
       </v-layout>
+      <!-- Search Results -->
       <v-layout v-else row wrap>
         <!-- Search Result (Users) -->
-        <v-flex offset-md2 md8 class="mb-4">
-          <span class="title grey--text">{{ $t('home.search.result.userTitle', { resultCount: searchUserTypeResults.length }) }}</span>
+        <v-flex offset-md2 md8 xs12 class="mb-4">
+          <span class="title grey--text">{{ $t('home.search.result.userTitle', { resultCount: searchUserTypeResultList.length }) }}</span>
           <v-layout row wrap>
-            <v-flex
-              class="mt-2"
-              md12
-              v-for="searchUserTypeResult in searchUserTypeResults"
-              :key="searchUserTypeResult.id"
-            >
-              <tafalk-brief-user-card
-                :user="searchUserTypeResult"
-              ></tafalk-brief-user-card>
+            <v-flex xs12 class="mt-2">
+              <v-list>
+                <template v-for="(searchUserTypeResult, index) in searchUserTypeResultList">
+                  <tafalk-user-list-item
+                    :key="searchUserTypeResult.id"
+                    :displayType="listItemDisplayType"
+                    :user="searchUserTypeResult"
+                    :dense="denseItems"
+                  ></tafalk-user-list-item>
+                  <v-divider
+                    v-if="index + 1 < searchUserTypeResultList.length"
+                    :key="index"
+                  ></v-divider>
+                </template>
+              </v-list>
             </v-flex>
           </v-layout>
         </v-flex>
         <br />
         <!-- Search Result (Streams) -->
-        <v-flex offset-md2 md8 class="mb-4">
-          <span class="title grey--text">{{ $t('home.search.result.streamTitle', { resultCount: searchStreamTypeResults.length }) }}</span>
+        <v-flex offset-md2 md8 xs12 class="mb-4">
+          <span class="title grey--text">{{ $t('home.search.result.streamTitle', { resultCount: searchStreamTypeResultList.length }) }}</span>
           <v-layout row wrap>
-            <v-flex
-              class="mt-2"
-              md12
-              v-for="searchStreamTypeResult in searchStreamTypeResults"
-              :key="searchStreamTypeResult.id"
-            >
-              <tafalk-brief-stream-card
-                :stream="searchStreamTypeResult"
-              ></tafalk-brief-stream-card>
+            <v-flex xs12 class="mt-2">
+              <v-list>
+                <template v-for="(searchStreamTypeResult, index) in searchStreamTypeResultList">
+                  <tafalk-stream-list-item
+                    :key="searchStreamTypeResult.id"
+                    :displayType="listItemDisplayType"
+                    :stream="searchStreamTypeResult"
+                    :dense="denseItems"
+                    :displayUserInfo="displayUserInfoInItems"
+                  ></tafalk-stream-list-item>
+                  <v-divider
+                    v-if="index + 1 < searchStreamTypeResultList.length"
+                    :key="index"
+                  ></v-divider>
+                </template>
+              </v-list>
             </v-flex>
           </v-layout>
         </v-flex>
         <br />
         <!-- Search Result (Cantos) -->
-        <v-flex offset-md2 md8>
-          <span class="title grey--text">{{ $t('home.search.result.cantoTitle', { resultCount: searchCantoTypeResults.length }) }}</span>
+        <v-flex offset-md2 md8 xs12>
+          <span class="title grey--text">{{ $t('home.search.result.cantoTitle', { resultCount: searchCantoTypeResultList.length }) }}</span>
           <v-layout row wrap>
-            <v-flex
-              class="mt-2"
-              md12
-              v-for="searchCantoTypeResult in searchCantoTypeResults"
-              :key="searchCantoTypeResult.id"
-            >
-              <tafalk-brief-canto-card
-                :canto="searchCantoTypeResult"
-              ></tafalk-brief-canto-card>
+            <v-flex xs12 class="mt-2">
+              <v-list>
+                <template v-for="(searchCantoTypeResult, index) in searchCantoTypeResultList">
+                  <tafalk-canto-list-item
+                    :key="searchCantoTypeResult.id"
+                    :displayType="listItemDisplayType"
+                    :canto="searchCantoTypeResult"
+                    :dense="denseItems"
+                    :displayUserInfo="displayUserInfoInItems"
+                    :showUserInteractionData="showUserInteractionDataForCantoItems"
+                  ></tafalk-canto-list-item>
+                  <v-divider
+                    v-if="index + 1 < searchCantoTypeResultList.length"
+                    :key="index"
+                  ></v-divider>
+                </template>
+              </v-list>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -111,29 +157,21 @@
       :value="true"
       v-model="footerEl"
     >
-      <v-btn :value=sealedValue>
+      <v-btn :value="sealedValue">
         <span>{{ $t('home.bottomnav.sealed') }}</span>
         <v-icon>mdi-ghost-off</v-icon>
       </v-btn>
-      <v-btn v-if="authenticatedUser" :value=liveNowValue>
+      <v-btn v-if="authenticatedUser" :value="liveNowValue">
         <span>{{ $t('home.bottomnav.liveNow') }}</span>
         <v-icon>mdi-play-circle-outline</v-icon>
       </v-btn>
-      <v-btn :value=cantoValue>
+      <v-btn :value="cantoValue">
         <span>{{ $t('home.bottomnav.cantos') }}</span>
         <v-icon>mdi-music</v-icon>
       </v-btn>
-      <!--
-      <v-btn text color="deep-orange lighten-1" :value=topRatedValue>
-        <span>Popular</span>
-        <v-icon>mdi-fire</v-icon>
-      </v-btn>
-      <v-btn v-if="authenticatedUser" :value=byFaveUsersValue>
-        <span>{{ $t('home.bottomnav.byFaveUsers') }}</span>
-        <v-icon>mdi-star</v-icon>
-      </v-btn>
-      -->
     </v-bottom-navigation>
+
+    <!-- Add new item button -->
     <tafalk-new-fab v-if="authenticatedUser"></tafalk-new-fab>
   </div>
 </template>
@@ -141,9 +179,9 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import TafalkNewFab from '@/components/home/buttons/NewFab.vue'
-import TafalkBriefStreamCard from '@/components/stream/cards/BriefStreamCard.vue'
-import TafalkBriefCantoCard from '@/components/canto/cards/BriefCantoCard.vue'
-import TafalkBriefUserCard from '@/components/user/cards/BriefUserCard.vue'
+import TafalkStreamListItem from '@/components/stream/listitems/StreamListItem.vue'
+import TafalkCantoListItem from '@/components/canto/listitems/CantoListItem.vue'
+import TafalkUserListItem from '@/components/user/listitems/UserListItem.vue'
 import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 import { homeStreamFetchLength } from '@/utils/constants'
 
@@ -151,6 +189,7 @@ export default {
   name: 'Content',
   data () {
     return {
+      listItemDisplayType: 'card', // other option: item
       userTypeName: 'User',
       streamTypeName: 'Stream',
       cantoTypeName: 'Canto',
@@ -161,15 +200,16 @@ export default {
       byFaveUsersValue: 'byfaveusers',
       cantoValue: 'cantos',
       fetchLimit: homeStreamFetchLength,
-      denseCards: false,
-      avataredCards: true
+      denseItems: false,
+      displayUserInfoInItems: true,
+      showUserInteractionDataForCantoItems: true
     }
   },
   components: {
     TafalkNewFab,
-    TafalkBriefStreamCard,
-    TafalkBriefCantoCard,
-    TafalkBriefUserCard,
+    TafalkStreamListItem,
+    TafalkCantoListItem,
+    TafalkUserListItem,
     TafalkPageLoadingProgress
   },
   async created () {
@@ -222,13 +262,13 @@ export default {
     searchResults () {
       return this.getSearchSiteResults
     },
-    searchUserTypeResults () {
+    searchUserTypeResultList () {
       return this.searchResults.filter(r => r.__typename === this.userTypeName)
     },
-    searchStreamTypeResults () {
+    searchStreamTypeResultList () {
       return this.searchResults.filter(r => r.__typename === this.streamTypeName)
     },
-    searchCantoTypeResults () {
+    searchCantoTypeResultList () {
       return this.searchResults.filter(r => r.__typename === this.cantoTypeName)
     },
     isStreamListType () {

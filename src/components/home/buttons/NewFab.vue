@@ -4,13 +4,16 @@
       bottom
       right
       fixed
+      open-on-hover
       transition="slide-x-reverse-transition"
   >
     <template v-slot:activator>
       <v-btn
-        :large="$vuetify.breakpoint.mdAndUp"
+        :x-large="$vuetify.breakpoint.smAndUp"
+        :large="$vuetify.breakpoint.xsOnly"
         v-model="fab"
         :color="mainButtonColor"
+        depressed
         dark
         fab
       >
@@ -22,7 +25,9 @@
       <template v-slot:activator="{ on }">
         <v-btn
           dark
+          depressed
           fab
+          :large="$vuetify.breakpoint.smAndUp"
           :color="streamButtonColor"
           v-on="on"
           @click="onPourNewStreamClick"
@@ -36,7 +41,9 @@
       <template v-slot:activator="{ on }">
         <v-btn
           dark
+          depressed
           fab
+          :large="$vuetify.breakpoint.smAndUp"
           :color="cantoButtonColor"
           v-on="on"
           @click="onOpenCantoClick"

@@ -82,7 +82,7 @@ export default {
   data () {
     return {
       userUnreadNotificationCount: 3,
-      userUnreadMessageCount: 3,
+      userUnreadMessageCount: 3
     }
   },
   components: {
