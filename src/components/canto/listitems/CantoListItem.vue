@@ -43,7 +43,7 @@
     </v-card-title>
 
     <!-- Card Body -->
-    <v-card-text class="text-truncate">{{ canto.body }}</v-card-text>
+    <v-card-text class="text-truncate">{{ body }}</v-card-text>
 
     <!-- Card Bottom -->
     <v-card-actions class="pa-2 grey--text">
@@ -55,7 +55,8 @@
       <span v-if="showUserInteractionData" class="pa-2 grey--text caption">
         <v-icon class="grey--text caption">mdi-bookmark</v-icon>&nbsp;{{ bookmarkCount }}
       </span>
-    <v-spacer v-if="$vuetify.breakpoint.mdAndUp && showUserInteractionData"/>
+      <v-spacer v-if="$vuetify.breakpoint.mdAndUp && showUserInteractionData"/>
+    </v-card-actions>
   </v-card>
 
   <!-- I T E M   D I S P L A Y -->
@@ -100,7 +101,7 @@
       </v-list-item-subtitle>
       <!-- Line 2 -->
       <v-list-item-title>
-        <span class="grey--text">{{canto.body}}</span>
+        <span class="grey--text">{{ body }}</span>
       </v-list-item-title>
     </v-list-item-content>
 
@@ -122,7 +123,7 @@ import { GetElapsedTimeBetween } from '@/utils/typeUtils'
 import { activeUserAccountStatus } from '@/utils/constants'
 
 export default {
-  name: 'BriefCantoCard',
+  name: 'CantoListItem',
   props: ['displayType', 'canto', 'dense', 'displayUserInfo', 'showUserInteractionData'],
   data () {
     return {
@@ -134,10 +135,10 @@ export default {
     }
   },
   async mounted () {
-    this.authorColor = GetHexColorOfString(this.canto.user.username)
+    this.authorColor = GetHexColorOfString(((this.canto || {}).user || {}).username || '')
 
-    this.authorProfilePictureObjectUrl = (this.authenticatedUser && this.canto.user.profilePictureKey != null)
-      ? await Storage.get(this.canto.user.profilePictureKey, { level: 'protected' })
+    this.authorProfilePictureObjectUrl = (this.authenticatedUser && ((this.canto || {}).user || {}).profilePictureKey != null)
+      ? await Storage.get(((this.canto || {}).user || {}).profilePictureKey, { level: 'protected' })
       : null
   },
   computed: {
@@ -149,16 +150,23 @@ export default {
       return this.dense ? 180 : 200
     },
     author () {
-      return (this.canto.user && this.canto.user.accountStatus === this.activeUserAccountStatus) ? this.stream.user : null
+      if (!this.canto) return null
+      return (this.canto.user && this.canto.user.accountStatus === this.activeUserAccountStatus) ? this.canto.user : null
+    },
+    body () {
+      if (!this.canto) return null
+      return this.canto.body
     },
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
     timeSpentForCanto () {
+      if (!this.canto) return null
       return GetElapsedTimeBetween(this.canto.startTime, this.canto.lastUpdateTime)
     },
     bookmarkCount () {
-      return this.canto.bookmarks ? this.canto.bookmarks.length : 0
+      if (!this.canto) return 0
+      return this.canto.bookmarks != null ? this.canto.bookmarks.length : 0
     }
   },
   methods: {
@@ -166,6 +174,7 @@ export default {
       this.$router.push({ name: 'canto', params: { id: this.canto.id } })
     },
     onToAuthorProfileClick () {
+      if (!this.canto || !this.canto.user) return
       this.$router.push({ name: 'profile', params: { username: this.canto.user.username } })
     }
   }

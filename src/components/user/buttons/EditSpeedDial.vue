@@ -5,14 +5,12 @@
     v-model="fab"
     bottom
     right
-    open-on-hover
     transition="slide-y-reverse-transition"
   >
     <template v-slot:activator>
       <v-btn
         v-model="fab"
-        :x-large="$vuetify.breakpoint.smAndUp"
-        :large="$vuetify.breakpoint.xsOnly"
+        :large="$vuetify.breakpoint.smAndUp"
         :color="mainButtonColor"
         dark
         depressed
@@ -25,7 +23,7 @@
 
     <v-btn
       fab
-      :large="$vuetify.breakpoint.smAndUp"
+      :small="$vuetify.breakpoint.xsOnly"
       dark
       color="green"
       @click.stop="onEditInfoFabClick"
@@ -35,7 +33,7 @@
 
     <v-btn
       fab
-      :large="$vuetify.breakpoint.smAndUp"
+      :small="$vuetify.breakpoint.xsOnly"
       dark
       color="brown"
       @click.stop="onEditPrivacyFabClick"
@@ -45,7 +43,7 @@
 
     <v-btn
       fab
-      :large="$vuetify.breakpoint.smAndUp"
+      :small="$vuetify.breakpoint.xsOnly"
       dark
       color="red"
       @click.stop="onDeleteAccountFabClick"

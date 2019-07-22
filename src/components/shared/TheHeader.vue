@@ -1,6 +1,6 @@
 <template>
 <div>
-  <v-app-bar
+  <v-toolbar
     dense
     flat
     fixed
@@ -63,7 +63,7 @@
     <the-header-authenticated-user-items v-if="!isRouteChanging && authenticatedUser && !isMobileSearchHeaderOn" />
     <!-- Unauthenticated User Items -->
     <the-header-unauthenticated-user-items v-else-if="!isRouteChanging && !authenticatedUser && !isMobileSearchHeaderOn"/>
-  </v-app-bar>
+  </v-toolbar>
   <v-navigation-drawer
     app
     clipped

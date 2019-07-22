@@ -19,64 +19,32 @@
   <!-- Canto -->
   <v-tab-item :value="cantoTabName">
     <v-list-item-group>
-      <v-list-item
-        three-line
-        @click.native="onToCantoClick"
-      >
-        <v-list-item-content>
-          <v-list-item-subtitle v-text="userCanto.body"></v-list-item-subtitle>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-list-item-action-text>
-            <v-icon class="grey--text caption">mdi-timer</v-icon>&nbsp;{{ timeSpentForCanto }}
-          </v-list-item-action-text>
-        </v-list-item-action>
-      </v-list-item>
+      <tafalk-canto-list-item
+        :displayType="listItemDisplayType"
+        :canto="userCanto"
+        :dense="trueValue"
+        :displayUserInfo="falseValue"
+        :showUserInteractionData="falseValue"
+      ></tafalk-canto-list-item>
     </v-list-item-group>
   </v-tab-item>
 
   <!-- Streams -->
   <v-tab-item :value="streamsTabName">
-    <v-list three-line>
+    <v-list>
       <v-list-item-group>
         <template v-for="(userStream, index) in userStreams">
-          <v-list-item :key="'S-' + userStream.id">
-            <v-list-item-content>
-              <v-list-item-title
-                v-if="userStream.title"
-                v-text="userStream.title"
-              ></v-list-item-title>
-              <v-list-item-subtitle
-                v-if="userStream.body"
-                v-text="userStream.body"
-              ></v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-list-item-action-text v-if="userStream.isSealed !== 0">
-                <v-icon class="grey--text caption">mdi-seat-flat</v-icon>{{ getTimeFromSealedToNow(userStream.sealTime) }}
-              </v-list-item-action-text>
-              <v-list-item-action-text v-if="userStream.isSealed !== 0">
-                <v-icon class="grey--text caption">mdi-timer</v-icon>{{ getTimeSpentForSealedStream(userStream.startTime, userStream.sealTime) }}
-              </v-list-item-action-text>
-              <v-list-item-action-text v-if="userStream.isSealed === 0">
-                <v-icon class="grey--text caption">mdi-play</v-icon>&nbsp;Live Now
-              </v-list-item-action-text>
-              <v-list-item-action-text v-if="userStream.isSealed === 0">
-                <v-icon class="grey--text caption">mdi-timer</v-icon>{{ getTimeSpentForLiveStream(userStream.startTime) }}
-              </v-list-item-action-text>
-              <v-list-item-action-text>
-                <v-icon class="grey--text caption">mdi-bookmark</v-icon>{{ userStream.likes ? userStream.likes.length : 0 }}
-              </v-list-item-action-text>
-              <v-list-item-action-text>
-                <v-icon class="grey--text caption">mdi-comment</v-icon>{{ userStream.comments ? userStream.comments.length : 0 }}
-              </v-list-item-action-text>
-            </v-list-item-action>
-          </v-list-item>
+          <tafalk-stream-list-item
+            :key="'S-' + userStream.id"
+            :displayType="listItemDisplayType"
+            :stream="userStream"
+            :dense="trueValue"
+            :displayUserInfo="falseValue"
+          ></tafalk-stream-list-item>
           <v-divider
             v-if="index + 1 < userStreams.length"
             :key="index"
           ></v-divider>
-
         </template>
       </v-list-item-group>
     </v-list>
@@ -87,15 +55,23 @@
   </v-tab-item>
 
   <v-tab-item :value="bookmarkedStreamsTabName">
-    <v-flex class="pt-2"
-      v-for="bookmarkedStream in bookmarkedStreams"
-      :key="'L-' + bookmarkedStream.id"
-    >
-      <tafalk-slim-profile-bookmarked-stream-card
-        :stream="bookmarkedStream"
-        :isVisitingOwnProfile="isVisitingOwnProfile"
-      ></tafalk-slim-profile-bookmarked-stream-card>
-    </v-flex>
+    <v-list>
+      <v-list-item-group>
+        <template v-for="(bookmarkedStream, index) in bookmarkedStreams">
+          <tafalk-stream-list-item
+            :key="'B-' + bookmarkedStream.id"
+            :displayType="listItemDisplayType"
+            :stream="bookmarkedStream"
+            :dense="trueValue"
+            :displayUserInfo="trueValue"
+          ></tafalk-stream-list-item>
+          <v-divider
+            v-if="index + 1 < bookmarkedStreams.length"
+            :key="index"
+          ></v-divider>
+        </template>
+      </v-list-item-group>
+    </v-list>
     <infinite-loading
       force-use-infinite-wrapper="true"
       @infinite="infiniteBookmarkedStreamTabHandler"
@@ -103,15 +79,22 @@
   </v-tab-item>
 
   <v-tab-item :value="likedUsersTabName">
-    <v-flex class="pt-2"
-      v-for="likedUser in likedUsers"
-      :key="likedUser.id"
-    >
-      <tafalk-slim-profile-liked-user-card
-        :user="likedUser"
-        :isVisitingOwnProfile="isVisitingOwnProfile"
-      ></tafalk-slim-profile-liked-user-card>
-    </v-flex>
+    <v-list>
+      <v-list-item-group>
+        <template v-for="(likedUser, index) in likedUsers">
+          <tafalk-user-list-item
+            :key="likedUser.id"
+            :displayType="listItemDisplayType"
+            :user="likedUser"
+            :dense="trueValue"
+          ></tafalk-user-list-item>
+          <v-divider
+            v-if="index + 1 < likedUsers.length"
+            :key="index"
+          ></v-divider>
+        </template>
+      </v-list-item-group>
+    </v-list>
     <infinite-loading
       force-use-infinite-wrapper="true"
       @infinite="infiniteLikedUserTabHandler"
@@ -126,6 +109,8 @@ import { mapGetters } from 'vuex'
 import { ListStreamsByUser, ListLikesByUser, ListUserInteractionsByActorUserIdIndex } from '@/graphql/Profile'
 import { GetCanto } from '@/graphql/Canto'
 import TafalkUserListItem from '@/components/user/listitems/UserListItem.vue'
+import TafalkStreamListItem from '@/components/stream/listitems/StreamListItem.vue'
+import TafalkCantoListItem from '@/components/canto/listitems/CantoListItem.vue'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {
@@ -137,8 +122,11 @@ export default {
       streamsTabName: 'streams-tab',
       bookmarkedStreamsTabName: 'bookmarked-streams-tab',
       likedUsersTabName: 'liked-users-tab',
+      listItemDisplayType: 'item',
       activeTabIndex: this.cantoTabName,
       userCanto: null,
+      trueValue: true,
+      falseValue: false,
       userStreams: [],
       bookmarkedStreams: [],
       likedUsers: [],
@@ -150,7 +138,9 @@ export default {
     }
   },
   components: {
-    TafalkUserListItem
+    TafalkUserListItem,
+    TafalkStreamListItem,
+    TafalkCantoListItem
   },
   computed: {
     ...mapGetters({
