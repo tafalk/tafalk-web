@@ -1,16 +1,12 @@
 <template>
-<v-container fluid grid-list-lg>
+<v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
-  <v-layout v-if="!pageReady || canto == null" align-center fill-height row>
-    <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
-      <img src="@/assets/page-preloader.gif" alt="">
-    </v-flex>
-  </v-layout>
+  <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
     <v-flex xs12 sm12 offset-md2 md8>
       <div v-if="isCantoAllowed">
-        <v-card flat>
+        <v-card text>
           <v-toolbar dense flat>
             <!-- Title -->
             <v-toolbar-title flat>
@@ -18,15 +14,15 @@
             </v-toolbar-title>
             <v-spacer />
             <!-- User avatar -->
-            <v-chip @click="onAuthorProfileClick" small>
-              <v-avatar v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null">
-                <img :src="cantoUserProfilePictureObjectUrl" />
+            <v-chip @click="onAuthorProfileClick" small pill>
+              <v-avatar left v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null">
+                <v-img :src="cantoUserProfilePictureObjectUrl" />
               </v-avatar>
-              <v-avatar v-else size="200">
-                <img
-                  src="@/assets/default-user-avatar.jpg"
+              <v-avatar left v-else>
+                <v-img
+                  :src="require('@/assets/default-user-avatar.webp')"
                   alt="Virgina Woolf in Hue"
-                  v-bind:style="cantoUserHue"
+                  :style="{backgroundColor: cantoUserColor}"
                 />
               </v-avatar> {{canto.user.username}}
             </v-chip>
@@ -37,13 +33,13 @@
           <!-- Acions -->
           <v-card-actions>
             <!-- Canto metadata -->
-            <span class="grey--text">
+            <span class="grey--text caption">
               {{ $t('canto.metadata.timeInfoLabel', { created: timeFromCreatedToNow, lastUpdated: timeFromLastUpdatedToNow }) }}
             </span>
             <v-spacer />
             <!-- Share -->
             <v-btn
-              flat
+              text
               icon
               small
               :color="shareButtonColor"
@@ -55,7 +51,7 @@
             <!-- Bookmark -->
             <v-btn
               v-if="!authenticatedUserLikeId"
-              flat
+              text
               icon
               small
               :color="bookmarkButtonColor"
@@ -67,7 +63,7 @@
             </v-btn>
             <v-btn
               v-if="authenticatedUserLikeId"
-              flat
+              text
               icon
               small
               :color="bookmarkButtonColor"
@@ -81,7 +77,7 @@
             <!-- Flag -->
             <v-btn
               v-if="authenticatedUser != null && !isVisitingOwnCanto && !authenticatedUserFlagId"
-              flat
+              text
               icon
               small
               :color="flagButtonColor"
@@ -91,7 +87,7 @@
             </v-btn>
             <v-btn
               v-else-if="authenticatedUserFlagId"
-              flat
+              text
               icon
               small
               :color="flagButtonColor"
@@ -124,12 +120,13 @@ import { GetCanto, OnUpdateCanto } from '@/graphql/Canto'
 import { ListCantoLikes, CreateLike, DeleteLike, OnCreateOrDeleteCantoLike } from '@/graphql/CantoReaction'
 import { GetUserIdByUserName } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
-import { GetUserHue, GetCantoLink } from '@/utils/generators'
+import { GetHexColorOfString, GetCantoLink } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
 import TafalkNotAllowedCanto from '@/components/nocontent/CantoNotAllowed.vue'
 import TafalkShareCantoLinkDialog from '@/components/canto/dialogs/ShareCantoLinkDialog.vue'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
+import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('Canto')
 
@@ -139,11 +136,11 @@ export default {
     TafalkNotAllowedCanto,
     TafalkShareCantoLinkDialog,
     TafalkFlagDialog,
-    TafalkRetractFlagConfirmationDialog
+    TafalkRetractFlagConfirmationDialog,
+    TafalkPageLoadingProgress
   },
   data () {
     return {
-      pageReady: false,
       outboundBlockId: null,
       outboundWatchId: null,
       watchTypeUserConnectionValue: 'Watch',
@@ -164,7 +161,8 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getCanto: 'canto/getCanto',
       getIsFlaggedByAuthenticatedUser: 'canto/getIsFlaggedByAuthenticatedUser',
-      getNowTime: 'time/getNowTime'
+      getNowTime: 'time/getNowTime',
+      getIsPageReady: 'getIsPageReady'
     }),
     canto () {
       return this.getCanto
@@ -172,8 +170,8 @@ export default {
     likes () {
       return this.canto.likes
     },
-    cantoUserHue () {
-      return GetUserHue(this.canto.user.username)
+    cantoUserColor () {
+      return GetHexColorOfString(this.canto.user.username)
     },
     authenticatedUser () {
       return this.getAuthenticatedUser
@@ -230,9 +228,10 @@ export default {
   },
   watch: {
     '$route.params.username' (username) {
+      this.setIsPageReady(false)
       this.getInitialInfo(this.$route.params.username)
         .then(() => {
-          this.pageReady = true
+          this.setIsPageReady(true)
         })
     },
     'cantoChange.body' (val) {
@@ -249,9 +248,10 @@ export default {
     }
   },
   created () {
+    this.setIsPageReady(false)
     this.getInitialInfo(this.$route.params.username)
       .then(() => {
-        this.pageReady = true
+        this.setIsPageReady(true)
       })
   },
   beforeDestroy () {
@@ -267,6 +267,7 @@ export default {
       setCanto: 'canto/setCanto',
       setCantoLikes: 'canto/setCantoLikes',
       setFlag: 'flag/setFlag',
+      setIsPageReady: 'setIsPageReady',
       setRetractFlag: 'flag/setRetractFlag'
     }),
     ...mapActions({

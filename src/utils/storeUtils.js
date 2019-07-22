@@ -1,4 +1,4 @@
-import { GetUserHue } from './generators'
+import { GetHexColorOfString } from './generators'
 import { Storage } from 'aws-amplify'
 
 const GetStoreUserWithCognitoIdentityId = async (dbUser, cognitoIdentityId) => {
@@ -20,7 +20,7 @@ const GetStoreUserWithCognitoIdentityId = async (dbUser, cognitoIdentityId) => {
     language: dbUser.language,
     createdAt: dbUser.createdAt,
     lastAccess: dbUser.lastAccess,
-    hue: GetUserHue(dbUser.username)
+    color: GetHexColorOfString(dbUser.username)
   })
 }
 
@@ -48,7 +48,7 @@ const GetStoreUser = async dbUser => {
     language: dbUser.language,
     createdAt: dbUser.createdAt,
     lastAccess: dbUser.lastAccess,
-    hue: GetUserHue(dbUser.username)
+    color: GetHexColorOfString(dbUser.username)
   }
 }
 

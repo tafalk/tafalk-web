@@ -13,26 +13,28 @@
           :maxlength="maxUsernameLength"
           :rules="usernameRules"
           prepend-icon="mdi-lock"
-          required
         ></v-text-field>
         <v-text-field
           :label="$t('auth.confirmRegistration.verificationCodeLabel')"
           v-model="verificationCode"
           prepend-icon="mdi-message-processing"
-          required
         ></v-text-field>
         <v-btn
           color="primary"
           :loading="loading"
           :disabled="!valid || loading"
           type="submit"
+          class="ma-3"
         >
           {{ $t('auth.confirmRegistration.confirmButtonText') }}
         </v-btn>
         <v-btn
           :loading="loadingResend"
           :disabled="loadingResend"
-          @click="onResendBtnClick">{{ $t('auth.confirmRegistration.resendButtonText') }}</v-btn>
+          @click="onResendBtnClick"
+        >
+          {{ $t('auth.confirmRegistration.resendButtonText') }}
+        </v-btn>
       </v-form>
     </v-flex>
   </v-layout>
@@ -113,17 +115,19 @@ export default {
         this.setNewSiteError(err.message || err)
       } finally {
         this.loader = null
+        this.loading = false
       }
     },
     async onResendBtnClick () {
       try {
         await Auth.resendSignUp(this.username)
-        this.loaderResend = null
         logger.debug('code resent')
       } catch (err) {
         this.loaderResend = null
-        logger.error('resend code error', err)
         this.setNewSiteError(err.message || err)
+      } finally {
+        this.loaderResend = null
+        this.loadingResend = false
       }
     }
   }

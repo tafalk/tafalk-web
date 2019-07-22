@@ -24,15 +24,17 @@
     <!-- User Profile item (Large screen) -->
     <v-chip
       v-if="$vuetify.breakpoint.mdAndUp"
-      @click="onProfileClick">
-      <v-avatar v-if="authenticatedUser.profilePictureObjectUrl">
-        <img :src="authenticatedUser.profilePictureObjectUrl" />
+      @click="onProfileClick"
+      pill>
+      <v-avatar left v-if="authenticatedUser.profilePictureObjectUrl">
+        <v-img :src="authenticatedUser.profilePictureObjectUrl" />
       </v-avatar>
-      <v-avatar size="200" v-else>
-        <img
-          src="@/assets/default-user-avatar.jpg"
+      <v-avatar left size="200" v-else>
+        <v-img
+          :src="require('@/assets/default-user-avatar.webp')"
           alt="Virgina Woolf in Hue"
-          v-bind:style="userHue" />
+          :style="{backgroundColor: userColor}"
+        />
       </v-avatar>
         {{authenticatedUser.username}}
     </v-chip>
@@ -44,23 +46,23 @@
       size="28"
       small
     >
-      <img :src="authenticatedUser.profilePictureObjectUrl" />
+      <v-img :src="authenticatedUser.profilePictureObjectUrl" />
     </v-avatar>
     <v-avatar
       size="28"
       v-else-if="$vuetify.breakpoint.smAndDown && !authenticatedUser.profilePictureObjectUrl"
       @click="onProfileClick">
-      <img
-        src="@/assets/default-user-avatar.jpg"
+      <v-img
+        :src="require('@/assets/default-user-avatar.webp')"
         alt="Virgina Woolf in Hue"
-        v-bind:style="userHue" />
+        :style="{backgroundColor: userColor}"
+      />
     </v-avatar>
 
     <!-- Side drawer icon -->
-    <v-toolbar-side-icon
+    <v-app-bar-nav-icon
       @click.stop="toggleDrawer"
-      clipped-right
-    ></v-toolbar-side-icon>
+    ></v-app-bar-nav-icon>
 
     <!-- The Logout confirmation dialog -->
     <logout-confirmation-dialog/>
@@ -95,8 +97,8 @@ export default {
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
-    userHue () {
-      return this.authenticatedUser.hue
+    userColor () {
+      return this.authenticatedUser.color
     },
     menuDrawer () {
       return this.menuDrawer

@@ -23,6 +23,7 @@ export default new Vuex.Store({
     appName: 'Tafalk!',
     isPageReady: false,
     hasVisitedBefore: true,
+    hasAcceptedCookies: true,
     streamList: [],
     cantoList: [],
     nextStreamToken: null,
@@ -34,6 +35,9 @@ export default new Vuex.Store({
     },
     getHasVisitedBefore (state) {
       return state.hasVisitedBefore
+    },
+    getHasAcceptedCookies (state) {
+      return state.hasAcceptedCookies
     },
     getStreamList (state) {
       return state.streamList
@@ -54,6 +58,9 @@ export default new Vuex.Store({
     },
     setHasVisitedBefore (state, hasVisitedBefore) {
       state.hasVisitedBefore = hasVisitedBefore
+    },
+    setHasAcceptedCookies (state, hasAcceptedCookies) {
+      state.hasAcceptedCookies = hasAcceptedCookies
     },
     setStreamList (state, streamList) {
       state.streamList = streamList
@@ -84,6 +91,10 @@ export default new Vuex.Store({
     setHasVisitedBefore ({ commit }, hasVisitedBeforeStr) {
       localStorage.setItem('intro:dismissed', hasVisitedBeforeStr === 'true')
       commit('setHasVisitedBefore', hasVisitedBeforeStr)
+    },
+    setHasAcceptedCookies ({ commit }, hasAcceptedCookies) {
+      localStorage.setItem('cookies:accepted', hasAcceptedCookies === 'true')
+      commit('setHasAcceptedCookies', hasAcceptedCookies)
     },
     async fetchInitialSealedBriefStreams ({ commit }, payload) {
       try {

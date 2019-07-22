@@ -11,11 +11,11 @@
     <v-card-actions>
       <v-btn
         color="primary"
-        flat
+        text
         @click="onRegisterButtonClick">{{ $t('nocontent.unauthorized.goToSigninButtonText') }}</v-btn>
       <v-btn
         color="primary"
-        flat
+        text
         @click="onLoginButtonClick">{{ $t('nocontent.unauthorized.goToLoginButtonText') }}</v-btn>
     </v-card-actions>
   </v-card>

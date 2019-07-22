@@ -1,16 +1,14 @@
 <template>
-<v-list-tile
-  avatar
->
-  <v-list-tile-content>
-    <v-list-tile-sub-title class="text--primary">{{ comment.content }}</v-list-tile-sub-title>
-    <v-list-tile-sub-title><a href="javascript:;" @click.stop="onToCommenterProfileClick(comment.user.username)">@{{ comment.user.username }}</a></v-list-tile-sub-title>
-  </v-list-tile-content>
-  <v-list-tile-action>
+<v-list-item>
+  <v-list-item-content>
+    <v-list-item-subtitle class="text--primary">{{ comment.content }}</v-list-item-subtitle>
+    <v-list-item-subtitle><a href="javascript:;" @click.stop="onToCommenterProfileClick(comment.user.username)">@{{ comment.user.username }}</a></v-list-item-subtitle>
+  </v-list-item-content>
+  <v-list-item-action>
     <!-- Flag -->
     <v-btn
       v-if="authenticatedUser != null && !isOwnComment && !authenticatedUserFlagId"
-      flat
+      text
       icon
       small
       :color="flagButtonColor"
@@ -20,7 +18,7 @@
     </v-btn>
     <v-btn
       v-else-if="authenticatedUserFlagId"
-      flat
+      text
       icon
       small
       :color="flagButtonColor"
@@ -31,11 +29,11 @@
     <!-- timestamp -->
     <v-tooltip right>
       <template v-slot:activator="{ on }">
-        <v-list-tile-action-text v-html="getTimePassed(comment.time)" v-on="on"></v-list-tile-action-text>
+        <v-list-item-action-text v-html="getTimePassed(comment.time)" v-on="on"></v-list-item-action-text>
       </template>
       <span>{{ comment.time }}</span>
     </v-tooltip>
-  </v-list-tile-action>
+  </v-list-item-action>
   <!-- Flag comment dialog -->
   <!--
   <tafalk-flag-dialog
@@ -47,7 +45,7 @@
     :authenticatedUserFlagId="authenticatedUserFlagId"
   ></tafalk-retract-flag-confirmation-dialog>
   -->
-</v-list-tile>
+</v-list-item>
 </template>
 
 <script>

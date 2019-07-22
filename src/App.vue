@@ -1,22 +1,19 @@
 <template>
-  <v-app :dark="userTheme === 'dark'">
+  <v-app>
     <tafalk-header/>
     <v-content>
-      <v-container fluid full-height mt-4 pa-0>
+      <v-container fluid my-4 py-2>
+        <!-- content -->
         <router-view/>
         <!-- site messages -->
-        <tafalk-site-notification/>
+        <tafalk-site-notification-snackbar/>
         <!-- first visit intro dialog -->
         <tafalk-first-visit-intro-dialog v-if="hasVisitedBefore === 'false'"/>
+        <!-- cookie law -->
+        <tafalk-cookie-law-snackbar v-if="hasVisitedBefore === 'true' && hasAcceptedCookies === 'false'"/>
       </v-container>
     </v-content>
-    <footer>
-      <cookie-law
-        theme="dark-lime"
-        :buttonText="$t('common.footer.cookieLaw.buttonText')"
-        :message="$t('common.footer.cookieLaw.message')"
-      ></cookie-law>
-    </footer>
+
   </v-app>
 </template>
 
@@ -24,18 +21,18 @@
 import { mapGetters, mapActions } from 'vuex'
 import TafalkHeader from '@/components/shared/TheHeader.vue'
 // import TafalkFooter from '@/components/shared/TheFooter.vue'
-import TafalkSiteNotification from '@/components/shared/TheSiteNotification.vue'
+import TafalkSiteNotificationSnackbar from '@/components/shared/snackbars/TheSiteNotification.vue'
+import TafalkCookieLawSnackbar from '@/components/shared/snackbars/TheCookieLaw.vue'
 import TafalkFirstVisitIntroDialog from '@/components/shared/dialogs/TheFirstVisitIntroDialog.vue'
-import CookieLaw from 'vue-cookie-law'
 
 export default {
   name: 'App',
   components: {
     TafalkHeader,
     // TafalkFooter,
-    TafalkSiteNotification,
-    TafalkFirstVisitIntroDialog,
-    CookieLaw
+    TafalkSiteNotificationSnackbar,
+    TafalkCookieLawSnackbar,
+    TafalkFirstVisitIntroDialog
   },
   data () {
     return {
@@ -44,26 +41,36 @@ export default {
   created () {
     // Set time
     this.setNowTime()
-    // Set language
-    if (this.authenticatedUser && this.authenticatedUser.language) {
-      this.$i18n.locale = this.authenticatedUser.language
+
+    if (this.authenticatedUser) {
+      // Set language
+      if (this.authenticatedUser.language) {
+        this.$i18n.locale = this.authenticatedUser.language
+      }
+      // Set theme
+      console.log('App Created: new theme:' + this.authenticatedUserTheme)
+      this.$vuetify.theme.dark = this.authenticatedUserTheme === 'dark'
     }
   },
   mounted () {
     if (localStorage.getItem('intro:dismissed') == null || localStorage.getItem('intro:dismissed') !== 'true') {
       this.hasVisitedBefore = 'false'
     }
+    if (localStorage.getItem('cookies:accepted') == null || localStorage.getItem('cookies:accepted') !== 'true') {
+      this.hasAcceptedCookies = 'false'
+    }
   },
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
-      getHasVisitedBefore: 'getHasVisitedBefore'
+      getHasVisitedBefore: 'getHasVisitedBefore',
+      getHasAcceptedCookies: 'getHasAcceptedCookies'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
-    userTheme () {
-      return (this.authenticatedUser != null && this.authenticatedUser.theme != null) ? this.authenticatedUser.theme : 'light'
+    authenticatedUserTheme () {
+      return this.authenticatedUser ? this.authenticatedUser.theme : 'light'
     },
     hasVisitedBefore: {
       get: function () {
@@ -72,12 +79,26 @@ export default {
       set: function (val) {
         this.setHasVisitedBefore(val)
       }
+    },
+    hasAcceptedCookies: {
+      get: function () {
+        return this.getHasAcceptedCookies
+      },
+      set: function (val) {
+        this.setHasAcceptedCookies(val)
+      }
+    }
+  },
+  watch: {
+    authenticatedUserTheme (val) {
+      this.$vuetify.theme.dark = val === 'dark'
     }
   },
   methods: {
     ...mapActions({
       setNowTime: 'time/setNowTime',
-      setHasVisitedBefore: 'setHasVisitedBefore'
+      setHasVisitedBefore: 'setHasVisitedBefore',
+      setHasAcceptedCookies: 'setHasAcceptedCookies'
     })
   }
 }

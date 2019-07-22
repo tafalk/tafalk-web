@@ -6,13 +6,13 @@
   </v-card>
   <v-footer absolute height="auto" color="primary lighten-1">
     <v-layout justify-center row wrap>
-      <v-btn color="white" flat @click="onToAbout">
+      <v-btn color="white" text @click="onToAbout">
         {{ $t('about.text') }}
       </v-btn>
-      <v-btn color="white" flat @click="onToPrivacyPolicy">
+      <v-btn color="white" text @click="onToPrivacyPolicy">
         {{ $t('agreements.privacyPolicy.title') }}
       </v-btn>
-      <v-btn color="white" flat @click="onToTermsOfService">
+      <v-btn color="white" text @click="onToTermsOfService">
         {{ $t('agreements.termsOfService.title') }}
       </v-btn>
       <v-flex xs12 primary lighten-2 text-xs-center py-3 white--text>

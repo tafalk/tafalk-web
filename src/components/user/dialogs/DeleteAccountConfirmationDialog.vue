@@ -7,12 +7,12 @@
         <v-spacer></v-spacer>
         <v-btn
           color="red darken-1"
-          flat
+          text
           @click.native="onDeleteAccountConfirmClick"
         >{{ $t('common.options.yesButtonText') }}</v-btn>
         <v-btn
           color="light-blue darken-1"
-          flat
+          text
           @click.native="setIsDeleteAccountConfirmationDialogVisible(false)"
         >{{ $t('common.options.noButtonText') }}</v-btn>
       </v-card-actions>

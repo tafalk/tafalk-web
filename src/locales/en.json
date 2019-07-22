@@ -12,7 +12,11 @@
       "skipButtonText": "Skip"
     },
     "toolbar": {
-      "searchPlaceholder": "Search.."
+      "searchPlaceholder": "Search..",
+      "menu": {
+        "contentsSubheader": "Contents",
+        "settingsSubheader": "Settings"
+      }
     },
     "share": {
       "title": "Share"
@@ -27,17 +31,15 @@
       "hour": "h",
       "day": "d"
     },
-    "footer": {
-      "cookieLaw": {
-        "buttonText": "Got It!",
-        "message": "This website uses cookies to ensure you get the best experience on our website."
-      }
+    "cookieLaw": {
+      "button": "Got It!",
+      "message": "This website uses cookies to ensure you get the best experience on our website."
     }
   },
   "intro": {
     "item1": {
       "title": "",
-      "body": "Welcome, this site utilizes only forward-typing. It is indifferent to errors, typos or finger thickness."
+      "body": "Welcome, this site utilizes only forward-typing. It is indifferent to errors, typos or finger thickness: Like a typewriter."
     },
     "item2": {
       "title": "",
@@ -47,6 +49,7 @@
       "title": "",
       "body": "Cantos are similar but every user has one. You can add up your canto until whenever you like, but again no deleting."
     },
+    "nextButtonText": "Next",
     "closeButtonText": "Ok, I See"
   },
   "home": {
@@ -288,6 +291,7 @@
       "defaultBio": "Who knows",
       "defaultLocation": "Somewhere",
       "tabs": {
+        "canto": "Canto",
         "streams": "Streams",
         "likedContents": "Likes",
         "likedUsers": "Faves",
@@ -366,7 +370,7 @@
     "deleteAccount": {
       "dialog": {
         "title": "Delete Account",
-        "body": "Are you sure? Your username may be unavailable to you forever!"
+        "body": "Are you sure? Your username may be unavailable to you forever! -anyone can get it"
       }
     }
   },

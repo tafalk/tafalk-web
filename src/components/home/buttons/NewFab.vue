@@ -8,21 +8,23 @@
   >
     <template v-slot:activator>
       <v-btn
-        :large="$vuetify.breakpoint.mdAndUp"
         v-model="fab"
         :color="mainButtonColor"
+        depressed
         dark
         fab
       >
-        <v-icon>mdi-plus</v-icon>
-        <v-icon>mdi-close</v-icon>
+        <v-icon v-if="!fab">mdi-plus</v-icon>
+        <v-icon v-else>mdi-close</v-icon>
       </v-btn>
     </template>
     <v-tooltip left dark :color="streamButtonColor">
       <template v-slot:activator="{ on }">
         <v-btn
           dark
+          depressed
           fab
+          small
           :color="streamButtonColor"
           v-on="on"
           @click="onPourNewStreamClick"
@@ -36,7 +38,9 @@
       <template v-slot:activator="{ on }">
         <v-btn
           dark
+          depressed
           fab
+          small
           :color="cantoButtonColor"
           v-on="on"
           @click="onOpenCantoClick"

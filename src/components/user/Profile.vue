@@ -1,62 +1,70 @@
 <template>
-<v-container ma-0 pa-0>
+<v-container fluid pt-5>
   <!-- full page loader -->
-  <v-layout v-if="!pageReady" align-center fill-height>
-    <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
-      <img  src="@/assets/page-preloader.gif" alt="">
-    </v-flex>
-  </v-layout>
+  <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
-    <v-flex d-flex xs12 offset-md2 md8>
-      <div v-if="isProfileAllowed">
-        <v-card
-          flat
-        >
+    <v-flex xs12 offset-md2 md8>
+      <!-- Not Allowed To See -->
+      <tafalk-not-allowed-profile v-if="!isProfileAllowed" />
+      <!-- Allowed -->
+      <div v-else>
+        <v-card flat>
           <!-- edit profile button -->
           <tafalk-profile-edit-speed-dial v-if="isVisitingOwnProfile" />
 
           <v-container fluid grid-list-lg>
             <v-layout row wrap>
+
+              <!-- Profile Pic Section -->
               <v-flex d-flex xs12 md4>
-                <v-container pt-3 fluid grid-list-lg>
+                <v-container pt-3 fluid grid-list-md>
                   <v-layout align-center column>
-                    <v-avatar v-if="authenticatedUser && visitedUser.profilePictureObjectUrl != null" pt-1 size="150">
-                      <img :src="visitedUser.profilePictureObjectUrl" />
-                    </v-avatar>
-                    <v-avatar v-else pt-1 size="150">
-                      <img
-                        src="@/assets/default-user-avatar.jpg"
+                    <v-avatar pt-1 size="150">
+                      <v-img
+                        v-if="authenticatedUser && visitedUser.profilePictureObjectUrl"
+                        :src="visitedUser.profilePictureObjectUrl"
+                      />
+                      <v-img
+                        v-else
+                        :src="require('@/assets/default-user-avatar.webp')"
                         alt="Woolf"
-                        v-bind:style="visitedUser.hue"
+                        :style="{backgroundColor: visitedUserColor}"
                       />
                     </v-avatar>
                     <v-btn
                       color="primary"
-                      flat
+                      text
                       v-if="isVisitingOwnProfile"
                       @click.stop="setIsChangeProfilePictureDialogVisible(true)"
                     >{{ $t('user.profilePage.changeProfilePictureButtonText') }}</v-btn>
                   </v-layout>
                 </v-container>
               </v-flex>
-              <v-flex d-flex xs12 md4>
-                <v-card-title primary-title>
-                  <div v-if="visitedUser != null">
-                    <div class="display-1 grey--text">@{{visitedUser.username}}</div><br/>
-                    <span class="grey--text">Bio:&nbsp;{{visitedUserBio}}</span><br/>
-                    <span class="grey--text">Site:&nbsp;{{visitedUser.site}}</span>
-                  </div>
-                </v-card-title>
-              </v-flex>
-              <v-flex d-flex xs12 md4>
-                <v-card-title primary-title>
-                  <div>
-                    <span v-if="visitedUserAccountCreationDateStr" class="grey--text"><v-icon>mdi-account-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</span><br/>
-                    <span v-if="visitedUser != null" class="grey--text"><v-icon>mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</span><br/>
-                    <span v-if="visitedUser != null" class="grey--text"><v-icon>mdi-lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</span><br/>
-                  </div>
-                </v-card-title>
+              <!-- username, bio, site etc. section -->
+              <v-flex d-flex xs12 md8>
+                <v-card-text>
+                  <v-container fluid v-if="visitedUser">
+                    <v-layout row wrap>
+                      <v-flex d-flex xs12>
+                        <div class="display-1 text-xs-center text-sm-right grey--text">
+                          @{{visitedUser.username}}
+                        </div>
+                      </v-flex>
+                      <v-flex d-flex xs12>
+                        <div class="text-xs-left grey--text"><v-icon color="grey">mdi-bio</v-icon>&nbsp;{{visitedUserBio}}</div>
+                      </v-flex>
+                      <v-flex xs12 sm6>
+                        <p class="text-xs-left grey--text"><v-icon color="grey">mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</p>
+                        <p class="text-xs-left grey--text"><v-icon color="grey">mdi-web</v-icon>&nbsp;{{visitedUser.site}}</p>
+                      </v-flex>
+                      <v-flex xs12 sm6>
+                        <p v-if="visitedUserAccountCreationDateStr" class="text-xs-left grey--text"><v-icon color="grey">mdi-calendar-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</p>
+                        <p class="text-xs-left grey--text"><v-icon color="grey">mdi-lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</p>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card-text>
               </v-flex>
               <tafalk-user-interaction-button-group
                 v-if="authenticatedUser && !isVisitingOwnProfile"
@@ -97,7 +105,6 @@
           :userId="visitedUser.id">
         </tafalk-user-delete-account-confirmation-dialog>
       </div>
-      <tafalk-not-allowed-profile v-else></tafalk-not-allowed-profile>
     </v-flex>
   </v-layout>
 </v-container>
@@ -110,6 +117,7 @@ import { GetUserProfileData } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
 import { GetStoreUser } from '@/utils/storeUtils'
 import { GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
+import { GetHexColorOfString } from '@/utils/generators'
 import TafalkNotAllowedProfile from '@/components/nocontent/ProfileNotAllowed.vue'
 import TafalkUserInteractionButtonGroup from '@/components/user/buttons/UserInteractionButtonGroup.vue'
 import TafalkProfileTabs from '@/components/user/tabs/ProfileTabs.vue'
@@ -120,6 +128,7 @@ import TafalkUserBlockConfirmationDialog from '@/components/user/dialogs/BlockCo
 import TafalkUserInfoEditDialog from '@/components/user/dialogs/UserInfoEditDialog.vue'
 import TafalkUserPrivacyEditDialog from '@/components/user/dialogs/UserPrivacyEditDialog'
 import TafalkUserDeleteAccountConfirmationDialog from '@/components/user/dialogs/DeleteAccountConfirmationDialog.vue'
+import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('Profile')
 
@@ -127,7 +136,6 @@ export default {
   name: 'Profile',
   data () {
     return {
-      pageReady: false,
       changeProfilePictureDialog: false,
       watchTypeUserConnectionValue: 'Watch',
       blockTypeUserConnectionValue: 'Block',
@@ -136,6 +144,7 @@ export default {
     }
   },
   components: {
+    TafalkPageLoadingProgress,
     TafalkUserChangeProfilePictureDialog,
     TafalkNotAllowedProfile,
     TafalkUserInteractionButtonGroup,
@@ -150,7 +159,8 @@ export default {
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
-      getVisitedUser: 'visitedUser/getUser'
+      getVisitedUser: 'visitedUser/getUser',
+      getIsPageReady: 'getIsPageReady'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
@@ -186,36 +196,32 @@ export default {
       return this.isVisitingOwnProfile || this.isVisitorAllowed
     },
     visitedUserBio () {
-      if (this.visitedUser.bio == null || this.visitedUser.bio.length === 0) {
-        return this.defaultBio
-      }
-      return this.visitedUser.bio
+      return (this.visitedUser.bio != null && this.visitedUser.bio.length > 0) ? this.visitedUser.bio : this.defaultBio
+    },
+    visitedUserColor () {
+      return GetHexColorOfString(this.visitedUser.username)
     },
     visitedUserLocationValue () {
-      if (this.visitedUser.location == null) {
-        return this.defaultLocation
-      }
-      return this.visitedUser.location
+      return this.visitedUser.location || this.defaultLocation
     },
     visitedUserAccountCreationDateStr () {
-      if (!this.visitedUser) {
-        return null
-      }
-      return (new Date(this.visitedUser.createdAt)).toISOString().slice(0, 10)
+      return this.visitedUser ? (new Date(this.visitedUser.createdAt)).toISOString().slice(0, 10) : null
     }
   },
   watch: {
     '$route.params.username' (username) {
+      this.setIsPageReady(false)
       this.getInitialInfo(this.$route.params.username)
         .then(() => {
-          this.pageReady = true
+          this.setIsPageReady(true)
         })
     }
   },
   created () {
+    this.setIsPageReady(false)
     this.getInitialInfo(this.$route.params.username)
       .then(() => {
-        this.pageReady = true
+        this.setIsPageReady(true)
       })
   },
   destroyed () {
@@ -223,6 +229,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setIsPageReady: 'setIsPageReady',
       setVisitedUser: 'visitedUser/setUser',
       clearVisitedUser: 'visitedUser/clearUser',
       setIsChangeProfilePictureDialogVisible: 'visitedUser/dialog/setIsChangeProfilePictureDialogVisible'

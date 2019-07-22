@@ -13,6 +13,8 @@ export const minUsernameOrEmailLength = 2
 export const maxUsernameOrEmailLength = 254
 export const minPasswordLength = 8
 
+// user
+export const activeUserAccountStatus = 'active'
 // pour
 export const pourStrikethroughTimeToIdle = 1000
 
@@ -62,5 +64,7 @@ export const languageOptions = [
   { displayValue: 'Default (Browser Language)', backendValue: '' },
   { displayValue: 'English', backendValue: 'en' }
 ]
+
+export const siteImagesBaseUrl = 'https://tafalk-sitefiles.s3.eu-central-1.amazonaws.com/images'
 
 export const geocodingRootUrl = 'https://geocoder.tilehosting.com'

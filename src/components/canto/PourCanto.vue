@@ -1,12 +1,8 @@
 <template>
   <tafalk-stream-authorization-required v-if="!isAllowed"></tafalk-stream-authorization-required>
-  <v-container v-else fluid grid-list-lg>
+  <v-container v-else fluid grid-list-lg pt-5>
     <!-- full page loader -->
-    <v-layout v-if="!pageReady" align-center fill-height row>
-      <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
-        <img src="@/assets/page-preloader.gif" alt="">
-      </v-flex>
-    </v-layout>
+    <tafalk-page-loading-progress v-if="!getIsPageReady" />
     <!-- Page itself -->
     <v-layout row wrap v-else>
       <tafalk-canto-introduction v-if="isCantoNew"></tafalk-canto-introduction>
@@ -58,6 +54,7 @@ import TafalkStreamAuthorizationRequired from '@/components/nocontent/Authorizat
 import TafalkCantoIntroduction from '@/components/canto/dialogs/CantoIntroduction.vue'
 import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
 import { GetKeyName } from '@/utils/ioUtils'
+import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('PourCanto')
 
@@ -65,7 +62,6 @@ export default {
   name: 'PourCanto',
   data () {
     return {
-      pageReady: false,
       body: null,
       cantoStatus: 'OK',
       isCantoCreated: false,
@@ -79,12 +75,14 @@ export default {
   },
   components: {
     TafalkStreamAuthorizationRequired,
-    TafalkCantoIntroduction
+    TafalkCantoIntroduction,
+    TafalkPageLoadingProgress
   },
   computed: {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
-      getCanto: 'canto/getCanto'
+      getCanto: 'canto/getCanto',
+      getIsPageReady: 'getIsPageReady'
     }),
     authenticatedUser () {
       return this.getAuthenticatedUser
@@ -98,6 +96,7 @@ export default {
   },
   created () {
     window.addEventListener('beforeunload', this.onBeforeUnload)
+    this.setIsPageReady(false)
     this.authorUsername = this.$route.params.username
     const cantoId = this.authenticatedUser.id
 
@@ -115,7 +114,7 @@ export default {
         logger.error('Error occurred while getting canto info', JSON.stringify(err))
         this.setNewSiteError(err.message || err)
       }).finally(() => {
-        this.pageReady = true
+        this.setIsPageReady(true)
       })
   },
   async mounted () {
@@ -128,7 +127,7 @@ export default {
   watch: {
     // whenever 'canto' changes, this function will run
     async body (newBody, oldBody) {
-      if (!this.pageReady || IsNullOrWhitespace(newBody)) return
+      if (!this.getIsPageReady || IsNullOrWhitespace(newBody)) return
 
       if (oldBody == null || oldBody.length === 0) {
         // Old body is null or empty, so create the entry here
@@ -154,6 +153,7 @@ export default {
   },
   methods: {
     ...mapMutations({
+      setIsPageReady: 'setIsPageReady',
       setIsRouteChangeSafe: 'stream/setIsRouteChangeSafe'
     }),
     ...mapActions({

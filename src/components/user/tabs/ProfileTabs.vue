@@ -1,56 +1,100 @@
 <template>
-<v-tabs left v-model="activeTabIndex" show-arrows>
+<v-tabs left v-model="activeTabIndex" show-arrows grow>
   <v-tabs-slider></v-tabs-slider>
+  <!-- Tabs -->
+  <v-tab href="#canto-tab">
+    {{ $t('user.profilePage.tabs.canto') }}
+  </v-tab>
   <v-tab href="#streams-tab">
     {{ $t('user.profilePage.tabs.streams') }}
   </v-tab>
-  <v-tab href="#liked-streams-tab">
+  <v-tab href="#bookmarked-streams-tab" v-if="isVisitingOwnProfile">
     {{ $t('user.profilePage.tabs.likedContents') }}
   </v-tab>
-  <v-tab href="#liked-users-tab">
+  <v-tab href="#liked-users-tab" v-if="isVisitingOwnProfile">
     {{ $t('user.profilePage.tabs.likedUsers') }}
   </v-tab>
+
+  <!-- Tab Contents -->
+  <!-- Canto -->
+  <v-tab-item :value="cantoTabName">
+    <v-list-item-group>
+      <tafalk-canto-list-item
+        :displayType="listItemDisplayType"
+        :canto="userCanto"
+        :dense="trueValue"
+        :displayUserInfo="falseValue"
+        :showUserInteractionData="falseValue"
+      ></tafalk-canto-list-item>
+    </v-list-item-group>
+  </v-tab-item>
+
+  <!-- Streams -->
   <v-tab-item :value="streamsTabName">
-    <v-flex class="pt-2"
-      v-for="userStream in userStreams"
-      :key="'S-' + userStream.id"
-    >
-      <tafalk-slim-profile-own-stream-card
-        :stream="userStream"
-      ></tafalk-slim-profile-own-stream-card>
-    </v-flex>
+    <v-list>
+      <v-list-item-group>
+        <template v-for="(userStream, index) in userStreams">
+          <tafalk-stream-list-item
+            :key="'S-' + userStream.id"
+            :displayType="listItemDisplayType"
+            :stream="userStream"
+            :dense="trueValue"
+            :displayUserInfo="falseValue"
+          ></tafalk-stream-list-item>
+          <v-divider
+            v-if="index + 1 < userStreams.length"
+            :key="index"
+          ></v-divider>
+        </template>
+      </v-list-item-group>
+    </v-list>
     <infinite-loading
       force-use-infinite-wrapper="true"
       @infinite="infiniteStreamTabHandler"
     ></infinite-loading>
   </v-tab-item>
 
-  <v-tab-item :value="likedStreamsTabName">
-    <v-flex class="pt-2"
-      v-for="likedStream in likedStreams"
-      :key="'L-' + likedStream.id"
-    >
-      <tafalk-slim-profile-liked-stream-card
-        :stream="likedStream"
-        :isVisitingOwnProfile="isVisitingOwnProfile"
-      ></tafalk-slim-profile-liked-stream-card>
-    </v-flex>
+  <v-tab-item :value="bookmarkedStreamsTabName">
+    <v-list>
+      <v-list-item-group>
+        <template v-for="(bookmarkedStream, index) in bookmarkedStreams">
+          <tafalk-stream-list-item
+            :key="'B-' + bookmarkedStream.id"
+            :displayType="listItemDisplayType"
+            :stream="bookmarkedStream"
+            :dense="trueValue"
+            :displayUserInfo="trueValue"
+          ></tafalk-stream-list-item>
+          <v-divider
+            v-if="index + 1 < bookmarkedStreams.length"
+            :key="index"
+          ></v-divider>
+        </template>
+      </v-list-item-group>
+    </v-list>
     <infinite-loading
       force-use-infinite-wrapper="true"
-      @infinite="infiniteLikedStreamTabHandler"
+      @infinite="infiniteBookmarkedStreamTabHandler"
     ></infinite-loading>
   </v-tab-item>
 
   <v-tab-item :value="likedUsersTabName">
-    <v-flex class="pt-2"
-      v-for="likedUser in likedUsers"
-      :key="likedUser.id"
-    >
-      <tafalk-slim-profile-liked-user-card
-        :user="likedUser"
-        :isVisitingOwnProfile="isVisitingOwnProfile"
-      ></tafalk-slim-profile-liked-user-card>
-    </v-flex>
+    <v-list>
+      <v-list-item-group>
+        <template v-for="(likedUser, index) in likedUsers">
+          <tafalk-user-list-item
+            :key="likedUser.id"
+            :displayType="listItemDisplayType"
+            :user="likedUser"
+            :dense="trueValue"
+          ></tafalk-user-list-item>
+          <v-divider
+            v-if="index + 1 < likedUsers.length"
+            :key="index"
+          ></v-divider>
+        </template>
+      </v-list-item-group>
+    </v-list>
     <infinite-loading
       force-use-infinite-wrapper="true"
       @infinite="infiniteLikedUserTabHandler"
@@ -61,42 +105,61 @@
 
 <script>
 import { API, graphqlOperation } from 'aws-amplify'
+import { mapGetters } from 'vuex'
 import { ListStreamsByUser, ListLikesByUser, ListUserInteractionsByActorUserIdIndex } from '@/graphql/Profile'
-import TafalkSlimProfileOwnStreamCard from '@/components/stream/cards/SlimProfileOwnStreamCard.vue'
-import TafalkSlimProfileLikedStreamCard from '@/components/stream/cards/SlimProfileLikedStreamCard.vue'
-import TafalkSlimProfileLikedUserCard from '@/components/user/cards/SlimProfileLikedUserCard.vue'
+import { GetCanto } from '@/graphql/Canto'
+import TafalkUserListItem from '@/components/user/listitems/UserListItem.vue'
+import TafalkStreamListItem from '@/components/stream/listitems/StreamListItem.vue'
+import TafalkCantoListItem from '@/components/canto/listitems/CantoListItem.vue'
+import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {
   name: 'ProfileTabs',
   props: ['userId', 'isVisitingOwnProfile'],
   data () {
     return {
+      cantoTabName: 'canto-tab',
       streamsTabName: 'streams-tab',
-      likedStreamsTabName: 'liked-streams-tab',
+      bookmarkedStreamsTabName: 'bookmarked-streams-tab',
       likedUsersTabName: 'liked-users-tab',
-      activeTabIndex: this.streamsTabName,
+      listItemDisplayType: 'item',
+      activeTabIndex: this.cantoTabName,
+      userCanto: null,
+      trueValue: true,
+      falseValue: false,
       userStreams: [],
-      likedStreams: [],
+      bookmarkedStreams: [],
       likedUsers: [],
       fetchLimit: 3,
       userStreamFetchNextToken: '',
-      likedStreamFetchNextToken: '',
+      bookmarkedStreamFetchNextToken: '',
       likedUserFetchNextToken: '',
       watchTypeUserConnectionValue: 'Watch'
     }
   },
   components: {
-    TafalkSlimProfileOwnStreamCard,
-    TafalkSlimProfileLikedStreamCard,
-    TafalkSlimProfileLikedUserCard
+    TafalkUserListItem,
+    TafalkStreamListItem,
+    TafalkCantoListItem
   },
   computed: {
+    ...mapGetters({
+      getNowTime: 'time/getNowTime'
+    }),
+    timeSpentForCanto () {
+      return GetElapsedTimeBetween(this.userCanto.startTime, this.userCanto.lastUpdateTime)
+    }
   },
   async mounted () {
     // send async queries
+    const graphqlVisitedProfileCantoReq = API.graphql(graphqlOperation(GetCanto, { id: this.userId }))
     const graphqlVisitedProfileStreamsReq = API.graphql(graphqlOperation(ListStreamsByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.userStreamFetchNextToken }))
-    const graphqlVisitedProfileLikedStreamsReq = API.graphql(graphqlOperation(ListLikesByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedStreamFetchNextToken }))
+    const graphqlVisitedProfileBookmarkedStreamsReq = API.graphql(graphqlOperation(ListLikesByUser, { userId: this.userId, limit: this.fetchLimit, nextToken: this.bookmarkedStreamFetchNextToken }))
     const graphqlVisitedProfileOutboundInteractedUsersReq = API.graphql(graphqlOperation(ListUserInteractionsByActorUserIdIndex, { userId: this.userId, limit: this.fetchLimit, nextToken: this.likedUserFetchNextToken }))
+
+    // load canto
+    const graphqlVisitedProfileCantoResult = await graphqlVisitedProfileCantoReq
+    this.userCanto = graphqlVisitedProfileCantoResult.data.getCanto
 
     // load own streams
     const graphqlVisitedProfileStreamsResult = await graphqlVisitedProfileStreamsReq
@@ -107,12 +170,12 @@ export default {
     this.userStreams.push(...initialFetchUserStreams)
 
     // load liked streams
-    const graphqlVisitedProfileLikedStreamsResult = await graphqlVisitedProfileLikedStreamsReq
-    const visitedProfileLikedStreamsDbResult = graphqlVisitedProfileLikedStreamsResult.data.listLikesByUser
+    const graphqlVisitedProfileBookmarkedStreamsResult = await graphqlVisitedProfileBookmarkedStreamsReq
+    const visitedProfileBookmarkedStreamsDbResult = graphqlVisitedProfileBookmarkedStreamsResult.data.listLikesByUser
 
-    const initialFetchLikedStreams = visitedProfileLikedStreamsDbResult.items.map(item => item.stream)
-    this.likedStreamFetchNextToken = visitedProfileLikedStreamsDbResult.nextToken
-    this.likedStreams.push(...initialFetchLikedStreams)
+    const initialFetchBookmarkedStreams = visitedProfileBookmarkedStreamsDbResult.items.map(item => item.stream)
+    this.bookmarkedStreamFetchNextToken = visitedProfileBookmarkedStreamsDbResult.nextToken
+    this.bookmarkedStreams.push(...initialFetchBookmarkedStreams)
 
     // load liked users
     const graphqlVisitedProfileOutboundInteractedUsersResult = await graphqlVisitedProfileOutboundInteractedUsersReq
@@ -138,6 +201,18 @@ export default {
     }
   },
   methods: {
+    onToCantoClick () {
+      this.$router.push({ name: 'canto', params: { id: this.userCanto.id } })
+    },
+    getTimeFromSealedToNow (sealTime) {
+      return GetElapsedTimeTillNow(this.getNowTime, sealTime)
+    },
+    getTimeSpentForSealedStream (startTime, sealTime) {
+      return GetElapsedTimeBetween(startTime, sealTime)
+    },
+    getTimeSpentForLiveStream (startTime) {
+      return GetElapsedTimeTillNow(this.getNowTime, startTime)
+    },
     async infiniteStreamTabHandler ($state) {
       // if no new things to load, complete
       if (!this.userStreamFetchNextToken) {
@@ -157,21 +232,21 @@ export default {
         $state.loaded()
       }
     },
-    async infiniteLikedStreamTabHandler ($state) {
+    async infiniteBookmarkedStreamTabHandler ($state) {
       // if no new things to load, complete
-      if (!this.likedStreamFetchNextToken) {
+      if (!this.bookmarkedStreamFetchNextToken) {
         $state.complete()
       } else {
         const scrollLikeEndNewFetchResult = await API.graphql(graphqlOperation(ListLikesByUser, {
           userId: this.userId,
           limit: this.fetchLimit,
-          nextToken: this.likedStreamFetchNextToken
+          nextToken: this.bookmarkedStreamFetchNextToken
         }))
 
         const newPaginatedLikeByUserType = scrollLikeEndNewFetchResult.data.listLikesByUser
 
-        this.likedStreamFetchNextToken = newPaginatedLikeByUserType.nextToken
-        this.likedStreams.push(...newPaginatedLikeByUserType.items.map(item => item.stream))
+        this.bookmarkedStreamFetchNextToken = newPaginatedLikeByUserType.nextToken
+        this.bookmarkedStreams.push(...newPaginatedLikeByUserType.items.map(item => item.stream))
 
         $state.loaded()
       }

@@ -13,24 +13,6 @@ const getters = {
 }
 
 const mutations = {
-  setIsShareStreamLinkDialogVisible (state, isShareStreamLinkDialogVisible) {
-    state.isShareStreamLinkDialogVisible = isShareStreamLinkDialogVisible
-  },
-  showShareStreamLinkDialog (state) {
-    state.isShareStreamLinkDialogVisible = true
-  },
-  hideShareStreamLinkDialog (state) {
-    state.isShareStreamLinkDialogVisible = false
-  },
-  setIsAddTitleDialogVisible (state, isAddTitleDialogVisible) {
-    state.isAddTitleDialogVisible = isAddTitleDialogVisible
-  },
-  showAddTitleDialog (state) {
-    state.isAddTitleDialogVisible = true
-  },
-  hideAddTitleDialog (state) {
-    state.isAddTitleDialogVisible = false
-  },
   setIsFlagDialogVisible (state, isFlagDialogVisible) {
     state.isFlagDialogVisible = isFlagDialogVisible
   },

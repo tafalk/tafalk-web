@@ -1,11 +1,7 @@
 <template>
-<v-container fluid grid-list-lg px-2>
+<v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
-  <v-layout v-if="!pageReady || stream == null" align-center fill-height row>
-    <v-flex offset-md5 md2 offset-sm5 sm2 offset-xs5-and-up xs2>
-      <img src="@/assets/page-preloader.gif" alt="">
-    </v-flex>
-  </v-layout>
+  <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- regular content -->
   <v-layout row wrap v-else>
     <v-flex xs12 infinite-wrapper>
@@ -16,34 +12,42 @@
               <span class="grey--text headline">{{ stream.title }}</span>
             </v-toolbar-title>
             <v-spacer />
-            <v-chip @click="onAuthorProfileClick" small>
-              <v-avatar v-if="authenticatedUser && streamUserProfilePictureObjectUrl != null">
-                <img :src="streamUserProfilePictureObjectUrl" />
-              </v-avatar>
-              <v-avatar v-else size="200">
-                <img
-                  src="@/assets/default-user-avatar.jpg"
+            <!-- Stream Author Chip -->
+            <v-chip @click.stop="onToAuthorProfileClick" small pill>
+              <v-avatar left>
+                <!-- Author is not active -->
+                <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
+                <!-- Author active but no prifile picture set -->
+                <v-img
+                  v-else-if="!authorProfilePictureObjectUrl"
+                  :src="require('@/assets/default-user-avatar.webp')"
                   alt="Virgina Woolf in Hue"
-                  v-bind:style="streamUserHue"
-                />
-              </v-avatar> {{stream.user.username}}
+                  :style="{backgroundColor: authorColor}"
+                ></v-img>
+                <!-- Author active and has profile pic -->
+                <v-img
+                  v-else
+                  :src="authorProfilePictureObjectUrl"
+                ></v-img>
+              </v-avatar>
+              {{ authorDisplayUsername }}
             </v-chip>
           </v-toolbar>
           <v-card-text>{{ stream.body }}</v-card-text>
           <v-divider />
           <v-card-actions>
             <!-- Stream metadata -->
-            <span v-if="!isSealed" class="red--text">
-              <v-icon class="red--text">mdi-play</v-icon>
+            <span v-if="!isSealed" class="red--text caption">
+              <v-icon color="red">mdi-play</v-icon>
               {{ $t('stream.metadata.liveLabel') }}
             </span>
-            <span v-else class="grey--text">
+            <span v-else class="grey--text caption">
               {{ $t('stream.metadata.sealedLabel') }}: {{ timeFromSealedToNow }} in {{ timeSpentForStream }}
             </span>
             <v-spacer />
             <!-- Share -->
             <v-btn
-              flat
+              text
               icon
               small
               :color="shareButtonColor"
@@ -55,7 +59,7 @@
             <!-- Bookmark -->
             <v-btn
               v-if="isSealed && !authenticatedUserLikeId"
-              flat
+              text
               icon
               small
               :color="bookmarkButtonColor"
@@ -67,7 +71,7 @@
             </v-btn>
             <v-btn
               v-if="isSealed && authenticatedUserLikeId"
-              flat
+              text
               icon
               small
               :color="bookmarkButtonColor"
@@ -81,7 +85,7 @@
             <!-- Comment -->
             <v-btn
               v-if="isSealed"
-              flat
+              text
               icon
               small
               :color="commentButtonColor"
@@ -93,7 +97,7 @@
             <!-- Flag -->
             <v-btn
               v-if="isSealed && authenticatedUser != null && !isVisitingOwnStream && !authenticatedUserFlagId"
-              flat
+              text
               icon
               small
               :color="flagButtonColor"
@@ -103,7 +107,7 @@
             </v-btn>
             <v-btn
               v-else-if="authenticatedUserFlagId"
-              flat
+              text
               icon
               small
               :color="flagButtonColor"
@@ -117,7 +121,7 @@
             <v-card flat v-show="showCommentBox">
               <v-card-text>
                 <v-textarea
-                  box
+                  filled
                   :label="$t('stream.comments.addNewTextareaLabel')"
                   v-model="comment"
                   :min="minCommentLength"
@@ -127,10 +131,10 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn flat
+                <v-btn text
                   @click="onCommentTextAreaToggleShowClick"
                 >{{ $t('common.options.cancelButtonText') }}</v-btn>
-                <v-btn flat
+                <v-btn text
                   :loading="isCommentLoading"
                   :disabled="!isCommentLengthValid || isCommentLoading"
                   @click="onCommentSaveClick"
@@ -163,14 +167,15 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetStream, OnUpdateStream } from '@/graphql/Stream'
 import { ListStreamLikes, CreateLike, DeleteLike, OnCreateOrDeleteStreamLike, CreateComment, ListPaginatedStreamComments } from '@/graphql/StreamReaction'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
-import { GetUserHue, GetStreamLink } from '@/utils/generators'
+import { GetHexColorOfString, GetStreamLink } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
-import { streamCommentFetchLength } from '@/utils/constants'
+import { streamCommentFetchLength, activeUserAccountStatus } from '@/utils/constants'
 import TafalkNotAllowedStream from '@/components/nocontent/StreamNotAllowed.vue'
 import TafalkShareStreamLinkDialog from '@/components/stream/dialogs/ShareStreamLinkDialog.vue'
 import TafalkStreamCommentList from '@/components/comment/stream/StreamCommentList.vue'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
+import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('Stream')
 
@@ -181,16 +186,17 @@ export default {
     TafalkShareStreamLinkDialog,
     TafalkStreamCommentList,
     TafalkFlagDialog,
-    TafalkRetractFlagConfirmationDialog
+    TafalkRetractFlagConfirmationDialog,
+    TafalkPageLoadingProgress
   },
   data () {
     return {
-      pageReady: false,
+      activeUserAccountStatus,
       outboundBlockId: null,
       outboundWatchId: null,
       watchTypeUserConnectionValue: 'Watch',
       blockTypeUserConnectionValue: 'Block',
-      streamUserProfilePictureObjectUrl: null,
+      authorProfilePictureObjectUrl: null,
       streamChangeSubscription: null,
       streamChange: null,
       likeObjects: null,
@@ -213,7 +219,8 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getStream: 'stream/getStream',
       getIsFlaggedByAuthenticatedUser: 'stream/getIsFlaggedByAuthenticatedUser',
-      getNowTime: 'time/getNowTime'
+      getNowTime: 'time/getNowTime',
+      getIsPageReady: 'getIsPageReady'
     }),
     stream () {
       return this.getStream
@@ -224,14 +231,23 @@ export default {
     comments () {
       return this.stream.comments
     },
-    streamUserHue () {
-      return GetUserHue(this.stream.user.username)
-    },
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
     author () {
       return this.stream.user || null
+    },
+    authorDisplayUsername () {
+      if (!this.stream.user) {
+        return null
+      } else if (this.author.accountStatus !== this.activeUserAccountStatus) {
+        return this.author.id
+      } else {
+        return this.author.username
+      }
+    },
+    authorColor () {
+      return GetHexColorOfString(this.stream.user.username)
     },
     // visibilty deciders
     isVisitingOwnStream () {
@@ -298,9 +314,10 @@ export default {
   },
   watch: {
     '$route.params.id' (streamId) {
+      this.setIsPageReady(false)
       this.getInitialInfo(this.$route.params.id)
         .then(() => {
-          this.pageReady = true
+          this.setIsPageReady(true)
         })
     },
     'streamChange.body' (val) {
@@ -320,9 +337,10 @@ export default {
     }
   },
   created () {
+    this.setIsPageReady(false)
     this.getInitialInfo(this.$route.params.id)
       .then(() => {
-        this.pageReady = true
+        this.setIsPageReady(true)
       })
   },
   beforeDestroy () {
@@ -339,7 +357,8 @@ export default {
       setStreamLikes: 'stream/setStreamLikes',
       setPaginatedStreamComments: 'stream/setPaginatedStreamComments',
       setFlag: 'flag/setFlag',
-      setRetractFlag: 'flag/setRetractFlag'
+      setRetractFlag: 'flag/setRetractFlag',
+      setIsPageReady: 'setIsPageReady'
     }),
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError',
@@ -362,8 +381,8 @@ export default {
         this.setPaginatedStreamComments(paginatedCommentsGraphqlResult.data.listPaginatedStreamComments)
 
         // set profile pic
-        this.streamUserProfilePictureObjectUrl = this.stream.user.profilePictureKey != null
-          ? await Storage.get(this.authenticatedUser && this.stream.user.profilePictureKey, { level: 'protected' })
+        this.streamUserProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
+          ? await Storage.get(this.author.profilePictureKey, { level: 'protected' })
           : null
 
         // Subscribe to stream itself for live content changes
@@ -439,8 +458,9 @@ export default {
         this.isLikeLoading = false
       }
     },
-    onAuthorProfileClick () {
-      this.$router.push({ name: 'profile', params: { username: this.stream.user.username } })
+    onToAuthorProfileClick () {
+      if (!this.author) return
+      this.$router.push({ name: 'profile', params: { username: this.author.username } })
     },
     onCommentTextAreaToggleShowClick () {
       this.comment = ''

@@ -27,12 +27,12 @@
         <v-spacer></v-spacer>
         <v-btn
           color="blue darken-1"
-          flat
+          text
           @click.native="setIsLanguageChooseDialogVisible(false)"
         >{{ $t('common.options.closeButtonText') }}</v-btn>
         <v-btn
           color="blue darken-1"
-          flat
+          text
           @click.native="onSaveLanguageEditClick"
         >{{ $t('common.options.saveButtonText') }}</v-btn>
       </v-card-actions>
