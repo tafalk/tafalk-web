@@ -2,159 +2,161 @@
 <v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
   <tafalk-page-loading-progress v-if="!getIsPageReady" />
-  <!-- Not allowed -->
-  <v-layout v-else-if="!isStreamAllowed">
-    <v-flex xs12>
-      <tafalk-not-allowed-stream></tafalk-not-allowed-stream>
-    </v-flex>
-  </v-layout>
   <!-- regular content -->
   <v-layout row wrap v-else>
-    <v-flex xs12 sm10 offset-sm1>
-      <!-- Stream Author Chip -->
-      <v-chip @click.stop="onToAuthorProfileClick" small pill>
-        <v-avatar left>
-          <!-- Author is not active -->
-          <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
-          <!-- Author active but no prifile picture set -->
-          <v-img
-            v-else-if="!authorProfilePictureObjectUrl"
-            :src="require('@/assets/default-user-avatar.webp')"
-            alt="Virgina Woolf in Hue"
-            :style="{backgroundColor: authorColor}"
-          ></v-img>
-          <!-- Author active and has profile pic -->
-          <v-img
-            v-else
-            :src="authorProfilePictureObjectUrl"
-          ></v-img>
-        </v-avatar>
-        {{ authorDisplayUsername }}
-      </v-chip>
-    </v-flex>
-    <v-flex xs12 sm10 offset-sm1>
-      <!-- Stream metadata -->
-      <span v-if="!isSealed" class="red--text caption">
-        <v-icon color="red">mdi-play</v-icon>
-        {{ $t('stream.metadata.liveLabel') }}
-      </span>
-      <span v-else class="grey--text caption">
-        {{ $t('stream.metadata.sealedLabel') }}: {{ timeFromSealedToNow }} in {{ timeSpentForStream }}
-      </span>
-    </v-flex>
-    <v-flex xs12 sm10 offset-sm1>
-      {{ stream.body }}
-    </v-flex>
-    <v-flex xs12 sm10 offset-sm1>
-      <!-- Add-comment sliding box -->
-      <v-slide-y-transition>
-        <v-card flat v-show="showCommentBox">
-          <v-card-text>
-            <v-textarea
-              filled
-              :label="$t('stream.comments.addNewTextareaLabel')"
-              v-model="comment"
-              :min="minCommentLength"
-              :max="maxCommentLength"
-              :maxlength="maxCommentLength"
-            ></v-textarea>
-          </v-card-text>
-          <v-card-actions>
+    <v-flex xs12 infinite-wrapper>
+      <div v-if="isStreamAllowed">
+        <v-card flat>
+          <v-toolbar dense flat>
+            <v-toolbar-title flat>
+              <span class="grey--text headline">{{ stream.title }}</span>
+            </v-toolbar-title>
             <v-spacer />
-            <v-btn text
+            <!-- Stream Author Chip -->
+            <v-chip @click.stop="onToAuthorProfileClick" small pill>
+              <v-avatar left>
+                <!-- Author is not active -->
+                <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
+                <!-- Author active but no prifile picture set -->
+                <v-img
+                  v-else-if="!authorProfilePictureObjectUrl"
+                  :src="require('@/assets/default-user-avatar.webp')"
+                  alt="Virgina Woolf in Hue"
+                  :style="{backgroundColor: authorColor}"
+                ></v-img>
+                <!-- Author active and has profile pic -->
+                <v-img
+                  v-else
+                  :src="authorProfilePictureObjectUrl"
+                ></v-img>
+              </v-avatar>
+              {{ authorDisplayUsername }}
+            </v-chip>
+          </v-toolbar>
+          <v-card-text>{{ stream.body }}</v-card-text>
+          <v-divider />
+          <v-card-actions>
+            <!-- Stream metadata -->
+            <span v-if="!isSealed" class="red--text caption">
+              <v-icon color="red">mdi-play</v-icon>
+              {{ $t('stream.metadata.liveLabel') }}
+            </span>
+            <span v-else class="grey--text caption">
+              {{ $t('stream.metadata.sealedLabel') }}: {{ timeFromSealedToNow }} in {{ timeSpentForStream }}
+            </span>
+            <v-spacer />
+            <!-- Share -->
+            <v-btn
+              text
+              icon
+              small
+              :color="shareButtonColor"
+              @click="onShowShareStreamLinkDialog"
+            >
+              <v-icon>mdi-share-variant</v-icon>
+            </v-btn>
+            &nbsp;
+            <!-- Bookmark -->
+            <v-btn
+              v-if="isSealed && !authenticatedUserLikeId"
+              text
+              icon
+              small
+              :color="bookmarkButtonColor"
+              :loading="isLikeLoading"
+              :disabled="isLikeLoading"
+              @click="onLikeClick"
+            >
+                <v-icon>mdi-bookmark-outline</v-icon>&nbsp;{{ likeCount }}
+            </v-btn>
+            <v-btn
+              v-if="isSealed && authenticatedUserLikeId"
+              text
+              icon
+              small
+              :color="bookmarkButtonColor"
+              :loading="isLikeLoading"
+              :disabled="isLikeLoading"
+              @click="onRemoveLikeClick"
+            >
+                <v-icon>mdi-bookmark</v-icon>&nbsp;{{ likeCount }}
+            </v-btn>
+            &nbsp;
+            <!-- Comment -->
+            <v-btn
+              v-if="isSealed"
+              text
+              icon
+              small
+              :color="commentButtonColor"
               @click="onCommentTextAreaToggleShowClick"
-            >{{ $t('common.options.cancelButtonText') }}</v-btn>
-            <v-btn text
-              :loading="isCommentLoading"
-              :disabled="!isCommentLengthValid || isCommentLoading"
-              @click="onCommentSaveClick"
-            >{{ $t('common.options.postButtonText') }}</v-btn>
+            >
+              <v-icon>mdi-comment</v-icon>
+            </v-btn>
+            &nbsp;
+            <!-- Flag -->
+            <v-btn
+              v-if="isSealed && authenticatedUser != null && !isVisitingOwnStream && !authenticatedUserFlagId"
+              text
+              icon
+              small
+              :color="flagButtonColor"
+              @click.stop="onFlagDialogShowClick"
+            >
+              <v-icon>mdi-flag-variant-outline</v-icon>
+            </v-btn>
+            <v-btn
+              v-else-if="authenticatedUserFlagId"
+              text
+              icon
+              small
+              :color="flagButtonColor"
+              @click.stop="onRetractFlagDialogShowClick"
+            >
+              <v-icon>mdi-flag-variant</v-icon>
+            </v-btn>
           </v-card-actions>
+          <!-- Add-comment sliding box -->
+          <v-slide-y-transition>
+            <v-card flat v-show="showCommentBox">
+              <v-card-text>
+                <v-textarea
+                  filled
+                  :label="$t('stream.comments.addNewTextareaLabel')"
+                  v-model="comment"
+                  :min="minCommentLength"
+                  :max="maxCommentLength"
+                  :maxlength="maxCommentLength"
+                ></v-textarea>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text
+                  @click="onCommentTextAreaToggleShowClick"
+                >{{ $t('common.options.cancelButtonText') }}</v-btn>
+                <v-btn text
+                  :loading="isCommentLoading"
+                  :disabled="!isCommentLengthValid || isCommentLoading"
+                  @click="onCommentSaveClick"
+                >{{ $t('common.options.postButtonText') }}</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-slide-y-transition>
         </v-card>
-      </v-slide-y-transition>
+        <br />
+        <!-- Existing comments -->
+        <tafalk-stream-comment-list></tafalk-stream-comment-list>
+        <!-- Share stream link dialog -->
+        <tafalk-share-stream-link-dialog></tafalk-share-stream-link-dialog>
+        <!-- Flag stream dialog -->
+        <tafalk-flag-dialog
+        ></tafalk-flag-dialog>
+        <!-- Retract flag stream dialog -->
+        <tafalk-retract-flag-confirmation-dialog
+        ></tafalk-retract-flag-confirmation-dialog>
+      </div>
+      <tafalk-not-allowed-stream v-else></tafalk-not-allowed-stream>
     </v-flex>
-    <v-flex xs12 sm10 offset-sm1>
-      <!-- Existing comments -->
-      <tafalk-stream-comment-list></tafalk-stream-comment-list>
-    </v-flex>
-
-    <!-- Share stream link dialog -->
-    <tafalk-share-stream-link-dialog></tafalk-share-stream-link-dialog>
-    <!-- Flag stream dialog -->
-    <tafalk-flag-dialog
-    ></tafalk-flag-dialog>
-    <!-- Retract flag stream dialog -->
-    <tafalk-retract-flag-confirmation-dialog
-    ></tafalk-retract-flag-confirmation-dialog>
-  </v-layout>
-
-  <!-- Interaction Fabs (SmAndUp?) -->
-  <v-layout column class="fab-container">
-    <!-- Share -->
-    <v-btn
-      fab
-      small
-      :color="shareButtonColor"
-      @click="onShowShareStreamLinkDialog"
-    >
-      <v-icon>mdi-share-variant</v-icon>
-    </v-btn>
-    &nbsp;
-    <!-- Bookmark -->
-    <v-btn
-      v-if="isSealed && !authenticatedUserLikeId"
-      fab
-      small
-      :color="bookmarkButtonColor"
-      :loading="isLikeLoading"
-      :disabled="isLikeLoading"
-      @click="onLikeClick"
-    >
-        <v-icon>mdi-bookmark-outline</v-icon>
-    </v-btn>
-    <v-btn
-      v-if="isSealed && authenticatedUserLikeId"
-      text
-      icon
-      small
-      :color="bookmarkButtonColor"
-      :loading="isLikeLoading"
-      :disabled="isLikeLoading"
-      @click="onRemoveLikeClick"
-    >
-        <v-icon>mdi-bookmark</v-icon>
-    </v-btn>
-    &nbsp;
-    <!-- Comment -->
-    <v-btn
-      v-if="isSealed"
-      fab
-      small
-      :color="commentButtonColor"
-      @click="onCommentTextAreaToggleShowClick"
-    >
-      <v-icon>mdi-comment</v-icon>
-    </v-btn>
-    &nbsp;
-    <!-- Flag -->
-    <v-btn
-      v-if="isSealed && authenticatedUser != null && !isVisitingOwnStream && !authenticatedUserFlagId"
-      fab
-      small
-      :color="flagButtonColor"
-      @click.stop="onFlagDialogShowClick"
-    >
-      <v-icon>mdi-flag-variant-outline</v-icon>
-    </v-btn>
-    <v-btn
-      v-else-if="authenticatedUserFlagId"
-      fab
-      small
-      :color="flagButtonColor"
-      @click.stop="onRetractFlagDialogShowClick"
-    >
-      <v-icon>mdi-flag-variant</v-icon>
-    </v-btn>
   </v-layout>
 </v-container>
 </template>
@@ -515,10 +517,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-  .fab-container {
-    position: fixed;
-    bottom: 0px;
-    right: 30px;
-  }
-</style>
