@@ -12,8 +12,10 @@
   <v-layout row wrap v-else>
     <v-flex xs12 sm10 offset-sm1>
       <!-- Stream Author Chip -->
-      <v-chip @click.stop="onToAuthorProfileClick" small pill>
-        <v-avatar left>
+        <v-avatar
+          @click.stop="onToAuthorProfileClick"
+          :style="{ 'cursor': 'pointer' }"
+        >
           <!-- Author is not active -->
           <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
           <!-- Author active but no prifile picture set -->
@@ -29,17 +31,28 @@
             :src="authorProfilePictureObjectUrl"
           ></v-img>
         </v-avatar>
-        {{ authorDisplayUsername }}
-      </v-chip>
+        &nbsp;
+        <!-- User name -->
+        <span class="headline grey--text">{{ authorDisplayUsername }}</span>
     </v-flex>
     <v-flex xs12 sm10 offset-sm1>
-      <!-- Stream metadata -->
+      <!-- Stream time meta -->
       <span v-if="!isSealed" class="red--text caption">
         <v-icon color="red">mdi-play</v-icon>
         {{ $t('stream.metadata.liveLabel') }}
       </span>
       <span v-else class="grey--text caption">
         {{ $t('stream.metadata.sealedLabel') }}: {{ timeFromSealedToNow }} in {{ timeSpentForStream }}
+      </span>
+      <!-- Stream likes -->
+      <span class="grey--text caption" v-if="likeCount > 0">,&nbsp;</span>
+      <span class="grey--text caption" v-if="likeCount > 0">
+        <v-icon class="grey--text caption">mdi-bookmark</v-icon>{{ likeCount }}
+      </span>
+      <!-- Stream comments -->
+      <span class="grey--text caption" v-if="commentCount > 0">,&nbsp;</span>
+      <span class="grey--text caption" v-if="commentCount > 0">
+        <v-icon class="grey--text caption">mdi-bookmark</v-icon>{{ commentCount }}
       </span>
     </v-flex>
     <v-flex xs12 sm10 offset-sm1>
@@ -51,11 +64,13 @@
         <v-card flat v-show="showCommentBox">
           <v-card-text>
             <v-textarea
+              ref="newcommentbox"
               filled
               :label="$t('stream.comments.addNewTextareaLabel')"
               v-model="comment"
               :min="minCommentLength"
               :max="maxCommentLength"
+              :counter="maxCommentLength"
               :maxlength="maxCommentLength"
             ></v-textarea>
           </v-card-text>
@@ -73,8 +88,8 @@
         </v-card>
       </v-slide-y-transition>
     </v-flex>
-    <v-flex xs12 sm10 offset-sm1>
-      <!-- Existing comments -->
+    <!-- Comment List -->
+    <v-flex xs12 sm10 offset-sm1 ref="newcommentbox">
       <tafalk-stream-comment-list></tafalk-stream-comment-list>
     </v-flex>
 
@@ -93,6 +108,7 @@
     <!-- Share -->
     <v-btn
       fab
+      outlined
       small
       :color="shareButtonColor"
       @click="onShowShareStreamLinkDialog"
@@ -104,6 +120,7 @@
     <v-btn
       v-if="isSealed && !authenticatedUserLikeId"
       fab
+      outlined
       small
       :color="bookmarkButtonColor"
       :loading="isLikeLoading"
@@ -114,8 +131,8 @@
     </v-btn>
     <v-btn
       v-if="isSealed && authenticatedUserLikeId"
-      text
-      icon
+      fab
+      outlined
       small
       :color="bookmarkButtonColor"
       :loading="isLikeLoading"
@@ -128,6 +145,7 @@
     <!-- Comment -->
     <v-btn
       v-if="isSealed"
+      outlined
       fab
       small
       :color="commentButtonColor"
@@ -139,6 +157,7 @@
     <!-- Flag -->
     <v-btn
       v-if="isSealed && authenticatedUser != null && !isVisitingOwnStream && !authenticatedUserFlagId"
+      outlined
       fab
       small
       :color="flagButtonColor"
@@ -292,7 +311,7 @@ export default {
       return this.comment && this.comment.length >= this.minCommentLength && this.comment.length <= this.maxCommentLength
     },
     isSealed () {
-      return this.stream.isSealed
+      return (this.stream || {}).isSealed
     },
     timeFromSealedToNow () {
       if (!this.isSealed) {
@@ -307,7 +326,7 @@ export default {
       return GetElapsedTimeBetween(this.stream.startTime, this.stream.sealTime)
     },
     authenticatedUserFlagId () {
-      return (((this.stream.flags || []).find(item => item.userId === this.authenticatedUser.id) || {})).id
+      return ((((this.stream || {}).flags || []).find(item => item.userId === this.authenticatedUser.id) || {})).id
     }
   },
   watch: {
@@ -379,7 +398,7 @@ export default {
         this.setPaginatedStreamComments(paginatedCommentsGraphqlResult.data.listPaginatedStreamComments)
 
         // set profile pic
-        this.streamUserProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
+        this.authorProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
           ? await Storage.get(this.author.profilePictureKey, { level: 'protected' })
           : null
 
@@ -468,6 +487,9 @@ export default {
         this.commentButtonColor = 'orange'
       }
       this.showCommentBox = !this.showCommentBox
+
+      this.$refs.newcommentbox.focus() // TODO: This does not work
+      this.$vuetify.goTo(this.$refs.newcommentbox)
     },
     onFlagDialogShowClick () {
       this.setFlag({

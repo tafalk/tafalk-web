@@ -51,7 +51,7 @@
 
     <!-- Card Bottom -->
     <v-card-actions class="pa-2 grey--text">
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp"/>
+      <v-spacer v-if="$vuetify.breakpoint.smAndUp"/>
       <span v-if="isSealed" class="pa-2 grey--text caption">
         <v-icon class="grey--text caption">mdi-seat-flat</v-icon>{{ timeFromSealedToNow }}
       </span>
@@ -71,7 +71,7 @@
       <span class="pa-2 grey--text caption">
         <v-icon class="grey--text caption">mdi-comment</v-icon>&nbsp;{{ commentCount }}
       </span>
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp"/>
+      <v-spacer v-if="$vuetify.breakpoint.smAndUp"/>
     </v-card-actions>
   </v-card>
 

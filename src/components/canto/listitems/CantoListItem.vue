@@ -47,7 +47,7 @@
 
     <!-- Card Bottom -->
     <v-card-actions class="pa-2 grey--text">
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp"/>
+      <v-spacer v-if="$vuetify.breakpoint.smAndUp"/>
       <span class="pa-2 grey--text caption">
         <v-icon class="grey--text caption">mdi-timer</v-icon>&nbsp;{{ timeSpentForCanto }}
       </span>
@@ -55,7 +55,7 @@
       <span v-if="showUserInteractionData" class="pa-2 grey--text caption">
         <v-icon class="grey--text caption">mdi-bookmark</v-icon>&nbsp;{{ bookmarkCount }}
       </span>
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp && showUserInteractionData"/>
+      <v-spacer v-if="$vuetify.breakpoint.smAndUp && showUserInteractionData"/>
     </v-card-actions>
   </v-card>
 
