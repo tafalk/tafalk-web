@@ -275,19 +275,19 @@ export default {
     },
     async onSealedStreamsClick () {
       this.clearSearchComponents()
-      this.clearAll()
+      await this.clearAll()
       this.$router.push({ name: 'content', query: { type: this.sealedValue } })
       this.setMenuDrawer(false)
     },
     async onLiveStreamsClick () {
       this.clearSearchComponents()
-      this.clearAll()
+      await this.clearAll()
       this.$router.push({ name: 'content', query: { type: this.liveNowValue } })
       this.setMenuDrawer(false)
     },
     async onCantosClick () {
       this.clearSearchComponents()
-      this.clearAll()
+      await this.clearAll()
       this.$router.push({ name: 'content', query: { type: this.cantoValue } })
       this.setMenuDrawer(false)
     },

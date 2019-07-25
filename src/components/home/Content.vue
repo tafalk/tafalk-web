@@ -222,8 +222,10 @@ export default {
     async '$route.query.type' (val) {
       await this.fetchInitial(val)
     },
-    footerEl (val, oldVal) {
-      if (val == null || val === '' || val === oldVal) this.clearAll()
+    async footerEl (val, oldVal) {
+      if (val == null || val === '' || val === oldVal) {
+        await this.clearAll()
+      }
 
       // Clear search text if changed
       if (val !== oldVal) this.clearSearchText()
