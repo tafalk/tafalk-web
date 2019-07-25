@@ -44,7 +44,7 @@
 
     <!-- Card Body -->
     <v-card-text class="text-truncate">
-      <span v-if="hasTitle">{{stream.title}}</span>
+      <span v-if="hasTitle" class="text--primary">{{stream.title}}</span>
       <span v-if="hasTitle">&mdash;</span>
       {{ stream.body }}
     </v-card-text>
@@ -121,7 +121,7 @@
       </v-list-item-subtitle>
       <!-- Line 2 -->
       <v-list-item-title>
-        <span v-if="hasTitle">{{stream.title}}</span>
+        <span v-if="hasTitle" class="text--primary">{{stream.title}}</span>
         <span v-if="hasTitle">&mdash;</span>
         <span class="grey--text">{{stream.body}}</span>
       </v-list-item-title>

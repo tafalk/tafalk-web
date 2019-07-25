@@ -1,8 +1,17 @@
 <template>
 <v-list-item>
   <v-list-item-content>
-    <v-list-item-subtitle class="text--primary">{{ comment.content }}</v-list-item-subtitle>
-    <v-list-item-subtitle><a href="javascript:;" @click.stop="onToCommenterProfileClick(comment.user.username)">@{{ comment.user.username }}</a></v-list-item-subtitle>
+    <v-list-item-subtitle>
+      <!-- Comment body -->
+      <v-list-item-subtitle class="text--primary"><a href="javascript:;" @click.stop="onToCommenterProfileClick(comment.user.username)">@{{ comment.user.username }}</a> &mdash; {{ comment.content }}</v-list-item-subtitle>
+      <!-- timestamp -->
+      <v-tooltip right>
+        <template v-slot:activator="{ on }">
+          <v-list-item-action-text v-html="getTimePassed(comment.time)" v-on="on"></v-list-item-action-text>
+        </template>
+        <span class="caption">{{ comment.time }}</span>
+      </v-tooltip>
+    </v-list-item-subtitle>
   </v-list-item-content>
   <v-list-item-action>
     <!-- Flag -->
@@ -26,13 +35,6 @@
     >
       <v-icon>mdi-flag</v-icon>
     </v-btn>
-    <!-- timestamp -->
-    <v-tooltip right>
-      <template v-slot:activator="{ on }">
-        <v-list-item-action-text v-html="getTimePassed(comment.time)" v-on="on"></v-list-item-action-text>
-      </template>
-      <span>{{ comment.time }}</span>
-    </v-tooltip>
   </v-list-item-action>
   <!-- Flag comment dialog -->
   <!--

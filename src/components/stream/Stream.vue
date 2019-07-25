@@ -12,47 +12,50 @@
   <v-layout row wrap v-else>
     <v-flex xs12 sm10 offset-sm1>
       <!-- Stream Author Chip -->
-        <v-avatar
-          @click.stop="onToAuthorProfileClick"
-          :style="{ 'cursor': 'pointer' }"
-        >
-          <!-- Author is not active -->
-          <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
-          <!-- Author active but no prifile picture set -->
-          <v-img
-            v-else-if="!authorProfilePictureObjectUrl"
-            :src="require('@/assets/default-user-avatar.webp')"
-            alt="Virgina Woolf in Hue"
-            :style="{backgroundColor: authorColor}"
-          ></v-img>
-          <!-- Author active and has profile pic -->
-          <v-img
-            v-else
-            :src="authorProfilePictureObjectUrl"
-          ></v-img>
-        </v-avatar>
-        &nbsp;
-        <!-- User name -->
-        <span class="headline grey--text">{{ authorDisplayUsername }}</span>
+      <v-avatar
+        @click.stop="onToAuthorProfileClick"
+        :style="{ 'cursor': 'pointer' }"
+      >
+        <!-- Author is not active -->
+        <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
+        <!-- Author active but no profile picture set -->
+        <v-img
+          v-else-if="!authenticatedUser || !authorProfilePictureObjectUrl"
+          :src="require('@/assets/default-user-avatar.webp')"
+          alt="Virgina Woolf in Hue"
+          :style="{backgroundColor: authorColor}"
+        ></v-img>
+        <!-- Author active and has profile pic -->
+        <v-img
+          v-else
+          :src="authorProfilePictureObjectUrl"
+        ></v-img>
+      </v-avatar>
+      &nbsp;
+      <!-- User name -->
+      <span class="headline grey--text">{{ authorDisplayUsername }}</span>
     </v-flex>
     <v-flex xs12 sm10 offset-sm1>
+      <!-- Title -->
+      <span v-if="hasTitle" class="text--primary body-2">{{stream.title}}</span>
+      <span v-if="hasTitle" class="body-2">&emsp;</span>
       <!-- Stream time meta -->
-      <span v-if="!isSealed" class="red--text caption">
+      <span v-if="!isSealed" class="red--text body-2">
         <v-icon color="red">mdi-play</v-icon>
         {{ $t('stream.metadata.liveLabel') }}
       </span>
-      <span v-else class="grey--text caption">
+      <span v-else class="grey--text body-2">
         {{ $t('stream.metadata.sealedLabel') }}: {{ timeFromSealedToNow }} in {{ timeSpentForStream }}
       </span>
       <!-- Stream likes -->
-      <span class="grey--text caption" v-if="likeCount > 0">,&nbsp;</span>
-      <span class="grey--text caption" v-if="likeCount > 0">
-        <v-icon class="grey--text caption">mdi-bookmark</v-icon>{{ likeCount }}
+      <span class="grey--text body-2" v-if="likeCount > 0">,&nbsp;</span>
+      <span class="grey--text body-2" v-if="likeCount > 0">
+        <v-icon class="grey--text body-2">mdi-bookmark</v-icon>{{ likeCount }}
       </span>
       <!-- Stream comments -->
-      <span class="grey--text caption" v-if="commentCount > 0">,&nbsp;</span>
-      <span class="grey--text caption" v-if="commentCount > 0">
-        <v-icon class="grey--text caption">mdi-bookmark</v-icon>{{ commentCount }}
+      <span class="grey--text body-2" v-if="commentCount > 0">,&nbsp;</span>
+      <span class="grey--text body-2" v-if="commentCount > 0">
+        <v-icon class="grey--text body-2">mdi-comment</v-icon>{{ commentCount }}
       </span>
     </v-flex>
     <v-flex xs12 sm10 offset-sm1>
@@ -76,14 +79,21 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn text
+            <v-btn
+              text
               @click="onCommentTextAreaToggleShowClick"
-            >{{ $t('common.options.cancelButtonText') }}</v-btn>
-            <v-btn text
+            >
+              {{ $t('common.options.cancelButtonText') }}
+            </v-btn>
+            <v-btn
+              text
+              color="primary"
               :loading="isCommentLoading"
               :disabled="!isCommentLengthValid || isCommentLoading"
               @click="onCommentSaveClick"
-            >{{ $t('common.options.postButtonText') }}</v-btn>
+            >
+              {{ $t('common.options.postButtonText') }}
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-slide-y-transition>
@@ -96,14 +106,12 @@
     <!-- Share stream link dialog -->
     <tafalk-share-stream-link-dialog></tafalk-share-stream-link-dialog>
     <!-- Flag stream dialog -->
-    <tafalk-flag-dialog
-    ></tafalk-flag-dialog>
+    <tafalk-flag-dialog></tafalk-flag-dialog>
     <!-- Retract flag stream dialog -->
-    <tafalk-retract-flag-confirmation-dialog
-    ></tafalk-retract-flag-confirmation-dialog>
+    <tafalk-retract-flag-confirmation-dialog></tafalk-retract-flag-confirmation-dialog>
   </v-layout>
 
-  <!-- Interaction Fabs (SmAndUp?) -->
+  <!-- Interaction Fabs (TODO: SmAndUp?) -->
   <v-layout column class="fab-container">
     <!-- Share -->
     <v-btn
@@ -241,6 +249,9 @@ export default {
     }),
     stream () {
       return this.getStream
+    },
+    hasTitle () {
+      return this.stream.title && this.stream.title.trim !== ''
     },
     likes () {
       return this.stream.likes
@@ -537,6 +548,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
   .fab-container {
     position: fixed;

@@ -37,8 +37,8 @@
             v-else
             :src="authorProfilePictureObjectUrl"
           ></v-img>
-          {{ authorDisplayUsername }}
         </v-avatar>
+        {{ authorDisplayUsername }}
       </v-chip>
     </v-card-title>
 
@@ -152,6 +152,15 @@ export default {
     author () {
       if (!this.canto) return null
       return (this.canto.user && this.canto.user.accountStatus === this.activeUserAccountStatus) ? this.canto.user : null
+    },
+    authorDisplayUsername () {
+      if (!this.canto.user) {
+        return null
+      } else if (this.author.accountStatus !== this.activeUserAccountStatus) {
+        return this.author.id
+      } else {
+        return this.author.username
+      }
     },
     body () {
       if (!this.canto) return null

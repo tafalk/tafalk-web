@@ -29,7 +29,7 @@
     </v-list-item-group>
   </v-tab-item>
 
-  <!-- Streams -->
+  <!-- Own Streams -->
   <v-tab-item :value="streamsTabName">
     <v-list>
       <v-list-item-group>
@@ -53,7 +53,7 @@
       @infinite="infiniteStreamTabHandler"
     ></infinite-loading>
   </v-tab-item>
-
+  <!-- Bookmarked Streams -->
   <v-tab-item :value="bookmarkedStreamsTabName">
     <v-list>
       <v-list-item-group>
@@ -77,7 +77,7 @@
       @infinite="infiniteBookmarkedStreamTabHandler"
     ></infinite-loading>
   </v-tab-item>
-
+  <!-- Fave Others -->
   <v-tab-item :value="likedUsersTabName">
     <v-list>
       <v-list-item-group>

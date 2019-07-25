@@ -22,9 +22,11 @@
           <v-textarea
             v-model="bioModel"
             :rules="bioRules"
-            :counter="1000"
-            max="1000"
-            maxlength="1000"
+            :counter="40"
+            max="40"
+            maxlength="40"
+            no-resize
+            rows="1"
             :placeholder="$t('user.edit.info.dialog.bioPlaceholder')"
           >
             <div slot="label">{{ $t('user.edit.info.dialog.bioLabel') }} <small>{{ $t('common.label.optionalPares') }}</small></div>
