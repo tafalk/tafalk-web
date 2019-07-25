@@ -2,7 +2,6 @@
   <v-snackbar
     v-model="isSiteNotificationVisible"
     :color="siteNotificationType"
-    auto-height
     :timeout="siteNotificationTimeout"
   >
   {{ siteNotificationText }}

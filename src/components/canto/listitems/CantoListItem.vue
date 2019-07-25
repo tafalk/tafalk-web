@@ -37,8 +37,8 @@
             v-else
             :src="authorProfilePictureObjectUrl"
           ></v-img>
-          {{ authorDisplayUsername }}
         </v-avatar>
+        {{ authorDisplayUsername }}
       </v-chip>
     </v-card-title>
 
@@ -47,7 +47,7 @@
 
     <!-- Card Bottom -->
     <v-card-actions class="pa-2 grey--text">
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp"/>
+      <v-spacer v-if="$vuetify.breakpoint.smAndUp"/>
       <span class="pa-2 grey--text caption">
         <v-icon class="grey--text caption">mdi-timer</v-icon>&nbsp;{{ timeSpentForCanto }}
       </span>
@@ -55,7 +55,7 @@
       <span v-if="showUserInteractionData" class="pa-2 grey--text caption">
         <v-icon class="grey--text caption">mdi-bookmark</v-icon>&nbsp;{{ bookmarkCount }}
       </span>
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp && showUserInteractionData"/>
+      <v-spacer v-if="$vuetify.breakpoint.smAndUp && showUserInteractionData"/>
     </v-card-actions>
   </v-card>
 
@@ -152,6 +152,15 @@ export default {
     author () {
       if (!this.canto) return null
       return (this.canto.user && this.canto.user.accountStatus === this.activeUserAccountStatus) ? this.canto.user : null
+    },
+    authorDisplayUsername () {
+      if (!this.canto.user) {
+        return null
+      } else if (this.author.accountStatus !== this.activeUserAccountStatus) {
+        return this.author.id
+      } else {
+        return this.author.username
+      }
     },
     body () {
       if (!this.canto) return null

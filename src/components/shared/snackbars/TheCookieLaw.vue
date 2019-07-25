@@ -2,7 +2,6 @@
   <v-snackbar
     v-model="isCookieLawVisible"
     color="info"
-    auto-height
     :timeout="timeout"
     :multi-line="$vuetify.breakpoint.xsOnly"
   >

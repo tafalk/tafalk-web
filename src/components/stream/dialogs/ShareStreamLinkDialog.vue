@@ -12,14 +12,15 @@
           label="Link"
           type="text"
         >
-          <v-tooltip
-            slot="append-outer"
-            right
-          >
-            <v-icon
-              slot="activator"
-              @click="onCopyLinkClick"
-            >mdi-content-copy</v-icon>
+          <v-tooltip slot="append-outer" right>
+            <template v-slot:activator="{ on }">
+              <v-icon
+                v-on="on"
+                @click="onCopyLinkClick"
+              >
+                mdi-content-copy
+              </v-icon>
+            </template>
             {{ tooltipText }}
           </v-tooltip>
         </v-text-field>

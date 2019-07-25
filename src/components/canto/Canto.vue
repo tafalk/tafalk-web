@@ -2,113 +2,121 @@
 <v-container fluid grid-list-lg pa-5>
   <!-- full page loader -->
   <tafalk-page-loading-progress v-if="!getIsPageReady" />
+  <!-- Not allowed -->
+  <v-layout v-else-if="!isCantoAllowed">
+    <v-flex xs12>
+      <tafalk-not-allowed-canto></tafalk-not-allowed-canto>
+    </v-flex>
+  </v-layout>
   <!-- regular content -->
   <v-layout row wrap v-else>
-    <v-flex xs12 sm12 offset-md2 md8>
-      <div v-if="isCantoAllowed">
-        <v-card text>
-          <v-toolbar dense flat>
-            <!-- Title -->
-            <v-toolbar-title flat>
-              <span class="grey--text headline">{{ $t('canto.metadata.title') }}</span>
-            </v-toolbar-title>
-            <v-spacer />
-            <!-- User avatar -->
-            <v-chip @click="onAuthorProfileClick" small pill>
-              <v-avatar left v-if="authenticatedUser && cantoUserProfilePictureObjectUrl != null">
-                <v-img :src="cantoUserProfilePictureObjectUrl" />
-              </v-avatar>
-              <v-avatar left v-else>
-                <v-img
-                  :src="require('@/assets/default-user-avatar.webp')"
-                  alt="Virgina Woolf in Hue"
-                  :style="{backgroundColor: cantoUserColor}"
-                />
-              </v-avatar> {{canto.user.username}}
-            </v-chip>
-          </v-toolbar>
-          <!-- Body -->
-          <v-card-text>{{ canto.body }}</v-card-text>
-          <v-divider />
-          <!-- Acions -->
-          <v-card-actions>
-            <!-- Canto metadata -->
-            <span class="grey--text caption">
-              {{ $t('canto.metadata.timeInfoLabel', { created: timeFromCreatedToNow, lastUpdated: timeFromLastUpdatedToNow }) }}
-            </span>
-            <v-spacer />
-            <!-- Share -->
-            <v-btn
-              text
-              icon
-              small
-              :color="shareButtonColor"
-              @click="onShowShareCantoLinkDialog"
-            >
-              <v-icon>mdi-share-variant</v-icon>
-            </v-btn>
-            &nbsp;
-            <!-- Bookmark -->
-            <v-btn
-              v-if="!authenticatedUserLikeId"
-              text
-              icon
-              small
-              :color="bookmarkButtonColor"
-              :loading="isLikeLoading"
-              :disabled="isLikeLoading"
-              @click="onLikeClick"
-            >
-                <v-icon>mdi-bookmark-outline</v-icon>&nbsp;{{ likeCount }}
-            </v-btn>
-            <v-btn
-              v-if="authenticatedUserLikeId"
-              text
-              icon
-              small
-              :color="bookmarkButtonColor"
-              :loading="isLikeLoading"
-              :disabled="isLikeLoading"
-              @click="onRemoveLikeClick"
-            >
-                <v-icon>mdi-bookmark</v-icon>&nbsp;{{ likeCount }}
-            </v-btn>
-            &nbsp;
-            <!-- Flag -->
-            <v-btn
-              v-if="authenticatedUser != null && !isVisitingOwnCanto && !authenticatedUserFlagId"
-              text
-              icon
-              small
-              :color="flagButtonColor"
-              @click.stop="onFlagDialogShowClick"
-            >
-              <v-icon>mdi-flag-variant-outline</v-icon>
-            </v-btn>
-            <v-btn
-              v-else-if="authenticatedUserFlagId"
-              text
-              icon
-              small
-              :color="flagButtonColor"
-              @click.stop="onRetractFlagDialogShowClick"
-            >
-              <v-icon>mdi-flag-variant</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-        <br />
-        <!-- Share canto link dialog -->
-        <tafalk-share-canto-link-dialog></tafalk-share-canto-link-dialog>
-        <!-- Flag canto dialog -->
-        <tafalk-flag-dialog
-        ></tafalk-flag-dialog>
-        <!-- Retract flag canto dialog -->
-        <tafalk-retract-flag-confirmation-dialog
-        ></tafalk-retract-flag-confirmation-dialog>
-      </div>
-      <tafalk-not-allowed-canto v-else></tafalk-not-allowed-canto>
+    <v-flex xs12 sm10 offset-sm1>
+      <!-- Stream Author Chip -->
+      <v-avatar
+        @click.stop="onToAuthorProfileClick"
+        :style="{ 'cursor': 'pointer' }"
+      >
+        <!-- Author active but no profile picture set -->
+        <v-img
+          v-if="!authenticatedUser || !authorProfilePictureObjectUrl"
+          :src="require('@/assets/default-user-avatar.webp')"
+          alt="Virgina Woolf in Hue"
+          :style="{backgroundColor: authorColor}"
+        ></v-img>
+        <!-- Author has profile pic -->
+        <v-img
+          v-else
+          :src="authorProfilePictureObjectUrl"
+        ></v-img>
+      </v-avatar>
+      &nbsp;
+      <!-- User name -->
+      <span class="headline grey--text">{{ author.username }}</span>
     </v-flex>
+    <v-flex xs12 sm10 offset-sm1>
+      <!-- Canto metadata -->
+      <span class="grey--text body-2">
+        {{ $t('canto.metadata.timeInfoLabel', { created: timeFromCreatedToNow, lastUpdated: timeFromLastUpdatedToNow }) }}
+      </span>
+      <!-- Canto likes -->
+      <span class="grey--text body-2" v-if="likeCount > 0">,&nbsp;</span>
+      <span class="grey--text body-2" v-if="likeCount > 0">
+        <v-icon class="grey--text body-2">mdi-bookmark</v-icon>{{ likeCount }}
+      </span>
+    </v-flex>
+    <!-- Body -->
+    <v-flex xs12 sm10 offset-sm1>
+      {{ canto.body }}
+    </v-flex>
+
+    <!-- Share stream link dialog -->
+    <tafalk-share-canto-link-dialog></tafalk-share-canto-link-dialog>
+    <!-- Flag canto dialog -->
+    <tafalk-flag-dialog></tafalk-flag-dialog>
+    <!-- Retract flag canto dialog -->
+    <tafalk-retract-flag-confirmation-dialog></tafalk-retract-flag-confirmation-dialog>
+  </v-layout>
+
+  <!-- Interaction Fabs (TODO: SmAndUp?) -->
+  <v-layout column class="fab-container">
+    <!-- Share -->
+    <v-btn
+      fab
+      outlined
+      small
+      :color="shareButtonColor"
+      @click="onShowShareCantoLinkDialog"
+    >
+      <v-icon>mdi-share-variant</v-icon>
+    </v-btn>
+    &nbsp;
+    <!-- Bookmark -->
+    <v-btn
+      v-if="!authenticatedUserLikeId"
+      fab
+      outlined
+      small
+      :color="bookmarkButtonColor"
+      :loading="isLikeLoading"
+      :disabled="isLikeLoading"
+      @click="onLikeClick"
+    >
+      <v-icon>mdi-bookmark-outline</v-icon>
+    </v-btn>
+    <v-btn
+      v-if="authenticatedUserLikeId"
+      fab
+      outlined
+      small
+      :color="bookmarkButtonColor"
+      :loading="isLikeLoading"
+      :disabled="isLikeLoading"
+      @click="onRemoveLikeClick"
+    >
+      <v-icon>mdi-bookmark</v-icon>
+    </v-btn>
+    &nbsp;
+    <!-- Flag -->
+    <v-btn
+      v-if="authenticatedUser != null && !isVisitingOwnCanto && !authenticatedUserFlagId"
+      fab
+      outlined
+      small
+      :color="flagButtonColor"
+      @click.stop="onFlagDialogShowClick"
+    >
+      <v-icon>mdi-flag-variant-outline</v-icon>
+    </v-btn>
+    <v-btn
+      v-else-if="authenticatedUserFlagId"
+      fab
+      outlined
+      small
+      :color="flagButtonColor"
+      @click.stop="onRetractFlagDialogShowClick"
+    >
+      <v-icon>mdi-flag-variant</v-icon>
+    </v-btn>
   </v-layout>
 </v-container>
 </template>
@@ -145,7 +153,7 @@ export default {
       outboundWatchId: null,
       watchTypeUserConnectionValue: 'Watch',
       blockTypeUserConnectionValue: 'Block',
-      cantoUserProfilePictureObjectUrl: null,
+      authorProfilePictureObjectUrl: null,
       cantoChangeSubscription: null,
       cantoChange: null,
       likeObjects: null,
@@ -170,7 +178,7 @@ export default {
     likes () {
       return this.canto.likes
     },
-    cantoUserColor () {
+    authorColor () {
       return GetHexColorOfString(this.canto.user.username)
     },
     authenticatedUser () {
@@ -287,7 +295,7 @@ export default {
         this.setCanto(cantoGraphqlResult.data.getCanto)
 
         // set profile pic
-        this.cantoUserProfilePictureObjectUrl = this.canto.user.profilePictureKey != null
+        this.authorProfilePictureObjectUrl = this.canto.user.profilePictureKey != null
           ? await Storage.get(this.authenticatedUser && this.canto.user.profilePictureKey, { level: 'protected' })
           : null
 
@@ -364,7 +372,7 @@ export default {
         this.isLikeLoading = false
       }
     },
-    onAuthorProfileClick () {
+    onToAuthorProfileClick () {
       this.$router.push({ name: 'profile', params: { username: this.author.username } })
     },
     onFlagDialogShowClick () {
@@ -386,5 +394,9 @@ export default {
 </script>
 
 <style scoped>
-
+  .fab-container {
+    position: fixed;
+    bottom: 0px;
+    right: 30px;
+  }
 </style>

@@ -1,26 +1,22 @@
 <!-- See https://vuetifyjs.com/en/components/lists -->
 <template>
-<v-layout row wrap>
-  <v-flex xs12 lg12 >
-  <v-card flat>
-    <v-list three-line>
-      <v-subheader>
-        {{ $t('stream.comments.title') }} ({{ commentCount }})
-      </v-subheader>
-      <template v-for="(comment, index) in paginatedStreamCommentItems">
-        <tafalk-stream-comment :key="comment.content"
-          :comment="comment"
-        ></tafalk-stream-comment>
-        <v-divider
-          v-if="index + 1 < commentCount"
-          :key="index"
-        ></v-divider>
-      </template>
-      <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteCommentHandler"></infinite-loading>
-    </v-list>
-  </v-card>
-  </v-flex>
-</v-layout>
+  <v-list three-line color="transparent">
+    <v-divider/>
+    <v-divider/>
+    <v-subheader>
+      {{ $t('stream.comments.title') }} ({{ commentCount }})
+    </v-subheader>
+    <template v-for="(comment, index) in paginatedStreamCommentItems">
+      <tafalk-stream-comment :key="comment.content"
+        :comment="comment"
+      ></tafalk-stream-comment>
+      <v-divider
+        v-if="index < commentCount"
+        :key="index"
+      ></v-divider>
+    </template>
+    <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteCommentHandler"></infinite-loading>
+  </v-list>
 </template>
 
 <script>
