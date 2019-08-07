@@ -48,7 +48,6 @@ export default {
         this.$i18n.locale = this.authenticatedUser.language
       }
       // Set theme
-      console.log('App Created: new theme:' + this.authenticatedUserTheme)
       this.$vuetify.theme.dark = this.authenticatedUserTheme === 'dark'
     }
   },

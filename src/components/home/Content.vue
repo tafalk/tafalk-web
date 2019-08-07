@@ -202,7 +202,9 @@ export default {
       fetchLimit: homeStreamFetchLength,
       denseItems: false,
       displayUserInfoInItems: true,
-      showUserInteractionDataForCantoItems: true
+      showUserInteractionDataForCantoItems: true,
+      isStreamListType: false,
+      isCantoListType: false
     }
   },
   components: {
@@ -213,18 +215,23 @@ export default {
     TafalkPageLoadingProgress
   },
   async created () {
-    const typeQueryVal = this.$route.query.type
-    this.footerEl = typeQueryVal || this.sealedValue
+    const typeQueryVal = this.$route.query.type || this.sealedValue
+    this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(typeQueryVal)
+    this.isCantoListType = [this.cantoValue].includes(typeQueryVal)
+    this.footerEl = typeQueryVal
     await this.fetchInitial(typeQueryVal)
     this.setIsPageReady(true)
   },
   watch: {
-    async '$route.query.type' (val) {
-      await this.fetchInitial(val)
+    '$route.query.type' (val) {
+      const typeQueryVal = val || this.sealedValue
+      this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(typeQueryVal)
+      this.isCantoListType = [this.cantoValue].includes(typeQueryVal)
+      this.fetchInitial(typeQueryVal)
     },
-    async footerEl (val, oldVal) {
+    footerEl (val, oldVal) {
       if (val == null || val === '' || val === oldVal) {
-        await this.clearAll()
+        this.clearAll()
       }
 
       // Clear search text if changed
@@ -273,12 +280,14 @@ export default {
     searchCantoTypeResultList () {
       return this.searchResults.filter(r => r.__typename === this.cantoTypeName)
     },
+    /*
     isStreamListType () {
       return [this.sealedValue, this.liveNowValue].includes(this.footerEl)
     },
     isCantoListType () {
       return [this.cantoValue].includes(this.footerEl)
     },
+    */
     nextStreamToken () {
       return this.getNextStreamToken
     },
