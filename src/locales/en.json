@@ -277,6 +277,12 @@
       },
       "buttonText": "Share"
     },
+    "likes": {
+      "message": {
+        "genericCastError": "✖️ Like could not be casted",
+        "genericUncastError": "✖️ Like could not be uncasted"
+      }
+    },
     "pour": {
       "introduction": {
         "title": "Your own canto starts here",

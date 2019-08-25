@@ -552,7 +552,7 @@ export default {
 <style scoped>
   .fab-container {
     position: fixed;
-    bottom: 0px;
+    bottom: 150px;
     right: 30px;
   }
 </style>

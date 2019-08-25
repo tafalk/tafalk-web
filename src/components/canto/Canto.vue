@@ -11,7 +11,7 @@
   <!-- regular content -->
   <v-layout row wrap v-else>
     <v-flex xs12 sm10 offset-sm1>
-      <!-- Stream Author Chip -->
+      <!-- Canto Author Chip -->
       <v-avatar
         @click.stop="onToAuthorProfileClick"
         :style="{ 'cursor': 'pointer' }"
@@ -49,7 +49,7 @@
       {{ canto.body }}
     </v-flex>
 
-    <!-- Share stream link dialog -->
+    <!-- Share canto link dialog -->
     <tafalk-share-canto-link-dialog></tafalk-share-canto-link-dialog>
     <!-- Flag canto dialog -->
     <tafalk-flag-dialog></tafalk-flag-dialog>
@@ -198,13 +198,13 @@ export default {
       }
 
       // Other general privacy setting based checks
-      if (!this.authenticatedUser || this.stream.privacy === 'Private') {
+      if (!this.authenticatedUser || this.canto.privacy === 'Private') {
         // Locked to anyone
         return false
-      } else if (this.stream.privacy === 'PrivateButWatching' && (this.outboundWatchId == null || this.outboundWatchId.length === 0)) {
+      } else if (this.canto.privacy === 'PrivateButWatching' && (this.outboundWatchId == null || this.outboundWatchId.length === 0)) {
         // Locked to not watched by the author
         return false
-      } else if (this.stream.privacy === 'Protected' && this.authenticatedUser == null) {
+      } else if (this.canto.privacy === 'Protected' && this.authenticatedUser == null) {
         // Locked to outcomers and an outcomer is visiting right now
         return false
       } else {
@@ -354,7 +354,7 @@ export default {
         }))
       } catch (err) {
         logger.error('An error occurred while adding the like')
-        this.setNewUserInteractionResultError(this.$i18n.t('stream.likes.message.genericCastError'))
+        this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericCastError'))
       } finally {
         this.isLikeLoading = false
       }
@@ -367,7 +367,7 @@ export default {
         }))
       } catch (err) {
         logger.error('An error occurred while deleting the like', JSON.stringify(err))
-        this.setNewUserInteractionResultError(this.$i18n.t('stream.likes.message.genericUncastError'))
+        this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericUncastError'))
       } finally {
         this.isLikeLoading = false
       }
@@ -396,7 +396,7 @@ export default {
 <style scoped>
   .fab-container {
     position: fixed;
-    bottom: 0px;
+    bottom: 150px;
     right: 30px;
   }
 </style>

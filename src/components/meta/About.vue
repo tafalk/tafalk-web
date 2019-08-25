@@ -5,7 +5,10 @@
     <v-card-text v-html="content"></v-card-text>
   </v-card>
   <v-footer absolute height="auto" color="primary lighten-1">
-    <v-layout justify-center row wrap>
+    <v-row
+      justify="center"
+      no-gutters
+    >
       <v-btn color="white" text @click="onToAbout">
         {{ $t('about.text') }}
       </v-btn>
@@ -15,10 +18,13 @@
       <v-btn color="white" text @click="onToTermsOfService">
         {{ $t('agreements.termsOfService.title') }}
       </v-btn>
-      <v-flex xs12 primary lighten-2 text-xs-center py-3 white--text>
+      <v-col
+        class="primary lighten-2 py-3 text-center white--text"
+        cols="12"
+      >
         &copy;{{ yearInterval }} — <strong>Tafalk!</strong>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-footer>
 </div>
 </template>

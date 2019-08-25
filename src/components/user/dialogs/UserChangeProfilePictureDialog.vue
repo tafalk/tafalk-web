@@ -122,6 +122,10 @@ export default {
         this.clearDialog()
       }
     },
+    closeAndClearDialog () {
+      this.setIsChangeProfilePictureDialogVisible(false)
+      this.clearDialog()
+    },
     clearDialog () {
       this.uploadLoading = false
       this.file = null

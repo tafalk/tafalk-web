@@ -76,7 +76,7 @@
       <!-- Search Results -->
       <v-layout v-else row wrap>
         <!-- Search Result (Users) -->
-        <v-flex offset-md2 md8 xs12 class="mb-4">
+        <v-flex offset-md2 md8 xs12 class="mb-4" v-if="searchUserTypeResultList && searchUserTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.userTitle', { resultCount: searchUserTypeResultList.length }) }}</span>
           <v-layout row wrap>
             <v-flex xs12 class="mt-2">
@@ -99,7 +99,7 @@
         </v-flex>
         <br />
         <!-- Search Result (Streams) -->
-        <v-flex offset-md2 md8 xs12 class="mb-4">
+        <v-flex offset-md2 md8 xs12 class="mb-4" v-if="searchStreamTypeResultList && searchStreamTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.streamTitle', { resultCount: searchStreamTypeResultList.length }) }}</span>
           <v-layout row wrap>
             <v-flex xs12 class="mt-2">
@@ -123,7 +123,7 @@
         </v-flex>
         <br />
         <!-- Search Result (Cantos) -->
-        <v-flex offset-md2 md8 xs12>
+        <v-flex offset-md2 md8 xs12 v-if="searchCantoTypeResultList && searchCantoTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.cantoTitle', { resultCount: searchCantoTypeResultList.length }) }}</span>
           <v-layout row wrap>
             <v-flex xs12 class="mt-2">

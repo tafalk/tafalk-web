@@ -1,7 +1,11 @@
 <template>
-  <v-container grid-list-lg text-xs-center>
-    <v-layout row wrap>
-      <v-flex md6 sm12-and-down offset-md3>
+  <v-container>
+    <v-row>
+      <v-col
+        xs="12"
+        md="6"
+        offset-md="3"
+      >
         <v-stepper v-model="forgotPasswordCurrentStep">
           <v-stepper-header>
             <v-stepper-step
@@ -91,12 +95,12 @@
           This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy">Privacy Policy</a> and <a href="https://policies.google.com/terms">Terms of Service</a> apply.
         </span>
         </v-stepper>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
-<script >
+<script>
 import { API, graphqlOperation, Auth, Logger } from 'aws-amplify'
 import { mapActions } from 'vuex'
 import { minUsernameLength, maxUsernameLength, minPasswordLength } from '@/utils/constants'

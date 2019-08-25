@@ -1,7 +1,12 @@
 <template>
-  <v-container grid-list-lg text-xs-center pt-5>
-    <v-layout row wrap>
-      <v-flex xs12 md6 offset-md3>
+  <v-container>
+    <v-row>
+      <v-col
+        xs="12"
+        md="6"
+        offset-md="3"
+        class="text-center"
+      >
         <v-form v-model="valid" @submit.prevent="onLoginBtnClick">
           <!-- Form Fields -->
           <v-text-field
@@ -23,28 +28,45 @@
             type="password"
             prepend-icon="mdi-lock"
           ></v-text-field>
-          <!-- Login Button -->
           <v-btn
             color="primary"
             :loading="loading"
             :disabled="!valid || loading"
             type="submit"
           >{{ $t('auth.login.loginButtonText') }}</v-btn>
-          <br /><br />
-          <!-- Forgot Password Button -->
-          <a v-on:click="onForgotPassBtnClick">{{ $t('auth.login.forgotPasswordButtonText') }}</a>
         </v-form>
-      </v-flex>
-      <v-flex offset-md3 md6 xs12>
+      </v-col>
+    </v-row>
+    <v-row
+      class="py-3"
+      justify="center"
+    >
+      <!-- Forgot Password Button -->
+      <a v-on:click="onForgotPassBtnClick">{{ $t('auth.login.forgotPasswordButtonText') }}</a>
+    </v-row>
+    <v-row>
+      <v-col
+        xs="12"
+        md="6"
+        offset-md="3"
+      >
         <v-divider></v-divider>
+      </v-col>
+    </v-row>
+    <v-row
+      justify="center"
+    >
         <v-subheader>{{ $t('auth.login.signinSectionTitle') }}</v-subheader>
-        <v-btn
-          color="primary"
-          @click="onRegisterBtnClick"
-        >{{ $t('auth.login.goToSigninButtonText') }}</v-btn>
-        <br /><br />
-      </v-flex>
-    </v-layout>
+    </v-row>
+    <v-row
+      justify="center"
+    >
+      <v-btn
+        color="primary"
+        @click="onRegisterBtnClick"
+      >{{ $t('auth.login.goToSigninButtonText') }}
+      </v-btn>
+    </v-row>
   </v-container>
 </template>
 

@@ -15,7 +15,6 @@
 
           <v-container fluid grid-list-lg>
             <v-layout row wrap>
-
               <!-- Profile Pic Section -->
               <v-flex d-flex xs12 md4>
                 <v-container pt-3 fluid grid-list-md>
