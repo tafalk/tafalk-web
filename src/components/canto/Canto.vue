@@ -45,7 +45,7 @@
       </span>
     </v-flex>
     <!-- Body -->
-    <v-flex xs12 sm10 offset-sm1>
+    <v-flex xs12 sm10 offset-sm1 ref="cantoBody">
       {{ canto.body }}
     </v-flex>
 
@@ -79,7 +79,7 @@
       :color="bookmarkButtonColor"
       :loading="isLikeLoading"
       :disabled="isLikeLoading"
-      @click="onLikeClick"
+      @click="onFirstLikeClick"
     >
       <v-icon>mdi-bookmark-outline</v-icon>
     </v-btn>
@@ -161,7 +161,8 @@ export default {
       isLikeLoading: false,
       shareButtonColor: 'green',
       bookmarkButtonColor: 'pink',
-      flagButtonColor: 'red'
+      flagButtonColor: 'red',
+      likeIndexSeparator: '-'
     }
   },
   computed: {
@@ -223,6 +224,11 @@ export default {
       if (this.likes == null) return undefined
       const authenticatedUserLikeItem = this.likes.find(item => item.userId === this.authenticatedUser.id)
       return (authenticatedUserLikeItem) ? authenticatedUserLikeItem.id : authenticatedUserLikeItem
+    },
+    authenticatedUserLikeLine () {
+      if (this.likes == null) return undefined
+      const authenticatedUserLikeItem = this.likes.find(item => item.userId === this.authenticatedUser.id)
+      return (authenticatedUserLikeItem) ? authenticatedUserLikeItem.indices.split(this.likeIndexSeparator) : authenticatedUserLikeItem
     },
     timeFromCreatedToNow () {
       return GetElapsedTimeTillNow(this.getNowTime, this.canto.startTime)
@@ -318,7 +324,6 @@ export default {
               graphqlOperation(ListCantoLikes, { cantoId: cantoId })
             )
             this.likeObjects = graphqlLikeListResult.data.listCantoLikes
-            // this.likeObjects = eventData.value.data.onCreateOrDeleteLike
           },
           error: (err) => this.setNewSiteError(err.message || err)
         })
@@ -344,14 +349,25 @@ export default {
       this.setShareCantoLink(GetCantoLink(this.author.username))
       this.showShareCantoLinkDialog()
     },
-    async onLikeClick () {
+    async onFirstLikeClick () {
       this.isLikeLoading = true
       try {
+        // Get end index of first string
+        const words = this.canto.body.split(' ')
+        const indexEnd = words.length > 0 ? words[0].length : this.canto.body.length
+        console.log(indexEnd)
+
         await API.graphql(graphqlOperation(CreateLike, {
           cantoId: this.author.id,
           userId: this.authenticatedUser.id,
-          time: new Date().toISOString()
+          time: new Date().toISOString(),
+          indices: `0${this.likeIndexSeparator}${indexEnd}`
         }))
+
+        // Set background area for bookmark
+        const originalBody = this.$refs.cantoBody.innerText
+        this.$refs.cantoBody.innerHTML = `<span class="background-color: yellow">${originalBody.substring(0, indexEnd - 1)}</span>${originalBody.substring(indexEnd - 1)}`
+        console.log(this.$refs.cantoBody.innerHTML)
       } catch (err) {
         logger.error('An error occurred while adding the like')
         this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericCastError'))

@@ -202,7 +202,7 @@ export default {
   },
   methods: {
     onToCantoClick () {
-      this.$router.push({ name: 'canto', params: { id: this.userCanto.id } })
+      this.$router.push({ name: 'canto', params: { username: this.userCanto.user.username } })
     },
     getTimeFromSealedToNow (sealTime) {
       return GetElapsedTimeTillNow(this.getNowTime, sealTime)
