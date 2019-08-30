@@ -180,7 +180,6 @@ export default {
   },
   methods: {
     onToCantoClick () {
-      console.log(this.canto.id)
       this.$router.push({ name: 'canto', params: { username: this.canto.user.username } })
     },
     onToAuthorProfileClick () {

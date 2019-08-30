@@ -31,6 +31,24 @@ export const CreateLike = gql`mutation CreateLike(
   }
 }`
 
+export const UpdateLikeIndices = gql`mutation UpdateLike(
+  $id: ID!,
+  $indices: String!
+  $time: String!) {
+    updateLikeIndices(input: {
+      id: $id
+      indices: $indices
+      time: $time
+    }) {
+      id
+      cantoId
+      userId
+      time
+      indices
+    }
+  }
+`
+
 export const DeleteLike = gql`mutation DeleteLike($id: ID!) {
   deleteLike(input: { id: $id }) {
     id
@@ -47,5 +65,6 @@ export const OnCreateOrDeleteCantoLike = gql`subscription OnCreateOrDeleteCantoL
     cantoId
     userId
     time
+    indices
   }
 }`

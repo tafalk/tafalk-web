@@ -1,4 +1,4 @@
-import { geocodingRootUrl } from './constants'
+import { geocodingRootUrl, cantoBookmarkClass, cantoBookmarkHighlightStyle } from './constants'
 import { MapTilerGeooderConfig } from '../config'
 
 const GetPolicyS3BucketRootUrl = () => {
@@ -44,6 +44,13 @@ const GenerateGeocoderRequestLink = (searchText) => {
   return `${geocodingRootUrl}/q/${encodeURIComponent(searchText)}.js?key=${MapTilerGeooderConfig.apiKey}`
 }
 
+const BookmarkCantoContent = (originalBody, indices) => {
+  if (!originalBody) return originalBody
+  if (!indices || indices.length === 0) return originalBody.textContent
+  const originalText = originalBody.textContent.trim()
+  return `${originalText.substring(0, indices[0])}<span class="${cantoBookmarkClass}" style="${cantoBookmarkHighlightStyle}">${originalText.substring(indices[0], indices[1])}</span>${originalText.substring(indices[1])}`
+}
+
 export {
   GetPolicyS3BucketRootUrl,
   GenerateProfilePictureFileName,
@@ -51,5 +58,6 @@ export {
   GetHexColorOfString,
   GetStreamLink,
   GetCantoLink,
-  GenerateGeocoderRequestLink
+  GenerateGeocoderRequestLink,
+  BookmarkCantoContent
 }

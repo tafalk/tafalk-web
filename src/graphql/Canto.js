@@ -23,6 +23,7 @@ export const GetCanto = gql`query GetCanto($id: ID!) {
       cantoId
       userId
       time
+      indices
     }
   }
 }`

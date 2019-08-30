@@ -200,6 +200,10 @@
       "liveLabel": "Live",
       "sealedLabel": "Sealed"
     },
+    "flag": {
+      "raiseButtonText": "Raise Flag",
+      "retracteButtonText": "Retract Flag"
+    },
     "share": {
       "dialog": {
         "copyLinkTooltip": "Click to copy",
@@ -218,6 +222,8 @@
       }
     },
     "likes": {
+      "likeButtonText": "Bookmark",
+      "unlikeButtonText": "Unbookmark",
       "message": {
         "genericCastError": "✖️ Like could not be casted",
         "genericUncastError": "✖️ Like could not be uncasted"
@@ -269,6 +275,10 @@
       "title": "Canto",
       "timeInfoLabel": "created {created}, last updated: {lastUpdated}"
     },
+    "flag": {
+      "raiseButtonText": "Raise Flag",
+      "retracteButtonText": "Retract Flag"
+    },
     "share": {
       "dialog": {
         "copyLinkTooltip": "Click to copy",
@@ -278,6 +288,8 @@
       "buttonText": "Share"
     },
     "likes": {
+      "likeButtonText": "Bookmark",
+      "unlikeButtonText": "Unbookmark",
       "message": {
         "genericCastError": "✖️ Like could not be casted",
         "genericUncastError": "✖️ Like could not be uncasted"

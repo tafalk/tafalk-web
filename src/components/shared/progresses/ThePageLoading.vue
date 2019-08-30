@@ -1,17 +1,15 @@
 <template>
-  <v-layout
-    align-content-center
-    justify-center
-    fill-height
-    wrap
+  <v-row
+    justify="space-between"
+    align="stretch"
   >
-    <v-flex xs6>
+    <v-col offset="3" cols="6">
       <v-progress-linear
         color="light-blue"
         indeterminate
         rounded
         height="6"
       ></v-progress-linear>
-    </v-flex>
-  </v-layout>
+    </v-col>
+  </v-row>
 </template>

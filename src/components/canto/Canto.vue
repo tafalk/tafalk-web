@@ -1,123 +1,164 @@
 <template>
 <v-container fluid grid-list-lg pa-5>
-  <!-- full page loader -->
+  <!-- Full page loader -->
   <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- Not allowed -->
-  <v-layout v-else-if="!isCantoAllowed">
-    <v-flex xs12>
-      <tafalk-not-allowed-canto></tafalk-not-allowed-canto>
-    </v-flex>
-  </v-layout>
-  <!-- regular content -->
-  <v-layout row wrap v-else>
-    <v-flex xs12 sm10 offset-sm1>
-      <!-- Canto Author Chip -->
-      <v-avatar
-        @click.stop="onToAuthorProfileClick"
-        :style="{ 'cursor': 'pointer' }"
+  <v-row
+    v-else-if="!isCantoAllowed"
+    justify="space-between"
+    align="center"
+  >
+    <v-col cols="12">
+      <tafalk-not-allowed-canto />
+    </v-col>
+  </v-row>
+  <!-- Regular content -->
+  <v-container v-else>
+    <v-row
+      justify="space-between"
+      align="center"
+    >
+      <v-col
+        cols="11"
+        md="9"
+        offset-md="1"
       >
-        <!-- Author active but no profile picture set -->
-        <v-img
-          v-if="!authenticatedUser || !authorProfilePictureObjectUrl"
-          :src="require('@/assets/default-user-avatar.webp')"
-          alt="Virgina Woolf in Hue"
-          :style="{backgroundColor: authorColor}"
-        ></v-img>
-        <!-- Author has profile pic -->
-        <v-img
-          v-else
-          :src="authorProfilePictureObjectUrl"
-        ></v-img>
-      </v-avatar>
-      &nbsp;
-      <!-- User name -->
-      <span class="headline grey--text">{{ author.username }}</span>
-    </v-flex>
-    <v-flex xs12 sm10 offset-sm1>
-      <!-- Canto metadata -->
-      <span class="grey--text body-2">
-        {{ $t('canto.metadata.timeInfoLabel', { created: timeFromCreatedToNow, lastUpdated: timeFromLastUpdatedToNow }) }}
-      </span>
-      <!-- Canto likes -->
-      <span class="grey--text body-2" v-if="likeCount > 0">,&nbsp;</span>
-      <span class="grey--text body-2" v-if="likeCount > 0">
-        <v-icon class="grey--text body-2">mdi-bookmark</v-icon>{{ likeCount }}
-      </span>
-    </v-flex>
+        <!-- Canto Author Chip -->
+        <v-avatar
+          @click.stop="onToAuthorProfileClick"
+          :style="{ 'cursor': 'pointer' }"
+        >
+          <!-- Author active but no profile picture set -->
+          <v-img
+            v-if="!authenticatedUser || !authorProfilePictureObjectUrl"
+            :src="require('@/assets/default-user-avatar.webp')"
+            alt="Virgina Woolf in Hue"
+            :style="{backgroundColor: authorColor}"
+          ></v-img>
+          <!-- Author has profile pic -->
+          <v-img
+            v-else
+            :src="authorProfilePictureObjectUrl"
+          ></v-img>
+        </v-avatar>
+        &nbsp;
+        <!-- User name -->
+        <span class="headline grey--text">{{ author.username }}</span>
+      </v-col>
+      <!-- Action Menu -->
+      <v-col
+        cols="1"
+      >
+        <v-menu bottom left>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <!-- Remove Bookmark -->
+            <v-list-item @click="onRemoveLikeClick" v-if="authenticatedUserLikeId">
+              <v-list-item-icon>
+                <v-icon :color="bookmarkButtonColor">mdi-bookmark</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t('canto.likes.unlikeButtonText') }}</v-list-item-title>
+            </v-list-item>
+            <!-- Raise Flag -->
+            <v-list-item @click="onFlagDialogShowClick" v-if="authenticatedUser && !isVisitingOwnCanto && !authenticatedUserFlagId">
+              <v-list-item-icon>
+                <v-icon :color="flagButtonColor">mdi-flag-variant-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t('canto.flag.raiseButtonText') }}</v-list-item-title>
+            </v-list-item>
+            <!-- Retract Flag -->
+            <v-list-item @click="onRetractFlagDialogShowClick" v-if="authenticatedUserFlagId">
+              <v-list-item-icon>
+                <v-icon :color="flagButtonColor">mdi-flag-variant</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t('canto.flag.retracteButtonText') }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-col>
+    </v-row>
+    <!-- Meta -->
+    <v-row>
+      <v-col
+        cols="12"
+        md="10"
+        offset-md="1"
+      >
+        <!-- Canto metadata -->
+        <span class="grey--text body-2">
+          {{ $t('canto.metadata.timeInfoLabel', { created: timeFromCreatedToNow, lastUpdated: timeFromLastUpdatedToNow }) }}
+        </span>
+        <!-- Canto likes -->
+        <span class="grey--text body-2" v-if="likeCount > 0">,&nbsp;</span>
+        <span class="grey--text body-2" v-if="likeCount > 0">
+          <v-icon class="grey--text body-2">mdi-bookmark</v-icon>{{ likeCount }}
+        </span>
+      </v-col>
+    </v-row>
     <!-- Body -->
-    <v-flex xs12 sm10 offset-sm1 ref="cantoBody">
-      {{ canto.body }}
-    </v-flex>
+    <v-row>
+      <v-col
+        cols="12"
+        md="10"
+        offset-md="1"
+      >{{ canto.body }}</v-col>
+    </v-row>
 
+    <!-- Interaction Fabs -->
+    <v-container class="fab-container">
+      <!-- Share -->
+      <v-row justify="end" class="my-2">
+        <v-btn
+          fab
+          outlined
+          small
+          :color="shareButtonColor"
+          @click="onShowShareCantoLinkDialog"
+        >
+          <v-icon>mdi-share-variant</v-icon>
+        </v-btn>
+      </v-row>
+      <v-row justify="end" class="my-2">
+        <!-- Bookmark -->
+        <v-btn
+          v-if="authenticatedUser && !authenticatedUserLikeId"
+          fab
+          outlined
+          small
+          :color="bookmarkButtonColor"
+          :loading="isLikeLoading"
+          :disabled="isLikeLoading"
+          @click="onFirstLikeClick"
+        >
+          <v-icon>mdi-bookmark-outline</v-icon>
+        </v-btn>
+        <v-btn
+          v-if="authenticatedUser && authenticatedUserLikeId"
+          fab
+          outlined
+          small
+          :color="bookmarkButtonColor"
+          :loading="isMoveLikeLoading"
+          :disabled="isMoveLikeLoading"
+          @click="onMoveLikeClick"
+        >
+          <v-icon>mdi-bookmark-plus</v-icon>
+        </v-btn>
+      </v-row>
+    </v-container>
+
+    <!-- Dialogs -->
     <!-- Share canto link dialog -->
     <tafalk-share-canto-link-dialog></tafalk-share-canto-link-dialog>
     <!-- Flag canto dialog -->
     <tafalk-flag-dialog></tafalk-flag-dialog>
     <!-- Retract flag canto dialog -->
     <tafalk-retract-flag-confirmation-dialog></tafalk-retract-flag-confirmation-dialog>
-  </v-layout>
-
-  <!-- Interaction Fabs (TODO: SmAndUp?) -->
-  <v-layout column class="fab-container">
-    <!-- Share -->
-    <v-btn
-      fab
-      outlined
-      small
-      :color="shareButtonColor"
-      @click="onShowShareCantoLinkDialog"
-    >
-      <v-icon>mdi-share-variant</v-icon>
-    </v-btn>
-    &nbsp;
-    <!-- Bookmark -->
-    <v-btn
-      v-if="!authenticatedUserLikeId"
-      fab
-      outlined
-      small
-      :color="bookmarkButtonColor"
-      :loading="isLikeLoading"
-      :disabled="isLikeLoading"
-      @click="onFirstLikeClick"
-    >
-      <v-icon>mdi-bookmark-outline</v-icon>
-    </v-btn>
-    <v-btn
-      v-if="authenticatedUserLikeId"
-      fab
-      outlined
-      small
-      :color="bookmarkButtonColor"
-      :loading="isLikeLoading"
-      :disabled="isLikeLoading"
-      @click="onRemoveLikeClick"
-    >
-      <v-icon>mdi-bookmark</v-icon>
-    </v-btn>
-    &nbsp;
-    <!-- Flag -->
-    <v-btn
-      v-if="authenticatedUser != null && !isVisitingOwnCanto && !authenticatedUserFlagId"
-      fab
-      outlined
-      small
-      :color="flagButtonColor"
-      @click.stop="onFlagDialogShowClick"
-    >
-      <v-icon>mdi-flag-variant-outline</v-icon>
-    </v-btn>
-    <v-btn
-      v-else-if="authenticatedUserFlagId"
-      fab
-      outlined
-      small
-      :color="flagButtonColor"
-      @click.stop="onRetractFlagDialogShowClick"
-    >
-      <v-icon>mdi-flag-variant</v-icon>
-    </v-btn>
-  </v-layout>
+  </v-container>
 </v-container>
 </template>
 
@@ -125,10 +166,10 @@
 import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetCanto, OnUpdateCanto } from '@/graphql/Canto'
-import { ListCantoLikes, CreateLike, DeleteLike, OnCreateOrDeleteCantoLike } from '@/graphql/CantoReaction'
+import { ListCantoLikes, CreateLike, UpdateLikeIndices, DeleteLike, OnCreateOrDeleteCantoLike } from '@/graphql/CantoReaction'
 import { GetUserIdByUserName } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
-import { GetHexColorOfString, GetCantoLink } from '@/utils/generators'
+import { GetHexColorOfString, GetCantoLink, BookmarkCantoContent } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
 import TafalkNotAllowedCanto from '@/components/nocontent/CantoNotAllowed.vue'
 import TafalkShareCantoLinkDialog from '@/components/canto/dialogs/ShareCantoLinkDialog.vue'
@@ -159,6 +200,8 @@ export default {
       likeObjects: null,
       likeChangeSubscription: null,
       isLikeLoading: false,
+      isMoveLikeLoading: false,
+      isRemoveLikeLoading: false,
       shareButtonColor: 'green',
       bookmarkButtonColor: 'pink',
       flagButtonColor: 'red',
@@ -177,24 +220,24 @@ export default {
       return this.getCanto
     },
     likes () {
-      return this.canto.likes
+      return this.canto ? this.canto.likes : []
     },
     authorColor () {
-      return GetHexColorOfString(this.canto.user.username)
+      return this.canto ? GetHexColorOfString(this.canto.user.username) : null
     },
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
     author () {
-      return this.canto.user || null
+      return this.canto ? this.canto.user : null
     },
     // visibilty deciders
     isVisitingOwnCanto () {
-      return this.authenticatedUser != null && this.authenticatedUser.username === this.author.username
+      return this.authenticatedUser && this.author && this.authenticatedUser.username === this.author.username
     },
     isVisitorAllowed () {
       // Blocked User Check
-      if (this.outboundBlockId && this.outboundBlockId.length > 0) {
+      if (!this.canto || (this.outboundBlockId && this.outboundBlockId.length > 0)) {
         return false
       }
 
@@ -217,27 +260,26 @@ export default {
       return this.isVisitingOwnCanto || this.isVisitorAllowed
     },
     likeCount () {
-      if (this.likes == null) return 0
-      return this.likes.length
+      return (this.likes || []).length
     },
     authenticatedUserLikeId () {
-      if (this.likes == null) return undefined
+      if (!this.likes) return undefined
       const authenticatedUserLikeItem = this.likes.find(item => item.userId === this.authenticatedUser.id)
       return (authenticatedUserLikeItem) ? authenticatedUserLikeItem.id : authenticatedUserLikeItem
     },
-    authenticatedUserLikeLine () {
-      if (this.likes == null) return undefined
-      const authenticatedUserLikeItem = this.likes.find(item => item.userId === this.authenticatedUser.id)
-      return (authenticatedUserLikeItem) ? authenticatedUserLikeItem.indices.split(this.likeIndexSeparator) : authenticatedUserLikeItem
+    authenticatedUserLikeIndices () {
+      const authenticatedUserLikeItem = (this.likes || []).find(item => item.userId === this.authenticatedUser.id)
+      if (!authenticatedUserLikeItem || !authenticatedUserLikeItem.indices) return []
+      return authenticatedUserLikeItem.indices.split(this.likeIndexSeparator, 2)
     },
     timeFromCreatedToNow () {
-      return GetElapsedTimeTillNow(this.getNowTime, this.canto.startTime)
+      return (this.canto) ? GetElapsedTimeTillNow(this.getNowTime, this.canto.startTime) : null
     },
     timeFromLastUpdatedToNow () {
-      return GetElapsedTimeTillNow(this.getNowTime, this.canto.lastUpdateTime)
+      return (this.canto) ? GetElapsedTimeTillNow(this.getNowTime, this.canto.lastUpdateTime) : null
     },
     authenticatedUserFlagId () {
-      return (((this.canto.flags || []).find(item => item.userId === this.authenticatedUser.id) || {})).id
+      return ((((this.canto || {}).flags || []).find(item => item.userId === this.authenticatedUser.id) || {})).id
     }
   },
   watch: {
@@ -259,6 +301,13 @@ export default {
     },
     'likeObjects' (val) {
       this.setCantoLikes(val)
+    },
+    authenticatedUserLikeIndices (newVal, oldVal) {
+      if (!this.$refs.cantoBody) return
+      // Selection did not change, no nothing
+      if (newVal === oldVal) return
+
+      this.$refs.cantoBody.innerHTML = BookmarkCantoContent(this.$refs.cantoBody, newVal)
     }
   },
   created () {
@@ -267,6 +316,13 @@ export default {
       .then(() => {
         this.setIsPageReady(true)
       })
+  },
+  updated () {
+    if (!this.$refs.cantoBody) return
+    this.$nextTick(() => {
+      // The whole view is rendered. ¯\_(ツ)_/¯
+      this.$refs.cantoBody.innerHTML = BookmarkCantoContent(this.$refs.cantoBody, this.authenticatedUserLikeIndices)
+    })
   },
   beforeDestroy () {
     this.cantoChangeSubscription.unsubscribe()
@@ -354,20 +410,15 @@ export default {
       try {
         // Get end index of first string
         const words = this.canto.body.split(' ')
-        const indexEnd = words.length > 0 ? words[0].length : this.canto.body.length
-        console.log(indexEnd)
+        const indexEnd = words.length > 0 ? words[0].length - 1 : this.canto.body.length - 1
 
+        // Create Like with index
         await API.graphql(graphqlOperation(CreateLike, {
           cantoId: this.author.id,
           userId: this.authenticatedUser.id,
           time: new Date().toISOString(),
           indices: `0${this.likeIndexSeparator}${indexEnd}`
         }))
-
-        // Set background area for bookmark
-        const originalBody = this.$refs.cantoBody.innerText
-        this.$refs.cantoBody.innerHTML = `<span class="background-color: yellow">${originalBody.substring(0, indexEnd - 1)}</span>${originalBody.substring(indexEnd - 1)}`
-        console.log(this.$refs.cantoBody.innerHTML)
       } catch (err) {
         logger.error('An error occurred while adding the like')
         this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericCastError'))
@@ -375,8 +426,24 @@ export default {
         this.isLikeLoading = false
       }
     },
+    async onMoveLikeClick () {
+      console.log('Moving like in AppSync')
+      this.isMoveLikeLoading = true
+      try {
+        await API.graphql(graphqlOperation(UpdateLikeIndices, {
+          id: this.authenticatedUserLikeId,
+          indices: '45-60',
+          time: new Date().toISOString()
+        }))
+      } catch (err) {
+        logger.error('An error occurred while moving the like', JSON.stringify(err))
+        this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericUncastError'))
+      } finally {
+        this.isMoveLikeLoading = false
+      }
+    },
     async onRemoveLikeClick () {
-      this.isLikeLoading = true
+      this.isRemoveLikeLoading = true
       try {
         await API.graphql(graphqlOperation(DeleteLike, {
           id: this.authenticatedUserLikeId
@@ -385,7 +452,7 @@ export default {
         logger.error('An error occurred while deleting the like', JSON.stringify(err))
         this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericUncastError'))
       } finally {
-        this.isLikeLoading = false
+        this.isRemoveLikeLoading = false
       }
     },
     onToAuthorProfileClick () {
@@ -412,7 +479,7 @@ export default {
 <style scoped>
   .fab-container {
     position: fixed;
-    bottom: 150px;
-    right: 30px;
+    bottom: 2%;
+    right: 6.75%;
   }
 </style>

@@ -32,6 +32,11 @@ export const streamCommentFetchLength = 4
 
 // time
 export const timeRefreshIntervalSeconds = 60
+
+// css classes
+export const cantoBookmarkClass = 'canto-highlight'
+export const cantoBookmarkHighlightStyle = 'background-color: yellow; border-radius: 3px;'
+
 // other
 export const timeUnitChars = {
   second: i18n.t('common.time.second'),
