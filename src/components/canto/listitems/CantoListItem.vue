@@ -4,7 +4,7 @@
     v-if="displayType === cardDisplayType"
     flat
     :max-height="maxHeight"
-    @click.native="onToCantoButtonClick"
+    @click.native="onToCantoClick"
   >
     <!-- Card Title -->
     <v-card-title
@@ -65,7 +65,7 @@
     :style="{ 'cursor': 'pointer' }"
     :two-line="!dense"
     :three-line="dense"
-    @click.native="onToCantoButtonClick"
+    @click.native="onToCantoClick"
   >
     <!-- Avatar -->
     <v-list-item-avatar
@@ -179,8 +179,8 @@ export default {
     }
   },
   methods: {
-    onToCantoButtonClick () {
-      this.$router.push({ name: 'canto', params: { id: this.canto.id } })
+    onToCantoClick () {
+      this.$router.push({ name: 'canto', params: { username: this.canto.user.username } })
     },
     onToAuthorProfileClick () {
       if (!this.canto || !this.canto.user) return

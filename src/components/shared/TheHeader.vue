@@ -72,7 +72,7 @@
     temporary
     id = "drawer"
   >
-    <v-list rounded class="pt-0">
+    <v-list nav class="pt-0">
       <!-- Mobile only stream filters -->
       <v-subheader v-if="$vuetify.breakpoint.smAndDown">{{ $t('common.toolbar.menu.contentsSubheader') }}</v-subheader>
       <v-list-item-group v-model="menuContentEl" v-if="$vuetify.breakpoint.smAndDown">
@@ -260,7 +260,7 @@ export default {
       await this.setSearchSiteResults(this.searchText)
     },
     onTitleClick () {
-      this.clearSearchComponents()
+      this.clearSearchTextAndResults()
       this.$router.push({ name: 'home' })
     },
     onAboutClick () {
@@ -273,29 +273,29 @@ export default {
     onMobileSearchHeaderOnClick () {
       this.isMobileSearchHeaderOn = true
     },
-    async onSealedStreamsClick () {
-      this.clearSearchComponents()
-      await this.clearAll()
+    onSealedStreamsClick () {
+      this.clearSearchTextAndResults()
+      // this.clearAll()
       this.$router.push({ name: 'content', query: { type: this.sealedValue } })
       this.setMenuDrawer(false)
     },
-    async onLiveStreamsClick () {
-      this.clearSearchComponents()
-      await this.clearAll()
+    onLiveStreamsClick () {
+      this.clearSearchTextAndResults()
+      // this.clearAll()
       this.$router.push({ name: 'content', query: { type: this.liveNowValue } })
       this.setMenuDrawer(false)
     },
-    async onCantosClick () {
-      this.clearSearchComponents()
-      await this.clearAll()
+    onCantosClick () {
+      this.clearSearchTextAndResults()
+      // this.clearAll()
       this.$router.push({ name: 'content', query: { type: this.cantoValue } })
       this.setMenuDrawer(false)
     },
     onSearchBackButtonClick () {
-      this.clearSearchComponents()
+      this.clearSearchTextAndResults()
       this.isMobileSearchHeaderOn = false
     },
-    clearSearchComponents () {
+    clearSearchTextAndResults () {
       this.clearSearchText()
       this.clearSearchResults()
     }

@@ -32,6 +32,14 @@ export const streamCommentFetchLength = 4
 
 // time
 export const timeRefreshIntervalSeconds = 60
+
+// css classes
+export const cantoPreBookmarkClass = 'canto-pre-bm-hl'
+export const cantoBookmarkId = 'canto-bookmark-1'
+export const cantoBookmarkClass = 'canto-bm-hl'
+export const cantoPostBookmarkClass = 'canto-post-bm-hl'
+export const cantoBookmarkHighlightStyle = 'background-color: yellow; border-radius: 3px;'
+
 // other
 export const timeUnitChars = {
   second: i18n.t('common.time.second'),

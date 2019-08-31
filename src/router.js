@@ -88,7 +88,7 @@ const router = new Router({
     },
     {
       path: '/pour',
-      name: 'pour',
+      name: 'pourStream',
       component: PourStream
     },
     {

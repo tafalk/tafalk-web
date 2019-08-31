@@ -77,7 +77,7 @@ export default {
   methods: {
     onPourNewStreamClick () {
       // Route to Account Deleted Page
-      this.$router.push({ name: 'pour' })
+      this.$router.push({ name: 'pourStream' })
     },
     onOpenCantoClick () {
       this.$router.push({ name: 'pourCanto', params: { username: this.authenticatedUser.username } })

@@ -1,10 +1,18 @@
 <template>
-  <v-container grid-list-lg text-xs-center>
-    <v-layout row wrap>
-      <v-flex md6 sm12-and-down offset-md3>
+  <v-container>
+    <v-row>
+      <v-col
+        xs="12"
+        md="6"
+        offset-md="3"
+        class="text-center"
+      >
         <v-form v-model="valid" @submit.prevent="onRegisterBtnClick">
-          <v-layout wrap>
-            <v-flex md6 sm12-and-down>
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
               <v-text-field
                 :label="$t('auth.signup.firstNameLabel')"
                 v-model="firstName"
@@ -14,8 +22,11 @@
                 :maxlength="maxFirstNameLength"
                 :rules="firstNameRules"
               ></v-text-field>
-            </v-flex>
-            <v-flex md6 sm12-and-down>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
               <v-text-field
                 :label="$t('auth.signup.lastNameLabel')"
                 v-model="lastName"
@@ -24,8 +35,8 @@
                 :maxlength="maxLastNameLength"
                 :rules="lastNameRules"
               ></v-text-field>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
           <v-text-field
             :label="$t('auth.signup.userNameLabel')"
             v-model="username"
@@ -107,6 +118,11 @@
             type="submit"
             >{{ $t('auth.signup.signupButtonText') }}</v-btn>
         </v-form>
+      </v-col>
+    </v-row>
+    <v-layout row wrap>
+      <v-flex md6 sm12-and-down offset-md3>
+
       </v-flex>
       <tafalk-terms-of-service-dialog></tafalk-terms-of-service-dialog>
       <tafalk-privacy-policy-dialog></tafalk-privacy-policy-dialog>

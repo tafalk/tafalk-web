@@ -76,7 +76,7 @@
       <!-- Search Results -->
       <v-layout v-else row wrap>
         <!-- Search Result (Users) -->
-        <v-flex offset-md2 md8 xs12 class="mb-4">
+        <v-flex offset-md2 md8 xs12 class="mb-4" v-if="searchUserTypeResultList && searchUserTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.userTitle', { resultCount: searchUserTypeResultList.length }) }}</span>
           <v-layout row wrap>
             <v-flex xs12 class="mt-2">
@@ -99,7 +99,7 @@
         </v-flex>
         <br />
         <!-- Search Result (Streams) -->
-        <v-flex offset-md2 md8 xs12 class="mb-4">
+        <v-flex offset-md2 md8 xs12 class="mb-4" v-if="searchStreamTypeResultList && searchStreamTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.streamTitle', { resultCount: searchStreamTypeResultList.length }) }}</span>
           <v-layout row wrap>
             <v-flex xs12 class="mt-2">
@@ -123,7 +123,7 @@
         </v-flex>
         <br />
         <!-- Search Result (Cantos) -->
-        <v-flex offset-md2 md8 xs12>
+        <v-flex offset-md2 md8 xs12 v-if="searchCantoTypeResultList && searchCantoTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.cantoTitle', { resultCount: searchCantoTypeResultList.length }) }}</span>
           <v-layout row wrap>
             <v-flex xs12 class="mt-2">
@@ -202,7 +202,9 @@ export default {
       fetchLimit: homeStreamFetchLength,
       denseItems: false,
       displayUserInfoInItems: true,
-      showUserInteractionDataForCantoItems: true
+      showUserInteractionDataForCantoItems: true,
+      isStreamListType: false,
+      isCantoListType: false
     }
   },
   components: {
@@ -213,18 +215,23 @@ export default {
     TafalkPageLoadingProgress
   },
   async created () {
-    const typeQueryVal = this.$route.query.type
-    this.footerEl = typeQueryVal || this.sealedValue
+    const typeQueryVal = this.$route.query.type || this.sealedValue
+    this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(typeQueryVal)
+    this.isCantoListType = [this.cantoValue].includes(typeQueryVal)
+    this.footerEl = typeQueryVal
     await this.fetchInitial(typeQueryVal)
     this.setIsPageReady(true)
   },
   watch: {
-    async '$route.query.type' (val) {
-      await this.fetchInitial(val)
+    '$route.query.type' (val) {
+      const typeQueryVal = val || this.sealedValue
+      this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(typeQueryVal)
+      this.isCantoListType = [this.cantoValue].includes(typeQueryVal)
+      this.fetchInitial(typeQueryVal)
     },
-    async footerEl (val, oldVal) {
+    footerEl (val, oldVal) {
       if (val == null || val === '' || val === oldVal) {
-        await this.clearAll()
+        this.clearAll()
       }
 
       // Clear search text if changed
@@ -273,12 +280,14 @@ export default {
     searchCantoTypeResultList () {
       return this.searchResults.filter(r => r.__typename === this.cantoTypeName)
     },
+    /*
     isStreamListType () {
       return [this.sealedValue, this.liveNowValue].includes(this.footerEl)
     },
     isCantoListType () {
       return [this.cantoValue].includes(this.footerEl)
     },
+    */
     nextStreamToken () {
       return this.getNextStreamToken
     },

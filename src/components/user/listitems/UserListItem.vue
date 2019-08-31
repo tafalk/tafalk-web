@@ -80,6 +80,7 @@ export default {
   props: ['displayType', 'user', 'dense'],
   data () {
     return {
+      cardDisplayType: 'card',
       userProfilePictureObjectUrl: null,
       userColor: null
     }
