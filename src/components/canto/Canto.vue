@@ -105,7 +105,11 @@
         cols="12"
         md="10"
         offset-md="1"
-      >{{ canto.body }}</v-col>
+        ref="cantoBody"
+        v-html="cantoBody"
+        :class="selectApplicableClass"
+        :style="{ whiteSpace: 'pre-line' }"
+      ></v-col>
     </v-row>
 
     <!-- Interaction Fabs -->
@@ -158,6 +162,21 @@
     <tafalk-flag-dialog></tafalk-flag-dialog>
     <!-- Retract flag canto dialog -->
     <tafalk-retract-flag-confirmation-dialog></tafalk-retract-flag-confirmation-dialog>
+
+    <!-- Snackbars -->
+    <v-snackbar
+      v-model="isSelectToMoveBookmarkSnackbarVisible"
+      :multi-line="$vuetify.breakpoint.xsOnly"
+    >
+      {{ $t('canto.likes.message.unselectedNewBookmarkIndexError') }}
+      <v-btn
+        color="pink"
+        text
+        @click="isSelectToMoveBookmarkSnackbarVisible = false"
+      >
+        {{ $t('common.options.closeButtonText') }}
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </v-container>
 </template>
@@ -169,7 +188,8 @@ import { GetCanto, OnUpdateCanto } from '@/graphql/Canto'
 import { ListCantoLikes, CreateLike, UpdateLikeIndices, DeleteLike, OnCreateOrDeleteCantoLike } from '@/graphql/CantoReaction'
 import { GetUserIdByUserName } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
-import { GetHexColorOfString, GetCantoLink, BookmarkCantoContent } from '@/utils/generators'
+import { cantoBookmarkId, cantoPreBookmarkClass, cantoPostBookmarkClass } from '@/utils/constants'
+import { GetHexColorOfString, GetCantoLink, BookmarkCantoContent, GetSiblings } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
 import TafalkNotAllowedCanto from '@/components/nocontent/CantoNotAllowed.vue'
 import TafalkShareCantoLinkDialog from '@/components/canto/dialogs/ShareCantoLinkDialog.vue'
@@ -205,7 +225,9 @@ export default {
       shareButtonColor: 'green',
       bookmarkButtonColor: 'pink',
       flagButtonColor: 'red',
-      likeIndexSeparator: '-'
+      likeIndexSeparator: '-',
+      selectApplicableClass: 'select-applicable',
+      isSelectToMoveBookmarkSnackbarVisible: false
     }
   },
   computed: {
@@ -213,11 +235,16 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getCanto: 'canto/getCanto',
       getIsFlaggedByAuthenticatedUser: 'canto/getIsFlaggedByAuthenticatedUser',
+      getCantoBodyUserSelection: 'canto/getBodyUserSelection',
       getNowTime: 'time/getNowTime',
       getIsPageReady: 'getIsPageReady'
     }),
     canto () {
       return this.getCanto
+    },
+    cantoBody () {
+      if (!this.canto) return ''
+      return this.canto.body.trim()
     },
     likes () {
       return this.canto ? this.canto.likes : []
@@ -280,6 +307,9 @@ export default {
     },
     authenticatedUserFlagId () {
       return ((((this.canto || {}).flags || []).find(item => item.userId === this.authenticatedUser.id) || {})).id
+    },
+    cantoBodyUserSelection () {
+      return this.getCantoBodyUserSelection
     }
   },
   watch: {
@@ -306,11 +336,13 @@ export default {
       if (!this.$refs.cantoBody) return
       // Selection did not change, no nothing
       if (newVal === oldVal) return
-
       this.$refs.cantoBody.innerHTML = BookmarkCantoContent(this.$refs.cantoBody, newVal)
     }
   },
   created () {
+    // Selection Event Handler
+    document.addEventListener('selectionchange', this.onSelectionChange)
+    // Fetch initial data
     this.setIsPageReady(false)
     this.getInitialInfo(this.$route.params.username)
       .then(() => {
@@ -322,9 +354,15 @@ export default {
     this.$nextTick(() => {
       // The whole view is rendered. ¯\_(ツ)_/¯
       this.$refs.cantoBody.innerHTML = BookmarkCantoContent(this.$refs.cantoBody, this.authenticatedUserLikeIndices)
+
+      if (this.authenticatedUserLikeIndices && this.authenticatedUserLikeIndices.length > 0) {
+        this.$vuetify.goTo(`span#${cantoBookmarkId}`)
+      }
     })
   },
   beforeDestroy () {
+    // Selection Event Handler
+    document.removeEventListener('selectionchange', this.onSelectionChange)
     this.cantoChangeSubscription.unsubscribe()
     this.likeChangeSubscription.unsubscribe()
   },
@@ -338,7 +376,8 @@ export default {
       setCantoLikes: 'canto/setCantoLikes',
       setFlag: 'flag/setFlag',
       setIsPageReady: 'setIsPageReady',
-      setRetractFlag: 'flag/setRetractFlag'
+      setRetractFlag: 'flag/setRetractFlag',
+      setCantoBodyUserSelection: 'canto/setBodyUserSelection'
     }),
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError',
@@ -409,8 +448,8 @@ export default {
       this.isLikeLoading = true
       try {
         // Get end index of first string
-        const words = this.canto.body.split(' ')
-        const indexEnd = words.length > 0 ? words[0].length - 1 : this.canto.body.length - 1
+        const words = this.cantoBody.split(' ')
+        const indexEnd = words.length > 0 ? words[0].length : this.cantoBody.length
 
         // Create Like with index
         await API.graphql(graphqlOperation(CreateLike, {
@@ -427,12 +466,15 @@ export default {
       }
     },
     async onMoveLikeClick () {
-      console.log('Moving like in AppSync')
+      if (!this.cantoBodyUserSelection) {
+        this.isSelectToMoveBookmarkSnackbarVisible = true
+        return
+      }
       this.isMoveLikeLoading = true
       try {
         await API.graphql(graphqlOperation(UpdateLikeIndices, {
           id: this.authenticatedUserLikeId,
-          indices: '45-60',
+          indices: `${this.cantoBodyUserSelection.start}${this.likeIndexSeparator}${this.cantoBodyUserSelection.end}`,
           time: new Date().toISOString()
         }))
       } catch (err) {
@@ -453,6 +495,44 @@ export default {
         this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericUncastError'))
       } finally {
         this.isRemoveLikeLoading = false
+      }
+    },
+    onSelectionChange (e) {
+      // Get selection Range
+      const range = document.getSelection().getRangeAt(0)
+      if (range.collapsed) {
+        // if a single click (not a tafalkish selection indeed)
+        this.setCantoBodyUserSelection(null)
+        return
+      }
+
+      const rangeStartContainer = range.startContainer
+      const rangeEndContainer = range.endContainer
+      const rangeStartOffset = range.startOffset
+      const rangeEndOffset = range.endOffset
+
+      if (rangeStartContainer !== rangeEndContainer && range.commonAncestorContainer.classList.contains(this.selectApplicableClass)) {
+        // start and end are not in the body
+        this.setCantoBodyUserSelection(null)
+        return
+      }
+
+      if (rangeStartContainer.parentNode.classList.contains(cantoPreBookmarkClass) && rangeEndContainer.parentNode.classList.contains(cantoPreBookmarkClass)) {
+        // Range starts and ends before the existing bookmark
+        this.setCantoBodyUserSelection({
+          start: rangeStartOffset,
+          end: rangeEndOffset
+        })
+        return
+      }
+      if (rangeStartContainer.parentNode.classList.contains(cantoPostBookmarkClass) && rangeEndContainer.parentNode.classList.contains(cantoPostBookmarkClass)) {
+        const siblingSpans = GetSiblings(rangeStartContainer.parentNode)
+        const indexOffset = siblingSpans.reduce((prev, next) => prev + next.innerText.length, 0)
+        // Range starts after the existing bookmark
+        this.setCantoBodyUserSelection({
+          start: rangeStartOffset + indexOffset,
+          end: rangeEndOffset + indexOffset
+        })
       }
     },
     onToAuthorProfileClick () {

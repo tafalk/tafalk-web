@@ -34,7 +34,10 @@ export const streamCommentFetchLength = 4
 export const timeRefreshIntervalSeconds = 60
 
 // css classes
-export const cantoBookmarkClass = 'canto-highlight'
+export const cantoPreBookmarkClass = 'canto-pre-bm-hl'
+export const cantoBookmarkId = 'canto-bookmark-1'
+export const cantoBookmarkClass = 'canto-bm-hl'
+export const cantoPostBookmarkClass = 'canto-post-bm-hl'
 export const cantoBookmarkHighlightStyle = 'background-color: yellow; border-radius: 3px;'
 
 // other

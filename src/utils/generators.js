@@ -1,4 +1,4 @@
-import { geocodingRootUrl, cantoBookmarkClass, cantoBookmarkHighlightStyle } from './constants'
+import { geocodingRootUrl, cantoBookmarkId, cantoPreBookmarkClass, cantoBookmarkClass, cantoPostBookmarkClass, cantoBookmarkHighlightStyle } from './constants'
 import { MapTilerGeooderConfig } from '../config'
 
 const GetPolicyS3BucketRootUrl = () => {
@@ -46,9 +46,25 @@ const GenerateGeocoderRequestLink = (searchText) => {
 
 const BookmarkCantoContent = (originalBody, indices) => {
   if (!originalBody) return originalBody
-  if (!indices || indices.length === 0) return originalBody.textContent
-  const originalText = originalBody.textContent.trim()
-  return `${originalText.substring(0, indices[0])}<span class="${cantoBookmarkClass}" style="${cantoBookmarkHighlightStyle}">${originalText.substring(indices[0], indices[1])}</span>${originalText.substring(indices[1])}`
+  const originalText = originalBody.textContent // .trim()
+  if (!indices || indices.length === 0) return `<span class="unbookmarked">${originalText}</span>`
+  return `<span class="${cantoPreBookmarkClass}">${originalText.substring(0, indices[0])}</span><span id="${cantoBookmarkId}" class="${cantoBookmarkClass}" style="${cantoBookmarkHighlightStyle}">${originalText.substring(indices[0], indices[1])}</span><span class="${cantoPostBookmarkClass}">${originalText.substring(indices[1])}</span>`
+}
+
+const GetSiblings = (elem) => {
+  // Setup siblings array and get the first sibling
+  var siblings = []
+  var sibling = elem.parentNode.firstChild
+
+  // Loop through each sibling and push to the array
+  while (sibling) {
+    if (sibling.nodeType === Node.ELEMENT_NODE && sibling !== elem) {
+      siblings.push(sibling)
+    }
+    sibling = sibling.nextSibling
+  }
+
+  return siblings
 }
 
 export {
@@ -59,5 +75,6 @@ export {
   GetStreamLink,
   GetCantoLink,
   GenerateGeocoderRequestLink,
-  BookmarkCantoContent
+  BookmarkCantoContent,
+  GetSiblings
 }

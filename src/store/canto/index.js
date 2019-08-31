@@ -3,7 +3,8 @@ import dialog from './dialog'
 const state = {
   shareCantoLink: null,
   canto: null,
-  isRouteChangeSafe: false
+  isRouteChangeSafe: false,
+  bodyUserSelection: null
 }
 
 const getters = {
@@ -15,6 +16,9 @@ const getters = {
   },
   getIsRouteChangeSafe (state) {
     return state.isRouteChangeSafe
+  },
+  getBodyUserSelection (state) {
+    return state.bodyUserSelection
   }
 }
 
@@ -33,6 +37,9 @@ const mutations = {
   },
   setIsRouteChangeSafe (state, isRouteChangeSafe) {
     state.isRouteChangeSafe = isRouteChangeSafe
+  },
+  setBodyUserSelection (state, indices) {
+    state.bodyUserSelection = indices
   }
 }
 

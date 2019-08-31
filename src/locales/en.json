@@ -291,6 +291,7 @@
       "likeButtonText": "Bookmark",
       "unlikeButtonText": "Unbookmark",
       "message": {
+        "unselectedNewBookmarkIndexError": "Select a new bookmark position to move bookmark!",
         "genericCastError": "✖️ Like could not be casted",
         "genericUncastError": "✖️ Like could not be uncasted"
       }
