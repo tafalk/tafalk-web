@@ -7,6 +7,7 @@ export const Search = gql`query Search($query: String!) {
       id
       username
       profilePictureKey
+      cognitoIdentityId
     }
     ... on Stream {
       __typename
@@ -25,6 +26,7 @@ export const Search = gql`query Search($query: String!) {
       user {
         username
         profilePictureKey
+        cognitoIdentityId
       }
     }
     ... on Canto {
@@ -36,6 +38,7 @@ export const Search = gql`query Search($query: String!) {
       user {
         username
         profilePictureKey
+        cognitoIdentityId
       }
     }
   }

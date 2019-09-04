@@ -138,7 +138,7 @@ export default {
     this.authorColor = GetHexColorOfString(((this.canto || {}).user || {}).username || '')
 
     this.authorProfilePictureObjectUrl = (this.authenticatedUser && ((this.canto || {}).user || {}).profilePictureKey != null)
-      ? await Storage.get(((this.canto || {}).user || {}).profilePictureKey, { level: 'protected' })
+      ? await Storage.get(((this.canto || {}).user || {}).profilePictureKey, { level: 'protected', identityId: this.canto.user.cognitoIdentityId })
       : null
   },
   computed: {

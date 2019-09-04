@@ -26,7 +26,8 @@ const GetStoreUserWithCognitoIdentityId = async (dbUser, cognitoIdentityId) => {
 
 const GetStoreUser = async dbUser => {
   const dbUserProfilePictureObjectUrl = dbUser.profilePictureKey ? await Storage.get(dbUser.profilePictureKey, {
-    level: 'protected'
+    level: 'protected',
+    identityId: dbUser.cognitoIdentityId
   }) : null
 
   return {

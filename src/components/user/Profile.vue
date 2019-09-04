@@ -47,7 +47,7 @@
                     <v-layout row wrap>
                       <v-flex d-flex xs12>
                         <div class="display-1 text-xs-center text-sm-right grey--text">
-                          @{{visitedUser.username}}
+                          @{{ visitedUser.username }}
                         </div>
                       </v-flex>
                       <v-flex d-flex xs12>
@@ -72,15 +72,15 @@
           </v-container>
           <v-divider />
           <tafalk-profile-tabs
-            :userId="visitedUser.id"
+            :userId="(visitedUser || {}).id"
             :isVisitingOwnProfile="isVisitingOwnProfile"
           ></tafalk-profile-tabs>
         </v-card>
 
         <!-- User Edit Info Dialog -->
         <tafalk-user-change-profile-picture-dialog
-          :userId="visitedUser.id"
-          :existingProfilePictureObjectUrl="visitedUser.profilePictureObjectUrl"
+          :userId="(visitedUser || {}).id"
+          :existingProfilePictureObjectUrl="(visitedUser || {}).profilePictureObjectUrl"
         ></tafalk-user-change-profile-picture-dialog>
         <!-- Stop Watching 'Are you sure' dialog -->
         <tafalk-user-stop-watching-confirmation-dialog />
@@ -88,20 +88,20 @@
         <tafalk-user-block-confirmation-dialog />
         <!-- User Edit Info Dialog -->
         <tafalk-user-info-edit-dialog
-          :userId="visitedUser.id"
-          :bio="visitedUser.bio"
-          :location="visitedUser.location"
-          :site="visitedUser.site"
+          :userId="(visitedUser || {}).id"
+          :bio="(visitedUser || {}).bio"
+          :location="(visitedUser || {}).location"
+          :site="(visitedUser || {}).site"
         ></tafalk-user-info-edit-dialog>
         <!-- User Edit Privacy Dialog -->
         <tafalk-user-privacy-edit-dialog
-          :userId="visitedUser.id"
-          :profilePrivacy="visitedUser.profilePrivacy"
-          :allowDirectMesages="visitedUser.allowDirectMesages"
+          :userId="(visitedUser || {}).id"
+          :profilePrivacy="(visitedUser || {}).profilePrivacy"
+          :allowDirectMesages="(visitedUser || {}).allowDirectMesages"
         ></tafalk-user-privacy-edit-dialog>
         <!-- User Delete Account Confirmation Dialog -->
         <tafalk-user-delete-account-confirmation-dialog
-          :userId="visitedUser.id">
+          :userId="(visitedUser || {}).id">
         </tafalk-user-delete-account-confirmation-dialog>
       </div>
     </v-flex>
@@ -164,26 +164,35 @@ export default {
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
+    authenticatedUserId () {
+      return (this.authenticatedUser || {}).id
+    },
+    authenticatedUserName () {
+      return (this.authenticatedUser || {}).username
+    },
     visitedUser () {
       return this.getVisitedUser
     },
     // visibilty deciders
     isVisitingOwnProfile () {
-      return this.authenticatedUser != null && this.authenticatedUser.username === this.visitedUser.username
+      return this.authenticatedUser && this.visitedUser && this.authenticatedUserName === this.visitedUser.username
     },
     isVisitorAllowed () {
       // Blocked User Check
-      const outboundBlockId = this.visitedUser.connectionsWithAuthenticatedUser.outbound.blockId
+      if (!this.visitedUser || !this.visitedUser.connectionsWithAuthenticatedUser || !this.visitedUser.connectionsWithAuthenticatedUser.outbound) {
+        return false
+      }
+      const outboundBlockId = this.visitedUser.connectionsWithAuthenticatedUser.outbound.blockId || null
 
       if (outboundBlockId && outboundBlockId.length > 0) {
         return false
       }
 
       // Other general privacy setting based checks
-      if (!this.authenticatedUser || this.visitedUser.profilePrivacy === 'Private') {
+      if (!this.authenticatedUser || !this.visitedUser || this.visitedUser.profilePrivacy === 'Private') {
         // Locked to anyone
         return false
-      } else if (this.visitedUser.profileUserPrivacy === 'Protected' && this.authenticatedUser == null) {
+      } else if (this.visitedUser && this.visitedUser.profileUserPrivacy === 'Protected' && this.authenticatedUser == null) {
         // Locked to outcomers and an outcomer is visiting right now
         return false
       } else {
@@ -195,13 +204,13 @@ export default {
       return this.isVisitingOwnProfile || this.isVisitorAllowed
     },
     visitedUserBio () {
-      return (this.visitedUser.bio != null && this.visitedUser.bio.length > 0) ? this.visitedUser.bio : this.defaultBio
+      return (this.visitedUser && this.visitedUser.bio && this.visitedUser.bio.length > 0) ? this.visitedUser.bio : this.defaultBio
     },
     visitedUserColor () {
-      return GetHexColorOfString(this.visitedUser.username)
+      return GetHexColorOfString(this.visitedUser.username || '')
     },
     visitedUserLocationValue () {
-      return this.visitedUser.location || this.defaultLocation
+      return (this.visitedUser || {}).location || this.defaultLocation
     },
     visitedUserAccountCreationDateStr () {
       return this.visitedUser ? (new Date(this.visitedUser.createdAt)).toISOString().slice(0, 10) : null
@@ -245,7 +254,7 @@ export default {
 
         if (!visitedUserDbResult) {
           this.$router.push({ name: 'notFound' })
-        } else if (visitedUserDbResult.username === this.authenticatedUser.username) {
+        } else if (visitedUserDbResult.username === this.authenticatedUserName) {
           // TODO: fails when going directly to own profile page?
           visitedUserStoreObject = this.authenticatedUser
         } else {
@@ -253,13 +262,13 @@ export default {
 
           // get connections
           const graphqlConnectionsFromAuthenticatedUserToVisitedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
-            actorUserId: this.authenticatedUser.id,
+            actorUserId: this.authenticatedUserId,
             targetUserId: visitedUserDbResult.id
           }))
 
           const graphqlConnectionsFromVisitedUserToAuthenticatedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
-            actorUserId: visitedUserDbResult.id,
-            targetUserId: this.authenticatedUser.id
+            actorUserId: (visitedUserDbResult || {}).id || '',
+            targetUserId: this.authenticatedUserId
           }))
 
           const inboundUserInteractionsIdIndices = graphqlConnectionsFromAuthenticatedUserToVisitedUserResult.data.queryUserInteractionsBetweenUsersByUserIdIndices
