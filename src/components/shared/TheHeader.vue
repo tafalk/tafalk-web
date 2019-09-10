@@ -16,7 +16,7 @@
     </v-progress-linear>
 
     <!-- Mobile search (removes all on small screens when on ) -->
-    <v-container fluid v-if="isMobileSearchHeaderOn && $vuetify.breakpoint.smAndDown">
+    <v-container v-if="isMobileSearchHeaderOn && $vuetify.breakpoint.smAndDown">
       <v-text-field
         single-line
         clearable

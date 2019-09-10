@@ -13,14 +13,13 @@
               :src="item.imgSrc"
             >
               <template v-slot:placeholder>
-                <v-layout
-                  fill-height
-                  align-center
-                  justify-center
-                  ma-0
+                <v-row
+                  align="center"
+                  justify="center"
+                  class="ma-0"
                 >
                   <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                </v-layout>
+                </v-row>
               </template>
             </v-img>
             <v-card-text>

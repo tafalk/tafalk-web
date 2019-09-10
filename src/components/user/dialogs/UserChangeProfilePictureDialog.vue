@@ -1,62 +1,45 @@
 <template>
-  <v-layout row justify-center>
-    <v-dialog v-model="getIsChangeProfilePictureDialogVisible" persistent max-width="750px">
-      <v-card>
-        <v-card-title primary-title>
+  <v-dialog v-model="getIsChangeProfilePictureDialogVisible" persistent max-width="750px">
+    <v-card>
+      <v-card-title primary-title>
+        <div>
+          <h3 class="headline mb-0">{{ $t('user.profilePicture.dialog.title') }}</h3>
           <div>
-            <h3 class="headline mb-0">{{ $t('user.profilePicture.dialog.title') }}</h3>
-            <div>
-              <span class="grey--text">{{ $t('user.profilePicture.dialog.subtitle') }}</span>
-            </div>
+            <span class="grey--text">{{ $t('user.profilePicture.dialog.subtitle') }}</span>
           </div>
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-lg text-xs-center>
-            <v-avatar pt-1 size="200" color="grey" v-if="imageUrl">
-              <v-img :src="imageUrl" height="200" />
-            </v-avatar>
-            <v-file-input
-              v-model="file"
-              flat
-              clearable
-              :label="$t('user.profilePicture.selectImageLabel')"
-              accept="image/*"
-              @change="onFileChange"
-            ></v-file-input>
-            <!--
-            <v-text-field
-              :label="$t('user.profilePicture.selectImageLabel')"
-              @click='onPickFile'
-              v-model='imageFileName'
-              prepend-icon="mdi-paperclip"
-            ></v-text-field>
-            <input
-              type="file"
-              style="display: none"
-              ref="fileInput"
-              accept="image/*"
-              @change="onFilePicked"
-            >
-            -->
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            color="primary"
-            @click.stop="closeAndClearDialog"
-          >{{ $t('common.options.cancelButtonText') }}</v-btn>
-          <v-btn
-            color="primary"
-            @click.stop="onUploadSelectedProfilePictureClick"
-            :loading="uploadLoading"
-            :disabled="uploadLoading || !file"
-          >{{ $t('common.options.uploadButtonText') }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-layout>
+        </div>
+      </v-card-title>
+      <v-card-text>
+        <v-container grid-list-lg text-xs-center>
+          <v-avatar pt-1 size="200" color="grey" v-if="imageUrl">
+            <v-img :src="imageUrl" height="200" />
+          </v-avatar>
+          <v-file-input
+            v-model="file"
+            flat
+            clearable
+            :label="$t('user.profilePicture.selectImageLabel')"
+            accept="image/*"
+            @change="onFileChange"
+          ></v-file-input>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          text
+          color="primary"
+          @click.stop="closeAndClearDialog"
+        >{{ $t('common.options.cancelButtonText') }}</v-btn>
+        <v-btn
+          color="primary"
+          @click.stop="onUploadSelectedProfilePictureClick"
+          :loading="uploadLoading"
+          :disabled="uploadLoading || !file"
+        >{{ $t('common.options.uploadButtonText') }}</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>

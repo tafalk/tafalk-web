@@ -1,5 +1,6 @@
 <template>
-  <v-flex d-flex xs12 offset-sm4 sm8 offset-md6 md6>
+<v-row>
+  <v-col cols="12" sm="6">
     <!-- direct messaging button -->
     <!--
     <v-btn
@@ -10,9 +11,11 @@
     -->
 
     <!-- watch/unwatch button -->
-    <v-btn v-if="inboundWatchIdFromAuthenticatedUser == null || inboundWatchIdFromAuthenticatedUser.length === 0"
+    <v-btn
+      v-if="inboundWatchIdFromAuthenticatedUser == null || inboundWatchIdFromAuthenticatedUser.length === 0"
       color="warning"
       @click="onWatchThisUserClick"
+      block
     ><v-icon>mdi-star-outline</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watch') }}
     </v-btn>
 
@@ -21,24 +24,33 @@
       color="grey"
       class="white--text"
       @click="stopWatchingDialog = true"
+      block
     ><v-icon>mdi-star</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watching') }}
     </v-btn>
+  </v-col>
+  <v-spacer></v-spacer>
+    <v-col cols="12" sm="6">
 
     <!-- block/unblock button -->
-    <v-btn v-if="inboundBlockIdFromAuthenticatedUser == null  || inboundBlockIdFromAuthenticatedUser.length === 0"
+    <v-btn
+      v-if="inboundBlockIdFromAuthenticatedUser == null  || inboundBlockIdFromAuthenticatedUser.length === 0"
       color="grey"
       :disabled="inboundBlockIdFromAuthenticatedUser != null && inboundWatchIdFromAuthenticatedUser.length > 0"
       @click="blockUserDialog = true"
+      block
     ><v-icon>mdi-cancel</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.block') }}
     </v-btn>
 
-    <v-btn v-else-if="inboundWatchIdFromAuthenticatedUser == null || inboundWatchIdFromAuthenticatedUser.length === 0"
+    <v-btn
+      v-else-if="inboundWatchIdFromAuthenticatedUser == null || inboundWatchIdFromAuthenticatedUser.length === 0"
       depressed
       color="error"
       @click="onUnblockThisUserClick"
+      block
     ><v-icon>mdi-adjust</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.unblock') }}
     </v-btn>
-  </v-flex>
+  </v-col>
+</v-row>
 </template>
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'

@@ -1,14 +1,14 @@
 <template>
   <div class="home">
-    <v-container grid-list-lg pt-5>
+    <v-container pt-5>
       <!-- full page loader -->
       <tafalk-page-loading-progress v-if="!getIsPageReady" />
       <!-- Regular Content -->
-      <v-layout v-else-if="!searchText || searchText.length === 0" row wrap>
+      <v-row v-else-if="!searchText || searchText.length === 0">
         <!-- Streams (No search) -->
-        <v-flex offset-md2 md8 xs12 infinite-wrapper v-if="isStreamListType">
-          <v-layout row wrap>
-            <v-flex md12>
+        <v-col cols="12" offset-md="2" md="8" infinite-wrapper v-if="isStreamListType">
+          <v-row row wrap>
+            <v-col cols="12">
               <v-list>
                 <template v-for="(stream, index) in streamList">
                   <tafalk-stream-list-item
@@ -24,14 +24,14 @@
                   ></v-divider>
                 </template>
               </v-list>
-            </v-flex>
+            </v-col>
             <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
-          </v-layout>
-        </v-flex>
+          </v-row>
+        </v-col>
         <!-- Cantos (No search) -->
-        <v-flex offset-md2 md8 xs12 infinite-wrapper v-else-if="isCantoListType">
-          <v-layout row wrap>
-            <v-flex md12>
+        <v-col cols="12" offset-md="2" md="8" infinite-wrapper v-else-if="isCantoListType">
+          <v-row>
+            <v-col cols="12">
               <v-list>
                 <template v-for="(canto, index) in cantoList">
                   <tafalk-canto-list-item
@@ -48,38 +48,38 @@
                   ></v-divider>
                 </template>
               </v-list>
-            </v-flex>
+            </v-col>
             <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
-          </v-layout>
-        </v-flex>
-      </v-layout>
+          </v-row>
+        </v-col>
+      </v-row>
       <!-- Search Text Not Long Enough -->
-      <v-layout v-else-if="!isSearchTextLongEnough" row wrap>
-        <v-flex offset-md2 md8>
-          <v-layout row wrap>
-            <v-flex md12>
+      <v-row v-else-if="!isSearchTextLongEnough">
+        <v-col cols="12" offset-md="2" md="8">
+          <v-row>
+            <v-col cols="12">
               <h1 class="grey--text">{{ $t('home.search.searchTextNotLongEnoughWarning') }}</h1>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
       <!-- No Results matching search -->
-      <v-layout v-else-if="searchResults.length === 0" row wrap>
-        <v-flex offset-md2 md8>
-          <v-layout row wrap>
-            <v-flex md12>
+      <v-row v-else-if="searchResults.length === 0">
+        <v-col cols="12" offset-md="2" md="8">
+          <v-row>
+            <v-col cols="12">
               <h1 class="grey--text">{{ $t('home.search.noResult', { searchText: searchText }) }}</h1>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
       <!-- Search Results -->
-      <v-layout v-else row wrap>
+      <v-row v-else>
         <!-- Search Result (Users) -->
-        <v-flex offset-md2 md8 xs12 class="mb-4" v-if="searchUserTypeResultList && searchUserTypeResultList.length > 0">
+        <v-col cols="12" offset-md="2" md="8" class="mb-4" v-if="searchUserTypeResultList && searchUserTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.userTitle', { resultCount: searchUserTypeResultList.length }) }}</span>
-          <v-layout row wrap>
-            <v-flex xs12 class="mt-2">
+          <v-row>
+            <v-col cols="12" class="mt-2">
               <v-list>
                 <template v-for="(searchUserTypeResult, index) in searchUserTypeResultList">
                   <tafalk-user-list-item
@@ -94,15 +94,15 @@
                   ></v-divider>
                 </template>
               </v-list>
-            </v-flex>
-          </v-layout>
-        </v-flex>
+            </v-col>
+          </v-row>
+        </v-col>
         <br />
         <!-- Search Result (Streams) -->
-        <v-flex offset-md2 md8 xs12 class="mb-4" v-if="searchStreamTypeResultList && searchStreamTypeResultList.length > 0">
+        <v-col cols="12" offset-md="2" md="8" class="mb-4" v-if="searchStreamTypeResultList && searchStreamTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.streamTitle', { resultCount: searchStreamTypeResultList.length }) }}</span>
-          <v-layout row wrap>
-            <v-flex xs12 class="mt-2">
+          <v-row>
+            <v-col cols="12" class="mt-2">
               <v-list>
                 <template v-for="(searchStreamTypeResult, index) in searchStreamTypeResultList">
                   <tafalk-stream-list-item
@@ -118,15 +118,15 @@
                   ></v-divider>
                 </template>
               </v-list>
-            </v-flex>
-          </v-layout>
-        </v-flex>
+            </v-col>
+          </v-row>
+        </v-col>
         <br />
         <!-- Search Result (Cantos) -->
-        <v-flex offset-md2 md8 xs12 v-if="searchCantoTypeResultList && searchCantoTypeResultList.length > 0">
+        <v-col cols="12" offset-md="2" md="8" v-if="searchCantoTypeResultList && searchCantoTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.cantoTitle', { resultCount: searchCantoTypeResultList.length }) }}</span>
-          <v-layout row wrap>
-            <v-flex xs12 class="mt-2">
+          <v-row>
+            <v-col cols="12" class="mt-2">
               <v-list>
                 <template v-for="(searchCantoTypeResult, index) in searchCantoTypeResultList">
                   <tafalk-canto-list-item
@@ -143,10 +143,10 @@
                   ></v-divider>
                 </template>
               </v-list>
-            </v-flex>
-          </v-layout>
-        </v-flex>
-      </v-layout>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
     </v-container>
 
     <v-bottom-navigation

@@ -1,5 +1,5 @@
 <template>
-<v-container fluid grid-list-lg pa-5>
+<v-container pa-5>
   <!-- Full page loader -->
   <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- Not allowed -->

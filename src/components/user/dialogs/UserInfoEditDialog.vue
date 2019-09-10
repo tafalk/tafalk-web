@@ -1,82 +1,77 @@
 <template>
-  <v-layout row justify-center>
-    <v-dialog v-model="getIsUserInfoEditDialogVisible" persistent max-width="750px">
-      <v-card>
-        <v-card-title class="headline" primary-title>{{ $t('user.edit.info.dialog.title') }}</v-card-title>
-        <v-card-text>
-        <v-form v-model="valid">
-          <!-- Preferred Name -->
-          <!--
-          <v-text-field
-            v-model="preferredNameModel"
-            :rules="preferredNameRules"
-            :counter="24"
-            min="2"
-            max="24"
-            maxlength="24"
-            :label="$t('user.edit.info.dialog.preferredNameLabel')"
-          ></v-text-field>
-          -->
-
-          <!-- Bio -->
-          <v-textarea
-            v-model="bioModel"
-            :rules="bioRules"
-            :counter="40"
-            max="40"
-            maxlength="40"
-            no-resize
-            rows="1"
-            :placeholder="$t('user.edit.info.dialog.bioPlaceholder')"
-          >
-            <div slot="label">{{ $t('user.edit.info.dialog.bioLabel') }} <small>{{ $t('common.label.optionalPares') }}</small></div>
-          </v-textarea>
-
-          <!-- Location -->
-          <v-autocomplete
-            :label="$t('user.edit.info.dialog.locationLabel')"
-            v-model="locationModel"
-            :items="locationEntries"
-            :search-input.sync="locationSearchText"
-            :loading="isLocationDataLoading"
-            flat
-            dense
-            item-text="name"
-            item-value="name"
-            hide-no-data
-          >
-            <template v-slot:item="{ item }">
-              <v-list-item-content>
-                <v-list-item-title>{{ item.name }}</v-list-item-title>
-              </v-list-item-content>
-              <v-list-item-action class="grey--text">{{ item.type }}</v-list-item-action>
-            </template>
-          </v-autocomplete>
-
-          <!-- Sites -->
-          <v-text-field
-            v-model="siteModel"
-            :rules="siteRules"
-            :label="$t('user.edit.info.dialog.siteLabel')"
-          ></v-text-field>
-        </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click.native="setIsUserInfoEditDialogVisible(false)"
-          >{{ $t('common.options.closeButtonText') }}</v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click.native="onSaveInfoEditClick"
-          >{{ $t('common.options.saveButtonText') }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-layout>
+  <v-dialog v-model="getIsUserInfoEditDialogVisible" persistent max-width="750px">
+    <v-card>
+      <v-card-title class="headline" primary-title>{{ $t('user.edit.info.dialog.title') }}</v-card-title>
+      <v-card-text>
+      <v-form v-model="valid">
+        <!-- Preferred Name -->
+        <!--
+        <v-text-field
+          v-model="preferredNameModel"
+          :rules="preferredNameRules"
+          :counter="24"
+          min="2"
+          max="24"
+          maxlength="24"
+          :label="$t('user.edit.info.dialog.preferredNameLabel')"
+        ></v-text-field>
+        -->
+        <!-- Bio -->
+        <v-textarea
+          v-model="bioModel"
+          :rules="bioRules"
+          :counter="40"
+          max="40"
+          maxlength="40"
+          no-resize
+          rows="1"
+          :placeholder="$t('user.edit.info.dialog.bioPlaceholder')"
+        >
+          <div slot="label">{{ $t('user.edit.info.dialog.bioLabel') }} <small>{{ $t('common.label.optionalPares') }}</small></div>
+        </v-textarea>
+        <!-- Location -->
+        <v-autocomplete
+          :label="$t('user.edit.info.dialog.locationLabel')"
+          v-model="locationModel"
+          :items="locationEntries"
+          :search-input.sync="locationSearchText"
+          :loading="isLocationDataLoading"
+          flat
+          dense
+          item-text="name"
+          item-value="name"
+          hide-no-data
+        >
+          <template v-slot:item="{ item }">
+            <v-list-item-content>
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action class="grey--text">{{ item.type }}</v-list-item-action>
+          </template>
+        </v-autocomplete>
+        <!-- Sites -->
+        <v-text-field
+          v-model="siteModel"
+          :rules="siteRules"
+          :label="$t('user.edit.info.dialog.siteLabel')"
+        ></v-text-field>
+      </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="blue darken-1"
+          text
+          @click.native="setIsUserInfoEditDialogVisible(false)"
+        >{{ $t('common.options.closeButtonText') }}</v-btn>
+        <v-btn
+          color="blue darken-1"
+          text
+          @click.native="onSaveInfoEditClick"
+        >{{ $t('common.options.saveButtonText') }}</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
