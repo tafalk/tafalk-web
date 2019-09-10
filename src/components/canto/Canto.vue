@@ -1,5 +1,5 @@
 <template>
-<v-container fluid grid-list-lg pa-5>
+<v-container pa-5>
   <!-- Full page loader -->
   <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- Not allowed -->
@@ -397,7 +397,7 @@ export default {
 
         // set profile pic
         this.authorProfilePictureObjectUrl = this.canto.user.profilePictureKey != null
-          ? await Storage.get(this.authenticatedUser && this.canto.user.profilePictureKey, { level: 'protected' })
+          ? await Storage.get(this.authenticatedUser && this.canto.user.profilePictureKey, { level: 'protected', identityId: this.canto.user.cognitoIdentityId })
           : null
 
         // Subscribe to canto itself for live content changes

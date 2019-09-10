@@ -1,5 +1,5 @@
 <template>
-<v-container fluid grid-list-lg pa-5>
+<v-container>
   <!-- Full page loader -->
   <tafalk-page-loading-progress v-if="!getIsPageReady" />
   <!-- Not allowed -->
@@ -454,7 +454,7 @@ export default {
 
         // set profile pic
         this.authorProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
-          ? await Storage.get(this.author.profilePictureKey, { level: 'protected' })
+          ? await Storage.get(this.author.profilePictureKey, { level: 'protected', identityId: this.author.cognitoIdentityId })
           : null
 
         // Subscribe to stream itself for live content changes

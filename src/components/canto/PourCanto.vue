@@ -1,12 +1,12 @@
 <template>
   <tafalk-stream-authorization-required v-if="!isAllowed"></tafalk-stream-authorization-required>
-  <v-container v-else fluid grid-list-lg pt-5>
+  <v-container v-else pt-5>
     <!-- full page loader -->
     <tafalk-page-loading-progress v-if="!getIsPageReady" />
     <!-- Page itself -->
-    <v-layout row wrap v-else>
+    <v-row v-else>
       <tafalk-canto-introduction v-if="isCantoNew"></tafalk-canto-introduction>
-      <v-flex xs12>
+      <v-col cols="12">
         <v-card flat>
           <v-toolbar dense flat>
             <v-toolbar-title v-if="processState === 'saved'">
@@ -41,8 +41,8 @@
             ></v-textarea>
           </v-form>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

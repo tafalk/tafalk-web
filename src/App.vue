@@ -2,7 +2,7 @@
   <v-app>
     <tafalk-header/>
     <v-content>
-      <v-container fluid my-4 py-2>
+      <v-container>
         <!-- content -->
         <router-view/>
         <!-- site messages -->

@@ -1,24 +1,33 @@
 <template>
-<v-container fluid pt-5>
-  <!-- full page loader -->
-  <tafalk-page-loading-progress v-if="!getIsPageReady" />
-  <!-- regular content -->
-  <v-layout row wrap v-else>
-    <v-flex xs12 offset-md2 md8>
-      <!-- Not Allowed To See -->
-      <tafalk-not-allowed-profile v-if="!isProfileAllowed" />
-      <!-- Allowed -->
-      <div v-else>
+<!-- full page loader -->
+<tafalk-page-loading-progress v-if="!getIsPageReady" />
+<!-- regular content -->
+<v-container v-else pt-5>
+  <!-- Not Allowed To See -->
+  <tafalk-not-allowed-profile v-if="!isProfileAllowed" />
+  <!-- Allowed -->
+  <v-container v-else>
+    <v-row>
+      <v-col
+        cols="12"
+        md="8"
+        offset-md="2"
+        class="text-center"
+      >
         <v-card flat>
-          <!-- edit profile button -->
+          <!-- Profile Edit Buttons (Authorized User) -->
           <tafalk-profile-edit-speed-dial v-if="isVisitingOwnProfile" />
-
-          <v-container fluid grid-list-lg>
-            <v-layout row wrap>
-              <!-- Profile Pic Section -->
-              <v-flex d-flex xs12 md4>
-                <v-container pt-3 fluid grid-list-md>
-                  <v-layout align-center column>
+          <!-- User Info -->
+          <v-container v-if="visitedUser">
+            <v-row>
+              <!-- Avatar Section -->
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <v-row>
+                  <v-col cols="12">
+                    <!-- Picture itself -->
                     <v-avatar pt-1 size="150">
                       <v-img
                         v-if="authenticatedUser && visitedUser.profilePictureObjectUrl"
@@ -31,81 +40,106 @@
                         :style="{backgroundColor: visitedUserColor}"
                       />
                     </v-avatar>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <!-- Change Profile Picture Button -->
                     <v-btn
                       color="primary"
                       text
                       v-if="isVisitingOwnProfile"
                       @click.stop="setIsChangeProfilePictureDialogVisible(true)"
                     >{{ $t('user.profilePage.changeProfilePictureButtonText') }}</v-btn>
-                  </v-layout>
-                </v-container>
-              </v-flex>
-              <!-- username, bio, site etc. section -->
-              <v-flex d-flex xs12 md8>
-                <v-card-text>
-                  <v-container fluid v-if="visitedUser">
-                    <v-layout row wrap>
-                      <v-flex d-flex xs12>
-                        <div class="display-1 text-xs-center text-sm-right grey--text">
-                          @{{visitedUser.username}}
-                        </div>
-                      </v-flex>
-                      <v-flex d-flex xs12>
-                        <div class="text-xs-left grey--text"><v-icon color="grey">mdi-bio</v-icon>&nbsp;{{visitedUserBio}}</div>
-                      </v-flex>
-                      <v-flex xs12 sm6>
-                        <p class="text-xs-left grey--text"><v-icon color="grey">mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</p>
-                        <p class="text-xs-left grey--text"><v-icon color="grey">mdi-web</v-icon>&nbsp;{{visitedUser.site}}</p>
-                      </v-flex>
-                      <v-flex xs12 sm6>
-                        <p v-if="visitedUserAccountCreationDateStr" class="text-xs-left grey--text"><v-icon color="grey">mdi-calendar-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</p>
-                        <p class="text-xs-left grey--text"><v-icon color="grey">mdi-lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</p>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-card-text>
-              </v-flex>
-              <tafalk-user-interaction-button-group
-                v-if="authenticatedUser && !isVisitingOwnProfile"
-              ></tafalk-user-interaction-button-group>
-            </v-layout>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <!-- User Info Section -->
+              <v-col
+                cols="12"
+                md="8"
+              >
+                <!-- Basic Info -->
+                <v-row align="center">
+                  <v-col cols="12">
+                    <!-- User Name -->
+                    <v-row align="center">
+                      <v-col cols="12">
+                        <div class="display-1 text-xs-center text-sm-left grey--text">@{{ visitedUser.username }}</div>
+                      </v-col>
+                    </v-row>
+                    <!-- Bio -->
+                    <v-row align="center">
+                      <v-col cols="12">
+                        <div class="text-left grey--text"><v-icon color="grey">mdi-bio</v-icon>&nbsp;{{visitedUserBio}}</div>
+                      </v-col>
+                    </v-row>
+                    <!-- Other Basic Info -->
+                    <v-row align="center">
+                      <v-col cols="12" sm="6">
+                        <p class="text-left grey--text"><v-icon color="grey">mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</p>
+                        <p class="text-left grey--text"><v-icon color="grey">mdi-web</v-icon>&nbsp;{{visitedUser.site}}</p>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <p v-if="visitedUserAccountCreationDateStr" class="text-left grey--text"><v-icon color="grey">mdi-calendar-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</p>
+                        <p class="text-left grey--text"><v-icon color="grey">mdi-lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</p>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+                <!-- User Interaction Button Group -->
+                <v-row>
+                  <v-col cols="12">
+                    <tafalk-user-interaction-button-group
+                      v-if="authenticatedUser && !isVisitingOwnProfile"
+                    ></tafalk-user-interaction-button-group>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
           </v-container>
           <v-divider />
-          <tafalk-profile-tabs
+          <!-- Tabs -->
+          <tafalk-profile-tabs v-if="visitedUser"
             :userId="visitedUser.id"
             :isVisitingOwnProfile="isVisitingOwnProfile"
           ></tafalk-profile-tabs>
         </v-card>
+      </v-col>
+    </v-row>
 
-        <!-- User Edit Info Dialog -->
-        <tafalk-user-change-profile-picture-dialog
-          :userId="visitedUser.id"
-          :existingProfilePictureObjectUrl="visitedUser.profilePictureObjectUrl"
-        ></tafalk-user-change-profile-picture-dialog>
-        <!-- Stop Watching 'Are you sure' dialog -->
-        <tafalk-user-stop-watching-confirmation-dialog />
-        <!-- Block 'Are you sure' dialog -->
-        <tafalk-user-block-confirmation-dialog />
-        <!-- User Edit Info Dialog -->
-        <tafalk-user-info-edit-dialog
-          :userId="visitedUser.id"
-          :bio="visitedUser.bio"
-          :location="visitedUser.location"
-          :site="visitedUser.site"
-        ></tafalk-user-info-edit-dialog>
-        <!-- User Edit Privacy Dialog -->
-        <tafalk-user-privacy-edit-dialog
-          :userId="visitedUser.id"
-          :profilePrivacy="visitedUser.profilePrivacy"
-          :allowDirectMesages="visitedUser.allowDirectMesages"
-        ></tafalk-user-privacy-edit-dialog>
-        <!-- User Delete Account Confirmation Dialog -->
-        <tafalk-user-delete-account-confirmation-dialog
-          :userId="visitedUser.id">
-        </tafalk-user-delete-account-confirmation-dialog>
-      </div>
-    </v-flex>
-  </v-layout>
+    <!-- Dialogs -->
+    <!-- User Edit Info Dialog -->
+    <tafalk-user-change-profile-picture-dialog
+      v-if="visitedUser"
+      :userId="visitedUser.id"
+      :existingProfilePictureObjectUrl="visitedUser.profilePictureObjectUrl"
+    ></tafalk-user-change-profile-picture-dialog>
+    <!-- Stop Watching 'Are you sure' dialog -->
+    <tafalk-user-stop-watching-confirmation-dialog />
+    <!-- Block 'Are you sure' dialog -->
+    <tafalk-user-block-confirmation-dialog />
+    <!-- User Edit Info Dialog -->
+    <tafalk-user-info-edit-dialog
+      v-if="visitedUser"
+      :userId="visitedUser.id"
+      :bio="visitedUser.bio"
+      :location="visitedUser.location"
+      :site="visitedUser.site"
+    ></tafalk-user-info-edit-dialog>
+    <!-- User Edit Privacy Dialog -->
+    <tafalk-user-privacy-edit-dialog
+      v-if="visitedUser"
+      :userId="visitedUser.id"
+      :profilePrivacy="visitedUser.profilePrivacy"
+      :allowDirectMesages="visitedUser.allowDirectMesages"
+    ></tafalk-user-privacy-edit-dialog>
+    <!-- User Delete Account Confirmation Dialog -->
+    <tafalk-user-delete-account-confirmation-dialog
+      v-if="visitedUser"
+      :userId="visitedUser.id">
+    </tafalk-user-delete-account-confirmation-dialog>
+  </v-container>
 </v-container>
 </template>
 
@@ -164,26 +198,35 @@ export default {
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
+    authenticatedUserId () {
+      return (this.authenticatedUser || {}).id
+    },
+    authenticatedUserName () {
+      return (this.authenticatedUser || {}).username
+    },
     visitedUser () {
       return this.getVisitedUser
     },
     // visibilty deciders
     isVisitingOwnProfile () {
-      return this.authenticatedUser != null && this.authenticatedUser.username === this.visitedUser.username
+      return this.authenticatedUser && this.visitedUser && this.authenticatedUserName === this.visitedUser.username
     },
     isVisitorAllowed () {
       // Blocked User Check
-      const outboundBlockId = this.visitedUser.connectionsWithAuthenticatedUser.outbound.blockId
+      if (!this.visitedUser || !this.visitedUser.connectionsWithAuthenticatedUser || !this.visitedUser.connectionsWithAuthenticatedUser.outbound) {
+        return false
+      }
+      const outboundBlockId = this.visitedUser.connectionsWithAuthenticatedUser.outbound.blockId || null
 
       if (outboundBlockId && outboundBlockId.length > 0) {
         return false
       }
 
       // Other general privacy setting based checks
-      if (!this.authenticatedUser || this.visitedUser.profilePrivacy === 'Private') {
+      if (!this.authenticatedUser || !this.visitedUser || this.visitedUser.profilePrivacy === 'Private') {
         // Locked to anyone
         return false
-      } else if (this.visitedUser.profileUserPrivacy === 'Protected' && this.authenticatedUser == null) {
+      } else if (this.visitedUser && this.visitedUser.profileUserPrivacy === 'Protected' && this.authenticatedUser == null) {
         // Locked to outcomers and an outcomer is visiting right now
         return false
       } else {
@@ -195,13 +238,13 @@ export default {
       return this.isVisitingOwnProfile || this.isVisitorAllowed
     },
     visitedUserBio () {
-      return (this.visitedUser.bio != null && this.visitedUser.bio.length > 0) ? this.visitedUser.bio : this.defaultBio
+      return (this.visitedUser && this.visitedUser.bio && this.visitedUser.bio.length > 0) ? this.visitedUser.bio : this.defaultBio
     },
     visitedUserColor () {
-      return GetHexColorOfString(this.visitedUser.username)
+      return GetHexColorOfString(this.visitedUser.username || '')
     },
     visitedUserLocationValue () {
-      return this.visitedUser.location || this.defaultLocation
+      return (this.visitedUser || {}).location || this.defaultLocation
     },
     visitedUserAccountCreationDateStr () {
       return this.visitedUser ? (new Date(this.visitedUser.createdAt)).toISOString().slice(0, 10) : null
@@ -245,7 +288,7 @@ export default {
 
         if (!visitedUserDbResult) {
           this.$router.push({ name: 'notFound' })
-        } else if (visitedUserDbResult.username === this.authenticatedUser.username) {
+        } else if (visitedUserDbResult.username === this.authenticatedUserName) {
           // TODO: fails when going directly to own profile page?
           visitedUserStoreObject = this.authenticatedUser
         } else {
@@ -253,13 +296,13 @@ export default {
 
           // get connections
           const graphqlConnectionsFromAuthenticatedUserToVisitedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
-            actorUserId: this.authenticatedUser.id,
+            actorUserId: this.authenticatedUserId,
             targetUserId: visitedUserDbResult.id
           }))
 
           const graphqlConnectionsFromVisitedUserToAuthenticatedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
-            actorUserId: visitedUserDbResult.id,
-            targetUserId: this.authenticatedUser.id
+            actorUserId: (visitedUserDbResult || {}).id || '',
+            targetUserId: this.authenticatedUserId
           }))
 
           const inboundUserInteractionsIdIndices = graphqlConnectionsFromAuthenticatedUserToVisitedUserResult.data.queryUserInteractionsBetweenUsersByUserIdIndices

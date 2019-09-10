@@ -77,6 +77,7 @@ export const ListLikesByUser = gql`query ListLikesByUser($userId: ID!, $limit: I
         user {
           username
           profilePictureKey
+          cognitoIdentityId
         }
       }
     }

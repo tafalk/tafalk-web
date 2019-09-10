@@ -14,6 +14,7 @@ export const GetCanto = gql`query GetCanto($id: ID!) {
       username
       profilePictureKey
       accountStatus
+      cognitoIdentityId
     }
     body
     startTime
@@ -40,6 +41,7 @@ export const ListBriefCantos = gql`query ListBriefCantos($limit: Int, $nextToken
         username
         profilePictureKey
         accountStatus
+        cognitoIdentityId
       }
     }
     nextToken

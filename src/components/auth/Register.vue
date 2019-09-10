@@ -120,13 +120,11 @@
         </v-form>
       </v-col>
     </v-row>
-    <v-layout row wrap>
-      <v-flex md6 sm12-and-down offset-md3>
 
-      </v-flex>
-      <tafalk-terms-of-service-dialog></tafalk-terms-of-service-dialog>
-      <tafalk-privacy-policy-dialog></tafalk-privacy-policy-dialog>
-    </v-layout>
+    <!-- Dialogs -->
+    <tafalk-terms-of-service-dialog></tafalk-terms-of-service-dialog>
+    <tafalk-privacy-policy-dialog></tafalk-privacy-policy-dialog>
+
   </v-container>
 </template>
 

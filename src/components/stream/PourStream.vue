@@ -1,6 +1,6 @@
 <template>
   <tafalk-stream-authorization-required v-if="!authenticatedUser" />
-  <v-container v-else fluid grid-list-lg>
+  <v-container v-else>
     <tafalk-stream-introduction v-if="isFirstStreamOfUser"></tafalk-stream-introduction>
     <v-card flat mt-5>
       <v-toolbar dense flat>
@@ -16,9 +16,9 @@
         <span class="grey--text caption">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
       </v-toolbar>
       <v-form class="pt-0">
-        <v-container grid-list-lg fluid pt-0>
-          <v-layout wrap>
-            <v-flex xs12>
+        <v-container pt-0>
+          <v-row>
+            <v-col cols="12">
               <!-- body -->
               <v-textarea
                 ref="pourBody"
@@ -38,41 +38,39 @@
                 @mouseup="onMouseUp"
                 @contextmenu.prevent="onRightClick"
               ></v-textarea>
-            </v-flex>
+            </v-col>
             <!-- title, mood etc -->
-            <v-flex xs12 sm4>
+            <v-col cols="12" sm="4">
               <v-select
                 dense
-                flat
                 @change="onMoodChange"
                 :label="$t('stream.pour.moodSelectLabel')"
                 v-model="moodModel"
                 :items="moodOptions"
                 item-text="displayValue"
                 item-value="backendValue"
-                chips
+                small-chips
                 multiple
                 menu-props="top"
                 return-object
               ></v-select>
-            </v-flex>
-            <v-flex xs12 sm4>
+            </v-col>
+            <v-col cols="12" sm="4">
               <v-select
                 dense
-                flat
                 @change="onPositionChange"
                 :label="$t('stream.pour.positionSelectLabel')"
                 v-model="positionModel"
                 :items="positionOptions"
                 item-text="displayValue"
                 item-value="backendValue"
-                chips
+                small-chips
                 multiple
                 menu-props="top"
                 return-object
               ></v-select>
-            </v-flex>
-            <v-flex xs12 sm4>
+            </v-col>
+            <v-col cols="12" sm="4">
               <v-text-field
                 ref="pourTitle"
                 :label="$t('stream.pour.titleLabel')"
@@ -84,8 +82,8 @@
                 @cut="onCut"
                 @keydown="onDefaultKeydown"
               ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm2 offset-sm10>
+            </v-col>
+            <v-col cols="12" offset-sm="10" sm="2">
               <v-btn
                 block
                 color="primary"
@@ -95,8 +93,8 @@
               >
                 {{ $t('stream.pour.sealButtonText') }}
               </v-btn>
-            </v-flex>
-          </v-layout>
+            </v-col>
+          </v-row>
         </v-container>
       </v-form>
     </v-card>

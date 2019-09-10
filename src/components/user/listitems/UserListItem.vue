@@ -89,7 +89,7 @@ export default {
     this.userColor = GetHexColorOfString(this.user.username)
 
     this.userProfilePictureObjectUrl = (this.authenticatedUser && this.user.profilePictureKey != null)
-      ? await Storage.get(this.user.profilePictureKey, { level: 'protected' })
+      ? await Storage.get(this.user.profilePictureKey, { level: 'protected', identityId: this.user.cognitoIdentityId })
       : null
   },
   computed: {

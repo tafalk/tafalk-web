@@ -28,6 +28,8 @@ export const ListPaginatedStreamComments = gql`query ListPaginatedStreamComments
       userId
       user {
         username
+        profilePictureKey
+        cognitoIdentityId
       }
       content
       time

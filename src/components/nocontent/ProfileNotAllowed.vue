@@ -1,11 +1,13 @@
 <template>
   <v-card>
     <v-card-title primary-title>
-      <v-container pa-3 fluid grid-list-lg>
-        <v-layout align-center column>
-          <span class="grey--text"><v-icon size="100">mdi-lock</v-icon></span><br/>
+      <v-container pa-3>
+        <v-row align="center">
+          <span class="grey--text"><v-icon size="100">mdi-lock</v-icon></span>
+        </v-row>
+        <v-row align="center">
           <span class="grey--text headline">{{ $t('nocontent.profileNotAllowed.title') }}</span>
-        </v-layout>
+        </v-row>
       </v-container>
     </v-card-title>
   </v-card>
