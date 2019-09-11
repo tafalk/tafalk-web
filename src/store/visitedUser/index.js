@@ -45,7 +45,7 @@ const mutations = {
     state.user.site = payload.site
   },
   setProfilePrivacy (state, payload) {
-    state.user.profilePrivacy = payload.profilePrivacy
+    // state.user.profilePrivacy = payload.profilePrivacy
     state.user.allowDirectMesages = payload.allowDirectMesages
   }
 }
@@ -98,11 +98,11 @@ const actions = {
   async setProfilePrivacy ({ commit }, payload) {
     await API.graphql(graphqlOperation(UpdateUserProfilePrivacyInfo, {
       userId: payload.userId,
-      profilePrivacy: payload.profilePrivacy,
+      // profilePrivacy: payload.profilePrivacy,
       allowDirectMesages: payload.allowDirectMesages
     }))
 
-    const storeObj = await GetStoreUserForPrivacyChange(payload)
+    const storeObj = GetStoreUserForPrivacyChange(payload)
 
     // commit to this module
     commit('setProfilePrivacy', storeObj)

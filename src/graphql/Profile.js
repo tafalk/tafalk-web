@@ -18,7 +18,6 @@ export const GetUserProfileData = gql`query GetUserProfileData($username: String
     theme
     location
     profilePictureKey
-    profilePrivacy
     allowDirectMesages
     site
     language
@@ -96,7 +95,6 @@ export const ListUserInteractionsByActorUserIdIndex = gql`query ListUserInteract
         id
         username
         profilePictureKey
-        profilePrivacy
         allowDirectMesages
       }
     }
@@ -116,14 +114,12 @@ export const UpdateUserBasicProfileInfo = gql`mutation UpdateUserBasicProfileInf
   }
 }`
 
-export const UpdateUserProfilePrivacyInfo = gql`mutation UpdateUserProfilePrivacyInfo($userId: ID!, $profilePrivacy: ProfilePrivacy, $allowDirectMesages: Boolean) {
+export const UpdateUserProfilePrivacyInfo = gql`mutation UpdateUserProfilePrivacyInfo($userId: ID!, $allowDirectMesages: Boolean) {
   updateUser(input: {
     id: $userId
-    profilePrivacy: $profilePrivacy
     allowDirectMesages: $allowDirectMesages
   }){
-    id,
-    profilePrivacy
+    id
   }
 }`
 

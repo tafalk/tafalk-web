@@ -82,7 +82,6 @@
                       </v-col>
                       <v-col cols="12" sm="6">
                         <p v-if="visitedUserAccountCreationDateStr" class="text-left grey--text"><v-icon color="grey">mdi-calendar-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</p>
-                        <p class="text-left grey--text"><v-icon color="grey">mdi-lock</v-icon>&nbsp;{{visitedUser.profilePrivacy}}</p>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -131,7 +130,6 @@
     <tafalk-user-privacy-edit-dialog
       v-if="visitedUser"
       :userId="visitedUser.id"
-      :profilePrivacy="visitedUser.profilePrivacy"
       :allowDirectMesages="visitedUser.allowDirectMesages"
     ></tafalk-user-privacy-edit-dialog>
     <!-- User Delete Account Confirmation Dialog -->
@@ -223,10 +221,10 @@ export default {
       }
 
       // Other general privacy setting based checks
-      if (!this.authenticatedUser || !this.visitedUser || this.visitedUser.profilePrivacy === 'Private') {
+      if (!this.authenticatedUser || !this.visitedUser) {
         // Locked to anyone
         return false
-      } else if (this.visitedUser && this.visitedUser.profileUserPrivacy === 'Protected' && this.authenticatedUser == null) {
+      } else if (this.visitedUser && this.authenticatedUser == null) {
         // Locked to outcomers and an outcomer is visiting right now
         return false
       } else {
