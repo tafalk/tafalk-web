@@ -13,7 +13,6 @@
         <tafalk-cookie-law-snackbar v-if="hasVisitedBefore === 'true' && hasAcceptedCookies === 'false'"/>
       </v-container>
     </v-content>
-
   </v-app>
 </template>
 
