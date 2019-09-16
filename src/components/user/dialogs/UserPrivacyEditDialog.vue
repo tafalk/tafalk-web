@@ -6,18 +6,6 @@
       </v-card-title>
       <v-card-text>
       <v-form>
-        <!-- Profile Privacy -->
-        <v-select
-          :label="$t('user.edit.privacy.dialog.profilePrivacyLabel')"
-          :items="profilePrivacyOptions"
-          v-model="profilePrivacyModel"
-          :hint="profilePrivacyHint"
-          item-text="displayValue"
-          item-value="backendValue"
-          return-object
-          persistent-hint
-        ></v-select>
-        <br/>
         <!-- Allow Direct Messages -->
         <v-select
           :label="$t('user.edit.privacy.dialog.allowDmLabel')"
@@ -52,25 +40,11 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'UserPrivacyEditDialog',
-  props: ['userId', 'profilePrivacy', 'allowDirectMesages'],
+  props: ['userId', 'allowDirectMesages'],
   data () {
     return {
       profilePrivacyModel: null,
       allowDirectMessagesModel: null,
-      profilePrivacyOptions: [
-        {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyOptionDisplayPublic'),
-          backendValue: 'Public'
-        },
-        {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyOptionDisplayPrivate'),
-          backendValue: 'Private'
-        },
-        {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyOptionDisplayProtected'),
-          backendValue: 'Protected'
-        }
-      ],
       allowDirectMesagesOptions: [
         {
           displayValue: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayYes'),
@@ -80,15 +54,10 @@ export default {
           displayValue: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayNo'),
           backendValue: false
         }
-      ],
-      profilePrivacyPublicHint: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyPublicHint'),
-      profilePrivacyProtectedHint: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyProtectedHint'),
-      profilePrivacyPrivateHint: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyPrivateHint'),
-      profilePrivacyUnknownHint: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyUnknownHint')
+      ]
     }
   },
   created () {
-    this.profilePrivacyModel = this.getObjectFromProfilePrivacyBackendValue(this.profilePrivacy)
     this.allowDirectMessagesModel = this.getObjectFromAllowDirectMessagesBackendValue(this.allowDirectMesages)
   },
   computed: {
@@ -97,17 +66,6 @@ export default {
     }),
     userPrivacyEditDialog () {
       return this.getUserPrivacyEditDialog
-    },
-    profilePrivacyHint () {
-      if (this.profilePrivacyModel.backendValue === 'Public') {
-        return this.profilePrivacyPublicHint
-      } else if (this.profilePrivacyModel.backendValue === 'Private') {
-        return this.profilePrivacyPrivateHint
-      } else if (this.profilePrivacyModel.backendValue === 'Protected') {
-        return this.profilePrivacyProtectedHint
-      } else {
-        return this.profilePrivacyUnknownHint
-      }
     }
   },
   methods: {
@@ -120,31 +78,10 @@ export default {
     onSavePrivacyEditClick () {
       this.setProfilePrivacy({
         userId: this.userId,
-        profilePrivacy: this.profilePrivacyModel.backendValue,
         allowDirectMesages: this.allowDirectMessagesModel.backendValue
       })
 
       this.setIsUserPrivacyEditDialogVisible(false)
-    },
-    getObjectFromProfilePrivacyBackendValue (backendValue) {
-      if (backendValue === 'Public') {
-        return {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyOptionDisplayPublic'),
-          backendValue: 'Public'
-        }
-      } else if (backendValue === 'Private') {
-        return {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyOptionDisplayPrivate'),
-          backendValue: 'Private'
-        }
-      } else if (backendValue === 'Protected') {
-        return {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.profilePrivacyOptionDisplayProtected'),
-          backendValue: 'Protected'
-        }
-      } else {
-        return { displayValue: null, backendValue: null }
-      }
     },
     getObjectFromAllowDirectMessagesBackendValue (backendValue) {
       if (backendValue === true) {

@@ -12,7 +12,7 @@ const GetStoreUserWithCognitoIdentityId = async (dbUser, cognitoIdentityId) => {
     birthDate: dbUser.birthDate,
     location: dbUser.location,
     profilePictureKey: dbUser.profilePictureKey,
-    profilePrivacy: dbUser.profilePrivacy,
+    // profilePrivacy: dbUser.profilePrivacy,
     allowDirectMesages: dbUser.allowDirectMesages,
     site: dbUser.site,
     canto: dbUser.canto,
@@ -41,7 +41,7 @@ const GetStoreUser = async dbUser => {
     profilePictureKey: dbUser.profilePictureKey,
     location: dbUser.location,
     profilePictureObjectUrl: dbUserProfilePictureObjectUrl,
-    profilePrivacy: dbUser.profilePrivacy,
+    // profilePrivacy: dbUser.profilePrivacy,
     allowDirectMesages: dbUser.allowDirectMesages,
     site: dbUser.site,
     canto: dbUser.canto,
@@ -77,7 +77,7 @@ const GetStoreUserForBasicInfoChange = async payload => {
 
 const GetStoreUserForPrivacyChange = payload => {
   return {
-    profilePrivacy: payload.profilePrivacy,
+    // profilePrivacy: payload.profilePrivacy,
     allowDirectMesages: payload.allowDirectMesages
   }
 }

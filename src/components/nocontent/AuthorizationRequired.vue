@@ -1,11 +1,11 @@
 <template>
-  <v-card>
+  <v-card flat>
     <v-card-title primary-title>
       <v-container pa-3>
-        <v-row align="center">
+        <v-row align="center" justify="center">
           <span class="grey--text"><v-icon size="100">mdi-lock</v-icon></span>
         </v-row>
-        <v-row align="center">
+        <v-row align="center" justify="center">
           <span class="grey--text headline">{{ $t('nocontent.unauthorized.title') }}</span>
         </v-row>
       </v-container>

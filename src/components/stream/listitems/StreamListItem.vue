@@ -165,7 +165,7 @@ export default {
       // the author is active
       this.authorColor = GetHexColorOfString(this.author.username)
 
-      this.authorProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
+      this.authorProfilePictureObjectUrl = (this.author.profilePictureKey)
         ? await Storage.get(this.author.profilePictureKey, { level: 'protected', identityId: this.author.cognitoIdentityId })
         : null
     }
