@@ -210,27 +210,14 @@ export default {
       return this.authenticatedUser && this.visitedUser && this.authenticatedUserName === this.visitedUser.username
     },
     isVisitorAllowed () {
-      // Blocked User Check
-      if (!this.visitedUser || !this.visitedUser.connectionsWithAuthenticatedUser || !this.visitedUser.connectionsWithAuthenticatedUser.outbound) {
-        return false
-      }
-      const outboundBlockId = this.visitedUser.connectionsWithAuthenticatedUser.outbound.blockId || null
+      const outboundBlockId = (((this.visitedUser || {}).connectionsWithAuthenticatedUser || {}).outbound || {}).blockId
 
-      if (outboundBlockId && outboundBlockId.length > 0) {
-        return false
-      }
+      if (outboundBlockId && outboundBlockId.length > 0) return false
 
       // Other general privacy setting based checks
-      if (!this.authenticatedUser || !this.visitedUser) {
-        // Locked to anyone
-        return false
-      } else if (this.visitedUser && this.authenticatedUser == null) {
-        // Locked to outcomers and an outcomer is visiting right now
-        return false
-      } else {
-        // Profile is public or an insider visits a protected/public account
-        return true
-      }
+      if (!this.authenticatedUser || !this.visitedUser) return false
+
+      return true
     },
     isProfileAllowed () {
       return this.isVisitingOwnProfile || this.isVisitorAllowed
@@ -292,6 +279,8 @@ export default {
         } else {
           visitedUserStoreObject = await GetStoreUser(visitedUserDbResult)
 
+          if (!this.authenticatedUser) return // no user, no connection
+
           // get connections
           const graphqlConnectionsFromAuthenticatedUserToVisitedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
             actorUserId: this.authenticatedUserId,
@@ -330,7 +319,7 @@ export default {
         // persist to store
         this.setVisitedUser(visitedUserStoreObject)
       } catch (err) {
-        logger.error('Error occurred while getting user info', err)
+        logger.error('Error occurred while getting user info', JSON.stringify(err.message || err))
         this.setNewSiteError(err.message || err)
       }
     }

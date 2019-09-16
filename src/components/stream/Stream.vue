@@ -326,25 +326,9 @@ export default {
       return this.authenticatedUser != null && this.authenticatedUser.username === this.author.username
     },
     isVisitorAllowed () {
-      // Blocked User Check
-      if (this.outboundBlockId && this.outboundBlockId.length > 0) {
-        return false
-      }
+      if (this.outboundBlockId && this.outboundBlockId.length > 0) return false // Blocked User Check
 
-      // Other general privacy setting based checks
-      if (!this.authenticatedUser || this.stream.privacy === 'Private') {
-        // Locked to anyone
-        return false
-      } else if (this.stream.privacy === 'PrivateButWatching' && (this.outboundWatchId == null || this.outboundWatchId.length === 0)) {
-        // Locked to not watched by the author
-        return false
-      } else if (this.stream.privacy === 'Protected' && this.authenticatedUser == null) {
-        // Locked to outcomers and an outcomer is visiting right now
-        return false
-      } else {
-        // Profile is public or an insider visits a protected/public account
-        return true
-      }
+      return true
     },
     isStreamAllowed () {
       return this.isVisitingOwnStream || this.isVisitorAllowed
@@ -494,7 +478,7 @@ export default {
         this.outboundWatchId = GetFirstOrDefaultIdStr(outboundWatchingTypeConnections)
         this.outboundBlockId = GetFirstOrDefaultIdStr(outboundBlockingTypeConnections)
       } catch (err) {
-        logger.error('Error occurred while getting user info', JSON.stringify(err))
+        logger.error('Error occurred while getting user info', JSON.stringify(err.message || err))
         this.setNewSiteError(err.message || err)
       }
     },

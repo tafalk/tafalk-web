@@ -263,25 +263,9 @@ export default {
       return this.authenticatedUser && this.author && this.authenticatedUser.username === this.author.username
     },
     isVisitorAllowed () {
-      // Blocked User Check
-      if (!this.canto || (this.outboundBlockId && this.outboundBlockId.length > 0)) {
-        return false
-      }
+      if (this.outboundBlockId && this.outboundBlockId.length > 0) return false // Blocked User Check
 
-      // Other general privacy setting based checks
-      if (!this.authenticatedUser || this.canto.privacy === 'Private') {
-        // Locked to anyone
-        return false
-      } else if (this.canto.privacy === 'PrivateButWatching' && (this.outboundWatchId == null || this.outboundWatchId.length === 0)) {
-        // Locked to not watched by the author
-        return false
-      } else if (this.canto.privacy === 'Protected' && this.authenticatedUser == null) {
-        // Locked to outcomers and an outcomer is visiting right now
-        return false
-      } else {
-        // Profile is public or an insider visits a protected/public account
-        return true
-      }
+      return true
     },
     isCantoAllowed () {
       return this.isVisitingOwnCanto || this.isVisitorAllowed
