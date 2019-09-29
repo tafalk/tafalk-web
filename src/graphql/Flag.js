@@ -3,73 +3,41 @@ import gql from 'graphql-tag'
 // Get
 
 // Mutate
-export const CreateStreamFlag = gql`mutation CreateFlag(
-    $streamId: String,
-    $userId: String,
+export const CreateFlag = gql`mutation CreateFlag(
+    $contentType: String!,
+    $contentId: String,
+    $flaggerUserId: String!,
     $category: String!,
-    $detail: String!,
-    $note: String,
-    $time: String,
-    $reviewStatus: String,
-    $reviewNote: String) {
+    $type: String!,
+    $detail: String,
+    $createTime: String) {
     createFlag(input: {
-      streamId: $streamId
-      userId: $userId
+      contentType: $contentType
+      contentId: $contentId
+      flaggerUserId: $flaggerUserId
       category: $category
+      type: $type
       detail: $detail
-      note: $note
-      time: $time
-      reviewStatus: $reviewStatus
-      reviewNote: $reviewNote
+      createTime: $createTime
     }){
       id
-      streamId
-      userId
+      contentType
+      contentId
+      flaggerUserId
       category
+      type
       detail
-      note
       time
-      reviewStatus
-      reviewNote
+      createTime
     }
   }`
-
-export const CreateCommentFlag = gql`mutation CreateFlag(
-  $commentId: String,
-  $userId: String,
-  $category: String!,
-  $detail: String!,
-  $note: String,
-  $time: String,
-  $reviewStatus: String,
-  $reviewNote: String) {
-  createFlag(input: {
-    commentId: $commentId
-    userId: $userId
-    category: $category
-    detail: $detail
-    note: $note
-    time: $time
-    reviewStatus: $reviewStatus
-    reviewNote: $reviewNote
-  }){
-    id
-    commentId
-    userId
-    category
-    detail
-    note
-    time
-    reviewStatus
-    reviewNote
-  }
-}`
 
 export const DeleteFlag = gql`mutation DeleteFlag($id: ID!) {
     deleteFlag(input: { id: $id }) {
       id
-      streamId
-      userId
+      contentId
+      contentType
+      flaggerUserId
       time
     }
   }`

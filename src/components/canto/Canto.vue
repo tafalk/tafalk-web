@@ -159,9 +159,14 @@
     <!-- Share canto link dialog -->
     <tafalk-share-canto-link-dialog></tafalk-share-canto-link-dialog>
     <!-- Flag canto dialog -->
-    <tafalk-flag-dialog></tafalk-flag-dialog>
+    <tafalk-flag-dialog
+      contentType="canto"
+      :contentId="canto.id"
+    ></tafalk-flag-dialog>
     <!-- Retract flag canto dialog -->
-    <tafalk-retract-flag-confirmation-dialog></tafalk-retract-flag-confirmation-dialog>
+    <tafalk-retract-flag-confirmation-dialog
+      :id="authenticatedUserFlagId"
+    ></tafalk-retract-flag-confirmation-dialog>
 
     <!-- Snackbars -->
     <v-snackbar
@@ -358,9 +363,7 @@ export default {
       setShareCantoLink: 'canto/setShareCantoLink',
       setCanto: 'canto/setCanto',
       setCantoLikes: 'canto/setCantoLikes',
-      setFlag: 'flag/setFlag',
       setIsPageReady: 'setIsPageReady',
-      setRetractFlag: 'flag/setRetractFlag',
       setCantoBodyUserSelection: 'canto/setBodyUserSelection'
     }),
     ...mapActions({
@@ -523,17 +526,9 @@ export default {
       this.$router.push({ name: 'profile', params: { username: this.author.username } })
     },
     onFlagDialogShowClick () {
-      this.setFlag({
-        cantoId: this.canto.id,
-        type: 'canto'
-      })
       this.showFlagDialog()
     },
     onRetractFlagDialogShowClick () {
-      this.setRetractFlag({
-        type: 'canto',
-        retractFlagId: this.authenticatedUserFlagId
-      })
       this.showRetractFlagDialog()
     }
   }

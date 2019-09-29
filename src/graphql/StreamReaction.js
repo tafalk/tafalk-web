@@ -35,12 +35,13 @@ export const ListPaginatedStreamComments = gql`query ListPaginatedStreamComments
       time
       flags {
         id
-        commentId
-        userId
+        contentType
+        contentId
+        flaggerUserId
         category
+        type
         detail
-        note
-        time
+        createTime
       }
     }
     nextToken

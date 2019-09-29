@@ -223,9 +223,14 @@
     <!-- Share stream link dialog -->
     <tafalk-share-stream-link-dialog></tafalk-share-stream-link-dialog>
     <!-- Flag stream dialog -->
-    <tafalk-flag-dialog></tafalk-flag-dialog>
+    <tafalk-flag-dialog
+      contentType="stream"
+      :contentId="stream.id"
+    ></tafalk-flag-dialog>
     <!-- Retract flag stream dialog -->
-    <tafalk-retract-flag-confirmation-dialog></tafalk-retract-flag-confirmation-dialog>
+    <tafalk-retract-flag-confirmation-dialog
+      :id="authenticatedUserFlagId"
+    ></tafalk-retract-flag-confirmation-dialog>
   </v-container>
 </v-container>
 </template>
@@ -412,8 +417,6 @@ export default {
       setStream: 'stream/setStream',
       setStreamLikes: 'stream/setStreamLikes',
       setPaginatedStreamComments: 'stream/setPaginatedStreamComments',
-      setFlag: 'flag/setFlag',
-      setRetractFlag: 'flag/setRetractFlag',
       setIsPageReady: 'setIsPageReady'
     }),
     ...mapActions({
@@ -531,17 +534,9 @@ export default {
       this.$vuetify.goTo(this.$refs.newcommentbox)
     },
     onFlagDialogShowClick () {
-      this.setFlag({
-        streamId: this.stream.id,
-        type: 'stream'
-      })
       this.showFlagDialog()
     },
     onRetractFlagDialogShowClick () {
-      this.setRetractFlag({
-        type: 'stream',
-        retractFlagId: this.authenticatedUserFlagId
-      })
       this.showRetractFlagDialog()
     },
     async onCommentSaveClick () {

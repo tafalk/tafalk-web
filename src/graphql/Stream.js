@@ -40,22 +40,24 @@ export const GetStream = gql`query GetStream($streamId: ID!) {
       time
       flags {
         id
-        commentId
-        userId
+        contentType
+        contentId
+        flaggerUserId
         category
+        type
         detail
-        note
-        time
+        createTime
       }
     }
     flags {
       id
-      streamId
-      userId
+      contentType
+      contentId
+      flaggerUserId
       category
+      type
       detail
-      note
-      time
+      createTime
     }
   }
 }`

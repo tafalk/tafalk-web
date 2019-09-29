@@ -419,9 +419,9 @@
             "cancel": "Cancel"
           }
         },
-        "detail": {
-          "stepName": "Detail",
-          "additionalInfo": {
+        "type": {
+          "stepName": "Type",
+          "detail": {
             "label": "Details"
           },
           "spam": {

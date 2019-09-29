@@ -9,7 +9,7 @@
       <v-divider></v-divider>
       <v-stepper-step
         step="2"
-      >{{ $t('flag.dialog.steps.detail.stepName') }}</v-stepper-step>
+      >{{ $t('flag.dialog.steps.type.stepName') }}</v-stepper-step>
     </v-stepper-header>
     <v-stepper-items>
       <!-- Step 1 content -->
@@ -75,13 +75,13 @@
         <!-- Spam Details -->
         <template v-if="isSelectedCategorySpam">
           <v-subheader class="grey--text"
-          >{{ $t('flag.dialog.steps.detail.spam.header') }}</v-subheader>
+          >{{ $t('flag.dialog.steps.type.spam.header') }}</v-subheader>
           <v-list two-line>
             <v-list-item
               :disabled="isSelectedSpamDetailAd"
             >
               <v-list-item-content @click="onClickSpamDetail(spamAdDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.spam.options.ad.detail') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.spam.options.ad.detail') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action
                 v-if="isSelectedSpamDetailAd"
@@ -94,7 +94,7 @@
               :disabled="isSelectedSpamDetailHarmfulLink"
             >
               <v-list-item-content @click="onClickSpamDetail(spamHarmfulLinkDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.spam.options.harmful.detail') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.spam.options.harmful.detail') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action
                 v-if="isSelectedSpamDetailHarmfulLink"
@@ -111,7 +111,7 @@
               :disabled="isSelectedRudeDetailHate"
             >
               <v-list-item-content @click="onClickRudeDetail(rudeHateDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.rude.options.hate.detail') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.hate.detail') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action
                 v-if="isSelectedRudeDetailHate"
@@ -124,7 +124,7 @@
               :disabled="isSelectedRudeDetailThreat"
             >
               <v-list-item-content @click="onClickRudeDetail(rudeThreatDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.rude.options.threat.detail') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.threat.detail') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action
                 v-if="isSelectedRudeDetailThreat"
@@ -137,7 +137,7 @@
               :disabled="isSelectedRudeDetailOffensive"
             >
               <v-list-item-content @click="onClickRudeDetail(rudeOffensiveDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.rude.options.offensive.detail') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.offensive.detail') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action
                 v-if="isSelectedRudeDetailOffensive"
@@ -150,7 +150,7 @@
               :disabled="isSelectedRudeDetailPrivate"
             >
               <v-list-item-content @click="onClickRudeDetail(rudePrivateDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.rude.options.private.detail') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.private.detail') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action
                 v-if="isSelectedRudeDetailPrivate"
@@ -163,7 +163,7 @@
         <template v-else>
           <v-list-item>
             <v-list-item-content>
-              <v-list-item-subtitle>{{ $t('flag.dialog.steps.detail.lowQuality.options.default.detail') }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.lowQuality.options.default.detail') }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </template>
@@ -171,18 +171,18 @@
             v-model="additionalInfo"
             box
             rows="4"
-            :label="$t('flag.dialog.steps.detail.additionalInfo.label')"
+            :label="$t('flag.dialog.steps.type.detail.label')"
         ></v-textarea>
         <v-btn
           color="primary"
           :loading="isFlagLoading"
-          :disabled="!selectedDetail"
+          :disabled="!selectedType"
           @click="onFlagCompletionClick"
-        >{{ $t('flag.dialog.steps.detail.buttons.done') }}</v-btn>
+        >{{ $t('flag.dialog.steps.type.buttons.done') }}</v-btn>
         <v-btn
           text
           @click="flagCurrentStep = 1"
-        >{{ $t('flag.dialog.steps.detail.buttons.previous') }}</v-btn>
+        >{{ $t('flag.dialog.steps.type.buttons.previous') }}</v-btn>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -192,12 +192,13 @@
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapMutations } from 'vuex'
-import { CreateStreamFlag, CreateCommentFlag } from '@/graphql/Flag'
+import { CreateFlag } from '@/graphql/Flag'
 
 const logger = new Logger('FlagDialog')
 
 export default {
   name: 'FlagDialog',
+  props: ['contentType', 'contentId'],
   data () {
     return {
       flagCurrentStep: 0,
@@ -213,25 +214,17 @@ export default {
       rudeOffensiveDetailValue: 'offensive',
       rudePrivateDetailValue: 'privateInfo',
       selectedCategory: '',
-      selectedDetail: '',
+      selectedType: '',
       isFlagLoading: false
     }
   },
   computed: {
     ...mapGetters({
       getIsFlagDialogVisible: 'flag/dialog/getIsFlagDialogVisible',
-      getAuthenticatedUser: 'authenticatedUser/getUser',
-      getStream: 'stream/getStream',
-      getFlag: 'flag/getFlag'
+      getAuthenticatedUser: 'authenticatedUser/getUser'
     }),
-    stream () {
-      return this.getStream
-    },
     authenticatedUser () {
       return this.getAuthenticatedUser
-    },
-    flag () {
-      return this.getFlag
     },
     isSelectedCategorySpam: {
       get () {
@@ -258,38 +251,36 @@ export default {
       }
     },
     isSelectedSpamDetailAd () {
-      return this.selectedDetail === this.spamAdDetailValue
+      return this.selectedType === this.spamAdDetailValue
     },
     isSelectedSpamDetailHarmfulLink () {
-      return this.selectedDetail === this.spamHarmfulLinkDetailValue
+      return this.selectedType === this.spamHarmfulLinkDetailValue
     },
     isSelectedRudeDetailHate () {
-      return this.selectedDetail === this.rudeHateDetailValue
+      return this.selectedType === this.rudeHateDetailValue
     },
     isSelectedRudeDetailThreat () {
-      return this.selectedDetail === this.rudeThreatDetailValue
+      return this.selectedType === this.rudeThreatDetailValue
     },
     isSelectedRudeDetailOffensive () {
-      return this.selectedDetail === this.rudeOffensiveDetailValue
+      return this.selectedType === this.rudeOffensiveDetailValue
     },
     isSelectedRudeDetailPrivate () {
-      return this.selectedDetail === this.rudePrivateDetailValue
+      return this.selectedType === this.rudePrivateDetailValue
     }
   },
   methods: {
     ...mapMutations({
-      hideFlagDialog: 'flag/dialog/hideFlagDialog',
-      setStream: 'stream/setStream',
-      clearFlag: 'flag/clearFlag'
+      hideFlagDialog: 'flag/dialog/hideFlagDialog'
     }),
     onClickCategory (catg) {
       this.selectedCategory = catg
     },
     onClickSpamDetail (dtl) {
-      this.selectedDetail = dtl
+      this.selectedType = dtl
     },
     onClickRudeDetail (dtl) {
-      this.selectedDetail = dtl
+      this.selectedType = dtl
     },
     onCancelFlagButtonClick () {
       this.selectedCategory = ''
@@ -298,40 +289,20 @@ export default {
     async onFlagCompletionClick () {
       this.isFlagLoading = true
       try {
-        if (this.flag.type === 'stream') {
-          // stream flag
-          const flagGraphqlResult = await API.graphql(graphqlOperation(CreateStreamFlag, {
-            streamId: this.flag.streamId,
-            commentId: null,
-            userId: this.authenticatedUser.id,
-            category: this.selectedCategory,
-            detail: this.selectedDetail,
-            note: this.additionalInfo || null,
-            time: new Date().toISOString()
-          }))
-
-          let currentStream = JSON.parse(JSON.stringify(this.getStream)) // deep copy
-          currentStream.flags.push(flagGraphqlResult.data.createFlag)
-          this.setStream(currentStream)
-        } else if (this.flag.type === 'comment') {
-          // comment flag
-          await API.graphql(graphqlOperation(CreateCommentFlag, {
-            streamId: null,
-            commentId: this.flag.commentId,
-            userId: this.authenticatedUser.id,
-            category: this.selectedCategory,
-            detail: this.selectedDetail,
-            note: this.additionalInfo || null,
-            time: new Date().toISOString()
-          }))
-          // TODO: make it responsive as the stream
-        }
+        await API.graphql(graphqlOperation(CreateFlag, {
+          contentType: this.contentType,
+          contentId: this.contentId,
+          flaggerUserId: this.authenticatedUser.id,
+          category: this.selectedCategory,
+          type: this.selectedType,
+          detail: this.additionalInfo || null,
+          createTime: new Date().toISOString()
+        }))
       } catch (err) {
         logger.error('An error occurred while adding the flag', err)
       } finally {
         // this.setIsFlaggedByAuthenticatedUser(false)
         this.isFlagLoading = false
-        this.clearFlag()
         this.hideFlagDialog()
       }
     }
