@@ -51,10 +51,16 @@
 import { mapGetters, mapMutations } from 'vuex'
 import { GetElapsedTimeTillNow } from '@/utils/typeUtils'
 import { streamCommentFetchLength } from '@/utils/constants'
+import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
+import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
 
 export default {
   name: 'StreamComment',
   props: ['comment'],
+  components: {
+    TafalkFlagDialog,
+    TafalkRetractFlagConfirmationDialog
+  },
   data () {
     return {
       datenow: '',

@@ -27,7 +27,6 @@ export const CreateFlag = gql`mutation CreateFlag(
       category
       type
       detail
-      time
       createTime
     }
   }`

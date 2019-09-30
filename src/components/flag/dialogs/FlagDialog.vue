@@ -27,7 +27,7 @@
             <v-list-item-action
               v-if="isSelectedCategorySpam"
             >
-                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
+              <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
             </v-list-item-action>
           </v-list-item>
           <v-divider></v-divider>
@@ -41,7 +41,7 @@
             <v-list-item-action
               v-if="isSelectedCategoryRude"
             >
-                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
+              <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
             </v-list-item-action>
           </v-list-item>
           <v-divider></v-divider>
@@ -55,19 +55,25 @@
             <v-list-item-action
               v-if="isSelectedCategoryLowQuality"
             >
-                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
+              <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
             </v-list-item-action>
           </v-list-item>
         </v-list>
-        <v-btn
-          color="primary"
-          :disabled="!selectedCategory"
-          @click="flagCurrentStep = 2"
-        >{{ $t('flag.dialog.steps.category.buttons.continue') }}</v-btn>
-        <v-btn
-          text
-          @click="onCancelFlagButtonClick"
-        >{{ $t('flag.dialog.steps.category.buttons.cancel') }}</v-btn>
+        <v-container>
+          <v-row justify="space-between">
+            <v-btn
+              text
+              @click="onCancelFlagButtonClick"
+            >{{ $t('flag.dialog.steps.category.buttons.cancel') }}
+            </v-btn>
+            <v-btn
+              color="primary"
+              :disabled="!selectedCategory"
+              @click="flagCurrentStep = 2"
+            >{{ $t('flag.dialog.steps.category.buttons.continue') }}
+            </v-btn>
+          </v-row>
+        </v-container>
       </v-stepper-content>
 
       <!-- Step 2 content -->
@@ -167,22 +173,30 @@
             </v-list-item-content>
           </v-list-item>
         </template>
-        <v-textarea
+        <v-container px-0 mx-0>
+          <v-textarea
             v-model="additionalInfo"
-            box
+            filled
             rows="4"
             :label="$t('flag.dialog.steps.type.detail.label')"
-        ></v-textarea>
-        <v-btn
-          color="primary"
-          :loading="isFlagLoading"
-          :disabled="!selectedType"
-          @click="onFlagCompletionClick"
-        >{{ $t('flag.dialog.steps.type.buttons.done') }}</v-btn>
-        <v-btn
-          text
-          @click="flagCurrentStep = 1"
-        >{{ $t('flag.dialog.steps.type.buttons.previous') }}</v-btn>
+          ></v-textarea>
+        </v-container>
+        <v-container>
+          <v-row justify="space-between">
+            <v-btn
+              text
+              @click="flagCurrentStep = 1"
+            >{{ $t('flag.dialog.steps.type.buttons.previous') }}
+            </v-btn>
+            <v-btn
+              color="primary"
+              :loading="isFlagLoading"
+              :disabled="!selectedType"
+              @click="onFlagCompletionClick"
+            >{{ $t('flag.dialog.steps.type.buttons.done') }}
+            </v-btn>
+          </v-row>
+        </v-container>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
