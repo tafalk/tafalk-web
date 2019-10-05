@@ -58,8 +58,6 @@ const GetStoreUserForProfilePictureChange = async profilePictureKey => {
     level: 'protected'
   }) : null
 
-  // const dbUserLocation = dbUser.locationId ? await GetPlaceById(dbUser.locationId) : null
-
   return {
     profilePictureKey: profilePictureKey,
     profilePictureObjectUrl: dbUserProfilePictureObjectUrl

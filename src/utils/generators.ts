@@ -5,7 +5,7 @@ const GetPolicyS3BucketRootUrl = () => {
   return `https://${process.env.VUE_APP_S3_SITE_POLICIES_BUCKET}.s3.${process.env.VUE_APP_AWS_REGION}.amazonaws.com/`
 }
 
-const GenerateProfilePictureFileName = (fileObject, userId) => {
+const GenerateProfilePictureFileName = (fileObject, userId: string) => {
   const profilePicSuffix = '_profilepic'
   const fileExtension = fileObject.name.split('.').pop()
   return fileExtension ? `${userId}${profilePicSuffix}.${fileExtension}` : `${userId}${profilePicSuffix}`
@@ -13,12 +13,12 @@ const GenerateProfilePictureFileName = (fileObject, userId) => {
 
 // See https://stackoverflow.com/a/2117523/4636715
 const GenerateUuid4 = () => {
-  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c: any) =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   )
 }
 
-const GetHexColorOfString = (str) => {
+const GetHexColorOfString = (str: string) => {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash)
@@ -31,20 +31,20 @@ const GetHexColorOfString = (str) => {
   return hex
 }
 
-const GetStreamLink = (streamId) => {
+const GetStreamLink = (streamId: string) => {
   // TODO: maybe use window.location
   return `https://tafalk.com/stream/${streamId}`
 }
 
-const GetCantoLink = (username) => {
+const GetCantoLink = (username: string) => {
   return `https://tafalk.com/user/${username}/canto`
 }
 
-const GenerateGeocoderRequestLink = (searchText) => {
+const GenerateGeocoderRequestLink = (searchText: string) => {
   return `${geocodingRootUrl}/q/${encodeURIComponent(searchText)}.js?key=${MapTilerGeooderConfig.apiKey}`
 }
 
-const BookmarkCantoContent = (originalBody, indices) => {
+const BookmarkCantoContent = (originalBody, indices: Array<number>) => {
   if (!originalBody) return originalBody
   const originalText = originalBody.textContent // .trim()
   if (!indices || indices.length === 0) return `<span class="unbookmarked">${originalText}</span>`

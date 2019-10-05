@@ -1,5 +1,6 @@
 import i18n from '../i18n'
 import { timeUnitChars, strikethroughChar } from './constants'
+import { TimeDifference } from '../types'
 
 // String
 const IsNullOrWhitespace = (str: string) => {
@@ -13,7 +14,7 @@ const StrikethroughStr = (str: string) => {
 }
 
 // Array
-const GetFirstOrDefaultIdStr = (inputObj) => {
+const GetFirstOrDefaultIdStr = (inputObj: any) => {
   if (Array.isArray(inputObj)) {
     if (inputObj.length) {
       const firstElem = inputObj[0].id
@@ -25,13 +26,14 @@ const GetFirstOrDefaultIdStr = (inputObj) => {
 }
 
 // Time
-const GetElapsedTimeTillNow = (nowTime, referenceTimeISOString: string) => {
+const GetElapsedTimeTillNow = (nowTime: number, referenceTimeISOString: string) => {
   const elapsed = (nowTime - new Date(referenceTimeISOString).getTime()) / 1000
-  const diff = {}
-  diff.days = Math.floor(elapsed / 86400)
-  diff.hours = Math.floor(elapsed / 3600 % 24)
-  diff.minutes = Math.floor(elapsed / 60 % 60)
-  diff.seconds = Math.floor(elapsed % 60)
+  const diff: TimeDifference = {
+    days: Math.floor(elapsed / 86400),
+    hours: Math.floor(elapsed / 3600 % 24),
+    minutes: Math.floor(elapsed / 60 % 60),
+    seconds: Math.floor(elapsed % 60)
+  }
 
   if (diff.days === 0 && diff.hours === 0 && diff.minutes === 0 && diff.seconds === 0) {
     return i18n.t('common.time.almostNow')
@@ -48,13 +50,14 @@ const GetElapsedTimeTillNow = (nowTime, referenceTimeISOString: string) => {
   }
 }
 
-const GetElapsedTimeBetween = (startReferenceTimeISOString, endReferenceTimeISOString: string) => {
+const GetElapsedTimeBetween = (startReferenceTimeISOString: string, endReferenceTimeISOString: string) => {
   const elapsed = (new Date(endReferenceTimeISOString).getTime() - new Date(startReferenceTimeISOString).getTime()) / 1000
-  const diff = {}
-  diff.days = Math.floor(elapsed / 86400)
-  diff.hours = Math.floor(elapsed / 3600 % 24)
-  diff.minutes = Math.floor(elapsed / 60 % 60)
-  diff.seconds = Math.floor(elapsed % 60)
+  const diff: TimeDifference = {
+    days: Math.floor(elapsed / 86400),
+    hours: Math.floor(elapsed / 3600 % 24),
+    minutes: Math.floor(elapsed / 60 % 60),
+    seconds: Math.floor(elapsed % 60)
+  }
 
   if (diff.days === 0 && diff.hours === 0 && diff.minutes === 0 && diff.seconds === 0) {
     return i18n.t('common.time.almostNow')

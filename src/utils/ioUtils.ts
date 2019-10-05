@@ -1,5 +1,5 @@
 // Keyboard Input
-const GetKeyName = (keyCode) => {
+const GetKeyName = (keyCode: number) => {
   let keyName = ''
 
   switch (keyCode) {
