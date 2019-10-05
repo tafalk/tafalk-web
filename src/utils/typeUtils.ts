@@ -2,11 +2,11 @@ import i18n from '../i18n'
 import { timeUnitChars, strikethroughChar } from './constants'
 
 // String
-const IsNullOrWhitespace = (str) => {
+const IsNullOrWhitespace = (str: string) => {
   return str === null || str.match(/^ *$/) !== null
 }
 
-const StrikethroughStr = (str) => {
+const StrikethroughStr = (str: string) => {
   return [...str].reduce((acc, char) => {
     return acc + char + strikethroughChar
   }, '')
@@ -25,7 +25,7 @@ const GetFirstOrDefaultIdStr = (inputObj) => {
 }
 
 // Time
-const GetElapsedTimeTillNow = (nowTime, referenceTimeISOString) => {
+const GetElapsedTimeTillNow = (nowTime, referenceTimeISOString: string) => {
   const elapsed = (nowTime - new Date(referenceTimeISOString).getTime()) / 1000
   const diff = {}
   diff.days = Math.floor(elapsed / 86400)
@@ -48,7 +48,7 @@ const GetElapsedTimeTillNow = (nowTime, referenceTimeISOString) => {
   }
 }
 
-const GetElapsedTimeBetween = (startReferenceTimeISOString, endReferenceTimeISOString) => {
+const GetElapsedTimeBetween = (startReferenceTimeISOString, endReferenceTimeISOString: string) => {
   const elapsed = (new Date(endReferenceTimeISOString).getTime() - new Date(startReferenceTimeISOString).getTime()) / 1000
   const diff = {}
   diff.days = Math.floor(elapsed / 86400)
