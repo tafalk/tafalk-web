@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from './store'
+import store from '@/store'
 
-import { Auth, API, graphqlOperation, Logger } from 'aws-amplify'
-import { GetUserProfileData } from './graphql/Profile'
-import { GetStoreUser } from './utils/storeUtils'
+import { Auth, API, graphqlOperation, Logger, Storage } from 'aws-amplify'
+import { GetUserProfileData } from '@/graphql/Profile'
+import { GetHexColorOfString } from '@/utils/generators'
 
-import NotFound from '@/components/nocontent/NotFound.vue'
-import Profile from '@/components/user/Profile.vue'
-import PourStream from '@/components/stream/PourStream.vue'
-import Stream from '@/components/stream/Stream.vue'
-import PourCanto from '@/components/canto/PourCanto.vue'
-import Canto from '@/components/canto/Canto.vue'
+import NotFound from '@/views/nocontent/NotFound.vue'
+import Profile from '@/views/profile/Profile.vue'
+import PourStream from '@/views/stream/PourStream.vue'
+import Stream from '@/views/stream/Stream.vue'
+import PourCanto from '@/views/canto/PourCanto.vue'
+import Canto from '@/views/canto/Canto.vue'
 
 Vue.use(Router)
 
@@ -24,52 +24,52 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import(/* webpackChunkName: "home" */ './components/home/Content.vue')
+      component: () => import(/* webpackChunkName: "home" */ './views/home/Content.vue')
     },
     {
       path: '/content',
       name: 'content',
-      component: () => import(/* webpackChunkName: "home" */ './components/home/Content.vue')
+      component: () => import(/* webpackChunkName: "home" */ './views/home/Content.vue')
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import(/* webpackChunkName: "meta" */ './components/meta/About.vue')
+      component: () => import(/* webpackChunkName: "meta" */ './views/meta/About.vue')
     },
     {
       path: '/privacyPolicy',
       name: 'privacyPolicy',
-      component: () => import(/* webpackChunkName: "meta" */ './components/meta/PrivacyPolicy.vue')
+      component: () => import(/* webpackChunkName: "meta" */ './views/meta/PrivacyPolicy.vue')
     },
     {
       path: '/termsOfService',
       name: 'termsOfService',
-      component: () => import(/* webpackChunkName: "meta" */ './components/meta/TermsOfService.vue')
+      component: () => import(/* webpackChunkName: "meta" */ './views/meta/TermsOfService.vue')
     },
     {
       path: '/auth/register',
       name: 'register',
-      component: () => import(/* webpackChunkName: "auth" */ './components/auth/Register.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './views/auth/Register.vue')
     },
     {
       path: '/auth/login',
       name: 'login',
-      component: () => import(/* webpackChunkName: "auth" */ './components/auth/Login.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './views/auth/Login.vue')
     },
     {
       path: '/auth/confirmRegistration',
       name: 'confirmRegistration',
-      component: () => import(/* webpackChunkName: "auth" */ './components/auth/ConfirmRegistration.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './views/auth/ConfirmRegistration.vue')
     },
     {
       path: '/auth/forgotPassword',
       name: 'forgotPassword',
-      component: () => import(/* webpackChunkName: "auth" */ './components/auth/ForgotPassword.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './views/auth/ForgotPassword.vue')
     },
     {
       path: '/auth/farewell',
       name: 'farewell',
-      component: () => import(/* webpackChunkName: "auth" */ './components/auth/Farewell.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './views/auth/Farewell.vue')
     },
     {
       path: '/user/:username',
@@ -84,12 +84,14 @@ const router = new Router({
     {
       path: '/user/:username/canto/pour',
       name: 'pourCanto',
-      component: PourCanto
+      component: PourCanto,
+      meta: { requiresAuth: true }
     },
     {
       path: '/pour',
       name: 'pourStream',
-      component: PourStream
+      component: PourStream,
+      meta: { requiresAuth: true }
     },
     {
       path: '/stream/:id',
@@ -109,29 +111,48 @@ router.beforeEach(async (to, from, next) => {
   store.commit('route/setIsRouteChanging', true)
   store.commit('route/setCurrentRoutePath', to.path)
 
+  let currentAuthenticatedUser
+
   try {
-    const currentAuthenticatedUser = await Auth.currentAuthenticatedUser()
-
-    const dbUsers = await API.graphql(graphqlOperation(GetUserProfileData, {
-      username: currentAuthenticatedUser.username
-    }))
-
-    const dbUser = dbUsers.data.getUserByUsername[0]
-
-    const authenticatedUserStoreObject = await GetStoreUser(dbUser)
-
-    authenticatedUserStoreObject != null
-      ? store.commit('authenticatedUser/setUser', authenticatedUserStoreObject)
-      : store.commit('authenticatedUser/clearUser')
-
-    next()
+    currentAuthenticatedUser = await Auth.currentAuthenticatedUser()
   } catch (err) {
     if (err.toString() === 'not authenticated') {
-      logger.debug('No authenticated user found')
+      // No Authenticated user
+      if (to.matched.some(rec => rec.meta.requiresAuth)) {
+        store.commit('authenticatedUser/clearUser')
+        next({ path: '/auth/login', query: { redirect: to.fullPath } })
+      }
     } else {
-      logger.error('Error getting autheticated user info before routing', err.toString())
+      logger.error('Unexpected error getting autheticated user info', err.message || err)
     }
-    store.commit('authenticatedUser/clearUser')
+  }
+
+  try {
+    // Check the store for the authenticated user data
+    const storeAuthenticatedUser = store.getters['authenticatedUser/setUser']
+    if (storeAuthenticatedUser && storeAuthenticatedUser.username) {
+      next()
+    } else {
+      const userProfiles = await API.graphql(graphqlOperation(GetUserProfileData, {
+        username: currentAuthenticatedUser.username
+      }))
+      const userProfile = userProfiles.data.getUserByUsername[0]
+
+      const profilePictureObjectUrl = userProfile.profilePictureKey ? await Storage.get(userProfile.profilePictureKey, {
+        level: 'protected',
+        identityId: userProfile.cognitoIdentityId
+      }) : null
+
+      const authenticatedUserStoreObject = {
+        ...userProfile,
+        profilePictureObjectUrl,
+        color: GetHexColorOfString(userProfile.username)
+      }
+      store.commit('authenticatedUser/setUser', authenticatedUserStoreObject)
+      next()
+    }
+  } catch (err) {
+    logger.error('Unexpected Error during before routing', err.message || err)
     next()
   }
 })

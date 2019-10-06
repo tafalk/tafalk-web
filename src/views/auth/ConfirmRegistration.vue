@@ -1,11 +1,7 @@
 <template>
 <v-container text-xs-center>
   <v-row>
-    <v-col
-      cols="6"
-      offset="3"
-      class="text-center"
-    >
+    <v-col cols="6" offset="3" class="text-center">
       <v-form v-model="valid" @submit.prevent="onConfirmBtnClick">
         <v-text-field
           :label="$t('auth.confirmRegistration.userNameLabel')"

@@ -1,6 +1,5 @@
 import { API, graphqlOperation, Storage, Logger } from 'aws-amplify'
-import { UpdateUserBasicProfileInfo, UpdateUserProfilePictureKey, UpdateUserProfilePrivacyInfo } from '../../graphql/Profile'
-import { GetStoreUserForProfilePictureChange, GetStoreUserForBasicInfoChange, GetStoreUserForPrivacyChange } from '../../utils/storeUtils'
+import { UpdateUserBasicProfileInfo, UpdateUserProfilePictureKey, UpdateUserProfilePrivacyInfo } from '@/graphql/Profile'
 import dialog from './dialog'
 
 const logger = new Logger('VisitedUserStore')
@@ -46,7 +45,7 @@ const mutations = {
   },
   setProfilePrivacy (state, payload) {
     // state.user.profilePrivacy = payload.profilePrivacy
-    state.user.allowDirectMesages = payload.allowDirectMesages
+    state.user.allowDirectMessages = payload.allowDirectMessages
   }
 }
 
@@ -68,7 +67,13 @@ const actions = {
       logger.error('confirm registration error', JSON.stringify(err))
     }
 
-    const storeObj = await GetStoreUserForProfilePictureChange(payload.profilePicture.key)
+    const profilePictureKey = payload.profilePicture.key
+    const profilePictureObjectUrl = profilePictureKey ? await Storage.get(profilePictureKey, { level: 'protected' }) : null
+
+    const storeObj = {
+      profilePictureKey,
+      profilePictureObjectUrl
+    }
 
     // commit to this module
     commit('setProfilePicture', storeObj)
@@ -87,7 +92,11 @@ const actions = {
       site: (payload.site) ? payload.site : null
     }))
 
-    const storeObj = await GetStoreUserForBasicInfoChange(payload)
+    const storeObj = {
+      bio: payload.bio,
+      location: payload.location,
+      site: payload.site
+    }
 
     // commit to this module
     commit('setBasicInfo', storeObj)
@@ -99,10 +108,13 @@ const actions = {
     await API.graphql(graphqlOperation(UpdateUserProfilePrivacyInfo, {
       userId: payload.userId,
       // profilePrivacy: payload.profilePrivacy,
-      allowDirectMesages: payload.allowDirectMesages
+      allowDirectMessages: payload.allowDirectMessages
     }))
 
-    const storeObj = GetStoreUserForPrivacyChange(payload)
+    const storeObj = {
+      // profilePrivacy: payload.profilePrivacy,
+      allowDirectMessages: payload.allowDirectMessages
+    }
 
     // commit to this module
     commit('setProfilePrivacy', storeObj)

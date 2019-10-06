@@ -9,7 +9,7 @@
         <!-- Allow Direct Messages -->
         <v-select
           :label="$t('user.edit.privacy.dialog.allowDmLabel')"
-          :items="allowDirectMesagesOptions"
+          :items="allowDirectMessagesOptions"
           v-model="allowDirectMessagesModel"
           item-text="displayValue"
           item-value="backendValue"
@@ -40,12 +40,12 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'UserPrivacyEditDialog',
-  props: ['userId', 'allowDirectMesages'],
+  props: ['userId', 'allowDirectMessages'],
   data () {
     return {
       profilePrivacyModel: null,
       allowDirectMessagesModel: null,
-      allowDirectMesagesOptions: [
+      allowDirectMessagesOptions: [
         {
           displayValue: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayYes'),
           backendValue: true
@@ -58,7 +58,7 @@ export default {
     }
   },
   created () {
-    this.allowDirectMessagesModel = this.getObjectFromAllowDirectMessagesBackendValue(this.allowDirectMesages)
+    this.allowDirectMessagesModel = this.getObjectFromAllowDirectMessagesBackendValue(this.allowDirectMessages)
   },
   computed: {
     ...mapGetters({
@@ -78,7 +78,7 @@ export default {
     onSavePrivacyEditClick () {
       this.setProfilePrivacy({
         userId: this.userId,
-        allowDirectMesages: this.allowDirectMessagesModel.backendValue
+        allowDirectMessages: this.allowDirectMessagesModel.backendValue
       })
 
       this.setIsUserPrivacyEditDialogVisible(false)

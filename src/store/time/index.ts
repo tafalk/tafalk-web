@@ -1,4 +1,4 @@
-import { timeRefreshIntervalSeconds } from '../../utils/constants'
+import { timeRefreshIntervalSeconds } from '@/utils/constants'
 
 const state = {
   nowTime: new Date().getTime()

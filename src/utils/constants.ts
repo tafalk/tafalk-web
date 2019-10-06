@@ -1,4 +1,4 @@
-import i18n from '../i18n'
+import i18n from '@/i18n'
 
 export const copyrightStartYear = 2019
 
@@ -47,6 +47,10 @@ export const timeUnitChars = {
   hour: i18n.t('common.time.hour'),
   day: i18n.t('common.time.day')
 }
+
+// LocalStorage Keys
+export const introDismissedKey = 'intro:dismissed'
+export const cookiesAcceptedKey = 'cookies:accepted'
 
 export const streamMoodOptions = [
   { displayValue: '🤬 ' + i18n.t('stream.pouringMetadata.mood.aroused'), backendValue: 'Aroused' },

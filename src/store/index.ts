@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { API, graphqlOperation, Logger } from 'aws-amplify'
-import { ListSealedBriefStreams, ListLiveBriefStreams } from '../graphql/Stream'
-import { ListBriefCantos } from '../graphql/Canto'
+import { ListSealedBriefStreams, ListLiveBriefStreams } from '@/graphql/Stream'
+import { ListBriefCantos } from '@/graphql/Canto'
+import { introDismissedKey, cookiesAcceptedKey } from '@/utils/constants'
 
 import shared from './shared'
 import authenticatedUser from './authenticatedUser'
@@ -89,11 +90,11 @@ export default new Vuex.Store({
   },
   actions: {
     setHasVisitedBefore ({ commit }, hasVisitedBeforeStr) {
-      localStorage.setItem('intro:dismissed', hasVisitedBeforeStr === 'true')
+      localStorage.setItem(introDismissedKey, (hasVisitedBeforeStr === 'true').toString())
       commit('setHasVisitedBefore', hasVisitedBeforeStr)
     },
     setHasAcceptedCookies ({ commit }, hasAcceptedCookies) {
-      localStorage.setItem('cookies:accepted', hasAcceptedCookies === 'true')
+      localStorage.setItem(cookiesAcceptedKey, (hasAcceptedCookies === 'true').toString())
       commit('setHasAcceptedCookies', hasAcceptedCookies)
     },
     async fetchInitialSealedBriefStreams ({ commit }, payload) {

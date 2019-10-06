@@ -1,10 +1,12 @@
 <template>
   <div class="home">
-    <v-container pt-5>
-      <!-- full page loader -->
-      <tafalk-page-loading-progress v-if="!getIsPageReady" />
+    <!-- full page loader -->
+    <v-skeleton-loader
+      :loading="!getIsPageReady"
+      type="list-item-avatar, article, actions"
+    >
       <!-- Regular Content -->
-      <v-row v-else-if="!searchText || searchText.length === 0">
+      <v-row v-if="!searchText || searchText.length === 0">
         <!-- Streams (No search) -->
         <v-col cols="12" offset-md="2" md="8" infinite-wrapper v-if="isStreamListType">
           <v-row row wrap>
@@ -147,8 +149,7 @@
           </v-row>
         </v-col>
       </v-row>
-    </v-container>
-
+    </v-skeleton-loader>
     <v-bottom-navigation
       app
       v-if="$vuetify.breakpoint.mdAndUp"
@@ -181,8 +182,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 import TafalkNewFab from '@/components/home/buttons/NewFab.vue'
 import TafalkStreamListItem from '@/components/stream/listitems/StreamListItem.vue'
 import TafalkCantoListItem from '@/components/canto/listitems/CantoListItem.vue'
-import TafalkUserListItem from '@/components/user/listitems/UserListItem.vue'
-import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
+import TafalkUserListItem from '@/components/profile/listitems/UserListItem.vue'
 import { homeStreamFetchLength } from '@/utils/constants'
 
 export default {
@@ -211,8 +211,7 @@ export default {
     TafalkNewFab,
     TafalkStreamListItem,
     TafalkCantoListItem,
-    TafalkUserListItem,
-    TafalkPageLoadingProgress
+    TafalkUserListItem
   },
   async created () {
     const typeQueryVal = this.$route.query.type || this.sealedValue

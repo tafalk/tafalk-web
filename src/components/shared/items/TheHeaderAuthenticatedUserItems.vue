@@ -75,7 +75,7 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import LogoutConfirmationDialog from '@/components/shared/dialogs/LogoutConfirmationDialog.vue'
-import UserLanguageEditDialog from '@/components/user/dialogs/UserLanguageEditDialog.vue'
+import UserLanguageEditDialog from '@/components/profile/dialogs/UserLanguageEditDialog.vue'
 
 export default {
   name: 'TheHeaderAuthenticatedUserItems',

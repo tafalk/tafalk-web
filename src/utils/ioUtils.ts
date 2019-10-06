@@ -1,5 +1,5 @@
 // Keyboard Input
-const GetKeyName = (keyCode: number) => {
+export const GetKeyName = (keyCode: number) => {
   let keyName = ''
 
   switch (keyCode) {
@@ -13,5 +13,3 @@ const GetKeyName = (keyCode: number) => {
 
   return keyName
 }
-
-export { GetKeyName }

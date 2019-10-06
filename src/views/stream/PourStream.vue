@@ -101,6 +101,8 @@
   </v-container>
 </template>
 
+<!-- UUID -->
+<script src="http://wzrd.in/standalone/uuid%2Fv5@latest"></script>
 <script>
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
@@ -108,7 +110,6 @@ import { ListStreamsByUser } from '@/graphql/Profile'
 import { CreateStream, UpdateStreamBody, UpdateStreamTitle, UpdatePosition, UpdateMood, SealStreamForEver } from '@/graphql/Stream'
 import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
 import TafalkStreamIntroduction from '@/components/stream/dialogs/StreamIntroduction.vue'
-import { GenerateUuid4 } from '@/utils/generators'
 import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
 import { streamMoodOptions, streamPositionOptions, pourStrikethroughTimeToIdle } from '@/utils/constants'
 import { GetKeyName } from '@/utils/ioUtils'
@@ -151,7 +152,7 @@ export default {
     // window.addEventListener('unload', () => this.sealForEver)
 
     // Create a UUID for the new stream
-    this.streamId = GenerateUuid4()
+    this.streamId = uuidv5('https://tafalk.com/stream', uuidv5.URL)
   },
   async mounted () {
     // Check if first stream of user

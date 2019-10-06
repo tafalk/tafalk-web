@@ -1,20 +1,20 @@
-import i18n from '../i18n'
+import i18n from '@/i18n'
 import { timeUnitChars, strikethroughChar } from './constants'
-import { TimeDifference } from '../types'
+import { TimeDifference } from '@/types'
 
 // String
-const IsNullOrWhitespace = (str: string) => {
+export const IsNullOrWhitespace = (str: string) => {
   return str === null || str.match(/^ *$/) !== null
 }
 
-const StrikethroughStr = (str: string) => {
+export const StrikethroughStr = (str: string) => {
   return [...str].reduce((acc, char) => {
     return acc + char + strikethroughChar
   }, '')
 }
 
 // Array
-const GetFirstOrDefaultIdStr = (inputObj: any) => {
+export const GetFirstOrDefaultIdStr = (inputObj: any) => {
   if (Array.isArray(inputObj)) {
     if (inputObj.length) {
       const firstElem = inputObj[0].id
@@ -26,7 +26,7 @@ const GetFirstOrDefaultIdStr = (inputObj: any) => {
 }
 
 // Time
-const GetElapsedTimeTillNow = (nowTime: number, referenceTimeISOString: string) => {
+export const GetElapsedTimeTillNow = (nowTime: number, referenceTimeISOString: string) => {
   const elapsed = (nowTime - new Date(referenceTimeISOString).getTime()) / 1000
   const diff: TimeDifference = {
     days: Math.floor(elapsed / 86400),
@@ -50,7 +50,7 @@ const GetElapsedTimeTillNow = (nowTime: number, referenceTimeISOString: string) 
   }
 }
 
-const GetElapsedTimeBetween = (startReferenceTimeISOString: string, endReferenceTimeISOString: string) => {
+export const GetElapsedTimeBetween = (startReferenceTimeISOString: string, endReferenceTimeISOString: string) => {
   const elapsed = (new Date(endReferenceTimeISOString).getTime() - new Date(startReferenceTimeISOString).getTime()) / 1000
   const diff: TimeDifference = {
     days: Math.floor(elapsed / 86400),
@@ -70,12 +70,4 @@ const GetElapsedTimeBetween = (startReferenceTimeISOString: string, endReference
   } else {
     return `${diff.days}${timeUnitChars.day}`
   }
-}
-
-export {
-  IsNullOrWhitespace,
-  StrikethroughStr,
-  GetFirstOrDefaultIdStr,
-  GetElapsedTimeTillNow,
-  GetElapsedTimeBetween
 }

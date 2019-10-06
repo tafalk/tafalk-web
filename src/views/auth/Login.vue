@@ -1,12 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col
-        cols="12"
-        md="6"
-        offset-md="3"
-        class="text-center"
-      >
+      <v-col cols="12" md="6" offset-md="3" class="text-center">
         <v-form v-model="valid" @submit.prevent="onLoginBtnClick">
           <!-- Form Fields -->
           <v-text-field
@@ -37,30 +32,19 @@
         </v-form>
       </v-col>
     </v-row>
-    <v-row
-      class="py-3"
-      justify="center"
-    >
+    <v-row class="py-3" justify="center">
       <!-- Forgot Password Button -->
       <a v-on:click="onForgotPassBtnClick">{{ $t('auth.login.forgotPasswordButtonText') }}</a>
     </v-row>
     <v-row>
-      <v-col
-        xs="12"
-        md="6"
-        offset-md="3"
-      >
+      <v-col xs="12" md="6" offset-md="3">
         <v-divider></v-divider>
       </v-col>
     </v-row>
-    <v-row
-      justify="center"
-    >
-        <v-subheader>{{ $t('auth.login.signinSectionTitle') }}</v-subheader>
+    <v-row justify="center">
+      <v-subheader>{{ $t('auth.login.signinSectionTitle') }}</v-subheader>
     </v-row>
-    <v-row
-      justify="center"
-    >
+    <v-row justify="center">
       <v-btn
         color="primary"
         @click="onRegisterBtnClick"
@@ -75,7 +59,7 @@ import { Auth, API, Logger, graphqlOperation } from 'aws-amplify'
 import { mapActions } from 'vuex'
 import { GetUserProfileData, UpdateUserCognitoIdentityId } from '@/graphql/Profile'
 import { minUsernameOrEmailLength, maxUsernameOrEmailLength, minPasswordLength } from '@/utils/constants'
-import { GetStoreUserWithCognitoIdentityId } from '@/utils/storeUtils'
+import { GetHexColorOfString } from '@/utils/generators'
 
 const logger = new Logger('Login')
 
@@ -135,23 +119,26 @@ export default {
         const user = await Auth.signIn(this.username, this.password)
         const credentials = await Auth.currentCredentials()
 
-        const dbUsers = await API.graphql(graphqlOperation(GetUserProfileData, {
+        const userProfiles = await API.graphql(graphqlOperation(GetUserProfileData, {
           username: user.username
         }))
 
-        const dbUser = dbUsers.data.getUserByUsername[0]
+        let userProfile = userProfiles.data.getUserByUsername[0]
 
-        // Update DB record of the logged in user with cognito identity id
-        const cognitoIdentityId = credentials.identityId
+        if (!userProfile.cognitoIdentityId) {
+          // If first login, there may be need to update cognito identity id
+          const cognitoIdentityId = credentials.identityId
+          await API.graphql(graphqlOperation(UpdateUserCognitoIdentityId, {
+            userId: userProfile.id,
+            cognitoIdentityId: cognitoIdentityId
+          }))
+          userProfile.cognitoIdentityId = cognitoIdentityId
+        }
 
-        await API.graphql(graphqlOperation(UpdateUserCognitoIdentityId, {
-          userId: dbUser.id,
-          cognitoIdentityId: cognitoIdentityId
-        }))
-
-        const loggedInUserStoreObject = await GetStoreUserWithCognitoIdentityId(dbUser, cognitoIdentityId)
-
-        this.$store.commit('authenticatedUser/setUser', loggedInUserStoreObject)
+        this.$store.commit('authenticatedUser/setUser', {
+          ...userProfile,
+          color: GetHexColorOfString(userProfile.username)
+        })
 
         // Push to home route
         this.$router.push({ name: 'home' })
