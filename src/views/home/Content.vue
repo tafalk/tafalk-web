@@ -1,14 +1,15 @@
 <template>
   <div class="home">
     <!-- full page loader -->
+    <v-col cols="12" offset-md="2" md="8">
     <v-skeleton-loader
       :loading="!getIsPageReady"
-      type="list-item-avatar, article, actions"
+      type="list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider"
     >
       <!-- Regular Content -->
       <v-row v-if="!searchText || searchText.length === 0">
         <!-- Streams (No search) -->
-        <v-col cols="12" offset-md="2" md="8" infinite-wrapper v-if="isStreamListType">
+        <v-col cols="12" infinite-wrapper v-if="isStreamListType">
           <v-row row wrap>
             <v-col cols="12">
               <v-list>
@@ -31,7 +32,7 @@
           </v-row>
         </v-col>
         <!-- Cantos (No search) -->
-        <v-col cols="12" offset-md="2" md="8" infinite-wrapper v-else-if="isCantoListType">
+        <v-col cols="12" infinite-wrapper v-else-if="isCantoListType">
           <v-row>
             <v-col cols="12">
               <v-list>
@@ -57,28 +58,20 @@
       </v-row>
       <!-- Search Text Not Long Enough -->
       <v-row v-else-if="!isSearchTextLongEnough">
-        <v-col cols="12" offset-md="2" md="8">
-          <v-row>
-            <v-col cols="12">
-              <h1 class="grey--text">{{ $t('home.search.searchTextNotLongEnoughWarning') }}</h1>
-            </v-col>
-          </v-row>
+        <v-col cols="12">
+          <h1 class="grey--text">{{ $t('home.search.searchTextNotLongEnoughWarning') }}</h1>
         </v-col>
       </v-row>
       <!-- No Results matching search -->
       <v-row v-else-if="searchResults.length === 0">
-        <v-col cols="12" offset-md="2" md="8">
-          <v-row>
-            <v-col cols="12">
-              <h1 class="grey--text">{{ $t('home.search.noResult', { searchText: searchText }) }}</h1>
-            </v-col>
-          </v-row>
+        <v-col cols="12">
+          <h1 class="grey--text">{{ $t('home.search.noResult', { searchText: searchText }) }}</h1>
         </v-col>
       </v-row>
       <!-- Search Results -->
       <v-row v-else>
         <!-- Search Result (Users) -->
-        <v-col cols="12" offset-md="2" md="8" class="mb-4" v-if="searchUserTypeResultList && searchUserTypeResultList.length > 0">
+        <v-col cols="12" class="mb-4" v-if="searchUserTypeResultList && searchUserTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.userTitle', { resultCount: searchUserTypeResultList.length }) }}</span>
           <v-row>
             <v-col cols="12" class="mt-2">
@@ -101,7 +94,7 @@
         </v-col>
         <br />
         <!-- Search Result (Streams) -->
-        <v-col cols="12" offset-md="2" md="8" class="mb-4" v-if="searchStreamTypeResultList && searchStreamTypeResultList.length > 0">
+        <v-col cols="12" class="mb-4" v-if="searchStreamTypeResultList && searchStreamTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.streamTitle', { resultCount: searchStreamTypeResultList.length }) }}</span>
           <v-row>
             <v-col cols="12" class="mt-2">
@@ -125,7 +118,7 @@
         </v-col>
         <br />
         <!-- Search Result (Cantos) -->
-        <v-col cols="12" offset-md="2" md="8" v-if="searchCantoTypeResultList && searchCantoTypeResultList.length > 0">
+        <v-col cols="12" v-if="searchCantoTypeResultList && searchCantoTypeResultList.length > 0">
           <span class="title grey--text">{{ $t('home.search.result.cantoTitle', { resultCount: searchCantoTypeResultList.length }) }}</span>
           <v-row>
             <v-col cols="12" class="mt-2">
@@ -150,6 +143,7 @@
         </v-col>
       </v-row>
     </v-skeleton-loader>
+    </v-col>
     <v-bottom-navigation
       app
       v-if="$vuetify.breakpoint.mdAndUp"
