@@ -59,4 +59,3 @@ export const GetSiblings = (elem: { parentNode: { firstChild: any } }) => {
 
   return siblings
 }
-

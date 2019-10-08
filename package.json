@@ -7,7 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "deploy": "vue-cli-service s3-deploy",
-    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
+    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(ts|js|vue)' --locales './src/locales/**/*.json'",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
   "devDependencies": {
     "@mdi/font": "^3.9.97",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.3",
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-plugin-pwa": "^3.11.0",

@@ -2,7 +2,7 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { UpdateUserTheme, UpdateUserLanguage } from '@/graphql/Profile'
 import dialog from './dialog'
 import { themeOptions } from '@/utils/constants'
-import { User, UserProfilePicture, UserBasicInfo, UserProfilePrivacy} from '@/types'
+import { User, UserProfilePicture, UserBasicInfo, UserProfilePrivacy } from '@/types'
 
 const state = {
   user: null
