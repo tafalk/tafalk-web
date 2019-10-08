@@ -215,6 +215,7 @@ import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetStream, OnUpdateStream } from '@/graphql/Stream'
 import { ListStreamLikes, CreateLike, DeleteLike, OnCreateOrDeleteStreamLike, CreateComment, ListPaginatedStreamComments } from '@/graphql/StreamReaction'
+import { ListFlags, OnCreateOrDeleteFlag } from '@/graphql/Flag'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
 import { GetHexColorOfString, GetStreamLink } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
@@ -244,10 +245,12 @@ export default {
       watchTypeUserConnectionValue: 'Watch',
       blockTypeUserConnectionValue: 'Block',
       authorProfilePictureObjectUrl: null,
-      streamChangeSubscription: null,
       streamChange: null,
       likeObjects: null,
+      flagObjects: null,
+      streamChangeSubscription: null,
       likeChangeSubscription: null,
+      flagChangeSubscription: null,
       isLikeLoading: false,
       isCommentLoading: false,
       showCommentBox: false,
@@ -365,6 +368,9 @@ export default {
     },
     'likeObjects' (val) {
       this.setStreamLikes(val)
+    },
+    'flagObjects' (val) {
+      // TODO: Set like `likeObjects` above
     }
   },
   async created () {
@@ -375,6 +381,7 @@ export default {
   beforeDestroy () {
     this.streamChangeSubscription.unsubscribe()
     this.likeChangeSubscription.unsubscribe()
+    this.flagChangeSubscription.unsubscribe()
   },
   methods: {
     ...mapMutations({
@@ -432,6 +439,19 @@ export default {
             )
             this.likeObjects = graphqlLikeListResult.data.listStreamLikes
             // this.likeObjects = eventData.value.data.onCreateOrDeleteLike
+          },
+          error: (err) => this.setNewSiteError(err.message || err)
+        })
+
+        // Subscribe to flags
+        this.flagChangeSubscription = API.graphql(
+          graphqlOperation(OnCreateOrDeleteFlag, { contentId: this.stream.id })
+        ).subscribe({
+          next: async (eventData) => {
+            const graphqlFlagListResult = await API.graphql(
+              graphqlOperation(ListFlags, { contentId: this.stream.id })
+            )
+            this.flagObjects = graphqlFlagListResult.data.listFlags
           },
           error: (err) => this.setNewSiteError(err.message || err)
         })
