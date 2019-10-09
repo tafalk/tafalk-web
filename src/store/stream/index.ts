@@ -8,37 +8,37 @@ const state = {
 }
 
 const getters = {
-  getShareStreamLink (state) {
+  getShareStreamLink (state: any) {
     return state.shareStreamLink
   },
-  getStream (state) {
+  getStream (state: any) {
     return state.stream
   },
-  getPaginatedStreamComments (state) {
+  getPaginatedStreamComments (state: any) {
     return state.paginatedComments
   },
-  getIsRouteChangeSafe (state) {
+  getIsRouteChangeSafe (state: any) {
     return state.isRouteChangeSafe
   }
 }
 
 const mutations = {
-  clearShareStreamLink (state) {
+  clearShareStreamLink (state: any) {
     state.shareStreamLink = null
   },
-  setShareStreamLink (state, shareStreamLink) {
+  setShareStreamLink (state: any, shareStreamLink: any) {
     state.shareStreamLink = shareStreamLink
   },
-  setStream (state, stream) {
+  setStream (state: any, stream: any) {
     state.stream = stream
   },
-  setStreamLikes (state, likeObjectArray) {
+  setStreamLikes (state: any, likeObjectArray: any) {
     state.stream.likes = likeObjectArray
   },
-  setPaginatedStreamComments (state, paginatedComments) {
+  setPaginatedStreamComments (state: any, paginatedComments: any) {
     state.paginatedComments = paginatedComments
   },
-  setIsRouteChangeSafe (state, isRouteChangeSafe) {
+  setIsRouteChangeSafe (state: any, isRouteChangeSafe: boolean) {
     state.isRouteChangeSafe = isRouteChangeSafe
   }
 }

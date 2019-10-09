@@ -6,10 +6,10 @@ const state = {
 
 // getters
 const getters = {
-  getCurrentRoutePath: state => {
+  getCurrentRoutePath (state: any) {
     return state.currentRoutePath
   },
-  getIsRouteChanging: state => {
+  getIsRouteChanging (state: any) {
     return state.isRouteChanging
   }
 }
@@ -21,10 +21,10 @@ const actions = {
 
 // mutations
 const mutations = {
-  setCurrentRoutePath (state, currentRoutePath) {
+  setCurrentRoutePath (state: any, currentRoutePath: string) {
     state.currentRoutePath = currentRoutePath
   },
-  setIsRouteChanging (state, isRouteChanging) {
+  setIsRouteChanging (state: any, isRouteChanging: boolean) {
     state.isRouteChanging = isRouteChanging
   }
 }

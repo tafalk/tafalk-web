@@ -44,7 +44,7 @@ const mutations = {
 }
 
 const actions = {
-  async setTheme ({ commit }, payload) {
+  async setTheme ({ commit }: any, payload: any) {
     const validatedTheme = (themeOptions.includes(payload.theme)) ? payload.theme : 'light'
     // Update User DB Table
     await API.graphql(graphqlOperation(UpdateUserTheme, {
@@ -55,7 +55,7 @@ const actions = {
     // commit to this module
     commit('setTheme', validatedTheme)
   },
-  async setLanguage ({ commit }, payload) {
+  async setLanguage ({ commit }: any, payload: any) {
     // Update User DB Table
     await API.graphql(graphqlOperation(UpdateUserLanguage, {
       userId: payload.userId,

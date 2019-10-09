@@ -4,31 +4,31 @@ const state = {
 }
 
 const getters = {
-  getIsFlagDialogVisible (state) {
+  getIsFlagDialogVisible (state: any) {
     return state.isFlagDialogVisible
   },
-  getIsRetractFlagDialogVisible (state) {
+  getIsRetractFlagDialogVisible (state: any) {
     return state.isRetractFlagDialogVisible
   }
 }
 
 const mutations = {
-  setIsFlagDialogVisible (state, isFlagDialogVisible) {
+  setIsFlagDialogVisible (state: any, isFlagDialogVisible: boolean) {
     state.isFlagDialogVisible = isFlagDialogVisible
   },
-  showFlagDialog (state) {
+  showFlagDialog (state: any) {
     state.isFlagDialogVisible = true
   },
-  hideFlagDialog (state) {
+  hideFlagDialog (state: any) {
     state.isFlagDialogVisible = false
   },
-  setIsRetractFlagDialogVisible (state, isRetractFlagDialogVisible) {
+  setIsRetractFlagDialogVisible (state: any, isRetractFlagDialogVisible: boolean) {
     state.isRetractFlagDialogVisible = isRetractFlagDialogVisible
   },
-  showRetractFlagDialog (state) {
+  showRetractFlagDialog (state: any) {
     state.isRetractFlagDialogVisible = true
   },
-  hideRetractFlagDialog (state) {
+  hideRetractFlagDialog (state: any) {
     state.isRetractFlagDialogVisible = false
   }
 }

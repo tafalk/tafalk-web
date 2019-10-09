@@ -5,7 +5,7 @@
     // "noImplicitAny": true,
     // "noImplicitThis": true,
     // "noImplicitReturns": true,
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -14,7 +14,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "webpack-env",
+      "node"
     ],
     "paths": {
       "@/*": [

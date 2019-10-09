@@ -9,44 +9,44 @@ const state = {
 }
 
 const getters = {
-  getSearchText (state) {
+  getSearchText (state: any) {
     return state.searchText
   },
-  getSearchResults (state) {
+  getSearchResults (state: any) {
     return state.searchResults
   },
-  getIsSearchTextLongEnough (state) {
+  getIsSearchTextLongEnough (state: any) {
     return state.isSearchTextLongEnough
   }
 }
 
 const mutations = {
-  clearSearchText (state) {
+  clearSearchText (state: any) {
     state.searchText = ''
   },
-  clearSearchResults (state) {
+  clearSearchResults (state: any) {
     state.searchResults = []
   },
-  setSearchText (state, payload) {
+  setSearchText (state: any, payload: string) {
     state.searchText = payload
   },
-  setSearchResults (state, payload) {
+  setSearchResults (state: any, payload: any) {
     state.searchResults = payload
   },
-  setIsSearchTextLongEnough (state, payload) {
+  setIsSearchTextLongEnough (state: any, payload: boolean) {
     state.isSearchTextLongEnough = payload
   }
 }
 
 const actions = {
-  async search ({ commit }, payload) {
+  async search ({ commit }: any, payload: any) {
     // Set the search text
     commit('setSearchText', payload)
 
     // Set the search result if the text is beyond the acceptable range
     if (payload && payload.length >= minSiteSearchTextLength) {
       commit('setIsSearchTextLongEnough', true)
-      const siteSearchGraphqlResult = await API.graphql(graphqlOperation(Search, {
+      const siteSearchGraphqlResult: any = await API.graphql(graphqlOperation(Search, {
         query: payload
       }))
       const siteSearchResult = siteSearchGraphqlResult.data.search

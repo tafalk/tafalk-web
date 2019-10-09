@@ -9,48 +9,48 @@ const state = {
 }
 
 const getters = {
-  getUser (state) {
+  getUser (state: any) {
     return state.user
   }
 }
 
 const mutations = {
-  clearUser (state) {
+  clearUser (state: any) {
     state.user = null
   },
-  setUser (state, user) {
+  setUser (state: any, user: any) {
     state.user = user
   },
-  clearInboundWatchIdFromAuthenticatedUser (state) {
+  clearInboundWatchIdFromAuthenticatedUser (state: any) {
     state.user.connectionsWithAuthenticatedUser.inbound.watchId = ''
   },
-  clearInboundBlockIdFromAuthenticatedUser (state) {
+  clearInboundBlockIdFromAuthenticatedUser (state: any) {
     state.user.connectionsWithAuthenticatedUser.inbound.blockId = ''
   },
-  setInboundBlockIdFromAuthenticatedUser (state, blockId) {
+  setInboundBlockIdFromAuthenticatedUser (state: any, blockId: string) {
     state.user.connectionsWithAuthenticatedUser.inbound.blockId = blockId
   },
-  setInboundWatchIdFromAuthenticatedUser (state, watchId) {
+  setInboundWatchIdFromAuthenticatedUser (state: any, watchId: string) {
     state.user.connectionsWithAuthenticatedUser.inbound.watchId = watchId
   },
-  setProfilePicture (state, payload) {
+  setProfilePicture (state: any, payload: any) {
     state.user.profilePictureKey = payload.profilePictureKey
     state.user.profilePictureObjectUrl = payload.profilePictureObjectUrl
   },
-  setBasicInfo (state, payload) {
+  setBasicInfo (state: any, payload: any) {
     // state.user.preferredName = payload.preferredName
     state.user.bio = payload.bio
     state.user.location = payload.location
     state.user.site = payload.site
   },
-  setProfilePrivacy (state, payload) {
+  setProfilePrivacy (state: any, payload: any) {
     // state.user.profilePrivacy = payload.profilePrivacy
     state.user.allowDirectMessages = payload.allowDirectMessages
   }
 }
 
 const actions = {
-  async setProfilePicture ({ commit }, payload) {
+  async setProfilePicture ({ commit }: any, payload: any) {
     try {
       // Upload to S3 storage
       await Storage.put(payload.profilePicture.key, payload.profilePicture.fileObject, {
@@ -81,7 +81,7 @@ const actions = {
     // commit to 'authenticatedUser' module
     commit('authenticatedUser/setProfilePicture', storeObj, { root: true })
   },
-  async setBasicInfo ({ commit }, payload) {
+  async setBasicInfo ({ commit }: any, payload: any) {
     // Aws Appsync mutation
     await API.graphql(graphqlOperation(UpdateUserBasicProfileInfo, {
       userId: payload.userId,
@@ -104,7 +104,7 @@ const actions = {
     // commit to 'authenticatedUser' module
     commit('authenticatedUser/setBasicInfo', storeObj, { root: true })
   },
-  async setProfilePrivacy ({ commit }, payload) {
+  async setProfilePrivacy ({ commit }: any, payload: any) {
     await API.graphql(graphqlOperation(UpdateUserProfilePrivacyInfo, {
       userId: payload.userId,
       // profilePrivacy: payload.profilePrivacy,

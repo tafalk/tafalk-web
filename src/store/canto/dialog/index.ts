@@ -3,19 +3,19 @@ const state = {
 }
 
 const getters = {
-  getIsShareCantoLinkDialogVisible (state) {
+  getIsShareCantoLinkDialogVisible (state: any) {
     return state.isShareCantoLinkDialogVisible
   }
 }
 
 const mutations = {
-  setIsShareCantoLinkDialogVisible (state, isShareCantoLinkDialogVisible) {
+  setIsShareCantoLinkDialogVisible (state: any, isShareCantoLinkDialogVisible: boolean) {
     state.isShareCantoLinkDialogVisible = isShareCantoLinkDialogVisible
   },
-  showShareCantoLinkDialog (state) {
+  showShareCantoLinkDialog (state: any) {
     state.isShareCantoLinkDialogVisible = true
   },
-  hideShareCantoLinkDialog (state) {
+  hideShareCantoLinkDialog (state: any) {
     state.isShareCantoLinkDialogVisible = false
   }
 }

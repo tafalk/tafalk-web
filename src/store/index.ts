@@ -25,8 +25,8 @@ export default new Vuex.Store({
     isPageReady: false,
     hasVisitedBefore: true,
     hasAcceptedCookies: true,
-    streamList: [],
-    cantoList: [],
+    streamList: [] as any,
+    cantoList: [] as any,
     nextStreamToken: null,
     nextCantoToken: null
   },
@@ -100,7 +100,7 @@ export default new Vuex.Store({
     async fetchInitialSealedBriefStreams ({ commit }, payload) {
       try {
         commit('setIsPageReady', false)
-        const rawFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
+        const rawFetch: any = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
 
         commit('setStreamList', rawFetch.data.listSealedStreams.items)
         commit('setNextStreamToken', rawFetch.data.listSealedStreams.nextToken)
@@ -112,7 +112,7 @@ export default new Vuex.Store({
     },
     async fetchFurtherSealedBriefStreams ({ commit }, payload) {
       try {
-        const rawFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
+        const rawFetch: any = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
 
         commit('appendStreamList', rawFetch.data.listSealedStreams.items)
         commit('setNextStreamToken', rawFetch.data.listSealedStreams.nextToken)
@@ -123,7 +123,7 @@ export default new Vuex.Store({
     async fetchInitialLiveBriefStreams ({ commit }, payload) {
       try {
         commit('setIsPageReady', false)
-        const rawFetch = await API.graphql(graphqlOperation(ListLiveBriefStreams, payload))
+        const rawFetch: any = await API.graphql(graphqlOperation(ListLiveBriefStreams, payload))
 
         commit('setStreamList', rawFetch.data.listLiveStreams.items)
         commit('setNextStreamToken', rawFetch.data.listLiveStreams.nextToken)
@@ -135,7 +135,7 @@ export default new Vuex.Store({
     },
     async fetchFurtherLiveBriefStreams ({ commit }, payload) {
       try {
-        const rawFetch = await API.graphql(graphqlOperation(ListLiveBriefStreams, payload))
+        const rawFetch: any = await API.graphql(graphqlOperation(ListLiveBriefStreams, payload))
 
         commit('appendStreamList', rawFetch.data.listLiveStreams.items)
         commit('setNextStreamToken', rawFetch.data.listLiveStreams.nextToken)
@@ -146,9 +146,9 @@ export default new Vuex.Store({
     async fetchInitialSealedBriefStreamsByFaveUsers ({ getters, commit }, payload) {
       commit('setIsPageReady', false)
       try {
-        const rawFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
+        const rawFetch: any = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
 
-        commit('setStreamList', rawFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === getters['authenticatedUser/getUser'].id)))
+        commit('setStreamList', rawFetch.data.listSealedStreams.items.filter((s: any) => s.likes.some((i: any) => i.userId === getters['authenticatedUser/getUser'].id)))
         commit('setNextStreamToken', rawFetch.data.listSealedStreams.nextToken)
       } catch (err) {
         logger.error('error fetching sealed streams by fave others', err)
@@ -158,19 +158,19 @@ export default new Vuex.Store({
     },
     async fetchFurtherSealedBriefStreamsByFaveUsers ({ getters, commit }, payload) {
       try {
-        const scrollEndNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
+        const scrollEndNewFetch: any = await API.graphql(graphqlOperation(ListSealedBriefStreams, payload))
 
-        commit('setStreamList', scrollEndNewFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === getters['authenticatedUser/getUser'].id)))
+        commit('setStreamList', scrollEndNewFetch.data.listSealedStreams.items.filter((s: any) => s.likes.some((i: any) => i.userId === getters['authenticatedUser/getUser'].id)))
         commit('setNextStreamToken', scrollEndNewFetch.data.listSealedStreams.nextToken)
 
         // If the filtered result is not enough fetch a new portion
         let countOfByFaveOthers = 0
         while (countOfByFaveOthers < payload.fetchLimit && payload.nextToken != null) {
-          const rawNewFetch = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
+          const rawNewFetch: any = await API.graphql(graphqlOperation(ListSealedBriefStreams, {
             limit: payload.fetchLimit,
             nextToken: getters['getNextStreamToken']
           }))
-          let newFetch = rawNewFetch.data.listSealedStreams.items.filter(s => s.likes.some(i => i.userId === getters['authenticatedUser/getUser'].id))
+          let newFetch = rawNewFetch.data.listSealedStreams.items.filter((s: any) => s.likes.some((i: any) => i.userId === getters['authenticatedUser/getUser'].id))
           commit('appendStreamList', ...newFetch)
           commit('setNextStreamToken', rawNewFetch.data.listSealedStreams.nextToken)
           countOfByFaveOthers += newFetch.length
@@ -182,7 +182,7 @@ export default new Vuex.Store({
     async fetchInitialBriefCantos ({ commit }, payload) {
       try {
         commit('setIsPageReady', false)
-        const rawFetch = await API.graphql(graphqlOperation(ListBriefCantos, payload))
+        const rawFetch: any = await API.graphql(graphqlOperation(ListBriefCantos, payload))
 
         commit('setCantoList', rawFetch.data.listCantos.items)
         commit('setNextCantoToken', rawFetch.data.listCantos.nextToken)
@@ -194,7 +194,7 @@ export default new Vuex.Store({
     },
     async fetchFurtherBriefCantos ({ commit }, payload) {
       try {
-        const rawFetch = await API.graphql(graphqlOperation(ListBriefCantos, payload))
+        const rawFetch: any = await API.graphql(graphqlOperation(ListBriefCantos, payload))
 
         commit('appendCantoList', rawFetch.data.listCantos.items)
         commit('setNextCantoToken', rawFetch.data.listCantos.nextToken)

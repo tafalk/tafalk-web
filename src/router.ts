@@ -133,7 +133,7 @@ router.beforeEach(async (to, from, next) => {
     if (storeAuthenticatedUser && storeAuthenticatedUser.username) {
       next()
     } else {
-      const userProfiles = await API.graphql(graphqlOperation(GetUserProfileData, {
+      const userProfiles: any = await API.graphql(graphqlOperation(GetUserProfileData, {
         username: currentAuthenticatedUser.username
       }))
       const userProfile = userProfiles.data.getUserByUsername[0]

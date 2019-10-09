@@ -13,37 +13,37 @@ const state = {
 }
 
 const getters = {
-  getIsTermsOfServiceDialogVisible (state) {
+  getIsTermsOfServiceDialogVisible (state: any) {
     return state.isTermsOfServiceDialogVisible
   },
-  getIsPrivacyPolicyDialogVisible (state) {
+  getIsPrivacyPolicyDialogVisible (state: any) {
     return state.isPrivacyPolicyDialogVisible
   },
-  getIsSiteNotificationVisible (state) {
+  getIsSiteNotificationVisible (state: any) {
     return state.isSiteNotificationVisible
   },
-  getSiteNotificationText (state) {
+  getSiteNotificationText (state: any) {
     return state.siteNotificationText
   },
-  getSiteNotificationType (state) {
+  getSiteNotificationType (state: any) {
     return state.siteNotificationType
   },
-  getSiteNotificationTimeout (state) {
+  getSiteNotificationTimeout (state: any) {
     return state.siteNotificationTimeout
   },
-  getIsUserInteractionResultNotificationVisible (state) {
+  getIsUserInteractionResultNotificationVisible (state: any) {
     return state.isUserInteractionResultNotificationVisible
   },
-  getUserInteractionResultNotificationText (state) {
+  getUserInteractionResultNotificationText (state: any) {
     return state.userInteractionResultNotificationText
   },
-  getUserInteractionResultNotificationType (state) {
+  getUserInteractionResultNotificationType (state: any) {
     return state.userInteractionResultNotificationType
   },
-  getUserInteractionResultNotificationTimeout (state) {
+  getUserInteractionResultNotificationTimeout (state: any) {
     return state.userInteractionResultNotificationTimeout
   },
-  getSiteNotification (state) {
+  getSiteNotification (state: any) {
     return {
       isSiteNotificationVisible: state.isSiteNotificationVisible,
       siteNotificationText: state.siteNotificationText,
@@ -51,7 +51,7 @@ const getters = {
       siteNotificationTimeout: state.siteNotificationTimeout
     }
   },
-  getUserInteractionResultNotification (state) {
+  getUserInteractionResultNotification (state: any) {
     return {
       isUserInteractionResultNotificationVisible: state.isUserInteractionResultNotificationVisible,
       userInteractionResultNotificationText: state.userInteractionResultNotificationText,
@@ -59,77 +59,77 @@ const getters = {
       userInteractionResultNotificationTimeout: state.userInteractionResultNotificationTimeout
     }
   },
-  getMenuDrawer (state) {
+  getMenuDrawer (state: any) {
     return state.menuDrawer
   }
 }
 
 // mutations
 const mutations = {
-  clearSiteNotification (state) {
+  clearSiteNotification (state: any) {
     state.isSiteNotificationVisible = false
     state.siteNotificationText = null
     state.siteNotificationType = null
     state.siteNotificationTimeout = 0
   },
-  clearUserInteractionResultNotification (state) {
+  clearUserInteractionResultNotification (state: any) {
     state.isUserInteractionResultNotificationVisible = false
     state.userInteractionResultNotificationText = null
     state.userInteractionResultNotificationType = null
     state.userInteractionResultNotificationTimeout = 0
   },
-  setSiteNotification (state, payload) {
+  setSiteNotification (state: any, payload: any) {
     state.isSiteNotificationVisible = payload.isSiteNotificationVisible
     state.siteNotificationText = payload.siteNotificationText
     state.siteNotificationType = payload.siteNotificationType
     state.siteNotificationTimeout = payload.siteNotificationTimeout ? payload.siteNotificationTimeout : 3000
   },
-  setUserInteractionResultNotification (state, payload) {
+  setUserInteractionResultNotification (state: any, payload: any) {
     state.isUserInteractionResultNotificationVisible = payload.isUserInteractionResultNotificationVisible
     state.userInteractionResultNotificationText = payload.userInteractionResultNotificationText
     state.userInteractionResultNotificationType = payload.userInteractionResultNotificationType
     state.userInteractionResultNotificationTimeout = payload.userInteractionResultNotificationTimeout ? payload.userInteractionResultNotificationTimeout : 5000
   },
-  setIsSiteNotificationVisible (state, isSiteNotificationVisible) {
+  setIsSiteNotificationVisible (state: any, isSiteNotificationVisible: any) {
     state.isSiteNotificationVisible = isSiteNotificationVisible
   },
-  setIsUserInteractionResultNotificationVisible (state, isUserInteractionResultNotificationVisible) {
+  setIsUserInteractionResultNotificationVisible (state: any, isUserInteractionResultNotificationVisible: any) {
     state.isUserInteractionResultNotificationVisible = isUserInteractionResultNotificationVisible
   },
-  setIsTermsOfServiceDialogVisible (state, isTermsOfServiceDialogVisible) {
+  setIsTermsOfServiceDialogVisible (state: any, isTermsOfServiceDialogVisible: boolean) {
     state.isTermsOfServiceDialogVisible = isTermsOfServiceDialogVisible
   },
-  setIsPrivacyPolicyDialogVisible (state, isPrivacyPolicyDialogVisible) {
+  setIsPrivacyPolicyDialogVisible (state: any, isPrivacyPolicyDialogVisible: boolean) {
     state.isPrivacyPolicyDialogVisible = isPrivacyPolicyDialogVisible
   },
-  setSiteNotificationText (state, siteNotificationText) {
+  setSiteNotificationText (state: any, siteNotificationText: string) {
     state.siteNotificationText = siteNotificationText
   },
-  setSiteNotificationType (state, siteNotificationType) {
+  setSiteNotificationType (state: any, siteNotificationType: string) {
     state.siteNotificationType = siteNotificationType
   },
-  setSiteNotificationTimeout (state, siteNotificationTimeout) {
+  setSiteNotificationTimeout (state: any, siteNotificationTimeout: number) {
     state.siteNotificationTimeout = siteNotificationTimeout
   },
-  setUserInteractionResultNotificationText (state, userInteractionResultNotificationText) {
+  setUserInteractionResultNotificationText (state: any, userInteractionResultNotificationText: string) {
     state.userInteractionResultNotificationText = userInteractionResultNotificationText
   },
-  setUserInteractionResultNotificationType (state, userInteractionResultNotificationType) {
+  setUserInteractionResultNotificationType (state: any, userInteractionResultNotificationType: string) {
     state.userInteractionResultNotificationType = userInteractionResultNotificationType
   },
-  setUserInteractionResultNotificationTimeout (state, userInteractionResultNotificationTimeout) {
+  setUserInteractionResultNotificationTimeout (state: any, userInteractionResultNotificationTimeout: number) {
     state.userInteractionResultNotificationTimeout = userInteractionResultNotificationTimeout
   },
-  setMenuDrawer (state, menuDrawer) {
+  setMenuDrawer (state: any, menuDrawer: any) {
     state.menuDrawer = menuDrawer
   },
-  toggleMenuDrawer (state) {
+  toggleMenuDrawer (state: any) {
     state.menuDrawer = !(state.menuDrawer)
   }
 }
 
 const actions = {
-  setNewSiteNotification ({ commit }, payload) {
+  setNewSiteNotification ({ commit }: any, payload: any) {
     // first, clear if a notification exists (one notification at a time)
     commit('clearSiteNotification')
     commit('setSiteNotification', {
@@ -139,7 +139,7 @@ const actions = {
       siteNotificationTimeout: payload.siteNotificationTimeout
     })
   },
-  setNewSiteError ({ commit }, payload) {
+  setNewSiteError ({ commit }: any, payload: any) {
     // first, clear if a notification exists (one notification at a time)
     commit('clearSiteNotification')
     commit('setSiteNotification', {
@@ -149,7 +149,7 @@ const actions = {
       siteNotificationTimeout: 3000
     })
   },
-  setNewNoTimeoutSiteSuccess ({ commit, dispatch }, payload) {
+  setNewNoTimeoutSiteSuccess ({ commit, dispatch }: any, payload: any) {
     // first, clear if a notification exists (one notification at a time)
     commit('clearSiteNotification')
     commit('setSiteNotification', {
@@ -159,7 +159,7 @@ const actions = {
       siteNotificationTimeout: 0
     })
   },
-  setNewUserInteractionResultNotification ({ commit }, payload) {
+  setNewUserInteractionResultNotification ({ commit }: any, payload: any) {
     // first, clear if a notification exists (one notification at a time)
     commit('clearUserInteractionResultNotification')
     commit('setUserInteractionResultNotification', {
@@ -169,7 +169,7 @@ const actions = {
       userInteractionResultNotificationTimeout: payload.userInteractionResultNotificationTimeout
     })
   },
-  setNewUserInteractionResultError ({ commit }, payload) {
+  setNewUserInteractionResultError ({ commit }: any, payload: any) {
     // first, clear if a notification exists (one notification at a time)
     commit('clearUserInteractionResultNotification')
     commit('setUserInteractionResultNotification', {
@@ -179,7 +179,7 @@ const actions = {
       userInteractionResultNotificationTimeout: 5000
     })
   },
-  setNewUserInteractionResultSuccess ({ commit }, payload) {
+  setNewUserInteractionResultSuccess ({ commit }: any, payload: any) {
     // first, clear if a notification exists (one notification at a time)
     commit('clearUserInteractionResultNotification')
     commit('setUserInteractionResultNotification', {

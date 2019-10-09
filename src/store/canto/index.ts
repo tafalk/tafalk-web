@@ -8,37 +8,37 @@ const state = {
 }
 
 const getters = {
-  getShareCantoLink (state) {
+  getShareCantoLink (state: any) {
     return state.shareCantoLink
   },
-  getCanto (state) {
+  getCanto (state: any) {
     return state.canto
   },
-  getIsRouteChangeSafe (state) {
+  getIsRouteChangeSafe (state: any) {
     return state.isRouteChangeSafe
   },
-  getBodyUserSelection (state) {
+  getBodyUserSelection (state: any) {
     return state.bodyUserSelection
   }
 }
 
 const mutations = {
-  clearShareCantoLink (state) {
+  clearShareCantoLink (state: any) {
     state.shareCantoLink = null
   },
-  setShareCantoLink (state, shareCantoLink) {
+  setShareCantoLink (state: any, shareCantoLink: string) {
     state.shareCantoLink = shareCantoLink
   },
-  setCanto (state, canto) {
+  setCanto (state: any, canto: any) {
     state.canto = canto
   },
-  setCantoLikes (state, likeObjectArray) {
+  setCantoLikes (state: any, likeObjectArray: any) {
     state.canto.likes = likeObjectArray
   },
-  setIsRouteChangeSafe (state, isRouteChangeSafe) {
+  setIsRouteChangeSafe (state: any, isRouteChangeSafe: boolean) {
     state.isRouteChangeSafe = isRouteChangeSafe
   },
-  setBodyUserSelection (state, indices) {
+  setBodyUserSelection (state: any, indices: any) {
     state.bodyUserSelection = indices
   }
 }
