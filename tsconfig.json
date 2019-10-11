@@ -5,7 +5,7 @@
     // "noImplicitAny": true,
     // "noImplicitThis": true,
     // "noImplicitReturns": true,
-    "strict": false,
+    "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -15,7 +15,8 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "node"
+      "node",
+      "vuetify"
     ],
     "paths": {
       "@/*": [

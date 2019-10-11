@@ -14,6 +14,8 @@
     "@types/graphql": "^14.5.0",
     "@types/node": "^12.7.12",
     "@types/zen-observable": "^0.8.0",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
     "@vue/composition-api": "^0.3.2",
     "aws-amplify": "^1.1.40",
     "aws-sdk": "^2.545.0",
@@ -34,8 +36,6 @@
   },
   "devDependencies": {
     "@mdi/font": "^3.9.97",
-    "@typescript-eslint/eslint-plugin": "^2.3.3",
-    "@typescript-eslint/parser": "^2.3.3",
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-plugin-pwa": "^3.11.0",

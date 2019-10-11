@@ -35,6 +35,9 @@ const mutations = {
   setStreamLikes (state: any, likeObjectArray: any) {
     state.stream.likes = likeObjectArray
   },
+  setStreamFlags (state: any, flagObjectArray: any) {
+    state.stream.flags = flagObjectArray
+  },
   setPaginatedStreamComments (state: any, paginatedComments: any) {
     state.paginatedComments = paginatedComments
   },

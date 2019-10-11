@@ -276,54 +276,48 @@ export default {
       return this.getStream
     },
     hasTitle () {
-      return this.stream.title && this.stream.title.trim !== ''
+      return (this.stream || {}).title && this.stream.title.trim()
     },
     likes () {
-      return this.stream.likes
+      return (this.stream || {}).likes
     },
     comments () {
-      return this.stream.comments
+      return (this.stream || {}).comments
     },
     authenticatedUser () {
       return this.getAuthenticatedUser
     },
     author () {
-      return this.stream.user || null
+      return (this.stream || {}).user
     },
     authorDisplayUsername () {
-      if (!this.stream.user) {
-        return null
-      } else if (this.author.accountStatus !== this.activeUserAccountStatus) {
-        return this.author.id
-      } else {
-        return this.author.username
-      }
+      if (!this.author) return null
+
+      return ((this.author || {}).accountStatus !== this.activeUserAccountStatus) ? (this.author || {}).id : (this.author || {}).username
     },
     authorColor () {
-      return GetHexColorOfString(this.stream.user.username)
+      return GetHexColorOfString((this.author || {}).username)
     },
-    // visibilty deciders
     isVisitingOwnStream () {
-      return this.authenticatedUser != null && this.authenticatedUser.username === this.author.username
+      return this.authenticatedUser && this.authenticatedUser.username === (this.author || {}).username
     },
     isVisitorAllowed () {
       if (this.outboundBlockId && this.outboundBlockId.length > 0) return false // Blocked User Check
-
       return true
     },
     isStreamAllowed () {
       return this.isVisitingOwnStream || this.isVisitorAllowed
     },
     likeCount () {
-      if (this.likes == null) return 0
+      if (!this.likes) return 0
       return this.likes.length
     },
     commentCount () {
-      if (this.comments == null) return 0
+      if (!this.comments) return 0
       return this.comments.length
     },
     authenticatedUserLikeId () {
-      if (this.likes == null) return undefined
+      if (!this.likes) return undefined
       const authenticatedUserLikeItem = this.likes.find(item => item.userId === this.authenticatedUser.id)
       return (authenticatedUserLikeItem) ? authenticatedUserLikeItem.id : authenticatedUserLikeItem
     },
@@ -334,16 +328,14 @@ export default {
       return (this.stream || {}).isSealed
     },
     timeFromSealedToNow () {
-      if (!this.isSealed) {
-        return null
-      }
-      return GetElapsedTimeTillNow(this.getNowTime, this.stream.sealTime)
+      if (!this.isSealed) return null
+      return GetElapsedTimeTillNow(this.getNowTime, (this.stream || {}).sealTime)
     },
     timeSpentForStream () {
       if (!this.isSealed) {
-        return GetElapsedTimeTillNow(this.getNowTime, this.stream.startTime)
+        return GetElapsedTimeTillNow(this.getNowTime, (this.stream || {}).startTime)
       }
-      return GetElapsedTimeBetween(this.stream.startTime, this.stream.sealTime)
+      return GetElapsedTimeBetween((this.stream || {}).startTime, (this.stream || {}).sealTime)
     },
     authenticatedUserFlagId () {
       return ((((this.stream || {}).flags || []).find(item => item.userId === this.authenticatedUser.id) || {})).id
@@ -363,14 +355,11 @@ export default {
     'streamChange.sealTime' (val) {
       this.stream.sealTime = val
     },
-    'streamChange.likes' (val) {
-      // Not reached
-    },
-    'likeObjects' (val) {
+    likeObjects (val) {
       this.setStreamLikes(val)
     },
-    'flagObjects' (val) {
-      // TODO: Set like `likeObjects` above
+    flagObjects (val) {
+      this.setStreamFlags(val)
     }
   },
   async created () {
@@ -391,6 +380,7 @@ export default {
       setShareStreamLink: 'stream/setShareStreamLink',
       setStream: 'stream/setStream',
       setStreamLikes: 'stream/setStreamLikes',
+      setStreamFlags: 'stream/setStreamFlags',
       setPaginatedStreamComments: 'stream/setPaginatedStreamComments',
       setIsPageReady: 'setIsPageReady'
     }),
@@ -415,13 +405,13 @@ export default {
         this.setPaginatedStreamComments(paginatedCommentsGraphqlResult.data.listPaginatedStreamComments)
 
         // set profile pic
-        this.authorProfilePictureObjectUrl = (this.authenticatedUser && this.author.profilePictureKey)
-          ? await Storage.get(this.author.profilePictureKey, { level: 'protected', identityId: this.author.cognitoIdentityId })
+        this.authorProfilePictureObjectUrl = (this.authenticatedUser && (this.author || {}).profilePictureKey)
+          ? await Storage.get((this.author || {}).profilePictureKey, { level: 'protected', identityId: (this.author || {}).cognitoIdentityId })
           : null
 
         // Subscribe to stream itself for live content changes
         this.streamChangeSubscription = API.graphql(
-          graphqlOperation(OnUpdateStream, { id: this.stream.id })
+          graphqlOperation(OnUpdateStream, { id: (this.stream || {}).id })
         ).subscribe({
           next: (eventData) => {
             this.streamChange = eventData.value.data.onUpdateStream
@@ -431,25 +421,24 @@ export default {
 
         // Subscribe to likes
         this.likeChangeSubscription = API.graphql(
-          graphqlOperation(OnCreateOrDeleteStreamLike, { streamId: this.stream.id })
+          graphqlOperation(OnCreateOrDeleteStreamLike, { streamId: (this.stream || {}).id })
         ).subscribe({
           next: async (eventData) => {
             const graphqlLikeListResult = await API.graphql(
-              graphqlOperation(ListStreamLikes, { streamId: this.stream.id })
+              graphqlOperation(ListStreamLikes, { streamId: (this.stream || {}).id })
             )
             this.likeObjects = graphqlLikeListResult.data.listStreamLikes
-            // this.likeObjects = eventData.value.data.onCreateOrDeleteLike
           },
           error: (err) => this.setNewSiteError(err.message || err)
         })
 
         // Subscribe to flags
         this.flagChangeSubscription = API.graphql(
-          graphqlOperation(OnCreateOrDeleteFlag, { contentId: this.stream.id })
+          graphqlOperation(OnCreateOrDeleteFlag, { contentId: (this.stream || {}).id })
         ).subscribe({
           next: async (eventData) => {
             const graphqlFlagListResult = await API.graphql(
-              graphqlOperation(ListFlags, { contentId: this.stream.id })
+              graphqlOperation(ListFlags, { contentId: (this.stream || {}).id })
             )
             this.flagObjects = graphqlFlagListResult.data.listFlags
           },
@@ -457,7 +446,7 @@ export default {
         })
 
         const graphqlConnectionsFromVisitedStreamAuthorToAuthenticatedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
-          actorUserId: this.author.id,
+          actorUserId: (this.author || {}).id,
           targetUserId: this.authenticatedUser.id
         }))
 
@@ -474,14 +463,14 @@ export default {
       }
     },
     onShowShareStreamLinkDialog () {
-      this.setShareStreamLink(GetStreamLink(this.stream.id))
+      this.setShareStreamLink(GetStreamLink((this.stream || {}).id))
       this.showShareStreamLinkDialog()
     },
     async onLikeClick () {
       this.isLikeLoading = true
       try {
         await API.graphql(graphqlOperation(CreateLike, {
-          streamId: this.stream.id,
+          streamId: (this.stream || {}).id,
           userId: this.authenticatedUser.id,
           time: new Date().toISOString()
         }))
@@ -507,7 +496,7 @@ export default {
     },
     onToAuthorProfileClick () {
       if (!this.author) return
-      this.$router.push({ name: 'profile', params: { username: this.author.username } })
+      this.$router.push({ name: 'profile', params: { username: (this.author || {}).username } })
     },
     onCommentTextAreaToggleShowClick () {
       this.comment = ''
@@ -532,7 +521,7 @@ export default {
       this.isCommentLoading = true
       try {
         await API.graphql(graphqlOperation(CreateComment, {
-          streamId: this.stream.id,
+          streamId: (this.stream || {}).id,
           userId: this.authenticatedUser.id,
           time: new Date().toISOString(),
           content: this.comment
@@ -541,7 +530,7 @@ export default {
 
         // Load comments
         const commentsGraphqlResult = await API.graphql(graphqlOperation(ListPaginatedStreamComments, {
-          streamId: this.stream.id,
+          streamId: (this.stream || {}).id,
           limit: this.commentFetchLimit,
           nextToken: null
         }))
