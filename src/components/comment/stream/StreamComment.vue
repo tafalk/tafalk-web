@@ -37,16 +37,13 @@
     </v-btn>
   </v-list-item-action>
   <!-- Flag comment dialog -->
-  <!--
   <tafalk-flag-dialog
-    contentType="comment"
-    :content="comment"
-    ></tafalk-flag-dialog>
+    contentType="canto"
+    :contentId="comment.id"
+  ></tafalk-flag-dialog>
   <tafalk-retract-flag-confirmation-dialog
-    contentType="comment"
-    :authenticatedUserFlagId="authenticatedUserFlagId"
+    :id="authenticatedUserFlagId"
   ></tafalk-retract-flag-confirmation-dialog>
-  -->
 </v-list-item>
 </template>
 
@@ -54,10 +51,16 @@
 import { mapGetters, mapMutations } from 'vuex'
 import { GetElapsedTimeTillNow } from '@/utils/typeUtils'
 import { streamCommentFetchLength } from '@/utils/constants'
+import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
+import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
 
 export default {
   name: 'StreamComment',
   props: ['comment'],
+  components: {
+    TafalkFlagDialog,
+    TafalkRetractFlagConfirmationDialog
+  },
   data () {
     return {
       datenow: '',
@@ -92,9 +95,7 @@ export default {
     ...mapMutations({
       setPaginatedStreamComments: 'stream/setPaginatedStreamComments',
       showFlagDialog: 'flag/dialog/showFlagDialog',
-      showRetractFlagDialog: 'flag/dialog/showRetractFlagDialog',
-      setFlag: 'flag/setFlag',
-      setRetractFlag: 'flag/setRetractFlag'
+      showRetractFlagDialog: 'flag/dialog/showRetractFlagDialog'
     }),
     getTimePassed (str) {
       return GetElapsedTimeTillNow(this.getNowTime, str)
@@ -103,17 +104,9 @@ export default {
       this.$router.push({ name: 'profile', params: { username: username } })
     },
     onFlagDialogShowClick () {
-      this.setFlag({
-        commentId: this.comment.id,
-        type: 'comment'
-      })
       this.showFlagDialog()
     },
     onRetractFlagDialogShowClick () {
-      this.setRetractFlag({
-        type: 'comment',
-        retractFlagId: this.authenticatedUserFlagId
-      })
       this.showRetractFlagDialog()
     }
   }

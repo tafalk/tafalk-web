@@ -23,28 +23,27 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { API, graphqlOperation, Logger } from 'aws-amplify'
-
 import { DeleteFlag } from '@/graphql/Flag'
 
 const logger = new Logger('RetractFlagConfirmationDialog')
 
 export default {
   name: 'RetractFlagConfirmationDialog',
+  props: ['id'],
   data () {
-    return {}
+    return {
+    }
   },
   computed: {
     ...mapGetters({
       getStream: 'stream/getStream',
-      getIsRetractFlagDialogVisible: 'flag/dialog/getIsRetractFlagDialogVisible',
-      getRetractFlag: 'flag/getRetractFlag'
+      getIsRetractFlagDialogVisible: 'flag/dialog/getIsRetractFlagDialogVisible'
     })
   },
   methods: {
     ...mapMutations({
       setStream: 'stream/setStream',
-      setIsRetractFlagDialogVisible: 'flag/dialog/setIsRetractFlagDialogVisible',
-      clearRetractFlag: 'flag/clearRetractFlag'
+      setIsRetractFlagDialogVisible: 'flag/dialog/setIsRetractFlagDialogVisible'
     }),
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError'
@@ -52,22 +51,12 @@ export default {
     async onRetractFlagConfirmClick () {
       try {
         await API.graphql(graphqlOperation(DeleteFlag, {
-          id: this.getRetractFlag.retractFlagId
+          id: this.id
         }))
-
-        if (this.getRetractFlag.type === 'stream') {
-          // let currentStream = Object.assign({}, this.getStream) // shallow copy
-          let currentStream = JSON.parse(JSON.stringify(this.getStream)) // deep copy
-          currentStream.flags = this.getStream.flags.filter(f => f.id !== this.getRetractFlag.retractFlagId)
-          this.setStream(currentStream)
-        } else if (this.getRetractFlag.type === 'comment') {
-          // TODO: make it responsive as the stream
-        }
       } catch (err) {
         logger.error('An error occurred while retracting flag', JSON.stringify(err))
         this.setNewSiteError(err.message || err)
       } finally {
-        this.clearRetractFlag()
         this.setIsRetractFlagDialogVisible(false)
       }
     }
