@@ -1,28 +1,19 @@
 <template>
-<v-container pa-5>
-  <!-- Full page loader -->
-  <tafalk-page-loading-progress v-if="!getIsPageReady" />
+<!-- Full page loader -->
+<v-skeleton-loader
+  :loading="!getIsPageReady"
+  type="list-item-avatar, article, list-item-three-line, list-item-three-line, list-item-three-line, list-item-three-line"
+>
   <!-- Not allowed -->
-  <v-row
-    v-else-if="!isCantoAllowed"
-    justify="space-between"
-    align="center"
-  >
+  <v-row v-if="!isCantoAllowed" justify="space-between" align="center">
     <v-col cols="12">
       <tafalk-not-allowed-canto />
     </v-col>
   </v-row>
   <!-- Regular content -->
   <v-container v-else>
-    <v-row
-      justify="space-between"
-      align="center"
-    >
-      <v-col
-        cols="11"
-        md="9"
-        offset-md="1"
-      >
+    <v-row justify="space-between" align="center">
+      <v-col cols="11" md="9" offset-md="1">
         <!-- Canto Author Chip -->
         <v-avatar
           @click.stop="onToAuthorProfileClick"
@@ -46,9 +37,7 @@
         <span class="headline grey--text">{{ author.username }}</span>
       </v-col>
       <!-- Action Menu -->
-      <v-col
-        cols="1"
-      >
+      <v-col cols="1">
         <v-menu bottom left>
           <template v-slot:activator="{ on }">
             <v-btn icon v-on="on">
@@ -83,11 +72,7 @@
     </v-row>
     <!-- Meta -->
     <v-row>
-      <v-col
-        cols="12"
-        md="10"
-        offset-md="1"
-      >
+      <v-col cols="12" md="10" offset-md="1">
         <!-- Canto metadata -->
         <span class="grey--text body-2">
           {{ $t('canto.metadata.timeInfoLabel', { created: timeFromCreatedToNow, lastUpdated: timeFromLastUpdatedToNow }) }}
@@ -101,11 +86,7 @@
     </v-row>
     <!-- Body -->
     <v-row>
-      <v-col
-        cols="12"
-        md="10"
-        offset-md="1"
-        ref="cantoBody"
+      <v-col cols="12" md="10" offset-md="1" ref="cantoBody"
         v-html="cantoBody"
         :class="selectApplicableClass"
         :style="{ whiteSpace: 'pre-line' }"
@@ -183,7 +164,7 @@
       </v-btn>
     </v-snackbar>
   </v-container>
-</v-container>
+</v-skeleton-loader>
 </template>
 
 <script>
@@ -191,6 +172,7 @@ import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetCanto, OnUpdateCanto } from '@/graphql/Canto'
 import { ListCantoLikes, CreateLike, UpdateLikeIndices, DeleteLike, OnCreateOrDeleteCantoLike } from '@/graphql/CantoReaction'
+import { ListFlags, OnCreateOrDeleteFlag } from '@/graphql/Flag'
 import { GetUserIdByUserName } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
 import { cantoBookmarkId, cantoPreBookmarkClass, cantoPostBookmarkClass } from '@/utils/constants'
@@ -200,7 +182,6 @@ import TafalkNotAllowedCanto from '@/components/nocontent/CantoNotAllowed.vue'
 import TafalkShareCantoLinkDialog from '@/components/canto/dialogs/ShareCantoLinkDialog.vue'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
-import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('Canto')
 
@@ -210,8 +191,7 @@ export default {
     TafalkNotAllowedCanto,
     TafalkShareCantoLinkDialog,
     TafalkFlagDialog,
-    TafalkRetractFlagConfirmationDialog,
-    TafalkPageLoadingProgress
+    TafalkRetractFlagConfirmationDialog
   },
   data () {
     return {
@@ -223,7 +203,9 @@ export default {
       cantoChangeSubscription: null,
       cantoChange: null,
       likeObjects: null,
+      flagObjects: null,
       likeChangeSubscription: null,
+      flagChangeSubscription: null,
       isLikeLoading: false,
       isMoveLikeLoading: false,
       isRemoveLikeLoading: false,
@@ -265,7 +247,7 @@ export default {
     },
     // visibilty deciders
     isVisitingOwnCanto () {
-      return this.authenticatedUser && this.author && this.authenticatedUser.username === this.author.username
+      return this.authenticatedUser && this.author && this.authenticatedUser.username === (this.author || {}).username
     },
     isVisitorAllowed () {
       if (this.outboundBlockId && this.outboundBlockId.length > 0) return false // Blocked User Check
@@ -302,12 +284,10 @@ export default {
     }
   },
   watch: {
-    '$route.params.username' (username) {
+    async '$route.params.username' (username) {
       this.setIsPageReady(false)
-      this.getInitialInfo(this.$route.params.username)
-        .then(() => {
-          this.setIsPageReady(true)
-        })
+      await this.getInitialInfo(this.$route.params.username)
+      this.setIsPageReady(true)
     },
     'cantoChange.body' (val) {
       this.canto.body = val
@@ -315,11 +295,11 @@ export default {
     'cantoChange.lastUpdateTime' (val) {
       this.canto.lastUpdateTime = val
     },
-    'cantoChange.likes' (val) {
-      // Not reached
-    },
-    'likeObjects' (val) {
+    likeObjects (val) {
       this.setCantoLikes(val)
+    },
+    flagObjects (val) {
+      this.setCantoFlags(val)
     },
     authenticatedUserLikeIndices (newVal, oldVal) {
       if (!this.$refs.cantoBody) return
@@ -328,15 +308,13 @@ export default {
       this.$refs.cantoBody.innerHTML = BookmarkCantoContent(this.$refs.cantoBody, newVal)
     }
   },
-  created () {
+  async created () {
     // Selection Event Handler
     document.addEventListener('selectionchange', this.onSelectionChange)
     // Fetch initial data
     this.setIsPageReady(false)
     this.getInitialInfo(this.$route.params.username)
-      .then(() => {
-        this.setIsPageReady(true)
-      })
+    this.setIsPageReady(true)
   },
   updated () {
     if (!this.$refs.cantoBody) return
@@ -354,6 +332,7 @@ export default {
     document.removeEventListener('selectionchange', this.onSelectionChange)
     this.cantoChangeSubscription.unsubscribe()
     this.likeChangeSubscription.unsubscribe()
+    this.flagChangeSubscription.unsubscribe()
   },
   methods: {
     ...mapMutations({
@@ -363,6 +342,7 @@ export default {
       setShareCantoLink: 'canto/setShareCantoLink',
       setCanto: 'canto/setCanto',
       setCantoLikes: 'canto/setCantoLikes',
+      setCantoFlags: 'canto/setCantoFlags',
       setIsPageReady: 'setIsPageReady',
       setCantoBodyUserSelection: 'canto/setBodyUserSelection'
     }),
@@ -410,8 +390,21 @@ export default {
           error: (err) => this.setNewSiteError(err.message || err)
         })
 
+        // Subscribe to flags
+        this.flagChangeSubscription = API.graphql(
+          graphqlOperation(OnCreateOrDeleteFlag, { contentId: cantoId })
+        ).subscribe({
+          next: async (eventData) => {
+            const graphqlFlagListResult = await API.graphql(
+              graphqlOperation(ListFlags, { contentId: cantoId })
+            )
+            this.flagObjects = graphqlFlagListResult.data.listFlags
+          },
+          error: (err) => this.setNewSiteError(err.message || err)
+        })
+
         const graphqlConnectionsFromVisitedCantoAuthorToAuthenticatedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
-          actorUserId: this.author.id,
+          actorUserId: (this.author || {}).id,
           targetUserId: this.authenticatedUser.id
         }))
 
@@ -428,7 +421,7 @@ export default {
       }
     },
     onShowShareCantoLinkDialog () {
-      this.setShareCantoLink(GetCantoLink(this.author.username))
+      this.setShareCantoLink(GetCantoLink((this.author || {}).username))
       this.showShareCantoLinkDialog()
     },
     async onFirstLikeClick () {
@@ -440,7 +433,7 @@ export default {
 
         // Create Like with index
         await API.graphql(graphqlOperation(CreateLike, {
-          cantoId: this.author.id,
+          cantoId: (this.author || {}).id,
           userId: this.authenticatedUser.id,
           time: new Date().toISOString(),
           indices: `0${this.likeIndexSeparator}${indexEnd}`
@@ -523,7 +516,7 @@ export default {
       }
     },
     onToAuthorProfileClick () {
-      this.$router.push({ name: 'profile', params: { username: this.author.username } })
+      this.$router.push({ name: 'profile', params: { username: (this.author || {}).username } })
     },
     onFlagDialogShowClick () {
       this.showFlagDialog()

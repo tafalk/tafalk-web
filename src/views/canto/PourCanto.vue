@@ -1,48 +1,41 @@
 <template>
-  <tafalk-stream-authorization-required v-if="!isAllowed"></tafalk-stream-authorization-required>
-  <v-container v-else pt-5>
-    <!-- full page loader -->
-    <tafalk-page-loading-progress v-if="!getIsPageReady" />
-    <!-- Page itself -->
-    <v-row v-else>
-      <tafalk-canto-introduction v-if="isCantoNew"></tafalk-canto-introduction>
-      <v-col cols="12">
-        <v-card flat>
-          <v-toolbar dense flat>
-            <v-toolbar-title v-if="processState === 'saved'">
-              <span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
-            </v-toolbar-title>
-            <v-toolbar-title v-else-if="processState === 'saving'">
-              <span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
-            </v-toolbar-title>
-            <v-toolbar-title v-else-if="processState === 'error'"><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
-            </v-toolbar-title>
-          </v-toolbar>
-          <v-form class="pa-3 pt-4">
-            <!-- body -->
-            <v-textarea
-              ref="pourBody"
-              solo
-              flat
-              v-model="body"
-              auto-grow
-              autofocus
-              :placeholder="$t('stream.pour.bodyPlaceholder')"
-              rows="9"
-              @keydown.delete.prevent="onBodyBackspaceOrDeleteKeydown"
-              @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
-              @paste="onPaste"
-              @cut="onCut"
-              @keyup="onDefaultKeyup"
-              @keydown="onDefaultKeydown"
-              @mousedown="onMouseDown"
-              @mouseup="onMouseUp"
-              @contextmenu.prevent="onRightClick"
-            ></v-textarea>
-          </v-form>
-        </v-card>
-      </v-col>
-    </v-row>
+  <tafalk-stream-authorization-required v-if="!isAllowed"/>
+  <v-container v-else>
+    <tafalk-canto-introduction v-if="isCantoNew"/>
+    <v-card flat>
+      <v-toolbar dense flat>
+        <v-toolbar-title v-if="processState === 'saved'">
+          <span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
+        </v-toolbar-title>
+        <v-toolbar-title v-else-if="processState === 'saving'">
+          <span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
+        </v-toolbar-title>
+        <v-toolbar-title v-else-if="processState === 'error'"><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
+        </v-toolbar-title>
+      </v-toolbar>
+      <v-form>
+        <!-- body -->
+        <v-textarea
+          ref="pourBody"
+          solo
+          flat
+          v-model="body"
+          auto-grow
+          autofocus
+          :placeholder="$t('stream.pour.bodyPlaceholder')"
+          rows="9"
+          @keydown.delete.prevent="onBodyBackspaceOrDeleteKeydown"
+          @keyup.delete.prevent="onBodyBackspaceOrDeleteKeyup"
+          @paste="onPaste"
+          @cut="onCut"
+          @keyup="onDefaultKeyup"
+          @keydown="onDefaultKeydown"
+          @mousedown="onMouseDown"
+          @mouseup="onMouseUp"
+          @contextmenu.prevent="onRightClick"
+        ></v-textarea>
+      </v-form>
+    </v-card>
   </v-container>
 </template>
 
@@ -54,7 +47,6 @@ import TafalkStreamAuthorizationRequired from '@/components/nocontent/Authorizat
 import TafalkCantoIntroduction from '@/components/canto/dialogs/CantoIntroduction.vue'
 import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
 import { GetKeyName } from '@/utils/ioUtils'
-import TafalkPageLoadingProgress from '@/components/shared/progresses/ThePageLoading.vue'
 
 const logger = new Logger('PourCanto')
 
@@ -75,8 +67,7 @@ export default {
   },
   components: {
     TafalkStreamAuthorizationRequired,
-    TafalkCantoIntroduction,
-    TafalkPageLoadingProgress
+    TafalkCantoIntroduction
   },
   computed: {
     ...mapGetters({

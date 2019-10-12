@@ -11,8 +11,6 @@
           flat
           :label="$t('siteLanguage.edit.dialog.selectLabel')"
           :items="languageOptions"
-          item-text="displayValue"
-          item-value="backendValue"
           return-object
         ></v-select>
 
@@ -58,10 +56,10 @@ export default {
   created () {
     // Set initial value for current user's preferred language
     if (!this.getAuthenticatedUser || !this.getAuthenticatedUser.language) {
-      this.languageModel = languageOptions.find(o => o.backendValue === '')
+      this.languageModel = languageOptions.find(o => o.value === '')
       return
     }
-    this.languageModel = languageOptions.find(o => o.backendValue === this.getAuthenticatedUser.language)
+    this.languageModel = languageOptions.find(o => o.value === this.authenticatedUser.language)
   },
   computed: {
     ...mapGetters({
@@ -69,15 +67,15 @@ export default {
       getIsLanguageChooseDialogVisible: 'authenticatedUser/dialog/getIsLanguageChooseDialogVisible'
     }),
     authenticatedUser () {
-      return this.getAuthenticatedUser
+      return this.getAuthenticatedUser || {}
     },
     unsupportedLanguageAlert () {
       // If one of non-default values have chosen, no need to check
-      if (this.languageModel.backendValue) return null
+      if (this.languageModel.value) return null
 
       const browserLanguage = navigator.language.split('-')[0]
       // Browser language is supported.
-      if (languageOptions.some(o => o.backendValue === browserLanguage)) return null
+      if (this.languageOptions.some(o => o.value === browserLanguage)) return null
       return this.$i18n.t('siteLanguage.edit.dialog.unsupportedAlertText', { browserLanguage })
     }
   },
@@ -91,7 +89,7 @@ export default {
     }),
     async onSaveLanguageEditClick () {
       try {
-        const langCode = (this.languageModel.backendValue) ? this.languageModel.backendValue : ''
+        const langCode = (this.languageModel.value) ? this.languageModel.value : ''
 
         await this.setLanguage({
           userId: this.authenticatedUser.id,

@@ -11,8 +11,6 @@
           :label="$t('user.edit.privacy.dialog.allowDmLabel')"
           :items="allowDirectMessagesOptions"
           v-model="allowDirectMessagesModel"
-          item-text="displayValue"
-          item-value="backendValue"
           return-object
           persistent-hint
         ></v-select>
@@ -47,18 +45,18 @@ export default {
       allowDirectMessagesModel: null,
       allowDirectMessagesOptions: [
         {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayYes'),
-          backendValue: true
+          text: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayYes'),
+          value: true
         },
         {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayNo'),
-          backendValue: false
+          text: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayNo'),
+          value: false
         }
       ]
     }
   },
   created () {
-    this.allowDirectMessagesModel = this.getObjectFromAllowDirectMessagesBackendValue(this.allowDirectMessages)
+    this.allowDirectMessagesModel = this.getObjectFromAllowDirectMessagesValue(this.allowDirectMessages)
   },
   computed: {
     ...mapGetters({
@@ -78,22 +76,21 @@ export default {
     onSavePrivacyEditClick () {
       this.setProfilePrivacy({
         userId: this.userId,
-        allowDirectMessages: this.allowDirectMessagesModel.backendValue
+        allowDirectMessages: this.allowDirectMessagesModel.value
       })
 
       this.setIsUserPrivacyEditDialogVisible(false)
     },
-    getObjectFromAllowDirectMessagesBackendValue (backendValue) {
-      if (backendValue === true) {
+    getObjectFromAllowDirectMessagesValue (val) {
+      if (val) {
         return {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayYes'),
-          backendValue: true
+          text: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayYes'),
+          value: true
         }
-      } else {
-        return {
-          displayValue: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayNo'),
-          backendValue: false
-        }
+      }
+      return {
+        text: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayNo'),
+        value: false
       }
     }
   }

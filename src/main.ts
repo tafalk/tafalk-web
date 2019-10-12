@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import VueCompositionApi from '@vue/composition-api'
 import vuetify from '@/plugins/vuetify'
 import App from '@/App.vue'
 import router from '@/router'
@@ -17,8 +16,6 @@ import { VueReCaptcha } from 'vue-recaptcha-v3'
 import VueAnalytics from 'vue-analytics'
 
 Vue.config.productionTip = false
-
-Vue.use(VueCompositionApi)
 
 // Instance Property for axios base objects
 Vue.prototype.$httpSitePoliciesStorage = axios.create({

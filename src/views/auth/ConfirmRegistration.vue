@@ -21,20 +21,16 @@
         ></v-text-field>
         <v-btn
           color="primary"
-          :loading="loading"
-          :disabled="!valid || loading"
+          :loading="loadingSend"
+          :disabled="!valid || loadingSend"
           type="submit"
           class="ma-3"
-        >
-          {{ $t('auth.confirmRegistration.confirmButtonText') }}
-        </v-btn>
+        >{{ $t('auth.confirmRegistration.confirmButtonText') }}</v-btn>
         <v-btn
           :loading="loadingResend"
           :disabled="loadingResend"
           @click="onResendBtnClick"
-        >
-          {{ $t('auth.confirmRegistration.resendButtonText') }}
-        </v-btn>
+        >{{ $t('auth.confirmRegistration.resendButtonText') }}</v-btn>
       </v-form>
     </v-col>
   </v-row>
@@ -53,18 +49,13 @@ export default {
   data () {
     return {
       valid: true,
-      loader: null,
-      loading: false,
-      loaderResend: null,
+      loadingSend: false,
       loadingResend: false,
-
-      // Form Data
       username: '',
       verificationCode: '',
-
-      // Constraints
-      minUsernameLength: minUsernameLength,
-      maxUsernameLength: maxUsernameLength,
+      minUsernameLength,
+      maxUsernameLength,
+      delayBeforeRouteInMillis: 500,
 
       // Rules
       usernameRules: [
@@ -72,24 +63,6 @@ export default {
         v => (v && v.length > 1) || this.$i18n.t('auth.message.validation.userNameLengthLowLimit'),
         v => (v && v.length <= 24) || this.$i18n.t('auth.message.validation.userNameLengthUpLimit')
       ]
-    }
-  },
-  watch: {
-    loader () {
-      const l = this.loader
-      this[l] = !this[l]
-      if (this.error != null) {
-        this[l] = false
-      }
-      this.loader = null
-    },
-    loaderResend () {
-      const l = this.loaderResend
-      this[l] = !this[l]
-      if (this.error != null) {
-        this[l] = false
-      }
-      this.loaderResend = null
     }
   },
   methods: {
@@ -101,32 +74,27 @@ export default {
 
     // Click
     async onConfirmBtnClick () {
-      this.loader = 'loading'
+      this.loadingSend = true
       try {
         const data = await Auth.confirmSignUp(this.username, this.verificationCode)
-        logger.debug('confirm registration success', data)
         this.setNewNoTimeoutSiteSuccess(this.$i18n.t('auth.confirmRegistration.message.success'))
         setTimeout(() => {
-          this.loader = null
           this.$router.push({ name: 'login' })
-        }, 500)
+        }, this.delayBeforeRouteInMillis)
       } catch (err) {
         logger.error('confirm registration error', err)
         this.setNewSiteError(err.message || err)
       } finally {
-        this.loader = null
-        this.loading = false
+        this.loadingSend = false
       }
     },
     async onResendBtnClick () {
+      this.loadingResend = true
       try {
         await Auth.resendSignUp(this.username)
-        logger.debug('code resent')
       } catch (err) {
-        this.loaderResend = null
         this.setNewSiteError(err.message || err)
       } finally {
-        this.loaderResend = null
         this.loadingResend = false
       }
     }

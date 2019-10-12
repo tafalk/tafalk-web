@@ -53,28 +53,28 @@ export const introDismissedKey = 'intro:dismissed'
 export const cookiesAcceptedKey = 'cookies:accepted'
 
 export const streamMoodOptions = [
-  { displayValue: '🤬 ' + i18n.t('stream.pouringMetadata.mood.aroused'), backendValue: 'Aroused' },
-  { displayValue: '😐 ' + i18n.t('stream.pouringMetadata.mood.asUsual'), backendValue: 'AsUsual' },
-  { displayValue: '😶 ' + i18n.t('stream.pouringMetadata.mood.hardToExplain'), backendValue: 'HardToExplain' },
-  { displayValue: '🍼 ' + i18n.t('stream.pouringMetadata.mood.drunk'), backendValue: 'Drunk' },
-  { displayValue: '🕶️ ' + i18n.t('stream.pouringMetadata.mood.high'), backendValue: 'High' },
-  { displayValue: '🙁 ' + i18n.t('stream.pouringMetadata.mood.melancholic'), backendValue: 'Melancholic' },
-  { displayValue: '😌 ' + i18n.t('stream.pouringMetadata.mood.relieved'), backendValue: 'Relieved' }
+  { text: `🤬 ${i18n.t('stream.pouringMetadata.mood.aroused')}`, value: 'Aroused' },
+  { text: `😐 ${i18n.t('stream.pouringMetadata.mood.asUsual')}`, value: 'AsUsual' },
+  { text: `😶 ${i18n.t('stream.pouringMetadata.mood.hardToExplain')}`, value: 'HardToExplain' },
+  { text: `🍼 ${i18n.t('stream.pouringMetadata.mood.drunk')}`, value: 'Drunk' },
+  { text: `🕶️ ${i18n.t('stream.pouringMetadata.mood.high')}`, value: 'High' },
+  { text: `🙁 ${i18n.t('stream.pouringMetadata.mood.melancholic')}`, value: 'Melancholic' },
+  { text: `😌 ${i18n.t('stream.pouringMetadata.mood.relieved')}`, value: 'Relieved' }
 ]
 
 export const streamPositionOptions = [
-  { displayValue: i18n.t('stream.pouringMetadata.position.allFours'), backendValue: 'AllFours' },
-  { displayValue: i18n.t('stream.pouringMetadata.position.kneeling'), backendValue: 'Kneeling' },
-  { displayValue: i18n.t('stream.pouringMetadata.position.lying'), backendValue: 'Lying' },
-  { displayValue: i18n.t('stream.pouringMetadata.position.sitting'), backendValue: 'Sitting' },
-  { displayValue: i18n.t('stream.pouringMetadata.position.squatting'), backendValue: 'Squatting' },
-  { displayValue: i18n.t('stream.pouringMetadata.position.standing'), backendValue: 'Standing' },
-  { displayValue: i18n.t('stream.pouringMetadata.position.walking'), backendValue: 'Walking' }
+  { text: i18n.t('stream.pouringMetadata.position.allFours'), value: 'AllFours' },
+  { text: i18n.t('stream.pouringMetadata.position.kneeling'), value: 'Kneeling' },
+  { text: i18n.t('stream.pouringMetadata.position.lying'), value: 'Lying' },
+  { text: i18n.t('stream.pouringMetadata.position.sitting'), value: 'Sitting' },
+  { text: i18n.t('stream.pouringMetadata.position.squatting'), value: 'Squatting' },
+  { text: i18n.t('stream.pouringMetadata.position.standing'), value: 'Standing' },
+  { text: i18n.t('stream.pouringMetadata.position.walking'), value: 'Walking' }
 ]
 
 export const languageOptions = [
-  { displayValue: 'Default (Browser Language)', backendValue: '' },
-  { displayValue: 'English', backendValue: 'en' }
+  { text: 'Default (Browser Language)', value: '' },
+  { text: 'English', value: 'en' }
 ]
 
 export const siteImagesBaseUrl = 'https://tafalk-sitefiles.s3.eu-central-1.amazonaws.com/images'

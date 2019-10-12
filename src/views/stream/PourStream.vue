@@ -2,7 +2,7 @@
   <tafalk-stream-authorization-required v-if="!authenticatedUser" />
   <v-container v-else>
     <tafalk-stream-introduction v-if="isFirstStreamOfUser"></tafalk-stream-introduction>
-    <v-card flat mt-5>
+    <v-card flat>
       <v-toolbar dense flat>
         <v-toolbar-title v-if="processState === 'saved'">
           <span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
@@ -15,7 +15,7 @@
         <v-spacer/>
         <span class="grey--text caption">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
       </v-toolbar>
-      <v-form class="pt-0">
+      <v-form>
         <v-container pt-0>
           <v-row>
             <v-col cols="12">
@@ -39,33 +39,25 @@
                 @contextmenu.prevent="onRightClick"
               ></v-textarea>
             </v-col>
+          </v-row>
+          <v-row align="baseline">
             <!-- title, mood etc -->
             <v-col cols="12" sm="4">
               <v-select
-                dense
                 @change="onMoodChange"
                 :label="$t('stream.pour.moodSelectLabel')"
                 v-model="moodModel"
                 :items="moodOptions"
-                item-text="displayValue"
-                item-value="backendValue"
-                small-chips
-                multiple
                 menu-props="top"
                 return-object
               ></v-select>
             </v-col>
             <v-col cols="12" sm="4">
               <v-select
-                dense
                 @change="onPositionChange"
                 :label="$t('stream.pour.positionSelectLabel')"
                 v-model="positionModel"
                 :items="positionOptions"
-                item-text="displayValue"
-                item-value="backendValue"
-                small-chips
-                multiple
                 menu-props="top"
                 return-object
               ></v-select>
@@ -88,7 +80,7 @@
                 block
                 color="primary"
                 @click="onDoneClick"
-                :disabled="body == null || body.length === 0"
+                :disabled="!body || !body.length || loading"
                 :loading="loading"
               >
                 {{ $t('stream.pour.sealButtonText') }}
@@ -104,6 +96,7 @@
 <!-- UUID -->
 <script src="http://wzrd.in/standalone/uuid%2Fv5@latest"></script>
 <script>
+import uuidv4 from 'uuid/v4'
 import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { ListStreamsByUser } from '@/graphql/Profile'
@@ -138,8 +131,7 @@ export default {
       incompleteSealTimeValue: 'NA',
       timeoutID: null,
       deleteTimeToIdle: pourStrikethroughTimeToIdle,
-      loading: false,
-      loader: null
+      loading: false
     }
   },
   components: {
@@ -152,7 +144,7 @@ export default {
     // window.addEventListener('unload', () => this.sealForEver)
 
     // Create a UUID for the new stream
-    this.streamId = uuidv5('https://tafalk.com/stream', uuidv5.URL)
+    this.streamId = uuidv4()
   },
   async mounted () {
     // Check if first stream of user
@@ -219,8 +211,8 @@ export default {
             url: null,
             title: this.title !== '' ? this.title : null,
             privacy: this.privacy,
-            mood: (this.moodModel != null && this.moodModel.length > 0) ? this.moodModel.map(b => b.backendValue) : null,
-            position: (this.positionModel != null && this.positionModel.length > 0) ? this.positionModel.map(b => b.backendValue) : null,
+            mood: this.moodModel ? this.moodModel.value : null,
+            position: this.positionModel ? this.positionModel.value : null,
             body: newBody,
             location: null,
             track: null,
@@ -425,18 +417,13 @@ export default {
       // already prevented. do nothing
     },
     async onMoodChange () {
-      logger.info('Mood changed:')
-      logger.info(JSON.stringify(this.moodModel))
-      if (this.body == null || this.body.length === 0) {
-        return
-      }
-
+      if (!this.body || !this.body.length) return
       try {
         this.processState = this.savingStateConstant
         await API.graphql(graphqlOperation(UpdateMood, {
           // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
           id: this.streamId,
-          mood: (this.moodModel != null && this.moodModel.length > 0) ? this.moodModel.map(b => b.backendValue) : null
+          mood: this.moodModel ? this.moodModel.value : null
         }))
         this.processState = this.savedStateConstant
       } catch (err) {
@@ -446,16 +433,13 @@ export default {
       }
     },
     async onPositionChange () {
-      if (this.body == null || this.body.length === 0) {
-        return
-      }
-
+      if (!this.body || !this.body.length) return
       try {
         this.processState = this.savingStateConstant
         await API.graphql(graphqlOperation(UpdatePosition, {
           // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
           id: this.streamId,
-          position: (this.positionModel != null && this.positionModel.length > 0) ? this.positionModel.map(b => b.backendValue) : null
+          position: this.positionModel ? this.positionModel.value : null
         }))
         this.processState = this.savedStateConstant
       } catch (err) {
@@ -466,39 +450,35 @@ export default {
     },
     async onDoneClick () {
       this.loading = true
-      this.loader = 'loading'
-
       try {
         await this.sealForEver()
       } catch (err) {
         logger.error('Error occurred while sealing the stream', err)
         this.setNewSiteError(err.message || err)
       } finally {
-        this.loading = false
-        this.loader = null
         this.$router.push({ name: 'stream', params: { id: this.streamId } })
         this.setIsRouteChangeSafe(false)
+        this.loading = false
       }
     },
     async sealForEver () {
-      // Check if nothing to seal
-      if (this.body != null && this.body.length > 0) {
-        try {
-          await API.graphql(graphqlOperation(SealStreamForEver, {
-            id: this.streamId,
-            title: this.title,
-            body: this.body,
-            privacy: this.privacy,
-            mood: (this.moodModel != null && this.moodModel.length > 0) ? this.moodModel.map(b => b.backendValue) : null,
-            position: (this.positionModel != null && this.positionModel.length > 0) ? this.positionModel.map(b => b.backendValue) : null,
-            location: null,
-            track: null,
-            sealTime: new Date().toISOString()
-          }))
-        } catch (err) {
-          logger.error('An error occurred while sealing the stream', err.message || JSON.stringify(err))
-          this.setNewSiteError(err.message || err)
-        }
+      // Check if something to seal
+      if (!this.body || !this.body.length) return
+      try {
+        await API.graphql(graphqlOperation(SealStreamForEver, {
+          id: this.streamId,
+          title: this.title,
+          body: this.body,
+          privacy: this.privacy,
+          mood: this.moodModel ? this.moodModel.value : null,
+          position: this.positionModel ? this.positionModel.value : null,
+          location: null,
+          track: null,
+          sealTime: new Date().toISOString()
+        }))
+      } catch (err) {
+        logger.error('An error occurred while sealing the stream', err.message || JSON.stringify(err))
+        this.setNewSiteError(err.message || err)
       }
     },
     async onBeforeUnload (event) {

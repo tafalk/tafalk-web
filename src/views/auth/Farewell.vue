@@ -9,7 +9,7 @@
           <v-spacer/>
           <v-btn
             color="primary"
-            @click.native="onHomeClick"
+            @click="onHomeClick"
           >{{ $t('auth.farewell.returnHomeButtonText') }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -22,7 +22,7 @@
 export default {
   name: 'Farewell',
   methods: {
-    onHomeClick: function () {
+    onHomeClick () {
       this.$router.push({ name: 'home' })
     }
   }

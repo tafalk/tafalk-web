@@ -11,12 +11,7 @@
       <!-- Allowed -->
       <v-container v-else>
         <v-row>
-          <v-col
-            cols="12"
-            md="8"
-            offset-md="2"
-            class="text-center"
-          >
+          <v-col cols="12" md="8" offset-md="2" class="text-center">
             <v-card flat>
               <!-- Profile Edit Buttons (Authorized User) -->
               <tafalk-profile-edit-speed-dial v-if="isVisitingOwnProfile" />
@@ -231,20 +226,16 @@ export default {
     }
   },
   watch: {
-    '$route.params.username' (username) {
+    async '$route.params.username' (username) {
       this.setIsPageReady(false)
       this.getInitialInfo(this.$route.params.username)
-        .then(() => {
-          this.setIsPageReady(true)
-        })
+      this.setIsPageReady(true)
     }
   },
-  created () {
+  async created () {
     this.setIsPageReady(false)
     this.getInitialInfo(this.$route.params.username)
-      .then(() => {
-        this.setIsPageReady(true)
-      })
+    this.setIsPageReady(true)
   },
   destroyed () {
     this.clearVisitedUser()

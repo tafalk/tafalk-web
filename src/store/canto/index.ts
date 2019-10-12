@@ -35,6 +35,9 @@ const mutations = {
   setCantoLikes (state: any, likeObjectArray: any) {
     state.canto.likes = likeObjectArray
   },
+  setCantoFlags (state: any, flagObjectArray: any) {
+    state.canto.flags = flagObjectArray
+  },
   setIsRouteChangeSafe (state: any, isRouteChangeSafe: boolean) {
     state.isRouteChangeSafe = isRouteChangeSafe
   },

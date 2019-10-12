@@ -49,10 +49,10 @@ export default {
     this.$vuetify.theme.dark = this.authenticatedUserTheme === 'dark'
   },
   mounted () {
-    if (localStorage.getItem(this.introDismissedKey) == null || localStorage.getItem(this.introDismissedKey) !== 'true') {
+    if (!localStorage.getItem(this.introDismissedKey) || localStorage.getItem(this.introDismissedKey) !== 'true') {
       this.hasVisitedBefore = 'false'
     }
-    if (localStorage.getItem(this.cookiesAcceptedKey) == null || localStorage.getItem(this.cookiesAcceptedKey) !== 'true') {
+    if (!localStorage.getItem(this.cookiesAcceptedKey) || localStorage.getItem(this.cookiesAcceptedKey) !== 'true') {
       this.hasAcceptedCookies = 'false'
     }
   },
