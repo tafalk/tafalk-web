@@ -63,8 +63,8 @@
 
     <!-- Content -->
     <v-list-item-content>
-      <v-list-item-title>
-        &nbsp;@{{ user.username }}
+      <v-list-item-title class="title grey--text text--darken-2">
+        @{{ user.username }}
       </v-list-item-title>
     </v-list-item-content>
   </v-list-item>

@@ -1,5 +1,8 @@
 module.exports = {
   transpileDependencies: ['vuetify'],
+  pwa: {
+    themeColor: '#FFFFFF'
+  },
   pluginOptions: {
     i18n: {
       locale: 'en',

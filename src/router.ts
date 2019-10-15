@@ -128,6 +128,8 @@ router.beforeEach(async (to, from, next) => {
   }
 
   try {
+    // Set unready
+    store.commit('setIsPageReady', false)
     // Check the store for the authenticated user data
     const storeAuthenticatedUser = store.getters['authenticatedUser/setUser']
     if (storeAuthenticatedUser && storeAuthenticatedUser.username) {

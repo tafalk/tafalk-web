@@ -1,137 +1,129 @@
 <template>
-  <!-- full page loader -->
-  <v-skeleton-loader
-    :loading="!getIsPageReady"
-    type="list-item-avatar, article, actions"
-  >
-    <!-- regular content -->
-    <v-container pt-5>
-      <!-- Not Allowed-->
-      <tafalk-not-allowed-profile v-if="!isProfileAllowed" />
-      <!-- Allowed -->
-      <v-container v-else>
-        <v-row>
-          <v-col cols="12" md="8" offset-md="2" class="text-center">
-            <v-card flat>
-              <!-- Profile Edit Buttons (Authorized User) -->
-              <tafalk-profile-edit-speed-dial v-if="isVisitingOwnProfile" />
-              <!-- User Info -->
-              <v-container v-if="visitedUser">
+<v-skeleton-loader
+  :loading="!getIsPageReady"
+  type="list-item-avatar, article, actions"
+>
+  <v-container pt-0 mt-0>
+    <v-row no-gutters>
+      <v-col cols="12" md="8" offset-md="2">
+        <v-card flat>
+          <!-- Profile Edit Buttons (Authorized User) -->
+          <tafalk-profile-edit-speed-dial v-if="isVisitingOwnProfile" />
+          <!-- User Info -->
+          <v-container v-if="visitedUser">
+            <v-row>
+              <!-- Avatar Section -->
+              <v-col cols="12" md="4" class="text-center">
                 <v-row>
-                  <!-- Avatar Section -->
-                  <v-col cols="12" md="4">
-                    <v-row>
-                      <v-col cols="12">
-                        <!-- Picture itself -->
-                        <v-avatar pt-1 size="150">
-                          <v-img
-                            v-if="authenticatedUser && visitedUser.profilePictureObjectUrl"
-                            :src="visitedUser.profilePictureObjectUrl"
-                          />
-                          <v-img
-                            v-else
-                            :src="require('@/assets/default-user-avatar.webp')"
-                            alt="Woolf"
-                            :style="{backgroundColor: visitedUserColor}"
-                          />
-                        </v-avatar>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12">
-                        <!-- Change Profile Picture Button -->
-                        <v-btn
-                          color="primary"
-                          text
-                          v-if="isVisitingOwnProfile"
-                          @click.stop="setIsChangeProfilePictureDialogVisible(true)"
-                        >{{ $t('user.profilePage.changeProfilePictureButtonText') }}</v-btn>
-                      </v-col>
-                    </v-row>
+                  <v-col cols="12">
+                    <!-- Picture itself -->
+                    <v-avatar pt-1 size="150">
+                      <v-img
+                        v-if="authenticatedUser && visitedUser.profilePictureObjectUrl"
+                        :src="visitedUser.profilePictureObjectUrl"
+                      />
+                      <v-img
+                        v-else
+                        :src="require('@/assets/default-user-avatar.webp')"
+                        alt="Woolf"
+                        :style="{backgroundColor: visitedUserColor}"
+                      />
+                    </v-avatar>
                   </v-col>
-                  <!-- User Info Section -->
-                  <v-col cols="12" md="8">
-                    <!-- Basic Info -->
+                </v-row>
+                <v-row>
+                  <v-col cols="12">
+                    <!-- Change Profile Picture Button -->
+                    <v-btn
+                      color="primary"
+                      text
+                      v-if="isVisitingOwnProfile"
+                      @click.stop="setIsChangeProfilePictureDialogVisible(true)"
+                    >{{ $t('user.profilePage.changeProfilePictureButtonText') }}</v-btn>
+                  </v-col>
+                </v-row>
+              </v-col>
+              <!-- User Info Section -->
+              <v-col cols="12" md="8">
+                <!-- Basic Info -->
+                <v-row align="center">
+                  <v-col cols="12">
+                    <!-- User Name -->
                     <v-row align="center">
                       <v-col cols="12">
-                        <!-- User Name -->
-                        <v-row align="center">
-                          <v-col cols="12">
-                            <div class="display-1 text-xs-center text-sm-left grey--text">@{{ visitedUser.username }}</div>
-                          </v-col>
-                        </v-row>
-                        <!-- Bio -->
-                        <v-row align="center">
-                          <v-col cols="12">
-                            <div class="text-left grey--text"><v-icon color="grey">mdi-bio</v-icon>&nbsp;{{visitedUserBio}}</div>
-                          </v-col>
-                        </v-row>
-                        <!-- Other Basic Info -->
-                        <v-row align="center">
-                          <v-col cols="12" sm="6">
-                            <p class="text-left grey--text"><v-icon color="grey">mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</p>
-                            <p class="text-left grey--text"><v-icon color="grey">mdi-web</v-icon>&nbsp;{{visitedUser.site}}</p>
-                          </v-col>
-                          <v-col cols="12" sm="6">
-                            <p v-if="visitedUserAccountCreationDateStr" class="text-left grey--text"><v-icon color="grey">mdi-calendar-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</p>
-                          </v-col>
-                        </v-row>
+                        <div class="display-1 text-xs-center text-sm-left grey--text">@{{ visitedUser.username }}</div>
                       </v-col>
                     </v-row>
-                    <!-- User Interaction Button Group -->
-                    <v-row>
+                    <!-- Bio -->
+                    <v-row align="center" v-if="isProfileAllowed">
                       <v-col cols="12">
-                        <tafalk-user-interaction-button-group
-                          v-if="authenticatedUser && !isVisitingOwnProfile"
-                        ></tafalk-user-interaction-button-group>
+                        <div class="text-left grey--text"><v-icon color="grey">mdi-bio</v-icon>&nbsp;{{visitedUserBio}}</div>
+                      </v-col>
+                    </v-row>
+                    <!-- Other Basic Info -->
+                    <v-row align="center" v-if="isProfileAllowed">
+                      <v-col cols="12" sm="6">
+                        <p class="text-left grey--text"><v-icon color="grey">mdi-map-marker</v-icon>&nbsp;{{visitedUserLocationValue}}</p>
+                        <p class="text-left grey--text"><v-icon color="grey">mdi-web</v-icon>&nbsp;{{visitedUser.site}}</p>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <p v-if="visitedUserAccountCreationDateStr" class="text-left grey--text"><v-icon color="grey">mdi-calendar-clock</v-icon>&nbsp;{{visitedUserAccountCreationDateStr}}</p>
                       </v-col>
                     </v-row>
                   </v-col>
                 </v-row>
-              </v-container>
-              <v-divider />
-              <!-- Tabs -->
-              <tafalk-profile-tabs v-if="visitedUser"
-                :userId="visitedUser.id"
-                :isVisitingOwnProfile="isVisitingOwnProfile"
-              ></tafalk-profile-tabs>
-            </v-card>
-          </v-col>
-        </v-row>
-
-        <!-- Dialogs -->
-        <!-- User Edit Info Dialog -->
-        <tafalk-user-change-profile-picture-dialog
-          v-if="visitedUser"
-          :userId="visitedUser.id"
-          :existingProfilePictureObjectUrl="visitedUser.profilePictureObjectUrl"
-        ></tafalk-user-change-profile-picture-dialog>
-        <!-- Stop Watching 'Are you sure' dialog -->
-        <tafalk-user-stop-watching-confirmation-dialog />
-        <!-- Block 'Are you sure' dialog -->
-        <tafalk-user-block-confirmation-dialog />
-        <!-- User Edit Info Dialog -->
-        <tafalk-user-info-edit-dialog
-          v-if="visitedUser"
-          :userId="visitedUser.id"
-          :bio="visitedUser.bio"
-          :location="visitedUser.location"
-          :site="visitedUser.site"
-        ></tafalk-user-info-edit-dialog>
-        <!-- User Edit Privacy Dialog -->
-        <tafalk-user-privacy-edit-dialog
-          v-if="visitedUser"
-          :userId="visitedUser.id"
-          :allowDirectMessages="visitedUser.allowDirectMessages"
-        ></tafalk-user-privacy-edit-dialog>
-        <!-- User Delete Account Confirmation Dialog -->
-        <tafalk-user-delete-account-confirmation-dialog
-          v-if="visitedUser"
-          :userId="visitedUser.id">
-        </tafalk-user-delete-account-confirmation-dialog>
-      </v-container>
-    </v-container>
-  </v-skeleton-loader>
+                <!-- User Interaction Button Group -->
+                <v-row v-if="isProfileAllowed">
+                  <v-col cols="12">
+                    <tafalk-user-interaction-button-group
+                      v-if="authenticatedUser && !isVisitingOwnProfile"
+                    ></tafalk-user-interaction-button-group>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-divider />
+          <!-- Tabs -->
+          <tafalk-profile-tabs v-if="visitedUser && isProfileAllowed"
+            :userId="visitedUser.id"
+            :isVisitingOwnProfile="isVisitingOwnProfile"
+          ></tafalk-profile-tabs>
+        </v-card>
+      </v-col>
+    </v-row>
+    <!-- Dialogs -->
+    <!-- User Edit Info Dialog -->
+    <tafalk-user-change-profile-picture-dialog
+      v-if="visitedUser"
+      :userId="visitedUser.id"
+      :existingProfilePictureObjectUrl="visitedUser.profilePictureObjectUrl"
+    ></tafalk-user-change-profile-picture-dialog>
+    <!-- Stop Watching 'Are you sure' dialog -->
+    <tafalk-user-stop-watching-confirmation-dialog />
+    <!-- Block 'Are you sure' dialog -->
+    <tafalk-user-block-confirmation-dialog />
+    <!-- User Edit Info Dialog -->
+    <tafalk-user-info-edit-dialog
+      v-if="visitedUser"
+      :userId="visitedUser.id"
+      :bio="visitedUser.bio"
+      :location="visitedUser.location"
+      :site="visitedUser.site"
+    ></tafalk-user-info-edit-dialog>
+    <!-- User Edit Privacy Dialog -->
+    <tafalk-user-privacy-edit-dialog
+      v-if="visitedUser"
+      :userId="visitedUser.id"
+      :allowDirectMessages="visitedUser.allowDirectMessages"
+    ></tafalk-user-privacy-edit-dialog>
+    <!-- User Delete Account Confirmation Dialog -->
+    <tafalk-user-delete-account-confirmation-dialog
+      v-if="visitedUser"
+      :userId="visitedUser.id">
+    </tafalk-user-delete-account-confirmation-dialog>
+  </v-container>
+</v-skeleton-loader>
 </template>
 
 <script>
@@ -141,7 +133,6 @@ import { GetUserProfileData } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
 import { GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
 import { GetHexColorOfString } from '@/utils/generators'
-import TafalkNotAllowedProfile from '@/components/nocontent/ProfileNotAllowed.vue'
 import TafalkUserInteractionButtonGroup from '@/components/profile/buttons/UserInteractionButtonGroup.vue'
 import TafalkProfileTabs from '@/components/profile/tabs/ProfileTabs.vue'
 import TafalkProfileEditSpeedDial from '@/components/profile/buttons/EditSpeedDial.vue'
@@ -167,7 +158,6 @@ export default {
   },
   components: {
     TafalkUserChangeProfilePictureDialog,
-    TafalkNotAllowedProfile,
     TafalkUserInteractionButtonGroup,
     TafalkProfileTabs,
     TafalkProfileEditSpeedDial,
