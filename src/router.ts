@@ -107,7 +107,8 @@ const router = new Router({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // Show general progress line
+  // Set unready
+  store.commit('setIsPageReady', false)
   store.commit('route/setIsRouteChanging', true)
   store.commit('route/setCurrentRoutePath', to.path)
 
@@ -121,6 +122,7 @@ router.beforeEach(async (to, from, next) => {
       if (to.matched.some(rec => rec.meta.requiresAuth)) {
         store.commit('authenticatedUser/clearUser')
         next({ path: '/auth/login', query: { redirect: to.fullPath } })
+        return
       }
     } else {
       logger.error('Unexpected error getting autheticated user info', err.message || err)
@@ -128,10 +130,13 @@ router.beforeEach(async (to, from, next) => {
   }
 
   try {
-    // Set unready
-    store.commit('setIsPageReady', false)
+    if (!currentAuthenticatedUser) {
+      // auth is null, do not check
+      next()
+      return
+    }
     // Check the store for the authenticated user data
-    const storeAuthenticatedUser = store.getters['authenticatedUser/setUser']
+    const storeAuthenticatedUser = store.getters['authenticatedUser/getUser']
     if (storeAuthenticatedUser && storeAuthenticatedUser.username) {
       next()
     } else {
@@ -154,7 +159,7 @@ router.beforeEach(async (to, from, next) => {
       next()
     }
   } catch (err) {
-    logger.error('Unexpected Error during before routing', err.message || err)
+    logger.error('Unexpected Error during before-routing', err.message || err)
     next()
   }
 })

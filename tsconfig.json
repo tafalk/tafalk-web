@@ -13,7 +13,6 @@
     "skipLibCheck": true,
     "types": [
       "webpack-env",
-      "node",
       "vuetify"
     ],
     "paths": {

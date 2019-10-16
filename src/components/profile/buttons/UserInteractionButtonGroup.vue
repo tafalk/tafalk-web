@@ -12,37 +12,36 @@
 
     <!-- watch/unwatch button -->
     <v-btn
-      v-if="inboundWatchIdFromAuthenticatedUser == null || inboundWatchIdFromAuthenticatedUser.length === 0"
+      v-if="!inboundWatchIdFromAuthenticatedUser || inboundWatchIdFromAuthenticatedUser.length === 0"
       color="warning"
       @click="onWatchThisUserClick"
       block
-    ><v-icon>mdi-star-outline</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watch') }}
+    >
+      <v-icon>mdi-star-outline</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watch') }}
     </v-btn>
-
     <v-btn v-else
       depressed
       color="grey"
       class="white--text"
-      @click="stopWatchingDialog = true"
+      @click="onUnwatchThisUserClick"
       block
-    ><v-icon>mdi-star</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watching') }}
+    >
+      <v-icon>mdi-star</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watching') }}
     </v-btn>
   </v-col>
   <v-spacer></v-spacer>
-    <v-col cols="12" sm="6">
-
+  <v-col cols="12" sm="6">
     <!-- block/unblock button -->
     <v-btn
-      v-if="inboundBlockIdFromAuthenticatedUser == null  || inboundBlockIdFromAuthenticatedUser.length === 0"
+      v-if="!inboundBlockIdFromAuthenticatedUser || inboundBlockIdFromAuthenticatedUser.length === 0"
       color="grey"
-      :disabled="inboundBlockIdFromAuthenticatedUser != null && inboundWatchIdFromAuthenticatedUser.length > 0"
-      @click="blockUserDialog = true"
+      :disabled="inboundBlockIdFromAuthenticatedUser && inboundWatchIdFromAuthenticatedUser.length > 0"
+      @click="onBlockThisUserClick"
       block
     ><v-icon>mdi-cancel</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.block') }}
     </v-btn>
-
     <v-btn
-      v-else-if="inboundWatchIdFromAuthenticatedUser == null || inboundWatchIdFromAuthenticatedUser.length === 0"
+      v-else-if="!inboundWatchIdFromAuthenticatedUser || inboundWatchIdFromAuthenticatedUser.length === 0"
       depressed
       color="error"
       @click="onUnblockThisUserClick"
@@ -86,7 +85,9 @@ export default {
   methods: {
     ...mapMutations({
       setInboundWatchIdFromAuthenticatedUser: 'visitedUser/setInboundWatchIdFromAuthenticatedUser',
-      clearInboundBlockIdFromAuthenticatedUser: 'visitedUser/clearInboundBlockIdFromAuthenticatedUser'
+      clearInboundBlockIdFromAuthenticatedUser: 'visitedUser/clearInboundBlockIdFromAuthenticatedUser',
+      setIsStopWatchingConfirmationDialogVisible: 'visitedUser/dialog/setIsStopWatchingConfirmationDialogVisible',
+      setIsBlockConfirmationDialogVisible: 'visitedUser/dialog/setIsBlockConfirmationDialogVisible'
     }),
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError'
@@ -106,6 +107,12 @@ export default {
         logger.error('An error occurred while watching the user')
         this.setNewSiteError(err.message || err)
       }
+    },
+    onUnwatchThisUserClick () {
+      this.setIsStopWatchingConfirmationDialogVisible(true)
+    },
+    onBlockThisUserClick () {
+      this.setIsBlockConfirmationDialogVisible(true)
     },
     async onUnblockThisUserClick () {
       try {

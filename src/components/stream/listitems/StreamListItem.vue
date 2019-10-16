@@ -6,14 +6,8 @@
     :max-height="maxHeight"
     @click.native="onToStreamButtonClick"
   >
-    <!-- Card Title -->
-    <v-card-title
-      :dense="dense"
-      class="title grey--text"
-    >
-      <!-- Stream Header -->
+    <v-card-title :dense="dense" class="title grey--text">
       <v-spacer />
-      <!-- Stream Author Chip -->
       <v-chip
         v-if="displayUserInfo"
         :small="dense"
@@ -21,18 +15,14 @@
         pill
         @click.stop="onToAuthorProfileClick"
       >
-        <!-- avatar -->
         <v-avatar left>
-          <!-- Author is not active -->
           <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
-          <!-- Author active but no profile picture set -->
           <v-img
             v-else-if="!authorProfilePictureObjectUrl"
             :src="require('@/assets/default-user-avatar.webp')"
             alt="Virgina Woolf in Hue"
             :style="{backgroundColor: authorColor}"
           ></v-img>
-          <!-- Author active and has profile pic -->
           <v-img
             v-else
             :src="authorProfilePictureObjectUrl"
@@ -41,15 +31,11 @@
         {{ authorDisplayUsername }}
       </v-chip>
     </v-card-title>
-
-    <!-- Card Body -->
     <v-card-text class="text-truncate">
       <span v-if="hasTitle" class="text--primary">{{stream.title}}</span>
       <span v-if="hasTitle">&mdash;</span>
       {{ stream.body }}
     </v-card-text>
-
-    <!-- Card Bottom -->
     <v-card-actions class="pa-2 grey--text">
       <v-spacer v-if="$vuetify.breakpoint.smAndUp"/>
       <span v-if="isSealed" class="pa-2 grey--text caption">
@@ -83,57 +69,42 @@
     :three-line="dense"
     @click.native="onToStreamButtonClick"
   >
-    <!-- Avatar -->
     <v-list-item-avatar
       v-if="displayUserInfo"
       :style="{ 'cursor': 'pointer' }"
       @click.stop="onToAuthorProfileClick"
     >
-      <!-- Author is not active -->
       <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
-      <!-- Author active but no prifile picture set -->
       <v-img
         v-else-if="!authorProfilePictureObjectUrl"
         :src="require('@/assets/default-user-avatar.webp')"
         alt="Virgina Woolf in Hue"
         :style="{backgroundColor: authorColor}"
       ></v-img>
-      <!-- Author active and has profile pic -->
       <v-img
         v-else
         :src="authorProfilePictureObjectUrl"
       ></v-img>
     </v-list-item-avatar>
-
-    <!-- Content -->
     <v-list-item-content>
-      <!-- Line 1 -->
       <v-list-item-subtitle>
-        <!-- User name -->
         <span v-if="displayUserInfo" class="body-2">{{ authorDisplayUsername }}</span>
         <span v-if="displayUserInfo" class="caption">&mdash;</span>
-        <!-- Time spent -->
         <span class="grey--text caption"><v-icon class="grey--text caption">mdi-timer</v-icon>{{ timeSpentForStream }}</span>
         <span class="grey--text caption">,</span>
-        <!-- Time passed  -->
         <span v-if="isSealed" class="grey--text caption"><v-icon class="grey--text caption">mdi-seat-flat</v-icon>{{ timeFromSealedToNow }}</span>
         <span v-if="!isSealed" class="red--text caption"><v-icon class="red--text caption">mdi-play</v-icon>&nbsp;{{ $t('stream.metadata.liveLabel') }}</span>
       </v-list-item-subtitle>
-      <!-- Line 2 -->
       <v-list-item-title>
         <span v-if="hasTitle" class="text--primary">{{stream.title}}</span>
         <span v-if="hasTitle">&mdash;</span>
         <span class="grey--text">{{stream.body}}</span>
       </v-list-item-title>
     </v-list-item-content>
-
-    <!-- Actions -->
     <v-list-item-action>
-      <!-- Bookmarks -->
       <v-list-item-action-text>
         <v-icon class="grey--text caption">mdi-bookmark</v-icon>{{ bookmarkCount }}
       </v-list-item-action-text>
-      <!-- Comments -->
       <v-list-item-action-text>
         <v-icon class="grey--text caption">mdi-comment</v-icon>{{ commentCount }}
       </v-list-item-action-text>
@@ -185,13 +156,9 @@ export default {
       return (this.stream.user && this.stream.user.accountStatus === this.activeUserAccountStatus) ? this.stream.user : null
     },
     authorDisplayUsername () {
-      if (!this.stream.user) {
-        return null
-      } else if (this.stream.user.accountStatus !== this.activeUserAccountStatus) {
-        return this.stream.user.id
-      } else {
-        return this.author.username
-      }
+      if (!this.stream.user) return null
+
+      return this.author.accountStatus === this.activeUserAccountStatus ? this.author.username : this.author.id
     },
     authenticatedUser () {
       return this.getAuthenticatedUser
