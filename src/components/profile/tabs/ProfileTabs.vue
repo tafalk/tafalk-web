@@ -108,9 +108,9 @@ import { API, graphqlOperation } from 'aws-amplify'
 import { mapGetters } from 'vuex'
 import { ListStreamsByUser, ListLikesByUser, ListUserInteractionsByActorUserIdIndex } from '@/graphql/Profile'
 import { GetCanto } from '@/graphql/Canto'
-import TafalkUserListItem from '@/components/profile/listitems/UserListItem.vue'
-import TafalkStreamListItem from '@/components/stream/listitems/StreamListItem.vue'
-import TafalkCantoListItem from '@/components/canto/listitems/CantoListItem.vue'
+import TafalkUserListItem from '@/components/listitems/UserProfileListItem.vue'
+import TafalkStreamListItem from '@/components/listitems/StreamListItem.vue'
+import TafalkCantoListItem from '@/components/listitems/CantoListItem.vue'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
 export default {

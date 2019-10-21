@@ -6,9 +6,7 @@
 >
   <!-- Not allowed -->
   <v-row v-if="!isCantoAllowed" justify="space-between" align="center">
-    <v-col cols="12">
-      <tafalk-not-allowed-canto />
-    </v-col>
+    <TafalkContentNotAllowed />
   </v-row>
   <!-- Regular content -->
   <v-container v-else>
@@ -178,7 +176,7 @@ import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
 import { cantoBookmarkId, cantoPreBookmarkClass, cantoPostBookmarkClass } from '@/utils/constants'
 import { GetHexColorOfString, GetCantoLink, BookmarkCantoContent, GetSiblings } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
-import TafalkNotAllowedCanto from '@/components/nocontent/CantoNotAllowed.vue'
+import TafalkContentNotAllowed from '@/components/nocontent/ContentNotAllowed.vue'
 import TafalkShareCantoLinkDialog from '@/components/canto/dialogs/ShareCantoLinkDialog.vue'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
@@ -188,7 +186,7 @@ const logger = new Logger('Canto')
 export default {
   name: 'Canto',
   components: {
-    TafalkNotAllowedCanto,
+    TafalkContentNotAllowed,
     TafalkShareCantoLinkDialog,
     TafalkFlagDialog,
     TafalkRetractFlagConfirmationDialog
@@ -221,7 +219,7 @@ export default {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getCanto: 'canto/getCanto',
-      getIsFlaggedByAuthenticatedUser: 'canto/getIsFlaggedByAuthenticatedUser',
+      // getIsFlaggedByAuthenticatedUser: 'canto/getIsFlaggedByAuthenticatedUser',
       getCantoBodyUserSelection: 'canto/getBodyUserSelection',
       getNowTime: 'time/getNowTime',
       getIsPageReady: 'getIsPageReady'

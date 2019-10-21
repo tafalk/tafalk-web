@@ -1,4 +1,3 @@
-<!-- See https://vuetifyjs.com/en/components/lists -->
 <template>
   <v-list three-line color="transparent">
     <v-divider/>
@@ -7,9 +6,9 @@
       {{ $t('stream.comments.title') }} ({{ commentCount }})
     </v-subheader>
     <template v-for="(comment, index) in paginatedStreamCommentItems">
-      <tafalk-stream-comment :key="comment.content"
+      <tafalk-stream-comment-list-item :key="comment.content"
         :comment="comment"
-      ></tafalk-stream-comment>
+      ></tafalk-stream-comment-list-item>
       <v-divider
         v-if="index < commentCount"
         :key="index"
@@ -24,12 +23,12 @@ import { mapGetters, mapMutations } from 'vuex'
 import { API, graphqlOperation } from 'aws-amplify'
 import { ListPaginatedStreamComments } from '@/graphql/StreamReaction'
 import { streamCommentFetchLength } from '@/utils/constants'
-import TafalkStreamComment from '@/components/comment/stream/StreamComment.vue'
+import TafalkStreamCommentListItem from '@/components/listitems/StreamCommentListItem.vue'
 
 export default {
   name: 'StreamCommentList',
   components: {
-    TafalkStreamComment
+    TafalkStreamCommentListItem
   },
   data () {
     return {
@@ -59,9 +58,7 @@ export default {
       return this.paginatedStreamComments.nextToken
     },
     commentCount () {
-      if (!this.stream.comments) {
-        return 0
-      }
+      if (!this.stream.comments) return 0
       return this.stream.comments.length
     }
   },

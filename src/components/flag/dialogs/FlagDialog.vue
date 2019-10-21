@@ -63,7 +63,7 @@
           <v-row justify="space-between">
             <v-btn
               text
-              @click="onCancelFlagButtonClick"
+              @click="onCancelFlagBtnClick"
             >{{ $t('flag.dialog.steps.category.buttons.cancel') }}
             </v-btn>
             <v-btn
@@ -296,7 +296,7 @@ export default {
     onClickRudeDetail (dtl) {
       this.selectedType = dtl
     },
-    onCancelFlagButtonClick () {
+    onCancelFlagBtnClick () {
       this.selectedCategory = ''
       this.hideFlagDialog()
     },

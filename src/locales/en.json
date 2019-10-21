@@ -485,11 +485,12 @@
     "profileNotAllowed": {
       "title": "You are not authorized to see the content"
     },
-    "streamNotAllowed": {
-      "title": "You are not authorized to see the content"
-    },
-    "cantoNotAllowed": {
+    "contentNotAllowed": {
       "title": "You are not authorized to see the content"
     }
+  },
+  "blockedContent": {
+    "body": "Contains Blocked Content",
+    "showButtonText": "Show"
   }
 }
