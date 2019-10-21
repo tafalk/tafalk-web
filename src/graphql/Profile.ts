@@ -30,7 +30,6 @@ export const GetUserProfileData = gql`query GetUserProfileData($username: String
         targetUserId
         interactionType
       }
-      nextToken
     }
   }
 }`

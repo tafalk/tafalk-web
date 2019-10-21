@@ -4,16 +4,11 @@
     v-if="displayType === cardDisplayType"
     flat
     :max-height="maxHeight"
-    @click.native="onToStreamButtonClick"
+    @click.native="onToStreamBtnClick"
   >
-    <!-- Card Title -->
-    <v-card-title
-      :dense="dense"
-      class="title grey--text"
-    >
-      <!-- Stream Header -->
+    <v-card-title :dense="dense" class="title grey--text">
       <v-spacer />
-      <!-- Stream Author Chip -->
+      <!-- avatar -->
       <v-chip
         v-if="displayUserInfo"
         :small="dense"
@@ -21,18 +16,14 @@
         pill
         @click.stop="onToAuthorProfileClick"
       >
-        <!-- avatar -->
         <v-avatar left>
-          <!-- Author is not active -->
           <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
-          <!-- Author active but no profile picture set -->
           <v-img
             v-else-if="!authorProfilePictureObjectUrl"
             :src="require('@/assets/default-user-avatar.webp')"
             alt="Virgina Woolf in Hue"
             :style="{backgroundColor: authorColor}"
           ></v-img>
-          <!-- Author active and has profile pic -->
           <v-img
             v-else
             :src="authorProfilePictureObjectUrl"
@@ -41,16 +32,23 @@
         {{ authorDisplayUsername }}
       </v-chip>
     </v-card-title>
-
-    <!-- Card Body -->
-    <v-card-text class="text-truncate">
+    <!-- Blocked Content -->
+    <v-banner single-line v-if="blocked && !showContentAnyway">
+      {{ $t('blockedContent.body') }}
+      <template v-slot:actions>
+        <v-btn depressed color="primary" @click.stop="showContentAnywayBtnClick">
+          {{ $t('blockedContent.showButtonText') }}
+        </v-btn>
+      </template>
+    </v-banner>
+    <!-- Body -->
+    <v-card-text v-if="!blocked || showContentAnyway" class="text-truncate">
       <span v-if="hasTitle" class="text--primary">{{stream.title}}</span>
       <span v-if="hasTitle">&mdash;</span>
       {{ stream.body }}
     </v-card-text>
-
-    <!-- Card Bottom -->
-    <v-card-actions class="pa-2 grey--text">
+    <!-- Actions -->
+    <v-card-actions v-if="!blocked || showContentAnyway" class="pa-2 grey--text">
       <v-spacer v-if="$vuetify.breakpoint.smAndUp"/>
       <span v-if="isSealed" class="pa-2 grey--text caption">
         <v-icon class="grey--text caption">mdi-seat-flat</v-icon>{{ timeFromSealedToNow }}
@@ -81,59 +79,56 @@
     :style="{ 'cursor': 'pointer' }"
     :two-line="!dense"
     :three-line="dense"
-    @click.native="onToStreamButtonClick"
+    @click.native="onToStreamBtnClick"
   >
-    <!-- Avatar -->
+    <!-- avatar -->
     <v-list-item-avatar
       v-if="displayUserInfo"
       :style="{ 'cursor': 'pointer' }"
       @click.stop="onToAuthorProfileClick"
     >
-      <!-- Author is not active -->
       <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
-      <!-- Author active but no prifile picture set -->
       <v-img
         v-else-if="!authorProfilePictureObjectUrl"
         :src="require('@/assets/default-user-avatar.webp')"
         alt="Virgina Woolf in Hue"
         :style="{backgroundColor: authorColor}"
       ></v-img>
-      <!-- Author active and has profile pic -->
       <v-img
         v-else
         :src="authorProfilePictureObjectUrl"
       ></v-img>
     </v-list-item-avatar>
-
-    <!-- Content -->
     <v-list-item-content>
-      <!-- Line 1 -->
       <v-list-item-subtitle>
-        <!-- User name -->
         <span v-if="displayUserInfo" class="body-2">{{ authorDisplayUsername }}</span>
         <span v-if="displayUserInfo" class="caption">&mdash;</span>
-        <!-- Time spent -->
         <span class="grey--text caption"><v-icon class="grey--text caption">mdi-timer</v-icon>{{ timeSpentForStream }}</span>
         <span class="grey--text caption">,</span>
-        <!-- Time passed  -->
         <span v-if="isSealed" class="grey--text caption"><v-icon class="grey--text caption">mdi-seat-flat</v-icon>{{ timeFromSealedToNow }}</span>
         <span v-if="!isSealed" class="red--text caption"><v-icon class="red--text caption">mdi-play</v-icon>&nbsp;{{ $t('stream.metadata.liveLabel') }}</span>
       </v-list-item-subtitle>
-      <!-- Line 2 -->
-      <v-list-item-title>
+      <!-- Blocked Content -->
+      <v-banner single-line v-if="blocked && !showContentAnyway">
+        {{ $t('blockedContent.body') }}
+        <template v-slot:actions>
+          <v-btn depressed color="primary" @click.stop="showContentAnywayBtnClick">
+            {{ $t('blockedContent.showButtonText') }}
+          </v-btn>
+        </template>
+      </v-banner>
+      <!-- Body -->
+      <v-list-item-title v-if="!blocked || showContentAnyway">
         <span v-if="hasTitle" class="text--primary">{{stream.title}}</span>
         <span v-if="hasTitle">&mdash;</span>
         <span class="grey--text">{{stream.body}}</span>
       </v-list-item-title>
     </v-list-item-content>
-
     <!-- Actions -->
-    <v-list-item-action>
-      <!-- Bookmarks -->
+    <v-list-item-action v-if="!blocked || showContentAnyway">
       <v-list-item-action-text>
         <v-icon class="grey--text caption">mdi-bookmark</v-icon>{{ bookmarkCount }}
       </v-list-item-action-text>
-      <!-- Comments -->
       <v-list-item-action-text>
         <v-icon class="grey--text caption">mdi-comment</v-icon>{{ commentCount }}
       </v-list-item-action-text>
@@ -144,7 +139,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { Storage } from 'aws-amplify'
-import { activeUserAccountStatus } from '@/utils/constants'
+import { activeUserAccountStatus, blockTypeUserConnectionValue } from '@/utils/constants'
 import { GetHexColorOfString } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'
 
@@ -155,7 +150,9 @@ export default {
     return {
       cardDisplayType: 'card',
       itemDisplayType: 'item',
+      showContentAnyway: false,
       activeUserAccountStatus,
+      blockTypeUserConnectionValue,
       authorProfilePictureObjectUrl: null,
       authorColor: null
     }
@@ -179,22 +176,22 @@ export default {
       return this.dense ? 180 : 200
     },
     hasTitle () {
-      return this.stream.title && this.stream.title.trim !== ''
+      return this.stream.title && this.stream.title.trim
     },
     author () {
       return (this.stream.user && this.stream.user.accountStatus === this.activeUserAccountStatus) ? this.stream.user : null
     },
     authorDisplayUsername () {
-      if (!this.stream.user) {
-        return null
-      } else if (this.stream.user.accountStatus !== this.activeUserAccountStatus) {
-        return this.stream.user.id
-      } else {
-        return this.author.username
-      }
+      if (!this.stream.user) return null
+      return this.author.accountStatus === this.activeUserAccountStatus ? this.author.username : this.author.id
     },
     authenticatedUser () {
       return this.getAuthenticatedUser
+    },
+    blocked () {
+      if (!this.authenticatedUser) return false
+      return this.authenticatedUser.userInteractions.items
+        .some(el => el.interactionType === this.blockTypeUserConnectionValue && el.targetUserId === this.author.id)
     },
     bookmarkCount () {
       return this.stream.bookmarks ? this.stream.bookmarks.length : 0
@@ -213,12 +210,15 @@ export default {
     }
   },
   methods: {
-    onToStreamButtonClick () {
+    onToStreamBtnClick () {
       this.$router.push({ name: 'stream', params: { id: this.stream.id } })
     },
     onToAuthorProfileClick () {
       if (!this.author) return
       this.$router.push({ name: 'profile', params: { username: this.author.username } })
+    },
+    showContentAnywayBtnClick () {
+      this.showContentAnyway = true
     }
   }
 }

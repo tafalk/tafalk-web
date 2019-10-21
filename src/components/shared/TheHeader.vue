@@ -24,7 +24,7 @@
         :placeholder="$t('common.toolbar.searchPlaceholder')"
         v-model="searchText"
         @input="search"
-        @click:prepend="onSearchBackButtonClick"
+        @click:prepend="onSearchBackBtnClick"
         @click:clear="clearSearchText"
       ></v-text-field>
     </v-container>
@@ -291,7 +291,7 @@ export default {
       this.$router.push({ name: 'content', query: { type: this.cantoValue } })
       this.setMenuDrawer(false)
     },
-    onSearchBackButtonClick () {
+    onSearchBackBtnClick () {
       this.clearSearchTextAndResults()
       this.isMobileSearchHeaderOn = false
     },

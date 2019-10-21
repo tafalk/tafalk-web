@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import VueCompositionApi from '@vue/composition-api'
 import vuetify from '@/plugins/vuetify'
 import App from '@/App.vue'
 import router from '@/router'
@@ -23,6 +24,8 @@ Vue.prototype.$httpSitePoliciesStorage = axios.create({
 })
 
 // Plugins
+Vue.use(VueCompositionApi)
+
 Vue.use(InfiniteLoading, {
   props: {
     spinner: 'waveDots'

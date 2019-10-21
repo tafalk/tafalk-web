@@ -174,9 +174,9 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import TafalkNewFab from '@/components/home/buttons/NewFab.vue'
-import TafalkStreamListItem from '@/components/stream/listitems/StreamListItem.vue'
-import TafalkCantoListItem from '@/components/canto/listitems/CantoListItem.vue'
-import TafalkUserListItem from '@/components/profile/listitems/UserListItem.vue'
+import TafalkStreamListItem from '@/components/listitems/StreamListItem.vue'
+import TafalkCantoListItem from '@/components/listitems/CantoListItem.vue'
+import TafalkUserListItem from '@/components/listitems/UserProfileListItem.vue'
 import { homeStreamFetchLength } from '@/utils/constants'
 
 export default {

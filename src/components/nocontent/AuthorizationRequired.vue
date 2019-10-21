@@ -14,11 +14,11 @@
       <v-btn
         color="primary"
         text
-        @click="onRegisterButtonClick">{{ $t('nocontent.unauthorized.goToSigninButtonText') }}</v-btn>
+        @click="onRegisterBtnClick">{{ $t('nocontent.unauthorized.goToSigninButtonText') }}</v-btn>
       <v-btn
         color="primary"
         text
-        @click="onLoginButtonClick">{{ $t('nocontent.unauthorized.goToLoginButtonText') }}</v-btn>
+        @click="onLoginBtnClick">{{ $t('nocontent.unauthorized.goToLoginButtonText') }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -31,10 +31,10 @@ export default {
     }
   },
   methods: {
-    onRegisterButtonClick () {
+    onRegisterBtnClick () {
       this.$router.push({ name: 'register' })
     },
-    onLoginButtonClick () {
+    onLoginBtnClick () {
       this.$router.push({ name: 'login' })
     }
   }

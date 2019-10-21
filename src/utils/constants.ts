@@ -13,8 +13,11 @@ export const minUsernameOrEmailLength = 2
 export const maxUsernameOrEmailLength = 254
 export const minPasswordLength = 8
 
+export const watchTypeUserConnectionValue = 'Watch'
+export const blockTypeUserConnectionValue = 'Block'
 // user
 export const activeUserAccountStatus = 'active'
+
 // pour
 export const pourStrikethroughTimeToIdle = 1000
 

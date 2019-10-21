@@ -6,9 +6,7 @@
 >
   <!-- Not allowed -->
   <v-row v-if="!isStreamAllowed" justify="space-between" align="center">
-    <v-col cols="12">
-      <tafalk-not-allowed-stream />
-    </v-col>
+      <TafalkContentNotAllowed />
   </v-row>
   <!-- Regular content -->
   <v-container v-else>
@@ -206,10 +204,10 @@ import { ListFlags, OnCreateOrDeleteFlag } from '@/graphql/Flag'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'
 import { GetHexColorOfString, GetStreamLink } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween, GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
-import { streamCommentFetchLength, activeUserAccountStatus } from '@/utils/constants'
-import TafalkNotAllowedStream from '@/components/nocontent/StreamNotAllowed.vue'
+import { streamCommentFetchLength, activeUserAccountStatus, watchTypeUserConnectionValue, blockTypeUserConnectionValue } from '@/utils/constants'
+import TafalkContentNotAllowed from '@/components/nocontent/ContentNotAllowed.vue'
 import TafalkShareStreamLinkDialog from '@/components/stream/dialogs/ShareStreamLinkDialog.vue'
-import TafalkStreamCommentList from '@/components/comment/stream/StreamCommentList.vue'
+import TafalkStreamCommentList from '@/components/comment/StreamCommentList.vue'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
 
@@ -218,7 +216,7 @@ const logger = new Logger('Stream')
 export default {
   name: 'Stream',
   components: {
-    TafalkNotAllowedStream,
+    TafalkContentNotAllowed,
     TafalkShareStreamLinkDialog,
     TafalkStreamCommentList,
     TafalkFlagDialog,
@@ -229,8 +227,8 @@ export default {
       activeUserAccountStatus,
       outboundBlockId: null,
       outboundWatchId: null,
-      watchTypeUserConnectionValue: 'Watch',
-      blockTypeUserConnectionValue: 'Block',
+      watchTypeUserConnectionValue,
+      blockTypeUserConnectionValue,
       authorProfilePictureObjectUrl: null,
       streamChange: null,
       likeObjects: null,
@@ -255,7 +253,7 @@ export default {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getStream: 'stream/getStream',
-      getIsFlaggedByAuthenticatedUser: 'stream/getIsFlaggedByAuthenticatedUser',
+      // getIsFlaggedByAuthenticatedUser: 'stream/getIsFlaggedByAuthenticatedUser',
       getNowTime: 'time/getNowTime',
       getIsPageReady: 'getIsPageReady'
     }),

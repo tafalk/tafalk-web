@@ -92,7 +92,7 @@ export default {
 
       // Messages
       userDoesNotExistError: this.$i18n.t('auth.message.validation.userDoesNotExist'),
-      delayBeforeRouteInMillis
+      delayBeforeRouteInMillis: 500
     }
   },
   methods: {
