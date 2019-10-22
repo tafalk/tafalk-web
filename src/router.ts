@@ -6,12 +6,12 @@ import { Auth, API, graphqlOperation, Logger, Storage } from 'aws-amplify'
 import { GetUserProfileData } from '@/graphql/Profile'
 import { GetHexColorOfString } from '@/utils/generators'
 
-import NotFound from '@/views/nocontent/NotFound.vue'
-import Profile from '@/views/profile/Profile.vue'
-import PourStream from '@/views/stream/PourStream.vue'
-import Stream from '@/views/stream/Stream.vue'
-import PourCanto from '@/views/canto/PourCanto.vue'
-import Canto from '@/views/canto/Canto.vue'
+import NotFound from '@/pages/nocontent/NotFound.vue'
+import Profile from '@/pages/profile/Profile.vue'
+import PourStream from '@/pages/stream/PourStream.vue'
+import Stream from '@/pages/stream/Stream.vue'
+import PourCanto from '@/pages/canto/PourCanto.vue'
+import Canto from '@/pages/canto/Canto.vue'
 
 Vue.use(Router)
 
@@ -24,52 +24,52 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import(/* webpackChunkName: "home" */ './views/home/Content.vue')
+      component: () => import(/* webpackChunkName: "home" */ './pages/home/Content.vue')
     },
     {
       path: '/content',
       name: 'content',
-      component: () => import(/* webpackChunkName: "home" */ './views/home/Content.vue')
+      component: () => import(/* webpackChunkName: "home" */ './pages/home/Content.vue')
     },
     {
       path: '/about',
       name: 'about',
-      component: () => import(/* webpackChunkName: "meta" */ './views/meta/About.vue')
+      component: () => import(/* webpackChunkName: "meta" */ './pages/meta/About.vue')
     },
     {
       path: '/privacyPolicy',
       name: 'privacyPolicy',
-      component: () => import(/* webpackChunkName: "meta" */ './views/meta/PrivacyPolicy.vue')
+      component: () => import(/* webpackChunkName: "meta" */ './pages/meta/PrivacyPolicy.vue')
     },
     {
       path: '/termsOfService',
       name: 'termsOfService',
-      component: () => import(/* webpackChunkName: "meta" */ './views/meta/TermsOfService.vue')
+      component: () => import(/* webpackChunkName: "meta" */ './pages/meta/TermsOfService.vue')
     },
     {
       path: '/auth/register',
       name: 'register',
-      component: () => import(/* webpackChunkName: "auth" */ './views/auth/Register.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './pages/auth/Register.vue')
     },
     {
       path: '/auth/login',
       name: 'login',
-      component: () => import(/* webpackChunkName: "auth" */ './views/auth/Login.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './pages/auth/Login.vue')
     },
     {
       path: '/auth/confirmRegistration',
       name: 'confirmRegistration',
-      component: () => import(/* webpackChunkName: "auth" */ './views/auth/ConfirmRegistration.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './pages/auth/ConfirmRegistration.vue')
     },
     {
       path: '/auth/forgotPassword',
       name: 'forgotPassword',
-      component: () => import(/* webpackChunkName: "auth" */ './views/auth/ForgotPassword.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './pages/auth/ForgotPassword.vue')
     },
     {
       path: '/auth/farewell',
       name: 'farewell',
-      component: () => import(/* webpackChunkName: "auth" */ './views/auth/Farewell.vue')
+      component: () => import(/* webpackChunkName: "auth" */ './pages/auth/Farewell.vue')
     },
     {
       path: '/user/:username',
