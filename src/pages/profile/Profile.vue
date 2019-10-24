@@ -127,7 +127,9 @@
 </template>
 
 <script>
-import { API, graphqlOperation, Logger, Storage } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import Storage from '@aws-amplify/storage'
+import { Logger } from '@aws-amplify/core'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetUserProfileData } from '@/graphql/Profile'
 import { GetInteractionsBetweenUsers } from '@/graphql/UserInteraction'

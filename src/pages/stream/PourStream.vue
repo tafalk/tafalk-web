@@ -96,8 +96,9 @@
 <!-- UUID -->
 <script src="http://wzrd.in/standalone/uuid%2Fv5@latest"></script>
 <script>
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { Logger } from '@aws-amplify/core'
 import uuidv4 from 'uuid/v4'
-import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { ListStreamsByUser } from '@/graphql/Profile'
 import { CreateStream, UpdateStreamBody, UpdateStreamTitle, UpdatePosition, UpdateMood, SealStreamForEver } from '@/graphql/Stream'

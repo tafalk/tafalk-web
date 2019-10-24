@@ -40,8 +40,9 @@
 </template>
 
 <script>
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { Logger } from '@aws-amplify/core'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
-import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { GetCantoBody, CreateCanto, UpdateCantoBody } from '@/graphql/Canto'
 import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
 import TafalkCantoIntroduction from '@/components/canto/dialogs/CantoIntroduction.vue'

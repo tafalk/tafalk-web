@@ -71,8 +71,8 @@
 </template>
 
 <script>
+import Storage from '@aws-amplify/storage'
 import { mapGetters } from 'vuex'
-import { Storage } from 'aws-amplify'
 import { GetHexColorOfString } from '@/utils/generators'
 
 export default {

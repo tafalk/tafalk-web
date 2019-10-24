@@ -196,7 +196,9 @@
 </template>
 
 <script>
-import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import Storage from '@aws-amplify/storage'
+import _PubSub from '@aws-amplify/pubsub'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetStream, OnUpdateStream } from '@/graphql/Stream'
 import { ListStreamLikes, CreateLike, DeleteLike, OnCreateOrDeleteStreamLike, CreateComment, ListPaginatedStreamComments } from '@/graphql/StreamReaction'
@@ -210,8 +212,6 @@ import TafalkShareStreamLinkDialog from '@/components/stream/dialogs/ShareStream
 import TafalkStreamCommentList from '@/components/comment/StreamCommentList.vue'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
-
-const logger = new Logger('Stream')
 
 export default {
   name: 'Stream',
@@ -444,7 +444,6 @@ export default {
         this.outboundWatchId = GetFirstOrDefaultIdStr(outboundWatchingTypeConnections)
         this.outboundBlockId = GetFirstOrDefaultIdStr(outboundBlockingTypeConnections)
       } catch (err) {
-        logger.error('Error occurred while getting user info', JSON.stringify(err.message || err))
         this.setNewSiteError(err.message || err)
       }
     },
@@ -461,7 +460,6 @@ export default {
           time: new Date().toISOString()
         }))
       } catch (err) {
-        logger.error('An error occurred while adding the like')
         this.setNewUserInteractionResultError(this.$i18n.t('stream.likes.message.genericCastError'))
       } finally {
         this.isLikeLoading = false
@@ -474,7 +472,6 @@ export default {
           id: this.authenticatedUserLikeId
         }))
       } catch (err) {
-        logger.error('An error occurred while deleting the like', JSON.stringify(err))
         this.setNewUserInteractionResultError(this.$i18n.t('stream.likes.message.genericUncastError'))
       } finally {
         this.isLikeLoading = false
@@ -523,7 +520,6 @@ export default {
 
         this.setPaginatedStreamComments(commentsGraphqlResult.data.listPaginatedStreamComments)
       } catch (err) {
-        logger.error('An error occurred while adding the comment', err)
         this.setNewUserInteractionResultError(this.$i18n.t('stream.comments.message.genericAddError'))
       } finally {
         this.commentButtonColor = 'orange'

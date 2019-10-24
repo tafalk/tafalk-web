@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { API, graphqlOperation } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
 import { mapGetters } from 'vuex'
 import { ListStreamsByUser, ListLikesByUser, ListUserInteractionsByActorUserIdIndex } from '@/graphql/Profile'
 import { GetCanto } from '@/graphql/Canto'

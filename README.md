@@ -50,3 +50,21 @@ Some
 | VUE_APP_S3_USER_STORAGE_BUCKET       | `{USER_STORAGE_BUCKET_NAME}`                                  |
 | VUE_APP_S3_SITE_POLICIES_BUCKET      | `{SITE_POLICIES_BUCKET_NAME}`                                 |
 | VUE_APP_S3_HOSTING_BUCKET            | `{HOSTING_BUCKET_NAME}`                                       |
+
+## Trying Other Stuff
+
+### Vue
+
+### React
+
+#### Create-React-App
+
+I have started it, but gave up when there is no equivalent of `v-if` or `ngIf`
+
+#### GatsbyJs
+
+It is a good option for SPA generation, but *Dynamic Routing* is not so straightforward
+
+#### NextJs
+
+It is mainly for Server-side rendered (SSR) apps but those require a webserver (like Nginx) and thus, cannot directly served on an S3 bucket.

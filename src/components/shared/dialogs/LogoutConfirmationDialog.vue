@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { Auth } from 'aws-amplify'
+import Auth from '@aws-amplify/auth'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {

@@ -98,7 +98,9 @@
 </template>
 
 <script>
-import { API, graphqlOperation, Auth, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import Auth from '@aws-amplify/auth'
+import { Logger } from '@aws-amplify/core'
 import { mapActions } from 'vuex'
 import { minUsernameLength, maxUsernameLength, minPasswordLength } from '@/utils/constants'
 import { CheckPassword } from '@/utils/validator'

@@ -166,7 +166,9 @@
 </template>
 
 <script>
-import { Storage, API, graphqlOperation, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import Storage from '@aws-amplify/storage'
+import _PubSub from '@aws-amplify/pubsub'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetCanto, OnUpdateCanto } from '@/graphql/Canto'
 import { ListCantoLikes, CreateLike, UpdateLikeIndices, DeleteLike, OnCreateOrDeleteCantoLike } from '@/graphql/CantoReaction'
@@ -180,8 +182,6 @@ import TafalkContentNotAllowed from '@/components/nocontent/ContentNotAllowed.vu
 import TafalkShareCantoLinkDialog from '@/components/canto/dialogs/ShareCantoLinkDialog.vue'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
-
-const logger = new Logger('Canto')
 
 export default {
   name: 'Canto',
@@ -414,7 +414,6 @@ export default {
         this.outboundWatchId = GetFirstOrDefaultIdStr(outboundWatchingTypeConnections)
         this.outboundBlockId = GetFirstOrDefaultIdStr(outboundBlockingTypeConnections)
       } catch (err) {
-        logger.error('Error occurred while getting canto info', JSON.stringify(err.message || err))
         this.setNewSiteError(err.message || err)
       }
     },
@@ -437,7 +436,6 @@ export default {
           indices: `0${this.likeIndexSeparator}${indexEnd}`
         }))
       } catch (err) {
-        logger.error('An error occurred while adding the like')
         this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericCastError'))
       } finally {
         this.isLikeLoading = false
@@ -456,7 +454,6 @@ export default {
           time: new Date().toISOString()
         }))
       } catch (err) {
-        logger.error('An error occurred while moving the like', JSON.stringify(err))
         this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericUncastError'))
       } finally {
         this.isMoveLikeLoading = false
@@ -469,7 +466,6 @@ export default {
           id: this.authenticatedUserLikeId
         }))
       } catch (err) {
-        logger.error('An error occurred while deleting the like', JSON.stringify(err))
         this.setNewUserInteractionResultError(this.$i18n.t('canto.likes.message.genericUncastError'))
       } finally {
         this.isRemoveLikeLoading = false

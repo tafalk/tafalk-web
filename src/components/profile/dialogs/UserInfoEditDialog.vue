@@ -75,13 +75,10 @@
 </template>
 
 <script>
-import { Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import debounce from 'debounce'
 import { postTypeDelay } from '@/utils/constants'
 import { GenerateGeocoderRequestLink } from '@/utils/generators'
-
-const logger = new Logger('UserInfoEditDialog')
 
 export default {
   name: 'UserInfoEditDialog',
@@ -147,7 +144,6 @@ export default {
       try {
         this.searchLocations(newVal)
       } catch (err) {
-        logger.error('An error occurred while stopping watching the user', err)
         this.setNewSiteError(err.message || err)
       } finally {
         this.isLocationDataLoading = false

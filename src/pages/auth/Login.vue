@@ -55,7 +55,9 @@
 </template>
 
 <script>
-import { Auth, API, Logger, graphqlOperation } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import Auth from '@aws-amplify/auth'
+import { Logger } from '@aws-amplify/core'
 import { mapActions } from 'vuex'
 import { GetUserProfileData, UpdateUserCognitoIdentityId } from '@/graphql/Profile'
 import { minUsernameOrEmailLength, maxUsernameOrEmailLength, minPasswordLength } from '@/utils/constants'

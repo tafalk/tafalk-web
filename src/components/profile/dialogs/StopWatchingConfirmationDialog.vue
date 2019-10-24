@@ -21,11 +21,9 @@
 </template>
 
 <script>
-import { API, graphqlOperation, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { StopWatchingUser } from '@/graphql/UserInteraction'
-
-const logger = new Logger('StopWatchingConfirmationDialog')
 
 export default {
   name: 'StopWatchingConfirmationDialog',
@@ -68,7 +66,6 @@ export default {
           throw new Error(this.$i18n.t('user.stopWatch.message.notWatchedError'))
         }
       } catch (err) {
-        logger.error('An error occurred while stopping watching the user')
         this.setNewSiteError(err.message || err)
       } finally {
         // close the dialog

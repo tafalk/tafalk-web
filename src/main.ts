@@ -9,7 +9,7 @@ import i18n from '@/i18n'
 import { GoogleRecaptchaV3Config, GoogleAnalyticsConfig, AwsConfig } from '@/config'
 import { GetPolicyS3BucketRootUrl } from '@/utils/generators'
 
-import Amplify from 'aws-amplify'
+import Amplify from '@aws-amplify/core'
 
 import axios from 'axios'
 import InfiniteLoading from 'vue-infinite-loading'
@@ -49,9 +49,6 @@ Vue.use(VueAnalytics, {
 
 // Configurations
 Amplify.configure(AwsConfig)
-
-// Other
-Amplify.Logger.LOG_LEVEL = 'INFO'
 
 new Vue({
   router,

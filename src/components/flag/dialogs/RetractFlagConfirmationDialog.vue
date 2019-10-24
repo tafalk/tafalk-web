@@ -21,8 +21,9 @@
 </template>
 
 <script>
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { Logger } from '@aws-amplify/core'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { DeleteFlag } from '@/graphql/Flag'
 
 const logger = new Logger('RetractFlagConfirmationDialog')

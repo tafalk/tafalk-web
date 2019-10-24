@@ -21,11 +21,10 @@
 </template>
 
 <script>
-import { Auth, API, graphqlOperation, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import Auth from '@aws-amplify/auth'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { DeleteUser } from '@/graphql/Profile'
-
-const logger = new Logger('DeleteAccountConfirmationDialog')
 
 export default {
   name: 'DeleteAccountConfirmationDialog',
@@ -52,7 +51,6 @@ export default {
 
       authenticatedCognitoUser.deleteUser((err, result) => {
         if (err) {
-          logger.error('An error occurred while deleting the account')
           this.setNewSiteError(err.message || err)
           return
         }
