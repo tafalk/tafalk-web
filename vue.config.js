@@ -1,11 +1,7 @@
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 module.exports = {
-  configureWebpack: {
-    plugins: [new BundleAnalyzerPlugin()]
-  },
   transpileDependencies: ['vuetify'],
   pwa: {
-    themeColor: '#FFFFFF'
+    themeColor: '#FFB300'
   },
   pluginOptions: {
     i18n: {
