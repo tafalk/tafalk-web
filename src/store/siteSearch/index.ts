@@ -1,4 +1,4 @@
-import { API, graphqlOperation } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
 import { minSiteSearchTextLength } from '@/utils/constants'
 import { Search } from '@/graphql/SiteSearch'
 

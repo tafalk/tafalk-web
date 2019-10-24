@@ -2,7 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 
-import { Auth, API, graphqlOperation, Logger, Storage } from 'aws-amplify'
+import { Logger } from '@aws-amplify/core'
+import Auth from '@aws-amplify/auth'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import Storage from '@aws-amplify/storage'
+
 import { GetUserProfileData } from '@/graphql/Profile'
 import { GetHexColorOfString } from '@/utils/generators'
 

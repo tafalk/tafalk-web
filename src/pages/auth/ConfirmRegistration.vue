@@ -38,7 +38,8 @@
 </template>
 
 <script >
-import { Auth, Logger } from 'aws-amplify'
+import Auth from '@aws-amplify/auth'
+import { Logger } from '@aws-amplify/core'
 import { mapActions } from 'vuex'
 import { minUsernameLength, maxUsernameLength } from '@/utils/constants'
 

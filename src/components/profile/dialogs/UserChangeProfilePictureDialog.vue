@@ -43,11 +43,8 @@
 </template>
 
 <script>
-import { Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GenerateProfilePictureFileName } from '@/utils/generators'
-
-const logger = new Logger('UserChangeProfilePictureDialog')
 
 export default {
   name: 'UserChangeProfilePictureDialog',
@@ -99,7 +96,6 @@ export default {
         })
         this.setIsChangeProfilePictureDialogVisible(false)
       } catch (err) {
-        logger.error('Error occurred while setting profile picture', err)
         this.setNewSiteError(err.message || err)
       } finally {
         this.clearDialog()

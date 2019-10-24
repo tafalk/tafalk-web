@@ -27,7 +27,8 @@
 </template>
 
 <script>
-import { API, graphqlOperation, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { Logger } from '@aws-amplify/core'
 import { mapGetters, mapMutations } from 'vuex'
 import { UpdateStreamTitle } from '@/graphql/Stream'
 import { GetKeyName } from '@/utils/ioUtils'

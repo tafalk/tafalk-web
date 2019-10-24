@@ -39,11 +39,8 @@
 </template>
 
 <script>
-import { Logger } from 'aws-amplify'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { languageOptions } from '@/utils/constants'
-
-const logger = new Logger('UserLanguageEditDialog')
 
 export default {
   name: 'UserLanguageEditDialog',
@@ -98,7 +95,6 @@ export default {
         const browserLanguage = navigator.language.split('-')[0]
         this.$i18n.locale = langCode || browserLanguage
       } catch (err) {
-        logger.error('An error occurred while setting user language', JSON.stringify(err))
         this.setNewSiteError(err.message || err)
       } finally {
         this.setIsLanguageChooseDialogVisible(false)

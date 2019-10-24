@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { API, graphqlOperation, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { Logger } from '@aws-amplify/core'
 import { ListSealedBriefStreams, ListLiveBriefStreams } from '@/graphql/Stream'
 import { ListBriefCantos } from '@/graphql/Canto'
 import { introDismissedKey, cookiesAcceptedKey } from '@/utils/constants'

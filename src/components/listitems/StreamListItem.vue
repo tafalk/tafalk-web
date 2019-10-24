@@ -137,8 +137,8 @@
 </template>
 
 <script>
+import Storage from '@aws-amplify/storage'
 import { mapGetters } from 'vuex'
-import { Storage } from 'aws-amplify'
 import { activeUserAccountStatus, blockTypeUserConnectionValue } from '@/utils/constants'
 import { GetHexColorOfString } from '@/utils/generators'
 import { GetElapsedTimeTillNow, GetElapsedTimeBetween } from '@/utils/typeUtils'

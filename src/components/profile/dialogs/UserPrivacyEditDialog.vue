@@ -32,7 +32,6 @@
     </v-card>
   </v-dialog>
 </template>
-
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 

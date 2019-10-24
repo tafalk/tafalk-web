@@ -204,7 +204,8 @@
 </template>
 
 <script>
-import { API, graphqlOperation, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { Logger } from '@aws-amplify/core'
 import { mapGetters, mapMutations } from 'vuex'
 import { CreateFlag } from '@/graphql/Flag'
 

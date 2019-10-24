@@ -113,7 +113,8 @@
 </template>
 
 <script>
-import { Auth, Logger } from 'aws-amplify'
+import Auth from '@aws-amplify/auth'
+import { Logger } from '@aws-amplify/core'
 import TafalkTermsOfServiceDialog from '@/components/shared/dialogs/TheTermsOfServiceDialog.vue'
 import TafalkPrivacyPolicyDialog from '@/components/shared/dialogs/ThePrivacyPolicyDialog.vue'
 import { mapMutations, mapActions } from 'vuex'

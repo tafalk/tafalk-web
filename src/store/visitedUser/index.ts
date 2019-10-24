@@ -1,4 +1,6 @@
-import { API, graphqlOperation, Storage, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import Storage from '@aws-amplify/storage'
+import { Logger } from '@aws-amplify/core'
 import { UpdateUserBasicProfileInfo, UpdateUserProfilePictureKey, UpdateUserProfilePrivacyInfo } from '@/graphql/Profile'
 import dialog from './dialog'
 

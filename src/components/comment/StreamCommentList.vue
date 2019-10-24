@@ -19,8 +19,8 @@
 </template>
 
 <script>
+import API, { graphqlOperation } from '@aws-amplify/api'
 import { mapGetters, mapMutations } from 'vuex'
-import { API, graphqlOperation } from 'aws-amplify'
 import { ListPaginatedStreamComments } from '@/graphql/StreamReaction'
 import { streamCommentFetchLength } from '@/utils/constants'
 import TafalkStreamCommentListItem from '@/components/listitems/StreamCommentListItem.vue'

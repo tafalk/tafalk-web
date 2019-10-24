@@ -21,12 +21,10 @@
 </template>
 
 <script>
+import API, { graphqlOperation } from '@aws-amplify/api'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { API, graphqlOperation, Logger } from 'aws-amplify'
 import { BlockUser } from '@/graphql/UserInteraction'
 import { GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
-
-const logger = new Logger('BlockConfirmationDialog')
 
 export default {
   name: 'BlockConfirmationDialog',
@@ -61,7 +59,6 @@ export default {
         const currentBlockId = this.visitedUser.connectionsWithAuthenticatedUser.inbound.watchId
 
         if (currentBlockId && currentBlockId.length > 0) {
-          logger.error(`User is already blocked with Block Id ${currentBlockId}`)
         } else {
           const graphqlBlockResult = await API.graphql(graphqlOperation(BlockUser, {
             currentAuthenticatedUserId: this.authenticatedUser.id,
@@ -73,7 +70,6 @@ export default {
           this.setInboundBlockIdFromAuthenticatedUser(blockId)
         }
       } catch (err) {
-        logger.error('An error occurred while stopping watching the user')
         this.setNewSiteError(err.message || err)
       } finally {
         // close the dialog

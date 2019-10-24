@@ -1,4 +1,4 @@
-import { API, graphqlOperation } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
 import { UpdateUserTheme, UpdateUserLanguage } from '@/graphql/Profile'
 import dialog from './dialog'
 import { themeOptions } from '@/utils/constants'

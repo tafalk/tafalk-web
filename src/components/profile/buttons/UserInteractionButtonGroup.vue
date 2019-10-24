@@ -52,7 +52,8 @@
 </v-row>
 </template>
 <script>
-import { API, graphqlOperation, Logger } from 'aws-amplify'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { Logger } from '@aws-amplify/core'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { WatchUser, UnblockUser } from '@/graphql/UserInteraction'
 import { GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
