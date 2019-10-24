@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
-
 import { Logger } from '@aws-amplify/core'
 import Auth from '@aws-amplify/auth'
 import API, { graphqlOperation } from '@aws-amplify/api'
@@ -9,13 +8,7 @@ import Storage from '@aws-amplify/storage'
 
 import { GetUserProfileData } from '@/graphql/Profile'
 import { GetHexColorOfString } from '@/utils/generators'
-
 import NotFound from '@/pages/nocontent/NotFound.vue'
-import Profile from '@/pages/profile/Profile.vue'
-import PourStream from '@/pages/stream/PourStream.vue'
-import Stream from '@/pages/stream/Stream.vue'
-import PourCanto from '@/pages/canto/PourCanto.vue'
-import Canto from '@/pages/canto/Canto.vue'
 
 Vue.use(Router)
 
@@ -78,29 +71,29 @@ const router = new Router({
     {
       path: '/user/:username',
       name: 'profile',
-      component: Profile
+      component: () => import(/* webpackChunkName: "profile" */ './pages/profile/Profile.vue')
     },
     {
       path: '/user/:username/canto',
       name: 'canto',
-      component: Canto
+      component: () => import(/* webpackChunkName: "siteContent" */ './pages/canto/Canto.vue')
+    },
+    {
+      path: '/stream/:id',
+      name: 'stream',
+      component: () => import(/* webpackChunkName: "siteContent" */ './pages/stream/Stream.vue')
     },
     {
       path: '/user/:username/canto/pour',
       name: 'pourCanto',
-      component: PourCanto,
+      component: () => import(/* webpackChunkName: "pour" */ './pages/canto/PourCanto.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/pour',
       name: 'pourStream',
-      component: PourStream,
+      component: () => import(/* webpackChunkName: "pour" */ './pages/stream/PourStream.vue'),
       meta: { requiresAuth: true }
-    },
-    {
-      path: '/stream/:id',
-      name: 'stream',
-      component: Stream
     },
     {
       path: '*',
