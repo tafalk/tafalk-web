@@ -99,7 +99,7 @@
     <!-- Body -->
     <v-row>
       <v-col cols="12" md="10" offset-md="1">
-        {{ stream.body }}
+        {{ (stream || {}).body }}
       </v-col>
     </v-row>
     <!-- Add-Comment Sliding Box -->
@@ -185,7 +185,7 @@
     <!-- Flag stream dialog -->
     <tafalk-flag-dialog
       contentType="stream"
-      :contentId="stream.id"
+      :contentId="(stream || {}).id"
     ></tafalk-flag-dialog>
     <!-- Retract flag stream dialog -->
     <tafalk-retract-flag-confirmation-dialog
@@ -270,7 +270,7 @@ export default {
       return (this.stream || {}).comments
     },
     authenticatedUser () {
-      return this.getAuthenticatedUser
+      return this.getAuthenticatedUser || {}
     },
     author () {
       return (this.stream || {}).user

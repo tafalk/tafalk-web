@@ -32,7 +32,7 @@
         </v-avatar>
         &nbsp;
         <!-- User name -->
-        <span class="headline grey--text">{{ author.username }}</span>
+        <span class="headline grey--text">{{ (author || {}).username }}</span>
       </v-col>
       <!-- Action Menu -->
       <v-col cols="1">
@@ -225,30 +225,30 @@ export default {
       getIsPageReady: 'getIsPageReady'
     }),
     canto () {
-      return this.getCanto
+      return this.getCanto || {}
     },
     cantoBody () {
-      if (!this.canto) return ''
+      if (!this.canto || !this.canto.body) return ''
       return this.canto.body.trim()
     },
     likes () {
       return this.canto ? this.canto.likes : []
     },
-    authorColor () {
-      return this.canto ? GetHexColorOfString(this.canto.user.username) : null
-    },
     authenticatedUser () {
-      return this.getAuthenticatedUser
+      return this.getAuthenticatedUser || {}
     },
     author () {
       return this.canto ? this.canto.user : null
+    },
+    authorColor () {
+      return this.canto ? GetHexColorOfString((this.author || {}).username) : null
     },
     // visibilty deciders
     isVisitingOwnCanto () {
       return this.authenticatedUser && this.author && this.authenticatedUser.username === (this.author || {}).username
     },
     isVisitorAllowed () {
-      if (this.outboundBlockId && this.outboundBlockId.length > 0) return false // Blocked User Check
+      if (this.outboundBlockId && this.outboundBlockId.length) return false // Blocked User Check
 
       return true
     },
@@ -320,7 +320,7 @@ export default {
       // The whole view is rendered. ¯\_(ツ)_/¯
       this.$refs.cantoBody.innerHTML = BookmarkCantoContent(this.$refs.cantoBody, this.authenticatedUserLikeIndices)
 
-      if (this.authenticatedUserLikeIndices && this.authenticatedUserLikeIndices.length > 0) {
+      if (this.authenticatedUserLikeIndices && this.authenticatedUserLikeIndices.length) {
         this.$vuetify.goTo(`span#${cantoBookmarkId}`)
       }
     })
@@ -426,7 +426,7 @@ export default {
       try {
         // Get end index of first string
         const words = this.cantoBody.split(' ')
-        const indexEnd = words.length > 0 ? words[0].length : this.cantoBody.length
+        const indexEnd = (words && words.length) ? (words[0] || '').length : (this.cantoBody || '').length
 
         // Create Like with index
         await API.graphql(graphqlOperation(CreateLike, {
@@ -501,7 +501,7 @@ export default {
       }
       if (rangeStartContainer.parentNode.classList.contains(cantoPostBookmarkClass) && rangeEndContainer.parentNode.classList.contains(cantoPostBookmarkClass)) {
         const siblingSpans = GetSiblings(rangeStartContainer.parentNode)
-        const indexOffset = siblingSpans.reduce((prev, next) => prev + next.innerText.length, 0)
+        const indexOffset = siblingSpans.reduce((prev, next) => prev + (next.innerText || '').length, 0)
         // Range starts after the existing bookmark
         this.setCantoBodyUserSelection({
           start: rangeStartOffset + indexOffset,
