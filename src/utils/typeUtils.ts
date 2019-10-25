@@ -46,7 +46,7 @@ export const GetElapsedTimeTillNow = (nowTime: number, referenceTimeISOString: s
   } else if (diff.days > 0 && diff.days < 30) {
     return `${diff.days}${timeUnitChars.day}`
   } else {
-    return referenceTimeISOString.slice(0, 10)
+    return (referenceTimeISOString || '').slice(0, 10)
   }
 }
 
