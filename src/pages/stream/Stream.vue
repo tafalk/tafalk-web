@@ -6,69 +6,70 @@
 >
   <!-- Not allowed -->
   <v-row v-if="!isStreamAllowed" justify="space-between" align="center">
-      <TafalkContentNotAllowed />
+    <TafalkContentNotAllowed />
   </v-row>
   <!-- Regular content -->
   <v-container v-else>
     <v-row justify="space-between" align="center">
-        <v-col cols="11" md="9" offset-md="1">
-          <!-- Stream Author Chip -->
-          <v-avatar
-            @click.stop="onToAuthorProfileClick"
-            :style="{ 'cursor': 'pointer' }"
-          >
-            <!-- Author is not active -->
-            <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
-            <!-- Author active but no profile picture set -->
-            <v-img
-              v-else-if="!authenticatedUser || !authorProfilePictureObjectUrl"
-              :src="require('@/assets/default-user-avatar.webp')"
-              alt="Virgina Woolf in Hue"
-              :style="{backgroundColor: authorColor}"
-            ></v-img>
-            <!-- Author active and has profile pic -->
-            <v-img
-              v-else
-              :src="authorProfilePictureObjectUrl"
-            ></v-img>
-          </v-avatar>
-          &nbsp;
-          <!-- User name -->
-          <span class="headline grey--text">{{ authorDisplayUsername }}</span>
-        </v-col>
-        <!-- Action Menu -->
-        <v-col cols="1">
-          <v-menu bottom left>
-            <template v-slot:activator="{ on }">
-              <v-btn aria-label="Actions" icon v-on="on">
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <!-- Remove Bookmark -->
-              <v-list-item @click="onRemoveLikeClick" v-if="isSealed && authenticatedUserLikeId">
-                <v-list-item-icon>
-                  <v-icon :color="bookmarkButtonColor">mdi-bookmark</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title>{{ $t('stream.likes.unlikeButtonText') }}</v-list-item-title>
-              </v-list-item>
-              <!-- Raise Flag -->
-              <v-list-item @click="onFlagDialogShowClick" v-if="isSealed && authenticatedUser && !isVisitingOwnStream && !authenticatedUserFlagId">
-                <v-list-item-icon>
-                  <v-icon :color="flagButtonColor">mdi-flag-variant-outline</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title>{{ $t('stream.flag.raiseButtonText') }}</v-list-item-title>
-              </v-list-item>
-              <!-- Retract Flag -->
-              <v-list-item @click="onRetractFlagDialogShowClick" v-if="authenticatedUserFlagId">
-                <v-list-item-icon>
-                  <v-icon :color="flagButtonColor">mdi-flag-variant</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title>{{ $t('stream.flag.retracteButtonText') }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-col>
+      <v-col cols="11" md="9" offset-md="1">
+        <!-- Stream Author Chip -->
+        <v-avatar
+          @click.stop="onToAuthorProfileClick"
+          size="32"
+          :style="{ 'cursor': 'pointer' }"
+        >
+          <!-- Author is not active -->
+          <v-icon left v-if="!author" class="white--text">mdi-account-circle</v-icon>
+          <!-- Author active but no profile picture set -->
+          <v-img
+            v-else-if="!authenticatedUser || !authorProfilePictureObjectUrl"
+            :src="require('@/assets/default-user-avatar.webp')"
+            alt="Virgina Woolf in Hue"
+            :style="{backgroundColor: authorColor}"
+          ></v-img>
+          <!-- Author active and has profile pic -->
+          <v-img
+            v-else
+            :src="authorProfilePictureObjectUrl"
+          ></v-img>
+        </v-avatar>
+        &nbsp;
+        <!-- User name -->
+        <span class="headline grey--text">{{ authorDisplayUsername }}</span>
+      </v-col>
+      <!-- Action Menu -->
+      <v-col cols="1">
+        <v-menu bottom left>
+          <template v-slot:activator="{ on }">
+            <v-btn aria-label="Actions" icon v-on="on">
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <!-- Remove Bookmark -->
+            <v-list-item @click="onRemoveLikeClick" v-if="isSealed && authenticatedUserLikeId">
+              <v-list-item-icon>
+                <v-icon :color="bookmarkButtonColor">mdi-bookmark</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t('stream.likes.unlikeButtonText') }}</v-list-item-title>
+            </v-list-item>
+            <!-- Raise Flag -->
+            <v-list-item @click="onFlagDialogShowClick" v-if="isSealed && authenticatedUser && !isVisitingOwnStream && !authenticatedUserFlagId">
+              <v-list-item-icon>
+                <v-icon :color="flagButtonColor">mdi-flag-variant-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t('stream.flag.raiseButtonText') }}</v-list-item-title>
+            </v-list-item>
+            <!-- Retract Flag -->
+            <v-list-item @click="onRetractFlagDialogShowClick" v-if="authenticatedUserFlagId">
+              <v-list-item-icon>
+                <v-icon :color="flagButtonColor">mdi-flag-variant</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t('stream.flag.retracteButtonText') }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-col>
     </v-row>
     <!-- Meta -->
     <v-row>
@@ -153,7 +154,7 @@
           aria-label="Share"
           fab
           outlined
-          small
+          x-small
           :color="shareButtonColor"
           @click="onShowShareStreamLinkDialog"
         ><v-icon>mdi-share-variant</v-icon></v-btn>
@@ -165,7 +166,7 @@
           v-if="isSealed && !authenticatedUserLikeId"
           fab
           outlined
-          small
+          x-small
           :color="bookmarkButtonColor"
           :loading="isLikeLoading"
           :disabled="isLikeLoading"
@@ -179,7 +180,7 @@
           v-if="isSealed"
           outlined
           fab
-          small
+          x-small
           :color="commentButtonColor"
           @click="onCommentTextAreaToggleShowClick"
         ><v-icon>mdi-comment</v-icon></v-btn>
@@ -282,7 +283,6 @@ export default {
     },
     authorDisplayUsername () {
       if (!this.author) return null
-
       return ((this.author || {}).accountStatus !== this.activeUserAccountStatus) ? (this.author || {}).id : (this.author || {}).username
     },
     authorColor () {
@@ -322,9 +322,7 @@ export default {
       return GetElapsedTimeTillNow(this.getNowTime, (this.stream || {}).sealTime)
     },
     timeSpentForStream () {
-      if (!this.isSealed) {
-        return GetElapsedTimeTillNow(this.getNowTime, (this.stream || {}).startTime)
-      }
+      if (!this.isSealed) return GetElapsedTimeTillNow(this.getNowTime, (this.stream || {}).startTime)
       return GetElapsedTimeBetween((this.stream || {}).startTime, (this.stream || {}).sealTime)
     },
     authenticatedUserFlagId () {
@@ -540,6 +538,6 @@ export default {
   .fab-container {
     position: fixed;
     bottom: 2%;
-    right: 6.75%;
+    right: 5%;
   }
 </style>

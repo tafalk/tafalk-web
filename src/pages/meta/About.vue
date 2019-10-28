@@ -43,6 +43,7 @@ export default {
     }
   },
   created () {
+    console.log(this.$i18n)
     this.$httpSitePoliciesStorage.get(`${this.s3AboutFolder}/${this.$i18n.locale}.html`).then(resp => {
       this.content = resp.data
     }).catch(err => {

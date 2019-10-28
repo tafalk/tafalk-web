@@ -76,12 +76,12 @@ const router = new Router({
     {
       path: '/user/:username/canto',
       name: 'canto',
-      component: () => import(/* webpackChunkName: "siteContent" */ './pages/canto/Canto.vue')
+      component: () => import(/* webpackChunkName: "canto" */ './pages/canto/Canto.vue')
     },
     {
       path: '/stream/:id',
       name: 'stream',
-      component: () => import(/* webpackChunkName: "siteContent" */ './pages/stream/Stream.vue')
+      component: () => import(/* webpackChunkName: "stream" */ './pages/stream/Stream.vue')
     },
     {
       path: '/user/:username/canto/pour',

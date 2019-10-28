@@ -1,5 +1,9 @@
 module.exports = {
   transpileDependencies: ['vuetify'],
+  configureWebpack: {
+    // For development purposes
+    // devtool: 'source-map'
+  },
   pwa: {
     themeColor: '#FFB300'
   },
