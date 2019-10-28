@@ -16,6 +16,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
+          aria-label="Done"
           color="primary"
           @click.native="onDoneClick"
         >

@@ -9,6 +9,7 @@
   >
     <template v-slot:activator>
       <v-btn
+        aria-label="Account"
         v-model="fab"
         :large="$vuetify.breakpoint.smAndUp"
         :color="mainButtonColor"
@@ -20,8 +21,8 @@
         <v-icon v-else>mdi-close</v-icon>
       </v-btn>
     </template>
-
     <v-btn
+      aria-label="Edit"
       fab
       :small="$vuetify.breakpoint.xsOnly"
       dark
@@ -30,8 +31,8 @@
     >
       <v-icon>mdi-circle-edit-outline</v-icon>
     </v-btn>
-
     <v-btn
+      aria-label="Edit Privacy"
       fab
       :small="$vuetify.breakpoint.xsOnly"
       dark
@@ -40,8 +41,8 @@
     >
       <v-icon>mdi-shield-half-full</v-icon>
     </v-btn>
-
     <v-btn
+      aria-label="Delete"
       fab
       :small="$vuetify.breakpoint.xsOnly"
       dark

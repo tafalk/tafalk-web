@@ -20,6 +20,7 @@
           prepend-icon="mdi-message-processing"
         ></v-text-field>
         <v-btn
+          aria-label="Confirm"
           color="primary"
           :loading="loadingSend"
           :disabled="!valid || loadingSend"
@@ -27,6 +28,7 @@
           class="ma-3"
         >{{ $t('auth.confirmRegistration.confirmButtonText') }}</v-btn>
         <v-btn
+          aria-label="Resend"
           :loading="loadingResend"
           :disabled="loadingResend"
           @click="onResendBtnClick"

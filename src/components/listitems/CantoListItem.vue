@@ -33,7 +33,7 @@
     <v-banner single-line v-if="blocked && !showContentAnyway">
       {{ $t('blockedContent.body') }}
       <template v-slot:actions>
-        <v-btn depressed color="primary" @click.stop="showContentAnywayBtnClick">
+        <v-btn aria-label="Show" depressed color="primary" @click.stop="showContentAnywayBtnClick">
           {{ $t('blockedContent.showButtonText') }}
         </v-btn>
       </template>
@@ -91,7 +91,7 @@
       <v-banner single-line v-if="blocked && !showContentAnyway">
         {{ $t('blockedContent.body') }}
         <template v-slot:actions>
-          <v-btn depressed color="primary" @click.stop="showContentAnywayBtnClick">
+          <v-btn aria-label="Show" depressed color="primary" @click.stop="showContentAnywayBtnClick">
             {{ $t('blockedContent.showButtonText') }}
           </v-btn>
         </template>

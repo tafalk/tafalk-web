@@ -24,6 +24,7 @@
           prepend-icon="mdi-lock"
         ></v-text-field>
         <v-btn
+          aria-label="Login"
           color="primary"
           :loading="loading"
           :disabled="!valid || loading"
@@ -46,6 +47,7 @@
   </v-row>
   <v-row justify="center">
     <v-btn
+      aria-label="To Sign In"
       color="primary"
       @click="onRegisterBtnClick"
     >{{ $t('auth.login.goToSigninButtonText') }}

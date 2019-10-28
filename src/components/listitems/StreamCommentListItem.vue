@@ -6,7 +6,7 @@
       <v-banner single-line v-if="blocked && !showContentAnyway">
         {{ $t('blockedContent.body') }}
         <template v-slot:actions>
-          <v-btn depressed color="primary" @click.stop="showContentAnywayBtnClick">
+          <v-btn aria-label="Show" depressed color="primary" @click.stop="showContentAnywayBtnClick">
             {{ $t('blockedContent.showButtonText') }}
           </v-btn>
         </template>
@@ -29,6 +29,7 @@
   <v-list-item-action v-if="!blocked || showContentAnyway" >
     <!-- Flag -->
     <v-btn
+      aria-label="Flag"
       v-if="authenticatedUser && !isOwnComment && !authenticatedUserFlagId"
       text
       icon
@@ -39,6 +40,7 @@
       <v-icon>mdi-flag-outline</v-icon>
     </v-btn>
     <v-btn
+      aria-label="Retract Flag"
       v-else-if="authenticatedUserFlagId"
       text
       icon

@@ -8,6 +8,7 @@
         <v-card-actions>
           <v-spacer/>
           <v-btn
+            aria-label="To Home"
             color="primary"
             @click="onHomeClick"
           >{{ $t('auth.farewell.returnHomeButtonText') }}</v-btn>

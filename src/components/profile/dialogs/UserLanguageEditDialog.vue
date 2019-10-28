@@ -24,11 +24,13 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
+          aria-label="Close"
           color="blue darken-1"
           text
           @click.native="setIsLanguageChooseDialogVisible(false)"
         >{{ $t('common.options.closeButtonText') }}</v-btn>
         <v-btn
+          aria-label="Save"
           color="blue darken-1"
           text
           @click.native="onSaveLanguageEditClick"

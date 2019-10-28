@@ -36,6 +36,7 @@
                 prepend-icon="mdi-account"
               ></v-text-field>
               <v-btn
+                aria-label="Receive Code"
                 color="primary"
                 :loading="loadingSend"
                 :disabled="loadingSend || !username"
@@ -51,10 +52,12 @@
                 prepend-icon="mdi-message-processing"
               ></v-text-field>
               <v-btn
+                aria-label="Previous"
                 text
                 @click="forgotPasswordCurrentStep = 1"
               >{{ $t('auth.forgotPassword.steps.returnPreviousStepButtonText') }}</v-btn>
               <v-btn
+                aria-label="Next"
                 color="primary"
                 :disabled="!code"
                 @click="forgotPasswordCurrentStep = 3"
@@ -74,10 +77,12 @@
                 prepend-icon="mdi-lock"
               ></v-text-field>
               <v-btn
+                aria-label="Previous"
                 text
                 @click="forgotPasswordCurrentStep = 2"
               >{{ $t('auth.forgotPassword.steps.returnPreviousStepButtonText') }}</v-btn>
               <v-btn
+                aria-label="Change Password"
                 color="primary"
                 :loading="loadingSubmit"
                 :disabled="!password || loadingSubmit"

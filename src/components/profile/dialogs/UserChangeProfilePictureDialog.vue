@@ -27,11 +27,13 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
+          aria-label="Cancel"
           text
           color="primary"
           @click.stop="closeAndClearDialog"
         >{{ $t('common.options.cancelButtonText') }}</v-btn>
         <v-btn
+          aria-label="Upload"
           color="primary"
           @click.stop="onUploadSelectedProfilePictureClick"
           :loading="uploadLoading"

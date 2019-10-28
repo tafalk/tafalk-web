@@ -33,6 +33,7 @@
         <v-item-group v-model="itemNum" mandatory>
           <v-item v-for="item in windowItems" :key="item.id">
             <v-btn
+              aria-label="Next"
               small
               class="blue-grey--text"
               slot-scope="{ active, toggle }"
@@ -47,6 +48,7 @@
       </v-card-actions>
       <v-card-actions class="justify-center">
         <v-btn
+          aria-label="Next"
           v-if="itemNum + 1 !== itemCount"
           color="primary"
           class="mono"
@@ -56,6 +58,7 @@
           {{ $t('intro.nextButtonText') }}
         </v-btn>
         <v-btn
+          aria-label="End"
           v-else
           color="primary"
           class="mono"

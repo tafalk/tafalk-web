@@ -6,6 +6,7 @@
   >
   {{ siteNotificationText }}
     <v-btn
+      aria-label="Close"
       dark
       text
       icon

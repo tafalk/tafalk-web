@@ -12,10 +12,12 @@
     </v-card-title>
     <v-card-actions>
       <v-btn
+        aria-label="Register"
         color="primary"
         text
         @click="onRegisterBtnClick">{{ $t('nocontent.unauthorized.goToSigninButtonText') }}</v-btn>
       <v-btn
+        aria-label="Login"
         color="primary"
         text
         @click="onLoginBtnClick">{{ $t('nocontent.unauthorized.goToLoginButtonText') }}</v-btn>

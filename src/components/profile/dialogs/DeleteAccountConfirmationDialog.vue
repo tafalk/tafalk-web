@@ -6,11 +6,13 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
+          aria-label="Yes"
           color="red darken-1"
           text
           @click.native="onDeleteAccountConfirmClick"
         >{{ $t('common.options.yesButtonText') }}</v-btn>
         <v-btn
+          aria-label="No"
           color="light-blue darken-1"
           text
           @click.native="setIsDeleteAccountConfirmationDialogVisible(false)"

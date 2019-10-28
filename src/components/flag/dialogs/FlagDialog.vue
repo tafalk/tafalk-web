@@ -62,11 +62,13 @@
         <v-container>
           <v-row justify="space-between">
             <v-btn
+              aria-label="Cancel"
               text
               @click="onCancelFlagBtnClick"
             >{{ $t('flag.dialog.steps.category.buttons.cancel') }}
             </v-btn>
             <v-btn
+              aria-label="Continue"
               color="primary"
               :disabled="!selectedCategory"
               @click="flagCurrentStep = 2"
@@ -184,11 +186,13 @@
         <v-container>
           <v-row justify="space-between">
             <v-btn
+              aria-label="Previous"
               text
               @click="flagCurrentStep = 1"
             >{{ $t('flag.dialog.steps.type.buttons.previous') }}
             </v-btn>
             <v-btn
+              aria-label="Done"
               color="primary"
               :loading="isFlagLoading"
               :disabled="!selectedType"

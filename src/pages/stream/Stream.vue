@@ -40,7 +40,7 @@
         <v-col cols="1">
           <v-menu bottom left>
             <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on">
+              <v-btn aria-label="Actions" icon v-on="on">
                 <v-icon>mdi-dots-vertical</v-icon>
               </v-btn>
             </template>
@@ -122,10 +122,12 @@
             <v-card-actions>
               <v-spacer />
               <v-btn
+                aria-label="Cancel"
                 text
                 @click="onCommentTextAreaToggleShowClick"
               >{{ $t('common.options.cancelButtonText') }}</v-btn>
               <v-btn
+                aria-label="Post Comment"
                 text
                 color="primary"
                 :loading="isCommentLoading"
@@ -148,6 +150,7 @@
       <!-- Share -->
       <v-row justify="end" class="my-2">
         <v-btn
+          aria-label="Share"
           fab
           outlined
           small
@@ -158,6 +161,7 @@
       <v-row justify="end" class="my-2">
         <!-- Bookmark -->
         <v-btn
+          aria-label="Bookmark"
           v-if="isSealed && !authenticatedUserLikeId"
           fab
           outlined
@@ -171,6 +175,7 @@
       <!-- Comment -->
       <v-row justify="end" class="my-2">
         <v-btn
+          aria-label="Comment"
           v-if="isSealed"
           outlined
           fab

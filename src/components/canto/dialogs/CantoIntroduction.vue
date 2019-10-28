@@ -36,6 +36,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
+          aria-label="Close"
           color="primary"
           text
           @click="isCantoIntroductionDialogVisible = false"

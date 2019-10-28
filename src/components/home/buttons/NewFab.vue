@@ -8,6 +8,7 @@
   >
     <template v-slot:activator>
       <v-btn
+        aria-label="New"
         v-model="fab"
         :color="mainButtonColor"
         depressed
@@ -21,6 +22,7 @@
     <v-tooltip left dark :color="streamButtonColor">
       <template v-slot:activator="{ on }">
         <v-btn
+          aria-label="New Stream"
           dark
           depressed
           fab
@@ -37,6 +39,7 @@
     <v-tooltip left dark :color="cantoButtonColor">
       <template v-slot:activator="{ on }">
         <v-btn
+          aria-label="New Canto"
           dark
           depressed
           fab

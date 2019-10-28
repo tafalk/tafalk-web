@@ -50,6 +50,7 @@
       @input="search"
     />
     <v-btn
+      aria-label="Search"
       v-if="!isRouteChanging && isSearchBarVisible && $vuetify.breakpoint.smAndDown && !isMobileSearchHeaderOn"
       text
       icon

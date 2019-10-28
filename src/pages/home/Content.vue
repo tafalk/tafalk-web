@@ -152,15 +152,15 @@
       :value="true"
       v-model="footerEl"
     >
-      <v-btn :value="sealedValue">
+      <v-btn aria-label="Sealed" :value="sealedValue">
         <span>{{ $t('home.bottomnav.sealed') }}</span>
         <v-icon>mdi-ghost-off</v-icon>
       </v-btn>
-      <v-btn v-if="authenticatedUser" :value="liveNowValue">
+      <v-btn aria-label="Live Now" v-if="authenticatedUser" :value="liveNowValue">
         <span>{{ $t('home.bottomnav.liveNow') }}</span>
         <v-icon>mdi-play-circle-outline</v-icon>
       </v-btn>
-      <v-btn :value="cantoValue">
+      <v-btn aria-label="Cantos" :value="cantoValue">
         <span>{{ $t('home.bottomnav.cantos') }}</span>
         <v-icon>mdi-music</v-icon>
       </v-btn>
