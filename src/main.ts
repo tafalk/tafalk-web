@@ -47,8 +47,6 @@ Vue.use(VueAnalytics, {
 // Configurations
 Amplify.configure(AwsConfig)
 
-console.log(navigator.language.split('-')[0])
-
 new Vue({
   router,
   store,
