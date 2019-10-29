@@ -1,5 +1,5 @@
-const path = require('path')
-const PrerenderSPAPlugin = require('prerender-spa-plugin')
+// const path = require('path')
+// const PrerenderSPAPlugin = require('prerender-spa-plugin')
 
 module.exports = {
   transpileDependencies: ['vuetify'],
@@ -8,11 +8,13 @@ module.exports = {
     // devtool: 'source-map',
     // Prerender some routes for SEO friendliness in a SPA
     plugins: [
+      /*
       new PrerenderSPAPlugin({
         staticDir: path.join(__dirname, 'dist'),
         // Required - Routes to render.
         routes: [ '/', '/home', '/content', '/about' ]
       })
+      */
     ]
   },
   pwa: {
