@@ -418,7 +418,9 @@ export default {
             )
             this.likeObjects = graphqlLikeListResult.data.listStreamLikes
           },
-          error: (err) => this.setNewSiteError(err.message || err)
+          error: (err) => {
+            this.setNewSiteError(err.message || err)
+          }
         })
 
         // Subscribe to flags
@@ -431,22 +433,26 @@ export default {
             )
             this.flagObjects = graphqlFlagListResult.data.listFlags
           },
-          error: (err) => this.setNewSiteError(err.message || err)
+          error: (err) => {
+            this.setNewSiteError(err.message || err)
+          }
         })
 
-        const graphqlConnectionsFromVisitedStreamAuthorToAuthenticatedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
-          actorUserId: (this.author || {}).id,
-          targetUserId: this.authenticatedUser.id
-        }))
+        if (this.authenticatedUser.id && this.author) {
+          const graphqlConnectionsFromVisitedStreamAuthorToAuthenticatedUserResult = await API.graphql(graphqlOperation(GetInteractionsBetweenUsers, {
+            actorUserId: (this.author || {}).id,
+            targetUserId: this.authenticatedUser.id
+          }))
+          const outboundUserInteractionsIdIndices = graphqlConnectionsFromVisitedStreamAuthorToAuthenticatedUserResult.data.queryUserInteractionsBetweenUsersByUserIdIndices
 
-        const outboundUserInteractionsIdIndices = graphqlConnectionsFromVisitedStreamAuthorToAuthenticatedUserResult.data.queryUserInteractionsBetweenUsersByUserIdIndices
+          const outboundWatchingTypeConnections = outboundUserInteractionsIdIndices.filter(rel => rel.interactionType === this.watchTypeUserConnectionValue)
+          const outboundBlockingTypeConnections = outboundUserInteractionsIdIndices.filter(rel => rel.interactionType === this.blockTypeUserConnectionValue)
 
-        const outboundWatchingTypeConnections = outboundUserInteractionsIdIndices.filter(rel => rel.interactionType === this.watchTypeUserConnectionValue)
-        const outboundBlockingTypeConnections = outboundUserInteractionsIdIndices.filter(rel => rel.interactionType === this.blockTypeUserConnectionValue)
-
-        this.outboundWatchId = GetFirstOrDefaultIdStr(outboundWatchingTypeConnections)
-        this.outboundBlockId = GetFirstOrDefaultIdStr(outboundBlockingTypeConnections)
+          this.outboundWatchId = GetFirstOrDefaultIdStr(outboundWatchingTypeConnections)
+          this.outboundBlockId = GetFirstOrDefaultIdStr(outboundBlockingTypeConnections)
+        }
       } catch (err) {
+        // console.log(JSON.stringify(err))
         this.setNewSiteError(err.message || err)
       }
     },
