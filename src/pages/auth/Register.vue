@@ -98,6 +98,7 @@
           </div>
         </v-checkbox>
         <v-btn
+          aria-label="Sign Up"
           color="primary"
           :loading="loading"
           :disabled="!valid || loading"

@@ -77,6 +77,7 @@
             </v-col>
             <v-col cols="12" offset-sm="10" sm="2">
               <v-btn
+                aria-label="Seal Stream"
                 block
                 color="primary"
                 @click="onDoneClick"

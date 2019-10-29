@@ -26,6 +26,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
+          aria-label="Ok"
           color="light-blue darken-1"
           text
           @click.native="onDoneClick">{{ $t('common.options.okButtonText') }}</v-btn>

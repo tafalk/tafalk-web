@@ -7,6 +7,7 @@
   >
   {{ $t('common.cookieLaw.message') }}
     <v-btn
+      aria-label="Ok"
       dark
       color="success"
       @click.stop="onAcceptCookiesClick"

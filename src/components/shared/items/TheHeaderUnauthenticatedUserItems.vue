@@ -1,10 +1,12 @@
 <template>
   <div>
     <v-btn
+      aria-label="Login"
       @click="onLoginBtnClick"
       text
     >{{ $t('auth.login.text') }}</v-btn>
     <v-btn
+      aria-label="Signup"
       v-if="$vuetify.breakpoint.mdAndUp"
       @click="onRegisterBtnClick"
       text

@@ -35,6 +35,7 @@
                   <v-col cols="12">
                     <!-- Change Profile Picture Button -->
                     <v-btn
+                      aria-label="Change Profile Picture"
                       color="primary"
                       text
                       v-if="isVisitingOwnProfile"

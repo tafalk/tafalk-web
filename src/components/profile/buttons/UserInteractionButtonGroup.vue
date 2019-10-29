@@ -4,6 +4,7 @@
     <!-- direct messaging button -->
     <!--
     <v-btn
+      aria-label="Message"
       depressed
       dark
     ><v-icon>mdi-email</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.message') }}
@@ -12,6 +13,7 @@
 
     <!-- watch/unwatch button -->
     <v-btn
+      aria-label="Watch"
       v-if="!inboundWatchIdFromAuthenticatedUser || inboundWatchIdFromAuthenticatedUser.length === 0"
       color="warning"
       @click="onWatchThisUserClick"
@@ -19,7 +21,9 @@
     >
       <v-icon>mdi-star-outline</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.watch') }}
     </v-btn>
-    <v-btn v-else
+    <v-btn
+      v-else
+      aria-label="Unwatch"
       depressed
       color="grey"
       class="white--text"
@@ -33,6 +37,7 @@
   <v-col cols="12" sm="6">
     <!-- block/unblock button -->
     <v-btn
+      aria-label="Block"
       v-if="!inboundBlockIdFromAuthenticatedUser || inboundBlockIdFromAuthenticatedUser.length === 0"
       color="grey"
       :disabled="inboundBlockIdFromAuthenticatedUser && inboundWatchIdFromAuthenticatedUser.length > 0"
@@ -41,6 +46,7 @@
     ><v-icon>mdi-cancel</v-icon>&nbsp;&nbsp;{{ $t('user.profilePage.interactions.block') }}
     </v-btn>
     <v-btn
+      aria-label="Unblock"
       v-else-if="!inboundWatchIdFromAuthenticatedUser || inboundWatchIdFromAuthenticatedUser.length === 0"
       depressed
       color="error"

@@ -9,13 +9,13 @@
       justify="center"
       no-gutters
     >
-      <v-btn color="white" text @click="onToAbout">
+      <v-btn aria-label="About" color="white" text @click="onToAbout">
         {{ $t('about.text') }}
       </v-btn>
-      <v-btn color="white" text @click="onToPrivacyPolicy">
+      <v-btn aria-label="Privacy Policy" color="white" text @click="onToPrivacyPolicy">
         {{ $t('agreements.privacyPolicy.title') }}
       </v-btn>
-      <v-btn color="white" text @click="onToTermsOfService">
+      <v-btn aria-label="Terms of Service" color="white" text @click="onToTermsOfService">
         {{ $t('agreements.termsOfService.title') }}
       </v-btn>
       <v-col

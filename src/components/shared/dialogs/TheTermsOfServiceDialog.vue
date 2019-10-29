@@ -7,6 +7,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
+          aria-label="Ok"
           text
           color="purple"
           @click="setIsTermsOfServiceDialogVisible(false)"
