@@ -15,6 +15,7 @@
         <!-- Canto Author Chip -->
         <v-avatar
           @click.stop="onToAuthorProfileClick"
+          size="32"
           :style="{ 'cursor': 'pointer' }"
         >
           <!-- Author active but no profile picture set -->
@@ -99,7 +100,7 @@
           aria-label="Share"
           fab
           outlined
-          small
+          x-small
           :color="shareButtonColor"
           @click="onShowShareCantoLinkDialog"
         >
@@ -113,7 +114,7 @@
           v-if="authenticatedUser && !authenticatedUserLikeId"
           fab
           outlined
-          small
+          x-small
           :color="bookmarkButtonColor"
           :loading="isLikeLoading"
           :disabled="isLikeLoading"
@@ -126,7 +127,7 @@
           v-if="authenticatedUser && authenticatedUserLikeId"
           fab
           outlined
-          small
+          x-small
           :color="bookmarkButtonColor"
           :loading="isMoveLikeLoading"
           :disabled="isMoveLikeLoading"

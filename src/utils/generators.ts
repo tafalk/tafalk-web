@@ -59,3 +59,7 @@ export const GetSiblings = (elem: { parentNode: { firstChild: any } }) => {
 
   return siblings
 }
+
+export const GetBrowserLanguageInIso6391 = () => {
+  return navigator.language.split('-')[0]
+}
