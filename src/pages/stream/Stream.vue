@@ -452,7 +452,6 @@ export default {
           this.outboundBlockId = GetFirstOrDefaultIdStr(outboundBlockingTypeConnections)
         }
       } catch (err) {
-        // console.log(JSON.stringify(err))
         this.setNewSiteError(err.message || err)
       }
     },
