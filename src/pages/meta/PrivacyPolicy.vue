@@ -28,6 +28,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { GetBrowserLanguageInIso6391 } from '@/utils/generators'
 import { copyrightStartYear } from '@/utils/constants'
 
 export default {
@@ -40,7 +41,8 @@ export default {
     }
   },
   created () {
-    this.$httpSitePoliciesStorage.get(`${this.s3PrivacyPolicyFolder}/${this.$i18n.locale}.html`).then(resp => {
+    const locale = this.$i18n.locale || GetBrowserLanguageInIso6391()
+    this.$httpSitePoliciesStorage.get(`${this.s3PrivacyPolicyFolder}/${locale}.html`).then(resp => {
       this.content = resp.data
     }).catch(err => {
       this.setNewSiteError(err.message || err)
@@ -49,9 +51,9 @@ export default {
   computed: {
     yearInterval () {
       if (new Date().getFullYear() > copyrightStartYear) {
-        return copyrightStartYear + '-' + new Date().getFullYear()
+        return `${copyrightStartYear}-${new Date().getFullYear()}`
       }
-      return copyrightStartYear.toString()
+      return `${copyrightStartYear}`
     }
   },
   methods: {
