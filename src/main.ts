@@ -2,14 +2,13 @@ import Vue from 'vue'
 import vuetify from '@/plugins/vuetify'
 import App from '@/App.vue'
 import router from '@/router'
-import store from '@/store'
-import '@/registerServiceWorker'
-import i18n from '@/i18n'
-import { GoogleRecaptchaV3Config, GoogleAnalyticsConfig, AwsConfig } from '@/config'
-import { GetPolicyS3BucketRootUrl } from '@/utils/generators'
-
+import store from './store'
+import './registerServiceWorker'
+import i18n from './i18n'
+import { GoogleRecaptchaV3Config, GoogleAnalyticsConfig, AwsConfig } from './config'
+import { GetPolicyS3BucketRootUrl } from './utils/generators'
 import Amplify from '@aws-amplify/core'
-
+import PubSub from '@aws-amplify/pubsub'
 import axios from 'axios'
 import InfiniteLoading from 'vue-infinite-loading'
 import { VueReCaptcha } from 'vue-recaptcha-v3'
@@ -46,6 +45,7 @@ Vue.use(VueAnalytics, {
 
 // Configurations
 Amplify.configure(AwsConfig)
+PubSub.configure(AwsConfig)
 
 new Vue({
   router,

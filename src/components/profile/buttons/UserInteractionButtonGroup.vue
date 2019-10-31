@@ -59,12 +59,9 @@
 </template>
 <script>
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { Logger } from '@aws-amplify/core'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { WatchUser, UnblockUser } from '@/graphql/UserInteraction'
 import { GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
-
-const logger = new Logger('UserInteractionButtonGroup')
 
 export default {
   name: 'UserInteractionButtonGroup',
@@ -111,7 +108,6 @@ export default {
         // persist to store
         this.setInboundWatchIdFromAuthenticatedUser(watchId)
       } catch (err) {
-        logger.error('An error occurred while watching the user')
         this.setNewSiteError(err.message || err)
       }
     },
@@ -135,7 +131,6 @@ export default {
           throw new Error(this.$i18n.t('user.block.message.notBlockedError'))
         }
       } catch (err) {
-        logger.error('An error occurred while watching the user')
         this.setNewSiteError(err.message || err)
       }
     }

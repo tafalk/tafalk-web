@@ -204,7 +204,6 @@
 <script>
 import API, { graphqlOperation } from '@aws-amplify/api'
 import Storage from '@aws-amplify/storage'
-import _PubSub from '@aws-amplify/pubsub'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetStream, OnUpdateStream } from '@/graphql/Stream'
 import { ListStreamLikes, CreateLike, DeleteLike, OnCreateOrDeleteStreamLike, CreateComment, ListPaginatedStreamComments } from '@/graphql/StreamReaction'
@@ -405,9 +404,11 @@ export default {
           next: (eventData) => {
             this.streamChange = eventData.value.data.onUpdateStream
           },
-          error: (err) => this.setNewSiteError(err.message || err)
+          error: (err) => {
+            console.log(err)
+            this.setNewSiteError(err.message || err)
+          }
         })
-
         // Subscribe to likes
         this.likeChangeSubscription = API.graphql(
           graphqlOperation(OnCreateOrDeleteStreamLike, { streamId: (this.stream || {}).id })
@@ -422,7 +423,6 @@ export default {
             this.setNewSiteError(err.message || err)
           }
         })
-
         // Subscribe to flags
         this.flagChangeSubscription = API.graphql(
           graphqlOperation(OnCreateOrDeleteFlag, { contentId: (this.stream || {}).id })
