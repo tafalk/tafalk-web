@@ -8,7 +8,6 @@ import Storage from '@aws-amplify/storage'
 
 import { GetUserProfileData } from '@/graphql/Profile'
 import { GetHexColorOfString } from '@/utils/generators'
-import NotFound from '@/pages/nocontent/NotFound.vue'
 
 Vue.use(Router)
 
@@ -21,12 +20,12 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import(/* webpackChunkName: "home" */ './pages/home/Content.vue')
+      component: () => import(/* webpackChunkName: "home", webpackPreload: true */ './pages/home/Content.vue')
     },
     {
       path: '/content',
       name: 'content',
-      component: () => import(/* webpackChunkName: "home" */ './pages/home/Content.vue')
+      component: () => import(/* webpackChunkName: "home", webpackPreload: true */ './pages/home/Content.vue')
     },
     {
       path: '/about',
@@ -76,12 +75,12 @@ const router = new Router({
     {
       path: '/user/:username/canto',
       name: 'canto',
-      component: () => import(/* webpackChunkName: "canto" */ './pages/canto/Canto.vue')
+      component: () => import(/* webpackChunkName: "content" */ './pages/canto/Canto.vue')
     },
     {
       path: '/stream/:id',
       name: 'stream',
-      component: () => import(/* webpackChunkName: "stream" */ './pages/stream/Stream.vue')
+      component: () => import(/* webpackChunkName: "content" */ './pages/stream/Stream.vue')
     },
     {
       path: '/user/:username/canto/pour',
@@ -98,7 +97,7 @@ const router = new Router({
     {
       path: '*',
       name: 'notFound',
-      component: NotFound
+      component: () => import(/* webpackChunkName: "pour" */ './pages/nocontent/NotFound.vue')
     }
   ]
 })

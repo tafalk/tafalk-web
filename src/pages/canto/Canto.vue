@@ -173,7 +173,6 @@
 <script>
 import API, { graphqlOperation } from '@aws-amplify/api'
 import Storage from '@aws-amplify/storage'
-import _PubSub from '@aws-amplify/pubsub'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { GetCanto, OnUpdateCanto } from '@/graphql/Canto'
 import { ListCantoLikes, CreateLike, UpdateLikeIndices, DeleteLike, OnCreateOrDeleteCantoLike } from '@/graphql/CantoReaction'
