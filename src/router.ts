@@ -21,12 +21,12 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import(/* webpackChunkName: "home" */ './pages/home/Content.vue')
+      component: () => import(/* webpackChunkName: "home", webpackPreload: true */ './pages/home/Content.vue')
     },
     {
       path: '/content',
       name: 'content',
-      component: () => import(/* webpackChunkName: "home" */ './pages/home/Content.vue')
+      component: () => import(/* webpackChunkName: "home", webpackPreload: true */ './pages/home/Content.vue')
     },
     {
       path: '/about',
