@@ -61,6 +61,7 @@
 
     <!-- Side drawer icon -->
     <v-app-bar-nav-icon
+      aria-label="Toggle Drawer"
       @click.stop="toggleDrawer"
     ></v-app-bar-nav-icon>
 

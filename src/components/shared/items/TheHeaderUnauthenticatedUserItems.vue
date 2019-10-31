@@ -12,6 +12,7 @@
       text
     >{{ $t('auth.signup.text') }}</v-btn>
     <v-app-bar-nav-icon
+      aria-label="Toggle Drawer"
       @click.stop="toggleDrawer"
     ></v-app-bar-nav-icon>
   </div>
