@@ -405,7 +405,6 @@ export default {
             this.streamChange = eventData.value.data.onUpdateStream
           },
           error: (err) => {
-            console.log(err)
             this.setNewSiteError(err.message || err)
           }
         })
