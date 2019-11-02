@@ -5,6 +5,7 @@
     flat
     :max-height="maxHeight"
     @click.native="onToStreamBtnClick"
+    role="listitem"
   >
     <v-card-title :dense="dense" class="title grey--text">
       <v-spacer />

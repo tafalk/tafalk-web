@@ -5,6 +5,7 @@
     flat
     :max-height="maxHeight"
     @click.native="onToUserProfileClick"
+    role="listitem"
   >
     <!-- Card Title -->
     <v-card-title

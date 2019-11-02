@@ -17,44 +17,32 @@
         <v-subheader class="grey--text"
         >{{ $t('flag.dialog.steps.category.header') }}</v-subheader>
         <v-list two-line>
-          <v-list-item
-            :disabled="isSelectedCategorySpam"
-          >
+          <v-list-item :disabled="isSelectedCategorySpam">
             <v-list-item-content @click="onClickCategory(spamCategoryValue)">
               <v-list-item-title>{{ $t('flag.dialog.steps.category.options.spam.header') }}</v-list-item-title>
               <v-list-item-subtitle>{{ $t('flag.dialog.steps.category.options.spam.detail') }}</v-list-item-subtitle>
             </v-list-item-content>
-            <v-list-item-action
-              v-if="isSelectedCategorySpam"
-            >
+            <v-list-item-action v-if="isSelectedCategorySpam">
               <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
             </v-list-item-action>
           </v-list-item>
           <v-divider></v-divider>
-          <v-list-item
-            :disabled="isSelectedCategoryRude"
-          >
+          <v-list-item :disabled="isSelectedCategoryRude">
             <v-list-item-content @click="onClickCategory(rudeCategoryValue)">
               <v-list-item-title>{{ $t('flag.dialog.steps.category.options.rude.header') }}</v-list-item-title>
               <v-list-item-subtitle>{{ $t('flag.dialog.steps.category.options.rude.detail') }}</v-list-item-subtitle>
             </v-list-item-content>
-            <v-list-item-action
-              v-if="isSelectedCategoryRude"
-            >
+            <v-list-item-action v-if="isSelectedCategoryRude">
               <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
             </v-list-item-action>
           </v-list-item>
           <v-divider></v-divider>
-          <v-list-item
-            :disabled="isSelectedCategoryLowQuality"
-          >
+          <v-list-item :disabled="isSelectedCategoryLowQuality">
             <v-list-item-content @click="onClickCategory(lowQualityCategoryValue)">
               <v-list-item-title>{{ $t('flag.dialog.steps.category.options.lowQuality.header') }}</v-list-item-title>
               <v-list-item-subtitle>{{ $t('flag.dialog.steps.category.options.lowQuality.detail') }}</v-list-item-subtitle>
             </v-list-item-content>
-            <v-list-item-action
-              v-if="isSelectedCategoryLowQuality"
-            >
+            <v-list-item-action v-if="isSelectedCategoryLowQuality">
               <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
             </v-list-item-action>
           </v-list-item>
@@ -85,28 +73,20 @@
           <v-subheader class="grey--text"
           >{{ $t('flag.dialog.steps.type.spam.header') }}</v-subheader>
           <v-list two-line>
-            <v-list-item
-              :disabled="isSelectedSpamDetailAd"
-            >
+            <v-list-item :disabled="isSelectedSpamDetailAd">
               <v-list-item-content @click="onClickSpamDetail(spamAdDetailValue)">
                 <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.spam.options.ad.detail') }}</v-list-item-subtitle>
               </v-list-item-content>
-              <v-list-item-action
-                v-if="isSelectedSpamDetailAd"
-              >
+              <v-list-item-action v-if="isSelectedSpamDetailAd">
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
               </v-list-item-action>
             </v-list-item>
             <v-divider></v-divider>
-            <v-list-item
-              :disabled="isSelectedSpamDetailHarmfulLink"
-            >
+            <v-list-item :disabled="isSelectedSpamDetailHarmfulLink">
               <v-list-item-content @click="onClickSpamDetail(spamHarmfulLinkDetailValue)">
                 <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.spam.options.harmful.detail') }}</v-list-item-subtitle>
               </v-list-item-content>
-              <v-list-item-action
-                v-if="isSelectedSpamDetailHarmfulLink"
-              >
+              <v-list-item-action v-if="isSelectedSpamDetailHarmfulLink">
                 <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
               </v-list-item-action>
             </v-list-item>
@@ -115,57 +95,41 @@
         </template>
         <!-- Rude Content details -->
         <template v-else-if="isSelectedCategoryRude">
-            <v-list-item
-              :disabled="isSelectedRudeDetailHate"
-            >
-              <v-list-item-content @click="onClickRudeDetail(rudeHateDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.hate.detail') }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action
-                v-if="isSelectedRudeDetailHate"
-              >
-                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-item-action>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item
-              :disabled="isSelectedRudeDetailThreat"
-            >
-              <v-list-item-content @click="onClickRudeDetail(rudeThreatDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.threat.detail') }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action
-                v-if="isSelectedRudeDetailThreat"
-              >
-                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-item-action>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item
-              :disabled="isSelectedRudeDetailOffensive"
-            >
-              <v-list-item-content @click="onClickRudeDetail(rudeOffensiveDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.offensive.detail') }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action
-                v-if="isSelectedRudeDetailOffensive"
-              >
-                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-item-action>
-            </v-list-item>
-            <v-divider></v-divider>
-            <v-list-item
-              :disabled="isSelectedRudeDetailPrivate"
-            >
-              <v-list-item-content @click="onClickRudeDetail(rudePrivateDetailValue)">
-                <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.private.detail') }}</v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action
-                v-if="isSelectedRudeDetailPrivate"
-              >
-                <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
-              </v-list-item-action>
-            </v-list-item>
+          <v-list-item :disabled="isSelectedRudeDetailHate">
+            <v-list-item-content @click="onClickRudeDetail(rudeHateDetailValue)">
+              <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.hate.detail') }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action v-if="isSelectedRudeDetailHate">
+              <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
+            </v-list-item-action>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item :disabled="isSelectedRudeDetailThreat">
+            <v-list-item-content @click="onClickRudeDetail(rudeThreatDetailValue)">
+              <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.threat.detail') }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action v-if="isSelectedRudeDetailThreat">
+              <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
+            </v-list-item-action>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item :disabled="isSelectedRudeDetailOffensive">
+            <v-list-item-content @click="onClickRudeDetail(rudeOffensiveDetailValue)">
+              <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.offensive.detail') }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action v-if="isSelectedRudeDetailOffensive">
+              <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
+            </v-list-item-action>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-list-item :disabled="isSelectedRudeDetailPrivate">
+            <v-list-item-content @click="onClickRudeDetail(rudePrivateDetailValue)">
+              <v-list-item-subtitle>{{ $t('flag.dialog.steps.type.rude.options.private.detail') }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action v-if="isSelectedRudeDetailPrivate">
+              <v-icon :color="selectedOptionIndicatorColor">mdi-check-circle</v-icon>
+            </v-list-item-action>
+          </v-list-item>
         </template>
         <!-- Low Quality Content details -->
         <template v-else>
