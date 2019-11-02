@@ -13,11 +13,7 @@
         aspect-ratio="2.25"
       >
         <template v-slot:placeholder>
-          <v-row
-            align="center"
-            justify="center"
-            class="ma-0"
-          >
+          <v-row align="center" justify="center" class="ma-0">
             <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
           </v-row>
         </template>

@@ -66,16 +66,15 @@
     ></v-app-bar-nav-icon>
 
     <!-- The Logout confirmation dialog -->
-    <logout-confirmation-dialog/>
-
+    <TafalkLogoutConfirmationDialog/>
     <!-- The user language edit dialog -->
-    <user-language-edit-dialog/>
+    <UserLanguageEditDialog/>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
-import LogoutConfirmationDialog from '@/components/shared/dialogs/LogoutConfirmationDialog.vue'
+import TafalkLogoutConfirmationDialog from '@/components/shared/dialogs/TheLogoutConfirmationDialog.vue'
 import UserLanguageEditDialog from '@/components/profile/dialogs/UserLanguageEditDialog.vue'
 
 export default {
@@ -87,7 +86,7 @@ export default {
     }
   },
   components: {
-    LogoutConfirmationDialog,
+    TafalkLogoutConfirmationDialog,
     UserLanguageEditDialog
   },
   computed: {
