@@ -77,9 +77,7 @@
       <!-- Mobile only stream filters -->
       <v-subheader v-if="$vuetify.breakpoint.smAndDown">{{ $t('common.toolbar.menu.contentsSubheader') }}</v-subheader>
       <v-list-item-group v-model="menuContentEl" v-if="$vuetify.breakpoint.smAndDown">
-        <v-list-item
-          @click="onSealedStreamsClick"
-        >
+        <v-list-item @click="onSealedStreamsClick" role="option">
           <v-list-item-action>
             <v-icon color="teal">mdi-ghost-off</v-icon>
           </v-list-item-action>
@@ -87,10 +85,7 @@
             <v-list-item-subtitle class="teal--text">{{ $t('home.bottomnav.sealed') }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item
-          v-if="authenticatedUser"
-          @click="onLiveStreamsClick"
-        >
+        <v-list-item v-if="authenticatedUser" @click="onLiveStreamsClick" role="option">
           <v-list-item-action>
             <v-icon color="red darken-1">mdi-play-circle-outline</v-icon>
           </v-list-item-action>
@@ -98,9 +93,7 @@
             <v-list-item-subtitle class="red--text text--darken-1">{{ $t('home.bottomnav.liveNow') }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item
-          @click="onCantosClick"
-        >
+        <v-list-item @click="onCantosClick" role="option">
           <v-list-item-action>
             <v-icon color="cyan">mdi-music</v-icon>
           </v-list-item-action>
