@@ -7,7 +7,9 @@
     <v-card>
       <v-img
         :src="ezraPoundDoodleSrc"
+        :lazy-src="ezraPoundDoodleLazySrc"
         contain
+        width="600"
         aspect-ratio="2.25"
       >
         <template v-slot:placeholder>
@@ -26,13 +28,10 @@
       >
         {{ $t('canto.pour.introduction.title') }}
       </v-card-title>
-
       <v-card-text>
         {{ $t('canto.pour.introduction.body') }}
       </v-card-text>
-
       <v-divider></v-divider>
-
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
@@ -55,7 +54,8 @@ export default {
   data () {
     return {
       isCantoIntroductionDialogVisible: true,
-      ezraPoundDoodleSrc: siteImagesBaseUrl + '/webp/ezra-pound-doodle.webp'
+      ezraPoundDoodleSrc: `${siteImagesBaseUrl}/webp/ezra-pound-doodle.webp`,
+      ezraPoundDoodleLazySrc: `${siteImagesBaseUrl}/webp/lazy/ezra-pound-doodle.webp`
     }
   }
 }

@@ -3,21 +3,21 @@
     transition="dialog-bottom-transition"
     :fullscreen="$vuetify.breakpoint.xsOnly"
     :hide-overlay="$vuetify.breakpoint.xsOnly"
-    max-width="600">
+    :width="$vuetify.breakpoint.xsOnly ? undefined : 600"
+  >
     <v-card>
       <v-window v-model="itemNum">
         <v-window-item v-for="item in windowItems" :key="item.id">
           <v-card flat color="transparent">
             <v-img
-              contain
               :src="item.imgSrc"
+              :lazy-src="item.imgLazySrc"
+              aspect-ratio="1.6"
+              contain
+              :width="$vuetify.breakpoint.xsOnly ? undefined : 600"
             >
               <template v-slot:placeholder>
-                <v-row
-                  align="center"
-                  justify="center"
-                  class="ma-0"
-                >
+                <v-row align="center" justify="center" class="ma-0">
                   <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
                 </v-row>
               </template>
@@ -28,7 +28,6 @@
           </v-card>
         </v-window-item>
       </v-window>
-
       <v-card-actions class="justify-center">
         <v-item-group v-model="itemNum" mandatory>
           <v-item v-for="item in windowItems" :key="item.id">
@@ -84,22 +83,22 @@ export default {
       windowItems: [
         {
           id: 1,
-          // imgSrc: siteImagesBaseUrl + '/original/intro_doodle_1.png',
-          imgSrc: siteImagesBaseUrl + '/webp/intro_doodle_1.webp',
+          imgSrc: `${siteImagesBaseUrl}/webp/intro_doodle_1.webp`,
+          imgLazySrc: `${siteImagesBaseUrl}/webp/lazy/intro_doodle_1.webp`,
           title: this.$i18n.t('intro.item1.title'),
           body: this.$i18n.t('intro.item1.body')
         },
         {
           id: 2,
-          // imgSrc: siteImagesBaseUrl + '/original/intro_doodle_2.png',
-          imgSrc: siteImagesBaseUrl + '/webp/intro_doodle_2.webp',
+          imgSrc: `${siteImagesBaseUrl}/webp/intro_doodle_2.webp`,
+          imgLazySrc: `${siteImagesBaseUrl}/webp/lazy/intro_doodle_2.webp`,
           title: this.$i18n.t('intro.item2.title'),
           body: this.$i18n.t('intro.item2.body')
         },
         {
           id: 3,
-          // imgSrc: siteImagesBaseUrl + '/original/intro_doodle_3.png',
-          imgSrc: siteImagesBaseUrl + '/webp/intro_doodle_3.webp',
+          imgSrc: `${siteImagesBaseUrl}/webp/intro_doodle_3.webp`,
+          imgLazySrc: `${siteImagesBaseUrl}/webp/lazy/intro_doodle_3.webp`,
           title: this.$i18n.t('intro.item3.title'),
           body: this.$i18n.t('intro.item3.body')
         }

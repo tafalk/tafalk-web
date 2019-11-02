@@ -7,7 +7,9 @@
     <v-card>
       <v-img
         :src="virginiaWoolfDoodleSrc"
+        :lazy-src="virginiaWoolfDoodleLazySrc"
         contain
+        width="600"
         aspect-ratio="2.25"
       >
         <template v-slot:placeholder>
@@ -26,13 +28,10 @@
       >
         {{ $t('stream.pour.introduction.title') }}
       </v-card-title>
-
       <v-card-text>
         {{ $t('stream.pour.introduction.body') }}
       </v-card-text>
-
       <v-divider></v-divider>
-
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
@@ -55,7 +54,8 @@ export default {
   data () {
     return {
       isCantoIntroductionDialogVisible: true,
-      virginiaWoolfDoodleSrc: siteImagesBaseUrl + '/webp/virginia-woolf-doodle.webp'
+      virginiaWoolfDoodleSrc: `${siteImagesBaseUrl}/webp/virginia-woolf-doodle.webp`,
+      virginiaWoolfDoodleLazySrc: `${siteImagesBaseUrl}/webp/lazy/virginia-woolf-doodle.webp`
     }
   }
 }
