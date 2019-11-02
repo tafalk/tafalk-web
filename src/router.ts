@@ -20,12 +20,17 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import(/* webpackChunkName: "home", webpackPreload: true */ './pages/home/Content.vue')
+      component: () => import(/* webpackChunkName: "initial", webpackPreload: true */ './pages/home/Content.vue')
     },
     {
       path: '/content',
       name: 'content',
-      component: () => import(/* webpackChunkName: "home", webpackPreload: true */ './pages/home/Content.vue')
+      component: () => import(/* webpackChunkName: "initial", webpackPreload: true */ './pages/home/Content.vue')
+    },
+    {
+      path: '/user/:username',
+      name: 'profile',
+      component: () => import(/* webpackChunkName: "initial", webpackPreload: true */ './pages/profile/Profile.vue')
     },
     {
       path: '/about',
@@ -66,11 +71,6 @@ const router = new Router({
       path: '/auth/farewell',
       name: 'farewell',
       component: () => import(/* webpackChunkName: "auth" */ './pages/auth/Farewell.vue')
-    },
-    {
-      path: '/user/:username',
-      name: 'profile',
-      component: () => import(/* webpackChunkName: "profile" */ './pages/profile/Profile.vue')
     },
     {
       path: '/user/:username/canto',

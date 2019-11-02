@@ -231,6 +231,7 @@ export default {
       if (val !== oldVal) this.clearSearchText()
 
       this.$router.push({ name: 'content', query: { type: val } })
+        .catch(err => { /* eslint handle-callback-err: "warn" */ })
     }
   },
   computed: {

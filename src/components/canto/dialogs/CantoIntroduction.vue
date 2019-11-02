@@ -7,15 +7,13 @@
     <v-card>
       <v-img
         :src="ezraPoundDoodleSrc"
+        :lazy-src="ezraPoundDoodleLazySrc"
         contain
+        width="600"
         aspect-ratio="2.25"
       >
         <template v-slot:placeholder>
-          <v-row
-            align="center"
-            justify="center"
-            class="ma-0"
-          >
+          <v-row align="center" justify="center" class="ma-0">
             <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
           </v-row>
         </template>
@@ -26,13 +24,10 @@
       >
         {{ $t('canto.pour.introduction.title') }}
       </v-card-title>
-
       <v-card-text>
         {{ $t('canto.pour.introduction.body') }}
       </v-card-text>
-
       <v-divider></v-divider>
-
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
@@ -55,7 +50,8 @@ export default {
   data () {
     return {
       isCantoIntroductionDialogVisible: true,
-      ezraPoundDoodleSrc: siteImagesBaseUrl + '/webp/ezra-pound-doodle.webp'
+      ezraPoundDoodleSrc: `${siteImagesBaseUrl}/webp/ezra-pound-doodle.webp`,
+      ezraPoundDoodleLazySrc: `${siteImagesBaseUrl}/webp/lazy/ezra-pound-doodle.webp`
     }
   }
 }
