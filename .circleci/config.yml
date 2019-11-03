@@ -3,7 +3,7 @@ version: 2.1
 # YAML Anchors
 node-image: &node-image
   docker:
-    - image: circleci/node:10.15.3-stretch
+    - image: circleci/node:13.0.1-stretch
 
 # Use a package of configuration called an orb, see https://circleci.com/docs/2.0/orb-intro/
 jobs:
@@ -59,6 +59,7 @@ jobs:
       - run:
           name: Build app
           command: npm run build
+          no_output_timeout: 15m
       - persist_to_workspace:
           root: ~/
           paths:
