@@ -1,16 +1,15 @@
 <template>
   <div>
-    <v-btn
-      aria-label="Login"
-      @click="onLoginBtnClick"
-      text
-    >{{ $t('auth.login.text') }}</v-btn>
+    <v-btn aria-label="Login" @click="onLoginBtnClick" text>{{
+      $t('auth.login.text')
+    }}</v-btn>
     <v-btn
       aria-label="Signup"
       v-if="$vuetify.breakpoint.mdAndUp"
       @click="onRegisterBtnClick"
       text
-    >{{ $t('auth.signup.text') }}</v-btn>
+      >{{ $t('auth.signup.text') }}</v-btn
+    >
     <v-app-bar-nav-icon
       aria-label="Toggle Drawer"
       @click.stop="toggleDrawer"
@@ -27,13 +26,13 @@ export default {
     ...mapMutations({
       toggleMenuDrawer: 'shared/toggleMenuDrawer'
     }),
-    toggleDrawer () {
+    toggleDrawer() {
       this.toggleMenuDrawer()
     },
-    onLoginBtnClick: function () {
+    onLoginBtnClick: function() {
       this.$router.push({ name: 'login' })
     },
-    onRegisterBtnClick: function () {
+    onRegisterBtnClick: function() {
       this.$router.push({ name: 'register' })
     }
   }

@@ -5,7 +5,7 @@
     :timeout="timeout"
     :multi-line="$vuetify.breakpoint.xsOnly"
   >
-  {{ $t('common.cookieLaw.message') }}
+    {{ $t('common.cookieLaw.message') }}
     <v-btn
       aria-label="Ok"
       dark
@@ -22,7 +22,7 @@ import { mapActions } from 'vuex'
 
 export default {
   name: 'TheCookieLaw',
-  data () {
+  data() {
     return {
       isCookieLawVisible: true,
       timeout: 0
@@ -32,7 +32,7 @@ export default {
     ...mapActions({
       setHasAcceptedCookies: 'setHasAcceptedCookies'
     }),
-    onAcceptCookiesClick () {
+    onAcceptCookiesClick() {
       this.setHasAcceptedCookies('true')
       this.isCookieLawVisible = false
     }

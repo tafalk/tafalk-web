@@ -1,9 +1,5 @@
 <template>
-  <v-dialog
-    v-model="isCantoIntroductionDialogVisible"
-    width="600"
-    persistent
-  >
+  <v-dialog v-model="isCantoIntroductionDialogVisible" width="600" persistent>
     <v-card>
       <v-img
         :src="ezraPoundDoodleSrc"
@@ -14,14 +10,14 @@
       >
         <template v-slot:placeholder>
           <v-row align="center" justify="center" class="ma-0">
-            <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+            <v-progress-circular
+              indeterminate
+              color="grey lighten-5"
+            ></v-progress-circular>
           </v-row>
         </template>
       </v-img>
-      <v-card-title
-        class="headline grey darken-2 white--text"
-        primary-title
-      >
+      <v-card-title class="headline grey darken-2 white--text" primary-title>
         {{ $t('canto.pour.introduction.title') }}
       </v-card-title>
       <v-card-text>
@@ -47,7 +43,7 @@
 import { siteImagesBaseUrl } from '@/utils/constants'
 export default {
   name: 'CantoIntroduction',
-  data () {
+  data() {
     return {
       isCantoIntroductionDialogVisible: true,
       ezraPoundDoodleSrc: `${siteImagesBaseUrl}/webp/ezra-pound-doodle.webp`,
@@ -57,6 +53,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,71 +1,89 @@
 <template>
-<v-list-item>
-  <v-list-item-content>
-    <v-list-item-subtitle>
-      <!-- Blocked Content -->
-      <v-banner single-line v-if="blocked && !showContentAnyway">
-        {{ $t('blockedContent.body') }}
-        <template v-slot:actions>
-          <v-btn aria-label="Show" depressed color="primary" @click.stop="showContentAnywayBtnClick">
-            {{ $t('blockedContent.showButtonText') }}
-          </v-btn>
-        </template>
-      </v-banner>
-      <!-- Comment body -->
-      <v-list-item-subtitle v-if="!blocked || showContentAnyway" class="text--primary">
-        <a href="javascript:;" @click.stop="onToCommenterProfileClick(commentorUser.username)">
-          @{{ commentorUser.username }}
-        </a> &mdash; {{ comment.content }}
+  <v-list-item>
+    <v-list-item-content>
+      <v-list-item-subtitle>
+        <!-- Blocked Content -->
+        <v-banner single-line v-if="blocked && !showContentAnyway">
+          {{ $t('blockedContent.body') }}
+          <template v-slot:actions>
+            <v-btn
+              aria-label="Show"
+              depressed
+              color="primary"
+              @click.stop="showContentAnywayBtnClick"
+            >
+              {{ $t('blockedContent.showButtonText') }}
+            </v-btn>
+          </template>
+        </v-banner>
+        <!-- Comment body -->
+        <v-list-item-subtitle
+          v-if="!blocked || showContentAnyway"
+          class="text--primary"
+        >
+          <a
+            href="javascript:;"
+            @click.stop="onToCommenterProfileClick(commentorUser.username)"
+          >
+            @{{ commentorUser.username }}
+          </a>
+          &mdash; {{ comment.content }}
+        </v-list-item-subtitle>
+        <!-- timestamp -->
+        <v-tooltip right v-if="!blocked || showContentAnyway">
+          <template v-slot:activator="{ on }">
+            <v-list-item-action-text
+              v-html="getTimePassed(comment.time)"
+              v-on="on"
+            ></v-list-item-action-text>
+          </template>
+          <span class="caption">{{ comment.time }}</span>
+        </v-tooltip>
       </v-list-item-subtitle>
-      <!-- timestamp -->
-      <v-tooltip right v-if="!blocked || showContentAnyway" >
-        <template v-slot:activator="{ on }">
-          <v-list-item-action-text v-html="getTimePassed(comment.time)" v-on="on"></v-list-item-action-text>
-        </template>
-        <span class="caption">{{ comment.time }}</span>
-      </v-tooltip>
-    </v-list-item-subtitle>
-  </v-list-item-content>
-  <v-list-item-action v-if="!blocked || showContentAnyway" >
-    <!-- Flag -->
-    <v-btn
-      aria-label="Flag"
-      v-if="authenticatedUser && !isOwnComment && !authenticatedUserFlagId"
-      text
-      icon
-      small
-      :color="flagButtonColor"
-      @click.stop="onFlagDialogShowClick"
-    >
-      <v-icon>mdi-flag-outline</v-icon>
-    </v-btn>
-    <v-btn
-      aria-label="Retract Flag"
-      v-else-if="authenticatedUserFlagId"
-      text
-      icon
-      small
-      :color="flagButtonColor"
-      @click.stop="onRetractFlagDialogShowClick"
-    >
-      <v-icon>mdi-flag</v-icon>
-    </v-btn>
-  </v-list-item-action>
-  <!-- Flag comment dialog -->
-  <tafalk-flag-dialog
-    contentType="canto"
-    :contentId="comment.id"
-  ></tafalk-flag-dialog>
-  <tafalk-retract-flag-confirmation-dialog
-    :id="authenticatedUserFlagId"
-  ></tafalk-retract-flag-confirmation-dialog>
-</v-list-item>
+    </v-list-item-content>
+    <v-list-item-action v-if="!blocked || showContentAnyway">
+      <!-- Flag -->
+      <v-btn
+        aria-label="Flag"
+        v-if="authenticatedUser && !isOwnComment && !authenticatedUserFlagId"
+        text
+        icon
+        small
+        :color="flagButtonColor"
+        @click.stop="onFlagDialogShowClick"
+      >
+        <v-icon>mdi-flag-outline</v-icon>
+      </v-btn>
+      <v-btn
+        aria-label="Retract Flag"
+        v-else-if="authenticatedUserFlagId"
+        text
+        icon
+        small
+        :color="flagButtonColor"
+        @click.stop="onRetractFlagDialogShowClick"
+      >
+        <v-icon>mdi-flag</v-icon>
+      </v-btn>
+    </v-list-item-action>
+    <!-- Flag comment dialog -->
+    <tafalk-flag-dialog
+      contentType="canto"
+      :contentId="comment.id"
+    ></tafalk-flag-dialog>
+    <tafalk-retract-flag-confirmation-dialog
+      :id="authenticatedUserFlagId"
+    ></tafalk-retract-flag-confirmation-dialog>
+  </v-list-item>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 import { GetElapsedTimeTillNow } from '@/utils/typeUtils'
-import { streamCommentFetchLength, blockTypeUserConnectionValue } from '@/utils/constants'
+import {
+  streamCommentFetchLength,
+  blockTypeUserConnectionValue
+} from '@/utils/constants'
 import TafalkFlagDialog from '@/components/flag/dialogs/FlagDialog.vue'
 import TafalkRetractFlagConfirmationDialog from '@/components/flag/dialogs/RetractFlagConfirmationDialog.vue'
 
@@ -76,7 +94,7 @@ export default {
     TafalkFlagDialog,
     TafalkRetractFlagConfirmationDialog
   },
-  data () {
+  data() {
     return {
       datenow: '',
       showContentAnyway: false,
@@ -92,28 +110,35 @@ export default {
       getPaginatedStreamComments: 'stream/getPaginatedStreamComments',
       getNowTime: 'time/getNowTime'
     }),
-    stream () {
+    stream() {
       return this.getStream
     },
-    authenticatedUser () {
+    authenticatedUser() {
       return this.getAuthenticatedUser
     },
-    commentorUser () {
+    commentorUser() {
       return comment.user || {}
     },
-    blocked () {
+    blocked() {
       if (!this.authenticatedUser) return false
-      return this.authenticatedUser.userInteractions.items
-        .some(el => el.interactionType === this.blockTypeUserConnectionValue && el.targetUserId === this.commentorUser.id)
+      return this.authenticatedUser.userInteractions.items.some(
+        el =>
+          el.interactionType === this.blockTypeUserConnectionValue &&
+          el.targetUserId === this.commentorUser.id
+      )
     },
-    isOwnComment () {
+    isOwnComment() {
       return this.authenticatedUser.username === this.commentorUser.username
     },
-    authenticatedUserFlagId () {
-      return ((this.comment.flags || []).find(item => item.userId === this.authenticatedUser.id) || {}).id
+    authenticatedUserFlagId() {
+      return (
+        (this.comment.flags || []).find(
+          item => item.userId === this.authenticatedUser.id
+        ) || {}
+      ).id
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearInterval(this.interval)
   },
   methods: {
@@ -122,19 +147,19 @@ export default {
       showFlagDialog: 'flag/dialog/showFlagDialog',
       showRetractFlagDialog: 'flag/dialog/showRetractFlagDialog'
     }),
-    getTimePassed (str) {
+    getTimePassed(str) {
       return GetElapsedTimeTillNow(this.getNowTime, str)
     },
-    onToCommenterProfileClick (username) {
+    onToCommenterProfileClick(username) {
       this.$router.push({ name: 'profile', params: { username: username } })
     },
-    onFlagDialogShowClick () {
+    onFlagDialogShowClick() {
       this.showFlagDialog()
     },
-    onRetractFlagDialogShowClick () {
+    onRetractFlagDialogShowClick() {
       this.showRetractFlagDialog()
     },
-    showContentAnywayBtnClick () {
+    showContentAnywayBtnClick() {
       this.showContentAnyway = true
     }
   }

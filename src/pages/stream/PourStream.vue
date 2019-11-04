@@ -1,19 +1,36 @@
 <template>
   <tafalk-stream-authorization-required v-if="!authenticatedUser" />
   <v-container v-else>
-    <tafalk-stream-introduction v-if="isFirstStreamOfUser"></tafalk-stream-introduction>
+    <tafalk-stream-introduction
+      v-if="isFirstStreamOfUser"
+    ></tafalk-stream-introduction>
     <v-card flat>
       <v-toolbar dense flat>
         <v-toolbar-title v-if="processState === 'saved'">
-          <span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
+          <span class="grey--text"
+            ><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{
+              $t('stream.pour.savedLabel')
+            }}</span
+          >
         </v-toolbar-title>
         <v-toolbar-title v-else-if="processState === 'saving'">
-          <span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
+          <span class="grey--text"
+            ><v-icon>mdi-cached</v-icon>&nbsp;{{
+              $t('stream.pour.savingLabel')
+            }}</span
+          >
         </v-toolbar-title>
-        <v-toolbar-title v-else-if="processState === 'error'"><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
+        <v-toolbar-title v-else-if="processState === 'error'"
+          ><span class="grey--text"
+            ><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{
+              $t('stream.pour.saveErrorLabel')
+            }}</span
+          >
         </v-toolbar-title>
-        <v-spacer/>
-        <span class="grey--text caption">{{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}</span>
+        <v-spacer />
+        <span class="grey--text caption">{{
+          $t('stream.pour.regularLeavePageDisclaimerLabel')
+        }}</span>
       </v-toolbar>
       <v-form>
         <v-container pt-0>
@@ -102,18 +119,29 @@ import { Logger } from '@aws-amplify/core'
 import uuidv4 from 'uuid/v4'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import { ListStreamsByUser } from '@/graphql/Profile'
-import { CreateStream, UpdateStreamBody, UpdateStreamTitle, UpdatePosition, UpdateMood, SealStreamForEver } from '@/graphql/Stream'
+import {
+  CreateStream,
+  UpdateStreamBody,
+  UpdateStreamTitle,
+  UpdatePosition,
+  UpdateMood,
+  SealStreamForEver
+} from '@/graphql/Stream'
 import TafalkStreamAuthorizationRequired from '@/components/nocontent/AuthorizationRequired.vue'
 import TafalkStreamIntroduction from '@/components/stream/dialogs/StreamIntroduction.vue'
 import { IsNullOrWhitespace, StrikethroughStr } from '@/utils/typeUtils'
-import { streamMoodOptions, streamPositionOptions, pourStrikethroughTimeToIdle } from '@/utils/constants'
+import {
+  streamMoodOptions,
+  streamPositionOptions,
+  pourStrikethroughTimeToIdle
+} from '@/utils/constants'
 import { GetKeyName } from '@/utils/ioUtils'
 
 const logger = new Logger('PourStream')
 
 export default {
   name: 'PourStream',
-  data () {
+  data() {
     return {
       valid: false,
       title: null,
@@ -140,7 +168,7 @@ export default {
     TafalkStreamAuthorizationRequired,
     TafalkStreamIntroduction
   },
-  created () {
+  created() {
     // In case of the need to add it globally, see https://forum.vuejs.org/t/detect-browser-close/5001
     window.addEventListener('beforeunload', this.onBeforeUnload)
     // window.addEventListener('unload', () => this.sealForEver)
@@ -148,10 +176,17 @@ export default {
     // Create a UUID for the new stream
     this.streamId = uuidv4()
   },
-  async mounted () {
+  async mounted() {
     // Check if first stream of user
-    const graphqlVisitedProfileStreamsResult = await API.graphql(graphqlOperation(ListStreamsByUser, { userId: this.authenticatedUserId, limit: 1, nextToken: null }))
-    const userStreamsShortList = graphqlVisitedProfileStreamsResult.data.listStreamsByUser.items
+    const graphqlVisitedProfileStreamsResult = await API.graphql(
+      graphqlOperation(ListStreamsByUser, {
+        userId: this.authenticatedUserId,
+        limit: 1,
+        nextToken: null
+      })
+    )
+    const userStreamsShortList =
+      graphqlVisitedProfileStreamsResult.data.listStreamsByUser.items
     if (userStreamsShortList == null || userStreamsShortList.length === 0) {
       this.isFirstStreamOfUser = true
     }
@@ -159,7 +194,7 @@ export default {
     // Require confirmation for accidental route changes
     this.setIsRouteChangeSafe(false)
   },
-  async beforeDestroy () {
+  async beforeDestroy() {
     try {
       await this.sealForEver()
     } catch (err) {
@@ -170,8 +205,13 @@ export default {
       // window.removeEventListener('unload', this.sealForEver)
     }
   },
-  async beforeRouteLeave (to, from, next) {
-    if (this.getIsRouteChangeSafe || window.confirm(this.$i18n.t('stream.pour.message.beforeRouteConfirmationText'))) {
+  async beforeRouteLeave(to, from, next) {
+    if (
+      this.getIsRouteChangeSafe ||
+      window.confirm(
+        this.$i18n.t('stream.pour.message.beforeRouteConfirmationText')
+      )
+    ) {
       try {
         await this.sealForEver()
       } catch (err) {
@@ -189,16 +229,16 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getIsRouteChangeSafe: 'stream/getIsRouteChangeSafe'
     }),
-    authenticatedUser () {
+    authenticatedUser() {
       return this.getAuthenticatedUser
     },
-    authenticatedUserId () {
+    authenticatedUserId() {
       return this.authenticatedUser != null ? this.authenticatedUser.id : null
     }
   },
   watch: {
     // whenever 'stream' changes, this function will run
-    async body (newBody, oldBody) {
+    async body(newBody, oldBody) {
       // Check if the text is all whitespace
       if (IsNullOrWhitespace(newBody)) return
 
@@ -206,46 +246,55 @@ export default {
         // Old body is null or empty, so create the entry here
         try {
           this.processState = this.savingStateConstant
-          await API.graphql(graphqlOperation(CreateStream, {
-            // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
-            id: this.streamId,
-            userId: this.authenticatedUserId,
-            url: null,
-            title: this.title !== '' ? this.title : null,
-            privacy: this.privacy,
-            mood: this.moodModel ? this.moodModel.value : null,
-            position: this.positionModel ? this.positionModel.value : null,
-            body: newBody,
-            location: null,
-            track: null,
-            startTime: new Date().toISOString(),
-            sealTime: this.incompleteSealTimeValue
-          }))
+          await API.graphql(
+            graphqlOperation(CreateStream, {
+              // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
+              id: this.streamId,
+              userId: this.authenticatedUserId,
+              url: null,
+              title: this.title !== '' ? this.title : null,
+              privacy: this.privacy,
+              mood: this.moodModel ? this.moodModel.value : null,
+              position: this.positionModel ? this.positionModel.value : null,
+              body: newBody,
+              location: null,
+              track: null,
+              startTime: new Date().toISOString(),
+              sealTime: this.incompleteSealTimeValue
+            })
+          )
           this.processState = this.savedStateConstant
           this.isStreamCreated = true
         } catch (err) {
-          logger.error('An error occurred while creating the stream', err.message || JSON.stringify(err))
+          logger.error(
+            'An error occurred while creating the stream',
+            err.message || JSON.stringify(err)
+          )
           this.processState = this.errorStateConstant
           this.setNewSiteError(err.message || err)
         }
       }
     },
-    async title (newTitle, oldTitle) {
+    async title(newTitle, oldTitle) {
       // Update the title, if body is not null
       try {
         this.processState = this.savingStateConstant
-        await API.graphql(graphqlOperation(UpdateStreamTitle, {
-          id: this.streamId,
-          title: newTitle
-        }))
+        await API.graphql(
+          graphqlOperation(UpdateStreamTitle, {
+            id: this.streamId,
+            title: newTitle
+          })
+        )
         this.processState = this.savedStateConstant
       } catch (err) {
-        logger.error('An error occurred while updating the stream title', err.message || JSON.stringify(err))
+        logger.error(
+          'An error occurred while updating the stream title',
+          err.message || JSON.stringify(err)
+        )
         this.processState = this.errorStateConstant
         this.setNewSiteError(err.message || err)
       }
     }
-
   },
   methods: {
     ...mapMutations({
@@ -256,7 +305,7 @@ export default {
       setNewSiteError: 'shared/setNewSiteError'
     }),
     // disable backspace or delete buttons (body)
-    onBodyBackspaceOrDeleteKeydown (event) {
+    onBodyBackspaceOrDeleteKeydown(event) {
       const exactKey = GetKeyName(event.keyCode)
 
       // get the selected text
@@ -277,7 +326,8 @@ export default {
           // backspace keydown
 
           // Update body
-          this.body = initialBody.substring(0, cursorPos - 1) +
+          this.body =
+            initialBody.substring(0, cursorPos - 1) +
             StrikethroughStr(initialBody.charAt(cursorPos - 1)) +
             this.body.substring(cursorPos, initialBody.length)
 
@@ -296,7 +346,8 @@ export default {
           */
 
           // Update body
-          this.body = initialBody.substring(0, cursorPos) +
+          this.body =
+            initialBody.substring(0, cursorPos) +
             StrikethroughStr(initialBody.charAt(cursorPos)) +
             this.body.substring(cursorPos + 1, initialBody.length)
 
@@ -310,7 +361,7 @@ export default {
         // There is a selection, literally
       }
     },
-    onBodyBackspaceOrDeleteKeyup (event) {
+    onBodyBackspaceOrDeleteKeyup(event) {
       const bodyTextArea = this.$refs.pourBody.$el.querySelector('textarea')
       const bodyTextLength = bodyTextArea.value.length
 
@@ -322,7 +373,7 @@ export default {
       }, this.deleteTimeToIdle)
     },
     // disable backspace or delete buttons (title)
-    onTitleBackspaceOrDeleteKeydown (event) {
+    onTitleBackspaceOrDeleteKeydown(event) {
       const exactKey = GetKeyName(event.keyCode)
 
       // get the selected text
@@ -342,7 +393,8 @@ export default {
           // backspace keydown
 
           // Update body
-          this.title = initialTitle.substring(0, cursorPos - 1) +
+          this.title =
+            initialTitle.substring(0, cursorPos - 1) +
             StrikethroughStr(initialTitle.charAt(cursorPos - 1)) +
             this.title.substring(cursorPos, initialTitle.length)
 
@@ -350,12 +402,15 @@ export default {
           cursorPos--
 
           // Move cursor
-          setTimeout(() => titleTextField.setSelectionRange(cursorPos, cursorPos))
+          setTimeout(() =>
+            titleTextField.setSelectionRange(cursorPos, cursorPos)
+          )
         } else if (exactKey === 'delete' && cursorPos < this.body.length) {
           // delete keydown
 
           // Update body
-          this.body = initialTitle.substring(0, cursorPos) +
+          this.body =
+            initialTitle.substring(0, cursorPos) +
             StrikethroughStr(initialTitle.charAt(cursorPos)) +
             this.body.substring(cursorPos + 1, initialTitle.length)
 
@@ -363,13 +418,15 @@ export default {
           cursorPos += 2
 
           // Set new cursor position
-          setTimeout(() => titleTextField.setSelectionRange(cursorPos, cursorPos))
+          setTimeout(() =>
+            titleTextField.setSelectionRange(cursorPos, cursorPos)
+          )
         }
       } else {
         // There is a selection, literally
       }
     },
-    onTitleBackspaceOrDeleteKeyup (event) {
+    onTitleBackspaceOrDeleteKeyup(event) {
       const titleTextField = this.$refs.pourTitle.$el.querySelector('input')
       const titleTextLength = titleTextField.value.length
 
@@ -381,76 +438,91 @@ export default {
       }, this.deleteTimeToIdle)
     },
     // disable pasting
-    onPaste (event) {
+    onPaste(event) {
       event.preventDefault()
     },
     // disable cutting
-    onCut (event) {
+    onCut(event) {
       event.preventDefault()
     },
-    onMouseDown (event) {
+    onMouseDown(event) {
       event.preventDefault()
     },
-    onMouseUp (event) {
+    onMouseUp(event) {
       event.preventDefault()
     },
-    async onDefaultKeyup (event) {
+    async onDefaultKeyup(event) {
       if (IsNullOrWhitespace(this.body) || !this.isStreamCreated) return
       try {
         this.processState = this.savingStateConstant
-        await API.graphql(graphqlOperation(UpdateStreamBody, {
-          id: this.streamId,
-          body: this.body
-        }))
+        await API.graphql(
+          graphqlOperation(UpdateStreamBody, {
+            id: this.streamId,
+            body: this.body
+          })
+        )
         this.processState = this.savedStateConstant
       } catch (err) {
-        logger.error('An error occurred while updating the stream', err.message || JSON.stringify(err))
+        logger.error(
+          'An error occurred while updating the stream',
+          err.message || JSON.stringify(err)
+        )
         this.processState = this.errorStateConstant
         this.setNewSiteError(err.message || err)
       }
     },
-    onDefaultKeydown (event) {
+    onDefaultKeydown(event) {
       // Disable Undo with keyboard
       if (event.ctrlKey && event.key === 'z') {
         event.preventDefault()
       }
     },
-    onRightClick (event) {
+    onRightClick(event) {
       // already prevented. do nothing
     },
-    async onMoodChange () {
+    async onMoodChange() {
       if (!this.body || !this.body.length) return
       try {
         this.processState = this.savingStateConstant
-        await API.graphql(graphqlOperation(UpdateMood, {
-          // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
-          id: this.streamId,
-          mood: this.moodModel ? this.moodModel.value : null
-        }))
+        await API.graphql(
+          graphqlOperation(UpdateMood, {
+            // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
+            id: this.streamId,
+            mood: this.moodModel ? this.moodModel.value : null
+          })
+        )
         this.processState = this.savedStateConstant
       } catch (err) {
-        logger.error('An error occurred while updating the mood', err.message || JSON.stringify(err))
+        logger.error(
+          'An error occurred while updating the mood',
+          err.message || JSON.stringify(err)
+        )
         this.processState = this.errorStateConstant
         this.setNewSiteError(err.message || err)
       }
     },
-    async onPositionChange () {
+    async onPositionChange() {
       if (!this.body || !this.body.length) return
       try {
         this.processState = this.savingStateConstant
-        await API.graphql(graphqlOperation(UpdatePosition, {
-          // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
-          id: this.streamId,
-          position: this.positionModel ? this.positionModel.value : null
-        }))
+        await API.graphql(
+          graphqlOperation(UpdatePosition, {
+            // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
+            id: this.streamId,
+            position: this.positionModel ? this.positionModel.value : null
+          })
+        )
         this.processState = this.savedStateConstant
       } catch (err) {
-        logger.error('An error occurred while updating the position', err.message || JSON.stringify(err))
+        logger.error(
+          'An error occurred while updating the position',
+          err.message || JSON.stringify(err)
+        )
         this.processState = this.errorStateConstant
         this.setNewSiteError(err.message || err)
       }
     },
-    async onDoneClick () {
+    async onDoneClick() {
       this.loading = true
       try {
         await this.sealForEver()
@@ -463,27 +535,32 @@ export default {
         this.loading = false
       }
     },
-    async sealForEver () {
+    async sealForEver() {
       // Check if something to seal
       if (!this.body || !this.body.length) return
       try {
-        await API.graphql(graphqlOperation(SealStreamForEver, {
-          id: this.streamId,
-          title: this.title,
-          body: this.body,
-          privacy: this.privacy,
-          mood: this.moodModel ? this.moodModel.value : null,
-          position: this.positionModel ? this.positionModel.value : null,
-          location: null,
-          track: null,
-          sealTime: new Date().toISOString()
-        }))
+        await API.graphql(
+          graphqlOperation(SealStreamForEver, {
+            id: this.streamId,
+            title: this.title,
+            body: this.body,
+            privacy: this.privacy,
+            mood: this.moodModel ? this.moodModel.value : null,
+            position: this.positionModel ? this.positionModel.value : null,
+            location: null,
+            track: null,
+            sealTime: new Date().toISOString()
+          })
+        )
       } catch (err) {
-        logger.error('An error occurred while sealing the stream', err.message || JSON.stringify(err))
+        logger.error(
+          'An error occurred while sealing the stream',
+          err.message || JSON.stringify(err)
+        )
         this.setNewSiteError(err.message || err)
       }
     },
-    async onBeforeUnload (event) {
+    async onBeforeUnload(event) {
       // An attempt to leave? Save last state immediately
       event.preventDefault()
       // sealing should be done as a part of 'beforeDestroy'

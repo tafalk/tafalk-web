@@ -8,47 +8,45 @@ const state = {
 }
 
 const getters = {
-  getShareStreamLink (state: any) {
+  getShareStreamLink(state: any) {
     return state.shareStreamLink
   },
-  getStream (state: any) {
+  getStream(state: any) {
     return state.stream
   },
-  getPaginatedStreamComments (state: any) {
+  getPaginatedStreamComments(state: any) {
     return state.paginatedComments
   },
-  getIsRouteChangeSafe (state: any) {
+  getIsRouteChangeSafe(state: any) {
     return state.isRouteChangeSafe
   }
 }
 
 const mutations = {
-  clearShareStreamLink (state: any) {
+  clearShareStreamLink(state: any) {
     state.shareStreamLink = null
   },
-  setShareStreamLink (state: any, shareStreamLink: any) {
+  setShareStreamLink(state: any, shareStreamLink: any) {
     state.shareStreamLink = shareStreamLink
   },
-  setStream (state: any, stream: any) {
+  setStream(state: any, stream: any) {
     state.stream = stream
   },
-  setStreamLikes (state: any, likeObjectArray: any) {
+  setStreamLikes(state: any, likeObjectArray: any) {
     state.stream.likes = likeObjectArray
   },
-  setStreamFlags (state: any, flagObjectArray: any) {
+  setStreamFlags(state: any, flagObjectArray: any) {
     state.stream.flags = flagObjectArray
   },
-  setPaginatedStreamComments (state: any, paginatedComments: any) {
+  setPaginatedStreamComments(state: any, paginatedComments: any) {
     state.paginatedComments = paginatedComments
   },
-  setIsRouteChangeSafe (state: any, isRouteChangeSafe: boolean) {
+  setIsRouteChangeSafe(state: any, isRouteChangeSafe: boolean) {
     state.isRouteChangeSafe = isRouteChangeSafe
   }
 }
 
-const actions = {
-
-}
+const actions = {}
 
 export default {
   namespaced: true,

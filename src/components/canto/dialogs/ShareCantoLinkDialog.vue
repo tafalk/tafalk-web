@@ -1,7 +1,13 @@
 <template>
-  <v-dialog v-model="getIsShareCantoLinkDialogVisible" persistent max-width="400">
+  <v-dialog
+    v-model="getIsShareCantoLinkDialogVisible"
+    persistent
+    max-width="400"
+  >
     <v-card>
-      <v-card-title class="headline">{{ $t('common.share.title') }}</v-card-title>
+      <v-card-title class="headline">{{
+        $t('common.share.title')
+      }}</v-card-title>
       <v-card-text>
         <v-text-field
           ref="linktext"
@@ -14,10 +20,9 @@
         >
           <v-tooltip slot="append-outer" right>
             <template v-slot:activator="{ on }">
-              <v-icon
-                v-on="on"
-                @click="onCopyLinkClick"
-              >mdi-content-copy</v-icon>
+              <v-icon v-on="on" @click="onCopyLinkClick"
+                >mdi-content-copy</v-icon
+              >
             </template>
             {{ tooltipText }}
           </v-tooltip>
@@ -29,7 +34,9 @@
           aria-label="Ok"
           color="light-blue darken-1"
           text
-          @click.native="onDoneClick">{{ $t('common.options.okButtonText') }}</v-btn>
+          @click.native="onDoneClick"
+          >{{ $t('common.options.okButtonText') }}</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -40,10 +47,12 @@ import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'ShareCantoLinkDialog',
-  data () {
+  data() {
     return {
       showCopiedTooltip: false,
-      defaultCopyTooltipValue: this.$i18n.t('canto.share.dialog.copyLinkTooltip'),
+      defaultCopyTooltipValue: this.$i18n.t(
+        'canto.share.dialog.copyLinkTooltip'
+      ),
       copiedTooltipValue: this.$i18n.t('canto.share.dialog.copiedLinkTooltip'),
       tooltipText: this.$i18n.t('canto.share.dialog.tooltip'),
       copiedTooltipTimeout: 3000
@@ -51,7 +60,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getIsShareCantoLinkDialogVisible: 'canto/dialog/getIsShareCantoLinkDialogVisible',
+      getIsShareCantoLinkDialogVisible:
+        'canto/dialog/getIsShareCantoLinkDialogVisible',
       getShareCantoLink: 'canto/getShareCantoLink'
     })
   },
@@ -60,7 +70,7 @@ export default {
       hideShareCantoLinkDialog: 'canto/dialog/hideShareCantoLinkDialog',
       clearShareCantoLink: 'canto/clearShareCantoLink'
     }),
-    async onCopyLinkClick (e) {
+    async onCopyLinkClick(e) {
       // Select the text
       this.$refs.linktext.$el.querySelector('input').select()
       // Copy the text to clipboard
@@ -71,11 +81,11 @@ export default {
       await this.sleep(this.copiedTooltipTimeout)
       this.tooltipText = this.defaultCopyTooltipValue
     },
-    onDoneClick () {
+    onDoneClick() {
       this.clearShareCantoLink()
       this.hideShareCantoLinkDialog()
     },
-    sleep (ms) {
+    sleep(ms) {
       return new Promise((resolve, reject) => setTimeout(resolve, ms))
     }
   }

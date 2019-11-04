@@ -3,25 +3,27 @@ const state = {
 }
 
 const getters = {
-  getIsShareStreamLinkDialogVisible (state: any) {
+  getIsShareStreamLinkDialogVisible(state: any) {
     return state.isShareStreamLinkDialogVisible
   }
 }
 
 const mutations = {
-  setIsShareStreamLinkDialogVisible (state: any, isShareStreamLinkDialogVisible: boolean) {
+  setIsShareStreamLinkDialogVisible(
+    state: any,
+    isShareStreamLinkDialogVisible: boolean
+  ) {
     state.isShareStreamLinkDialogVisible = isShareStreamLinkDialogVisible
   },
-  showShareStreamLinkDialog (state: any) {
+  showShareStreamLinkDialog(state: any) {
     state.isShareStreamLinkDialogVisible = true
   },
-  hideShareStreamLinkDialog (state: any) {
+  hideShareStreamLinkDialog(state: any) {
     state.isShareStreamLinkDialogVisible = false
   }
 }
 
-const actions = {
-}
+const actions = {}
 
 export default {
   namespaced: true,

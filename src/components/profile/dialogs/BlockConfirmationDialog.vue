@@ -1,7 +1,13 @@
 <template>
-  <v-dialog v-model="getIsBlockConfirmationDialogVisible" persistent max-width="290">
+  <v-dialog
+    v-model="getIsBlockConfirmationDialogVisible"
+    persistent
+    max-width="290"
+  >
     <v-card>
-      <v-card-title class="headline">{{ $t('user.block.dialog.title') }}</v-card-title>
+      <v-card-title class="headline">{{
+        $t('user.block.dialog.title')
+      }}</v-card-title>
       <v-card-text>{{ $t('user.block.dialog.body') }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -10,13 +16,15 @@
           color="red darken-1"
           text
           @click.native="onBlockThisUserConfirmClick"
-        >{{ $t('common.options.yesButtonText') }}</v-btn>
+          >{{ $t('common.options.yesButtonText') }}</v-btn
+        >
         <v-btn
           aria-label="No"
           color="light-blue darken-1"
           text
           @click.native="setIsBlockConfirmationDialogVisible(false)"
-        >{{ $t('common.options.noButtonText') }}</v-btn>
+          >{{ $t('common.options.noButtonText') }}</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -30,45 +38,52 @@ import { GetFirstOrDefaultIdStr } from '@/utils/typeUtils'
 
 export default {
   name: 'BlockConfirmationDialog',
-  data () {
+  data() {
     return {
       blockTypeuserConnectionValue: 'Block'
     }
   },
   computed: {
     ...mapGetters({
-      getIsBlockConfirmationDialogVisible: 'visitedUser/dialog/getIsBlockConfirmationDialogVisible',
+      getIsBlockConfirmationDialogVisible:
+        'visitedUser/dialog/getIsBlockConfirmationDialogVisible',
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getVisitedUser: 'visitedUser/getUser'
     }),
-    authenticatedUser () {
+    authenticatedUser() {
       return this.getAuthenticatedUser
     },
-    visitedUser () {
+    visitedUser() {
       return this.getVisitedUser
     }
   },
   methods: {
     ...mapMutations({
-      setIsBlockConfirmationDialogVisible: 'visitedUser/dialog/setIsBlockConfirmationDialogVisible',
-      setInboundBlockIdFromAuthenticatedUser: 'visitedUser/setInboundBlockIdFromAuthenticatedUser'
+      setIsBlockConfirmationDialogVisible:
+        'visitedUser/dialog/setIsBlockConfirmationDialogVisible',
+      setInboundBlockIdFromAuthenticatedUser:
+        'visitedUser/setInboundBlockIdFromAuthenticatedUser'
     }),
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError'
     }),
-    async onBlockThisUserConfirmClick () {
+    async onBlockThisUserConfirmClick() {
       try {
-        const currentBlockId = this.visitedUser.connectionsWithAuthenticatedUser.inbound.watchId
+        const currentBlockId = this.visitedUser.connectionsWithAuthenticatedUser
+          .inbound.watchId
 
-        if (currentBlockId && currentBlockId.length > 0) {
-        } else {
-          const graphqlBlockResult = await API.graphql(graphqlOperation(BlockUser, {
-            currentAuthenticatedUserId: this.authenticatedUser.id,
-            toBeBlockedUserId: this.visitedUser.id
-          }))
+        if (!currentBlockId || !currentBlockId.length) {
+          const graphqlBlockResult = await API.graphql(
+            graphqlOperation(BlockUser, {
+              currentAuthenticatedUserId: this.authenticatedUser.id,
+              toBeBlockedUserId: this.visitedUser.id
+            })
+          )
 
           // add the result as an array
-          const blockId = GetFirstOrDefaultIdStr(graphqlBlockResult.data.createUserInteraction)
+          const blockId = GetFirstOrDefaultIdStr(
+            graphqlBlockResult.data.createUserInteraction
+          )
           this.setInboundBlockIdFromAuthenticatedUser(blockId)
         }
       } catch (err) {

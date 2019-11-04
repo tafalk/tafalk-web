@@ -8,47 +8,45 @@ const state = {
 }
 
 const getters = {
-  getShareCantoLink (state: any) {
+  getShareCantoLink(state: any) {
     return state.shareCantoLink
   },
-  getCanto (state: any) {
+  getCanto(state: any) {
     return state.canto
   },
-  getIsRouteChangeSafe (state: any) {
+  getIsRouteChangeSafe(state: any) {
     return state.isRouteChangeSafe
   },
-  getBodyUserSelection (state: any) {
+  getBodyUserSelection(state: any) {
     return state.bodyUserSelection
   }
 }
 
 const mutations = {
-  clearShareCantoLink (state: any) {
+  clearShareCantoLink(state: any) {
     state.shareCantoLink = null
   },
-  setShareCantoLink (state: any, shareCantoLink: string) {
+  setShareCantoLink(state: any, shareCantoLink: string) {
     state.shareCantoLink = shareCantoLink
   },
-  setCanto (state: any, canto: any) {
+  setCanto(state: any, canto: any) {
     state.canto = canto
   },
-  setCantoLikes (state: any, likeObjectArray: any) {
+  setCantoLikes(state: any, likeObjectArray: any) {
     state.canto.likes = likeObjectArray
   },
-  setCantoFlags (state: any, flagObjectArray: any) {
+  setCantoFlags(state: any, flagObjectArray: any) {
     state.canto.flags = flagObjectArray
   },
-  setIsRouteChangeSafe (state: any, isRouteChangeSafe: boolean) {
+  setIsRouteChangeSafe(state: any, isRouteChangeSafe: boolean) {
     state.isRouteChangeSafe = isRouteChangeSafe
   },
-  setBodyUserSelection (state: any, indices: any) {
+  setBodyUserSelection(state: any, indices: any) {
     state.bodyUserSelection = indices
   }
 }
 
-const actions = {
-
-}
+const actions = {}
 
 export default {
   namespaced: true,

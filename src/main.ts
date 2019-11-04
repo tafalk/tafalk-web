@@ -1,11 +1,15 @@
 import Vue from 'vue'
 import vuetify from '@/plugins/vuetify'
-import App from '@/App.vue'
-import router from '@/router'
+import App from './App.vue'
+import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import i18n from './i18n'
-import { GoogleRecaptchaV3Config, GoogleAnalyticsConfig, AwsConfig } from './config'
+import {
+  GoogleRecaptchaV3Config,
+  GoogleAnalyticsConfig,
+  AwsConfig
+} from './config'
 import { GetPolicyS3BucketRootUrl } from './utils/generators'
 import Amplify from '@aws-amplify/core'
 import PubSub from '@aws-amplify/pubsub'

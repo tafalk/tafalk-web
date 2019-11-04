@@ -22,10 +22,7 @@
     -->
 
     <!-- User Profile item (Large screen) -->
-    <v-chip
-      v-if="$vuetify.breakpoint.mdAndUp"
-      @click="onProfileClick"
-      pill>
+    <v-chip v-if="$vuetify.breakpoint.mdAndUp" @click="onProfileClick" pill>
       <v-avatar left v-if="authenticatedUser.profilePictureObjectUrl">
         <v-img :src="authenticatedUser.profilePictureObjectUrl" />
       </v-avatar>
@@ -33,16 +30,19 @@
         <v-img
           :src="require('@/assets/default-user-avatar.webp')"
           alt="Virgina Woolf in Hue"
-          :style="{backgroundColor: userColor}"
+          :style="{ backgroundColor: userColor }"
         />
       </v-avatar>
-        {{authenticatedUser.username}}
+      {{ authenticatedUser.username }}
     </v-chip>
 
     <!-- User Profile item (Small screen) -->
     <v-avatar
       @click="onProfileClick"
-      v-if="$vuetify.breakpoint.smAndDown && authenticatedUser.profilePictureObjectUrl"
+      v-if="
+        $vuetify.breakpoint.smAndDown &&
+          authenticatedUser.profilePictureObjectUrl
+      "
       size="28"
       small
     >
@@ -50,12 +50,16 @@
     </v-avatar>
     <v-avatar
       size="28"
-      v-else-if="$vuetify.breakpoint.smAndDown && !authenticatedUser.profilePictureObjectUrl"
-      @click="onProfileClick">
+      v-else-if="
+        $vuetify.breakpoint.smAndDown &&
+          !authenticatedUser.profilePictureObjectUrl
+      "
+      @click="onProfileClick"
+    >
       <v-img
         :src="require('@/assets/default-user-avatar.webp')"
         alt="Virgina Woolf in Hue"
-        :style="{backgroundColor: userColor}"
+        :style="{ backgroundColor: userColor }"
       />
     </v-avatar>
 
@@ -66,9 +70,9 @@
     ></v-app-bar-nav-icon>
 
     <!-- The Logout confirmation dialog -->
-    <TafalkLogoutConfirmationDialog/>
+    <TafalkLogoutConfirmationDialog />
     <!-- The user language edit dialog -->
-    <UserLanguageEditDialog/>
+    <UserLanguageEditDialog />
   </div>
 </template>
 
@@ -79,7 +83,7 @@ import UserLanguageEditDialog from '@/components/profile/dialogs/UserLanguageEdi
 
 export default {
   name: 'TheHeaderAuthenticatedUserItems',
-  data () {
+  data() {
     return {
       userUnreadNotificationCount: 3,
       userUnreadMessageCount: 3
@@ -94,13 +98,13 @@ export default {
       getAuthenticatedUser: 'authenticatedUser/getUser',
       getMenuDrawer: 'shared/getMenuDrawer'
     }),
-    authenticatedUser () {
+    authenticatedUser() {
       return this.getAuthenticatedUser
     },
-    userColor () {
+    userColor() {
       return this.authenticatedUser.color
     },
-    menuDrawer () {
+    menuDrawer() {
       return this.menuDrawer
     }
   },
@@ -109,11 +113,14 @@ export default {
       setMenuDrawer: 'shared/setMenuDrawer',
       toggleMenuDrawer: 'shared/toggleMenuDrawer'
     }),
-    toggleDrawer () {
+    toggleDrawer() {
       this.toggleMenuDrawer()
     },
-    onProfileClick () {
-      this.$router.push({ name: 'profile', params: { username: this.authenticatedUser.username } })
+    onProfileClick() {
+      this.$router.push({
+        name: 'profile',
+        params: { username: this.authenticatedUser.username }
+      })
     }
   }
 }

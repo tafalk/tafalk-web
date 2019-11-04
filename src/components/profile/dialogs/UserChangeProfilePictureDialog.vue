@@ -1,11 +1,19 @@
 <template>
-  <v-dialog v-model="getIsChangeProfilePictureDialogVisible" persistent max-width="750px">
+  <v-dialog
+    v-model="getIsChangeProfilePictureDialogVisible"
+    persistent
+    max-width="750px"
+  >
     <v-card>
       <v-card-title primary-title>
         <div>
-          <h3 class="headline mb-0">{{ $t('user.profilePicture.dialog.title') }}</h3>
+          <h3 class="headline mb-0">
+            {{ $t('user.profilePicture.dialog.title') }}
+          </h3>
           <div>
-            <span class="grey--text">{{ $t('user.profilePicture.dialog.subtitle') }}</span>
+            <span class="grey--text">{{
+              $t('user.profilePicture.dialog.subtitle')
+            }}</span>
           </div>
         </div>
       </v-card-title>
@@ -31,14 +39,16 @@
           text
           color="primary"
           @click.stop="closeAndClearDialog"
-        >{{ $t('common.options.cancelButtonText') }}</v-btn>
+          >{{ $t('common.options.cancelButtonText') }}</v-btn
+        >
         <v-btn
           aria-label="Upload"
           color="primary"
           @click.stop="onUploadSelectedProfilePictureClick"
           :loading="uploadLoading"
           :disabled="uploadLoading || !file"
-        >{{ $t('common.options.uploadButtonText') }}</v-btn>
+          >{{ $t('common.options.uploadButtonText') }}</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -51,7 +61,7 @@ import { GenerateProfilePictureFileName } from '@/utils/generators'
 export default {
   name: 'UserChangeProfilePictureDialog',
   props: ['userId', 'existingProfilePictureObjectUrl'],
-  data () {
+  data() {
     return {
       file: null,
       imageUrl: null,
@@ -61,18 +71,20 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getIsChangeProfilePictureDialogVisible: 'visitedUser/dialog/getIsChangeProfilePictureDialogVisible'
+      getIsChangeProfilePictureDialogVisible:
+        'visitedUser/dialog/getIsChangeProfilePictureDialogVisible'
     })
   },
   methods: {
     ...mapMutations({
-      setIsChangeProfilePictureDialogVisible: 'visitedUser/dialog/setIsChangeProfilePictureDialogVisible'
+      setIsChangeProfilePictureDialogVisible:
+        'visitedUser/dialog/setIsChangeProfilePictureDialogVisible'
     }),
     ...mapActions({
       setProfilePicture: 'visitedUser/setProfilePicture',
       setNewSiteError: 'shared/setNewSiteError'
     }),
-    onFileChange () {
+    onFileChange() {
       if (!this.file) {
         this.clearDialog()
       }
@@ -82,7 +94,7 @@ export default {
       }
       reader.readAsDataURL(this.file)
     },
-    async onUploadSelectedProfilePictureClick () {
+    async onUploadSelectedProfilePictureClick() {
       this.uploadLoading = true
 
       // A file is chosen, call vuex action
@@ -103,11 +115,11 @@ export default {
         this.clearDialog()
       }
     },
-    closeAndClearDialog () {
+    closeAndClearDialog() {
       this.setIsChangeProfilePictureDialogVisible(false)
       this.clearDialog()
     },
-    clearDialog () {
+    clearDialog() {
       this.uploadLoading = false
       this.file = null
       this.imageUrl = null

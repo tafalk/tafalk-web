@@ -1,45 +1,47 @@
 <template>
-<v-container text-xs-center>
-  <v-row>
-    <v-col cols="6" offset="3" class="text-center">
-      <v-form v-model="valid" @submit.prevent="onConfirmBtnClick">
-        <v-text-field
-          :label="$t('auth.confirmRegistration.userNameLabel')"
-          v-model="username"
-          autofocus
-          :counter="maxUsernameLength"
-          :min="minUsernameLength"
-          :max="maxUsernameLength"
-          :maxlength="maxUsernameLength"
-          :rules="usernameRules"
-          prepend-icon="mdi-lock"
-        ></v-text-field>
-        <v-text-field
-          :label="$t('auth.confirmRegistration.verificationCodeLabel')"
-          v-model="verificationCode"
-          prepend-icon="mdi-message-processing"
-        ></v-text-field>
-        <v-btn
-          aria-label="Confirm"
-          color="primary"
-          :loading="loadingSend"
-          :disabled="!valid || loadingSend"
-          type="submit"
-          class="ma-3"
-        >{{ $t('auth.confirmRegistration.confirmButtonText') }}</v-btn>
-        <v-btn
-          aria-label="Resend"
-          :loading="loadingResend"
-          :disabled="loadingResend"
-          @click="onResendBtnClick"
-        >{{ $t('auth.confirmRegistration.resendButtonText') }}</v-btn>
-      </v-form>
-    </v-col>
-  </v-row>
-</v-container>
+  <v-container text-xs-center>
+    <v-row>
+      <v-col cols="6" offset="3" class="text-center">
+        <v-form v-model="valid" @submit.prevent="onConfirmBtnClick">
+          <v-text-field
+            :label="$t('auth.confirmRegistration.userNameLabel')"
+            v-model="username"
+            autofocus
+            :counter="maxUsernameLength"
+            :min="minUsernameLength"
+            :max="maxUsernameLength"
+            :maxlength="maxUsernameLength"
+            :rules="usernameRules"
+            prepend-icon="mdi-lock"
+          ></v-text-field>
+          <v-text-field
+            :label="$t('auth.confirmRegistration.verificationCodeLabel')"
+            v-model="verificationCode"
+            prepend-icon="mdi-message-processing"
+          ></v-text-field>
+          <v-btn
+            aria-label="Confirm"
+            color="primary"
+            :loading="loadingSend"
+            :disabled="!valid || loadingSend"
+            type="submit"
+            class="ma-3"
+            >{{ $t('auth.confirmRegistration.confirmButtonText') }}</v-btn
+          >
+          <v-btn
+            aria-label="Resend"
+            :loading="loadingResend"
+            :disabled="loadingResend"
+            @click="onResendBtnClick"
+            >{{ $t('auth.confirmRegistration.resendButtonText') }}</v-btn
+          >
+        </v-form>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
-<script >
+<script>
 import Auth from '@aws-amplify/auth'
 import { Logger } from '@aws-amplify/core'
 import { mapActions } from 'vuex'
@@ -49,7 +51,7 @@ const logger = new Logger('ConfirmRegistrationView')
 
 export default {
   name: 'ConfirmRegistration',
-  data () {
+  data() {
     return {
       valid: true,
       loadingSend: false,
@@ -63,8 +65,12 @@ export default {
       // Rules
       usernameRules: [
         v => !!v || this.$i18n.t('auth.message.validation.userNameReq'),
-        v => (v && v.length > 1) || this.$i18n.t('auth.message.validation.userNameLengthLowLimit'),
-        v => (v && v.length <= 24) || this.$i18n.t('auth.message.validation.userNameLengthUpLimit')
+        v =>
+          (v && v.length > 1) ||
+          this.$i18n.t('auth.message.validation.userNameLengthLowLimit'),
+        v =>
+          (v && v.length <= 24) ||
+          this.$i18n.t('auth.message.validation.userNameLengthUpLimit')
       ]
     }
   },
@@ -76,11 +82,16 @@ export default {
     }),
 
     // Click
-    async onConfirmBtnClick () {
+    async onConfirmBtnClick() {
       this.loadingSend = true
       try {
-        const data = await Auth.confirmSignUp(this.username, this.verificationCode)
-        this.setNewNoTimeoutSiteSuccess(this.$i18n.t('auth.confirmRegistration.message.success'))
+        const data = await Auth.confirmSignUp(
+          this.username,
+          this.verificationCode
+        )
+        this.setNewNoTimeoutSiteSuccess(
+          this.$i18n.t('auth.confirmRegistration.message.success')
+        )
         setTimeout(() => {
           this.$router.push({ name: 'login' })
         }, this.delayBeforeRouteInMillis)
@@ -91,7 +102,7 @@ export default {
         this.loadingSend = false
       }
     },
-    async onResendBtnClick () {
+    async onResendBtnClick() {
       this.loadingResend = true
       try {
         await Auth.resendSignUp(this.username)

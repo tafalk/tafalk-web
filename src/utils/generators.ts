@@ -1,14 +1,26 @@
-import { geocodingRootUrl, cantoBookmarkId, cantoPreBookmarkClass, cantoBookmarkClass, cantoPostBookmarkClass, cantoBookmarkHighlightStyle } from './constants'
+import {
+  geocodingRootUrl,
+  cantoBookmarkId,
+  cantoPreBookmarkClass,
+  cantoBookmarkClass,
+  cantoPostBookmarkClass,
+  cantoBookmarkHighlightStyle
+} from './constants'
 import { MapTilerGeooderConfig } from '@/config'
 
 export const GetPolicyS3BucketRootUrl = () => {
   return `https://${process.env.VUE_APP_S3_SITE_POLICIES_BUCKET}.s3.${process.env.VUE_APP_AWS_REGION}.amazonaws.com/`
 }
 
-export const GenerateProfilePictureFileName = (fileObject: File, userId: string) => {
+export const GenerateProfilePictureFileName = (
+  fileObject: File,
+  userId: string
+) => {
   const profilePicSuffix = '_profilepic'
   const fileExtension = fileObject.name.split('.').pop()
-  return fileExtension ? `${userId}${profilePicSuffix}.${fileExtension}` : `${userId}${profilePicSuffix}`
+  return fileExtension
+    ? `${userId}${profilePicSuffix}.${fileExtension}`
+    : `${userId}${profilePicSuffix}`
 }
 
 export const GetHexColorOfString = (str: string) => {
@@ -18,7 +30,7 @@ export const GetHexColorOfString = (str: string) => {
   }
   let hex = '#'
   for (let j = 0; j < 3; j++) {
-    const value = (hash >> (j * 8)) & 0xFF
+    const value = (hash >> (j * 8)) & 0xff
     hex += ('00' + value.toString(16)).substr(-2)
   }
   return hex
@@ -34,14 +46,28 @@ export const GetCantoLink = (username: string) => {
 }
 
 export const GenerateGeocoderRequestLink = (searchText: string) => {
-  return `${geocodingRootUrl}/q/${encodeURIComponent(searchText)}.js?key=${MapTilerGeooderConfig.apiKey}`
+  return `${geocodingRootUrl}/q/${encodeURIComponent(searchText)}.js?key=${
+    MapTilerGeooderConfig.apiKey
+  }`
 }
 
-export const BookmarkCantoContent = (originalBody: { textContent: any }, indices: Array<number>) => {
+export const BookmarkCantoContent = (
+  originalBody: { textContent: any },
+  indices: Array<number>
+) => {
   if (!originalBody) return originalBody
   const originalText = originalBody.textContent // .trim()
-  if (!indices || indices.length === 0) return `<span class="unbookmarked">${originalText}</span>`
-  return `<span class="${cantoPreBookmarkClass}">${originalText.substring(0, indices[0])}</span><span id="${cantoBookmarkId}" class="${cantoBookmarkClass}" style="${cantoBookmarkHighlightStyle}">${originalText.substring(indices[0], indices[1])}</span><span class="${cantoPostBookmarkClass}">${originalText.substring(indices[1])}</span>`
+  if (!indices || indices.length === 0)
+    return `<span class="unbookmarked">${originalText}</span>`
+  return `<span class="${cantoPreBookmarkClass}">${originalText.substring(
+    0,
+    indices[0]
+  )}</span><span id="${cantoBookmarkId}" class="${cantoBookmarkClass}" style="${cantoBookmarkHighlightStyle}">${originalText.substring(
+    indices[0],
+    indices[1]
+  )}</span><span class="${cantoPostBookmarkClass}">${originalText.substring(
+    indices[1]
+  )}</span>`
 }
 
 export const GetSiblings = (elem: { parentNode: { firstChild: any } }) => {

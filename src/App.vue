@@ -1,16 +1,18 @@
 <template>
   <VApp>
-    <TafalkHeader/>
+    <TafalkHeader />
     <VContent>
       <VContainer>
         <!-- content -->
-        <router-view/>
+        <router-view />
         <!-- site messages -->
-        <TafalkSiteNotificationSnackbar/>
+        <TafalkSiteNotificationSnackbar />
         <!-- first visit intro dialog -->
-        <TafalkFirstVisitIntroDialog v-if="hasVisitedBefore === 'false'"/>
+        <TafalkFirstVisitIntroDialog v-if="hasVisitedBefore === 'false'" />
         <!-- cookie law -->
-        <TafalkCookieLawSnackbar v-if="hasVisitedBefore === 'true' && hasAcceptedCookies === 'false'"/>
+        <TafalkCookieLawSnackbar
+          v-if="hasVisitedBefore === 'true' && hasAcceptedCookies === 'false'"
+        />
       </VContainer>
     </VContent>
   </VApp>
@@ -32,13 +34,13 @@ export default {
     TafalkCookieLawSnackbar,
     TafalkFirstVisitIntroDialog
   },
-  data () {
+  data() {
     return {
       introDismissedKey,
       cookiesAcceptedKey
     }
   },
-  created () {
+  created() {
     // Set time
     this.setNowTime()
 
@@ -48,11 +50,17 @@ export default {
     // Set theme
     this.$vuetify.theme.dark = this.authenticatedUserTheme === 'dark'
   },
-  mounted () {
-    if (!localStorage.getItem(this.introDismissedKey) || localStorage.getItem(this.introDismissedKey) !== 'true') {
+  mounted() {
+    if (
+      !localStorage.getItem(this.introDismissedKey) ||
+      localStorage.getItem(this.introDismissedKey) !== 'true'
+    ) {
       this.hasVisitedBefore = 'false'
     }
-    if (!localStorage.getItem(this.cookiesAcceptedKey) || localStorage.getItem(this.cookiesAcceptedKey) !== 'true') {
+    if (
+      !localStorage.getItem(this.cookiesAcceptedKey) ||
+      localStorage.getItem(this.cookiesAcceptedKey) !== 'true'
+    ) {
       this.hasAcceptedCookies = 'false'
     }
   },
@@ -62,26 +70,34 @@ export default {
       getHasVisitedBefore: 'getHasVisitedBefore',
       getHasAcceptedCookies: 'getHasAcceptedCookies'
     }),
-    authenticatedUser () {
+    authenticatedUser() {
       return this.getAuthenticatedUser
     },
-    authenticatedUserTheme () {
+    authenticatedUserTheme() {
       return this.authenticatedUser ? this.authenticatedUser.theme : 'light'
     },
-    authenticatedUserLanguage () {
+    authenticatedUserLanguage() {
       return (this.authenticatedUser || {}).language
     },
     hasVisitedBefore: {
-      get: function () { return this.getHasVisitedBefore },
-      set: function (val) { this.setHasVisitedBefore(val) }
+      get: function() {
+        return this.getHasVisitedBefore
+      },
+      set: function(val) {
+        this.setHasVisitedBefore(val)
+      }
     },
     hasAcceptedCookies: {
-      get: function () { return this.getHasAcceptedCookies },
-      set: function (val) { this.setHasAcceptedCookies(val) }
+      get: function() {
+        return this.getHasAcceptedCookies
+      },
+      set: function(val) {
+        this.setHasAcceptedCookies(val)
+      }
     }
   },
   watch: {
-    authenticatedUserTheme (val) {
+    authenticatedUserTheme(val) {
       this.$vuetify.theme.dark = val === 'dark'
     }
   },
