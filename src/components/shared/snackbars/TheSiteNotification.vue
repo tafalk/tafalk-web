@@ -4,7 +4,7 @@
     :color="siteNotificationType"
     :timeout="siteNotificationTimeout"
   >
-  {{ siteNotificationText }}
+    {{ siteNotificationText }}
     <v-btn
       aria-label="Close"
       dark
@@ -22,9 +22,8 @@ import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'TheSiteNotification',
-  data () {
-    return {
-    }
+  data() {
+    return {}
   },
   computed: {
     ...mapGetters({
@@ -32,26 +31,26 @@ export default {
     }),
     isSiteNotificationVisible: {
       // getter
-      get: function () {
+      get: function() {
         return this.getSiteNotification.isSiteNotificationVisible
       },
       // setter
-      set: function (newValue) {
+      set: function(newValue) {
         this.setIsSiteNotificationVisible(newValue)
       }
     },
-    siteNotificationText () {
+    siteNotificationText() {
       return this.getSiteNotification.siteNotificationText
     },
-    siteNotificationType () {
+    siteNotificationType() {
       return this.getSiteNotification.siteNotificationType
     },
-    siteNotificationTimeout () {
+    siteNotificationTimeout() {
       return this.getSiteNotification.siteNotificationTimeout
     }
   },
   watch: {
-    isSiteNotificationVisible (val) {
+    isSiteNotificationVisible(val) {
       if (!val) {
         this.clearSiteNotification()
       }

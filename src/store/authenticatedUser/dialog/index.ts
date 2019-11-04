@@ -8,49 +8,63 @@ const state = {
 }
 
 const getters = {
-  getIsLogoutConfirmationDialogVisible (state: any) {
+  getIsLogoutConfirmationDialogVisible(state: any) {
     return state.isLogoutConfirmationDialogVisible
   },
-  getIsUserInfoEditDialogVisible (state: any) {
+  getIsUserInfoEditDialogVisible(state: any) {
     return state.isUserInfoEditDialogVisible
   },
-  getIsUserPrivacyEditDialogVisible (state: any) {
+  getIsUserPrivacyEditDialogVisible(state: any) {
     return state.isUserPrivacyEditDialogVisible
   },
-  getIsUserAccountDeleteConfirmationDialogVisible (state: any) {
+  getIsUserAccountDeleteConfirmationDialogVisible(state: any) {
     return state.isUserAccountDeleteConfirmationDialogVisible
   },
-  getIsUserProfilePictureChangeDialogVisible (state: any) {
+  getIsUserProfilePictureChangeDialogVisible(state: any) {
     return state.isUserProfilePictureChangeDialogVisible
   },
-  getIsLanguageChooseDialogVisible (state: any) {
+  getIsLanguageChooseDialogVisible(state: any) {
     return state.isLanguageChooseDialogVisible
   }
 }
 
 const mutations = {
-  setIsLogoutConfirmationDialogVisible (state: any, isLogoutConfirmationDialogVisible: any) {
+  setIsLogoutConfirmationDialogVisible(
+    state: any,
+    isLogoutConfirmationDialogVisible: any
+  ) {
     state.isLogoutConfirmationDialogVisible = isLogoutConfirmationDialogVisible
   },
-  setIsUserInfoEditDialogVisible (state: any, isUserInfoEditDialogVisible: any) {
+  setIsUserInfoEditDialogVisible(state: any, isUserInfoEditDialogVisible: any) {
     state.isUserInfoEditDialogVisible = isUserInfoEditDialogVisible
   },
-  setIsUserPrivacyEditDialogVisible (state: any, isUserPrivacyEditDialogVisible: any) {
+  setIsUserPrivacyEditDialogVisible(
+    state: any,
+    isUserPrivacyEditDialogVisible: any
+  ) {
     state.isUserPrivacyEditDialogVisible = isUserPrivacyEditDialogVisible
   },
-  setIsUserAccountDeleteConfirmationDialogVisible (state: any, isUserAccountDeleteConfirmationDialogVisible: any) {
+  setIsUserAccountDeleteConfirmationDialogVisible(
+    state: any,
+    isUserAccountDeleteConfirmationDialogVisible: any
+  ) {
     state.isUserAccountDeleteConfirmationDialogVisible = isUserAccountDeleteConfirmationDialogVisible
   },
-  setIsUserProfilePictureChangeDialogVisible (state: any, isUserProfilePictureChangeDialogVisible: any) {
+  setIsUserProfilePictureChangeDialogVisible(
+    state: any,
+    isUserProfilePictureChangeDialogVisible: any
+  ) {
     state.isUserProfilePictureChangeDialogVisible = isUserProfilePictureChangeDialogVisible
   },
-  setIsLanguageChooseDialogVisible (state: any, isLanguageChooseDialogVisible: any) {
+  setIsLanguageChooseDialogVisible(
+    state: any,
+    isLanguageChooseDialogVisible: any
+  ) {
     state.isLanguageChooseDialogVisible = isLanguageChooseDialogVisible
   }
 }
 
-const actions = {
-}
+const actions = {}
 
 export default {
   namespaced: true,

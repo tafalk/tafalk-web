@@ -1,29 +1,29 @@
-import Vue from 'vue';
-import vuetify from '@/plugins/vuetify';
-import App from './App.vue';
-import router from './router';
-import store from './store';
-import './registerServiceWorker';
-import i18n from './i18n';
+import Vue from 'vue'
+import vuetify from '@/plugins/vuetify'
+import App from './App.vue'
+import router from './router'
+import store from './store'
+import './registerServiceWorker'
+import i18n from './i18n'
 import {
   GoogleRecaptchaV3Config,
   GoogleAnalyticsConfig,
   AwsConfig
-} from './config';
-import { GetPolicyS3BucketRootUrl } from './utils/generators';
-import Amplify from '@aws-amplify/core';
-import PubSub from '@aws-amplify/pubsub';
-import axios from 'axios';
-import InfiniteLoading from 'vue-infinite-loading';
-import { VueReCaptcha } from 'vue-recaptcha-v3';
-import VueAnalytics from 'vue-analytics';
+} from './config'
+import { GetPolicyS3BucketRootUrl } from './utils/generators'
+import Amplify from '@aws-amplify/core'
+import PubSub from '@aws-amplify/pubsub'
+import axios from 'axios'
+import InfiniteLoading from 'vue-infinite-loading'
+import { VueReCaptcha } from 'vue-recaptcha-v3'
+import VueAnalytics from 'vue-analytics'
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = false
 
 // Instance Property for axios base objects
 Vue.prototype.$httpSitePoliciesStorage = axios.create({
   baseURL: GetPolicyS3BucketRootUrl()
-});
+})
 
 // Plugins
 Vue.use(InfiniteLoading, {
@@ -34,22 +34,22 @@ Vue.use(InfiniteLoading, {
     noResults: '',
     noMore: 'see all data above'
   }
-});
+})
 
 Vue.use(VueReCaptcha, {
   siteKey: GoogleRecaptchaV3Config.siteKey,
   loaderOptions: {
     autoHideBadge: true
   }
-});
+})
 
 Vue.use(VueAnalytics, {
   id: GoogleAnalyticsConfig.trackingId
-});
+})
 
 // Configurations
-Amplify.configure(AwsConfig);
-PubSub.configure(AwsConfig);
+Amplify.configure(AwsConfig)
+PubSub.configure(AwsConfig)
 
 new Vue({
   router,
@@ -57,4 +57,4 @@ new Vue({
   vuetify,
   i18n,
   render: h => h(App)
-}).$mount('#app');
+}).$mount('#app')

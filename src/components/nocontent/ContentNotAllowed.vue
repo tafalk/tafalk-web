@@ -6,7 +6,9 @@
           <span class="grey--text"><v-icon size="100">mdi-lock</v-icon></span>
         </v-row>
         <v-row align="center" justify="center">
-          <span class="grey--text headline">{{ $t('nocontent.contentNotAllowed.title') }}</span>
+          <span class="grey--text headline">{{
+            $t('nocontent.contentNotAllowed.title')
+          }}</span>
         </v-row>
       </v-container>
     </v-card-title>
@@ -16,9 +18,8 @@
 <script>
 export default {
   name: 'ContentNotAllowed',
-  data () {
-    return {
-    }
+  data() {
+    return {}
   }
 }
 </script>

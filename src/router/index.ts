@@ -1,17 +1,17 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import store from '@/store';
-import { Logger } from '@aws-amplify/core';
-import Auth from '@aws-amplify/auth';
-import API, { graphqlOperation } from '@aws-amplify/api';
-import Storage from '@aws-amplify/storage';
+import Vue from 'vue'
+import Router from 'vue-router'
+import store from '@/store'
+import { Logger } from '@aws-amplify/core'
+import Auth from '@aws-amplify/auth'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import Storage from '@aws-amplify/storage'
 
-import { GetUserProfileData } from '@/graphql/Profile';
-import { GetHexColorOfString } from '@/utils/generators';
+import { GetUserProfileData } from '@/graphql/Profile'
+import { GetHexColorOfString } from '@/utils/generators'
 
-Vue.use(Router);
+Vue.use(Router)
 
-const logger = new Logger('Router');
+const logger = new Logger('Router')
 
 const router = new Router({
   mode: 'history',
@@ -128,76 +128,76 @@ const router = new Router({
         import(/* webpackChunkName: "pour" */ '../pages/nocontent/NotFound.vue')
     }
   ]
-});
+})
 
 router.beforeEach(async (to, from, next) => {
   // Set unready
-  store.commit('setIsPageReady', false);
-  store.commit('route/setIsRouteChanging', true);
-  store.commit('route/setCurrentRoutePath', to.path);
+  store.commit('setIsPageReady', false)
+  store.commit('route/setIsRouteChanging', true)
+  store.commit('route/setCurrentRoutePath', to.path)
 
-  let currentAuthenticatedUser;
+  let currentAuthenticatedUser
 
   try {
-    currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
+    currentAuthenticatedUser = await Auth.currentAuthenticatedUser()
   } catch (err) {
     if (err.toString() === 'not authenticated') {
       // No Authenticated user
       if (to.matched.some(rec => rec.meta.requiresAuth)) {
-        store.commit('authenticatedUser/clearUser');
-        next({ path: '/auth/login', query: { redirect: to.fullPath } });
-        return;
+        store.commit('authenticatedUser/clearUser')
+        next({ path: '/auth/login', query: { redirect: to.fullPath } })
+        return
       }
     } else {
       logger.error(
         'Unexpected error getting autheticated user info',
         err.message || err
-      );
+      )
     }
   }
 
   try {
     if (!currentAuthenticatedUser) {
       // auth is null, do not check
-      next();
-      return;
+      next()
+      return
     }
     // Check the store for the authenticated user data
-    const storeAuthenticatedUser = store.getters['authenticatedUser/getUser'];
+    const storeAuthenticatedUser = store.getters['authenticatedUser/getUser']
     if (storeAuthenticatedUser && storeAuthenticatedUser.username) {
-      next();
+      next()
     } else {
       const userProfiles: any = await API.graphql(
         graphqlOperation(GetUserProfileData, {
           username: currentAuthenticatedUser.username
         })
-      );
-      const userProfile = userProfiles.data.getUserByUsername[0];
+      )
+      const userProfile = userProfiles.data.getUserByUsername[0]
 
       const profilePictureObjectUrl = userProfile.profilePictureKey
         ? await Storage.get(userProfile.profilePictureKey, {
             level: 'protected',
             identityId: userProfile.cognitoIdentityId
           })
-        : null;
+        : null
 
       const authenticatedUserStoreObject = {
         ...userProfile,
         profilePictureObjectUrl,
         color: GetHexColorOfString(userProfile.username)
-      };
-      store.commit('authenticatedUser/setUser', authenticatedUserStoreObject);
-      next();
+      }
+      store.commit('authenticatedUser/setUser', authenticatedUserStoreObject)
+      next()
     }
   } catch (err) {
-    logger.error('Unexpected Error during before-routing', err.message || err);
-    next();
+    logger.error('Unexpected Error during before-routing', err.message || err)
+    next()
   }
-});
+})
 
 router.afterEach(() => {
   // Hide progress line
-  store.commit('route/setIsRouteChanging', false);
-});
+  store.commit('route/setIsRouteChanging', false)
+})
 
-export default router;
+export default router

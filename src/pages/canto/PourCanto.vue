@@ -1,16 +1,29 @@
 <template>
-  <tafalk-stream-authorization-required v-if="!isAllowed"/>
+  <tafalk-stream-authorization-required v-if="!isAllowed" />
   <v-container v-else>
-    <tafalk-canto-introduction v-if="isCantoNew"/>
+    <tafalk-canto-introduction v-if="isCantoNew" />
     <v-card flat>
       <v-toolbar dense flat>
         <v-toolbar-title v-if="processState === 'saved'">
-          <span class="grey--text"><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.savedLabel') }}</span>
+          <span class="grey--text"
+            ><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{
+              $t('stream.pour.savedLabel')
+            }}</span
+          >
         </v-toolbar-title>
         <v-toolbar-title v-else-if="processState === 'saving'">
-          <span class="grey--text"><v-icon>mdi-cached</v-icon>&nbsp;{{ $t('stream.pour.savingLabel') }}</span>
+          <span class="grey--text"
+            ><v-icon>mdi-cached</v-icon>&nbsp;{{
+              $t('stream.pour.savingLabel')
+            }}</span
+          >
         </v-toolbar-title>
-        <v-toolbar-title v-else-if="processState === 'error'"><span class="grey--text"><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{ $t('stream.pour.saveErrorLabel') }}</span>
+        <v-toolbar-title v-else-if="processState === 'error'"
+          ><span class="grey--text"
+            ><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{
+              $t('stream.pour.saveErrorLabel')
+            }}</span
+          >
         </v-toolbar-title>
       </v-toolbar>
       <v-form>
@@ -53,7 +66,7 @@ const logger = new Logger('PourCanto')
 
 export default {
   name: 'PourCanto',
-  data () {
+  data() {
     return {
       body: null,
       cantoStatus: 'OK',
@@ -76,17 +89,20 @@ export default {
       getCanto: 'canto/getCanto',
       getIsPageReady: 'getIsPageReady'
     }),
-    authenticatedUser () {
+    authenticatedUser() {
       return this.getAuthenticatedUser
     },
-    authenticatedUserId () {
+    authenticatedUserId() {
       return this.authenticatedUser != null ? this.authenticatedUser.id : null
     },
-    isAllowed () {
-      return this.authenticatedUser && this.authenticatedUser.username === this.authorUsername
+    isAllowed() {
+      return (
+        this.authenticatedUser &&
+        this.authenticatedUser.username === this.authorUsername
+      )
     }
   },
-  created () {
+  created() {
     window.addEventListener('beforeunload', this.onBeforeUnload)
     this.setIsPageReady(false)
     this.authorUsername = this.$route.params.username
@@ -102,41 +118,51 @@ export default {
           this.body = currentBody
           this.isCantoCreated = true
         }
-      }).catch(err => {
-        logger.error('Error occurred while getting canto info', JSON.stringify(err))
+      })
+      .catch(err => {
+        logger.error(
+          'Error occurred while getting canto info',
+          JSON.stringify(err)
+        )
         this.setNewSiteError(err.message || err)
-      }).finally(() => {
+      })
+      .finally(() => {
         this.setIsPageReady(true)
       })
   },
-  async mounted () {
+  async mounted() {
     // Require confirmation for accidental route changes
     this.setIsRouteChangeSafe(false)
   },
-  async beforeDestroy () {
+  async beforeDestroy() {
     window.removeEventListener('beforeunload', this.onBeforeUnload)
   },
   watch: {
     // whenever 'canto' changes, this function will run
-    async body (newBody, oldBody) {
+    async body(newBody, oldBody) {
       if (!this.getIsPageReady || IsNullOrWhitespace(newBody)) return
 
       if (oldBody == null || oldBody.length === 0) {
         // Old body is null or empty, so create the entry here
         try {
           this.processState = this.savingStateConstant
-          await API.graphql(graphqlOperation(CreateCanto, {
-            // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
-            id: this.authenticatedUserId,
-            body: newBody,
-            startTime: new Date().toISOString(),
-            lastUpdateTime: new Date().toISOString(),
-            status: this.cantoStatus
-          }))
+          await API.graphql(
+            graphqlOperation(CreateCanto, {
+              // Setting the optional values to null, because DynamoDB rejects empty strings -but accepts null anyway
+              id: this.authenticatedUserId,
+              body: newBody,
+              startTime: new Date().toISOString(),
+              lastUpdateTime: new Date().toISOString(),
+              status: this.cantoStatus
+            })
+          )
           this.processState = this.savedStateConstant
           this.isCantoCreated = true
         } catch (err) {
-          logger.error('An error occurred while creating the canto', err.message || JSON.stringify(err))
+          logger.error(
+            'An error occurred while creating the canto',
+            err.message || JSON.stringify(err)
+          )
           this.processState = this.errorStateConstant
           this.setNewSiteError(err.message || err)
         }
@@ -151,7 +177,7 @@ export default {
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError'
     }),
-    onBodyBackspaceOrDeleteKeydown (event) {
+    onBodyBackspaceOrDeleteKeydown(event) {
       const exactKey = GetKeyName(event.keyCode)
 
       // get the selected text
@@ -172,7 +198,8 @@ export default {
           // backspace keydown
 
           // Update body
-          this.body = initialBody.substring(0, cursorPos - 1) +
+          this.body =
+            initialBody.substring(0, cursorPos - 1) +
             StrikethroughStr(initialBody.charAt(cursorPos - 1)) +
             this.body.substring(cursorPos, initialBody.length)
 
@@ -191,7 +218,8 @@ export default {
           */
 
           // Update body
-          this.body = initialBody.substring(0, cursorPos) +
+          this.body =
+            initialBody.substring(0, cursorPos) +
             StrikethroughStr(initialBody.charAt(cursorPos)) +
             this.body.substring(cursorPos + 1, initialBody.length)
 
@@ -205,7 +233,7 @@ export default {
         // There is a selection, literally
       }
     },
-    onBodyBackspaceOrDeleteKeyup (event) {
+    onBodyBackspaceOrDeleteKeyup(event) {
       const bodyTextArea = this.$refs.pourBody.$el.querySelector('textarea')
       const bodyTextLength = bodyTextArea.value.length
 
@@ -217,46 +245,51 @@ export default {
       }, this.deleteTimeToIdle)
     },
     // disable pasting
-    onPaste (event) {
+    onPaste(event) {
       event.preventDefault()
     },
     // disable cutting
-    onCut (event) {
+    onCut(event) {
       event.preventDefault()
     },
-    onMouseDown (event) {
+    onMouseDown(event) {
       event.preventDefault()
     },
-    onMouseUp (event) {
+    onMouseUp(event) {
       event.preventDefault()
     },
-    async onDefaultKeyup (event) {
+    async onDefaultKeyup(event) {
       if (IsNullOrWhitespace(this.body) || !this.isCantoCreated) return
 
       try {
         this.processState = this.savingStateConstant
-        await API.graphql(graphqlOperation(UpdateCantoBody, {
-          id: this.authenticatedUserId,
-          body: this.body,
-          lastUpdateTime: new Date().toISOString()
-        }))
+        await API.graphql(
+          graphqlOperation(UpdateCantoBody, {
+            id: this.authenticatedUserId,
+            body: this.body,
+            lastUpdateTime: new Date().toISOString()
+          })
+        )
         this.processState = this.savedStateConstant
       } catch (err) {
-        logger.error('An error occurred while updating the canto', err.message || JSON.stringify(err))
+        logger.error(
+          'An error occurred while updating the canto',
+          err.message || JSON.stringify(err)
+        )
         this.processState = this.errorStateConstant
         this.setNewSiteError(err.message || err)
       }
     },
-    onDefaultKeydown (event) {
+    onDefaultKeydown(event) {
       // Disable Undo with keyboard
       if (event.ctrlKey && event.key === 'z') {
         event.preventDefault()
       }
     },
-    onRightClick (event) {
+    onRightClick(event) {
       // already prevented. do nothing
     },
-    async onBeforeUnload (event) {
+    async onBeforeUnload(event) {
       // An attempt to leave? Save last state immediately
       event.preventDefault()
       return ''
@@ -265,6 +298,4 @@ export default {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

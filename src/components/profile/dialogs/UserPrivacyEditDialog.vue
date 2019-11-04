@@ -1,20 +1,24 @@
 <template>
-  <v-dialog v-model="getIsUserPrivacyEditDialogVisible" persistent max-width="750px">
+  <v-dialog
+    v-model="getIsUserPrivacyEditDialogVisible"
+    persistent
+    max-width="750px"
+  >
     <v-card>
       <v-card-title class="headline" primary-title>
         {{ $t('user.edit.privacy.dialog.title') }}
       </v-card-title>
       <v-card-text>
-      <v-form>
-        <!-- Allow Direct Messages -->
-        <v-select
-          :label="$t('user.edit.privacy.dialog.allowDmLabel')"
-          :items="allowDirectMessagesOptions"
-          v-model="allowDirectMessagesModel"
-          return-object
-          persistent-hint
-        ></v-select>
-      </v-form>
+        <v-form>
+          <!-- Allow Direct Messages -->
+          <v-select
+            :label="$t('user.edit.privacy.dialog.allowDmLabel')"
+            :items="allowDirectMessagesOptions"
+            v-model="allowDirectMessagesModel"
+            return-object
+            persistent-hint
+          ></v-select>
+        </v-form>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -23,13 +27,15 @@
           color="blue darken-1"
           text
           @click.native="setIsUserPrivacyEditDialogVisible(false)"
-        >{{ $t('common.options.closeButtonText') }}</v-btn>
+          >{{ $t('common.options.closeButtonText') }}</v-btn
+        >
         <v-btn
           aria-label="Save"
           color="blue darken-1"
           text
           @click.native="onSavePrivacyEditClick"
-        >{{ $t('common.options.saveButtonText') }}</v-btn>
+          >{{ $t('common.options.saveButtonText') }}</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -40,13 +46,15 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
   name: 'UserPrivacyEditDialog',
   props: ['userId', 'allowDirectMessages'],
-  data () {
+  data() {
     return {
       profilePrivacyModel: null,
       allowDirectMessagesModel: null,
       allowDirectMessagesOptions: [
         {
-          text: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayYes'),
+          text: this.$i18n.t(
+            'user.edit.privacy.dialog.allowDmOptionDisplayYes'
+          ),
           value: true
         },
         {
@@ -56,25 +64,29 @@ export default {
       ]
     }
   },
-  created () {
-    this.allowDirectMessagesModel = this.getObjectFromAllowDirectMessagesValue(this.allowDirectMessages)
+  created() {
+    this.allowDirectMessagesModel = this.getObjectFromAllowDirectMessagesValue(
+      this.allowDirectMessages
+    )
   },
   computed: {
     ...mapGetters({
-      getIsUserPrivacyEditDialogVisible: 'visitedUser/dialog/getIsUserPrivacyEditDialogVisible'
+      getIsUserPrivacyEditDialogVisible:
+        'visitedUser/dialog/getIsUserPrivacyEditDialogVisible'
     }),
-    userPrivacyEditDialog () {
+    userPrivacyEditDialog() {
       return this.getUserPrivacyEditDialog
     }
   },
   methods: {
     ...mapMutations({
-      setIsUserPrivacyEditDialogVisible: 'visitedUser/dialog/setIsUserPrivacyEditDialogVisible'
+      setIsUserPrivacyEditDialogVisible:
+        'visitedUser/dialog/setIsUserPrivacyEditDialogVisible'
     }),
     ...mapActions({
       setProfilePrivacy: 'visitedUser/setProfilePrivacy'
     }),
-    onSavePrivacyEditClick () {
+    onSavePrivacyEditClick() {
       this.setProfilePrivacy({
         userId: this.userId,
         allowDirectMessages: this.allowDirectMessagesModel.value
@@ -82,10 +94,12 @@ export default {
 
       this.setIsUserPrivacyEditDialogVisible(false)
     },
-    getObjectFromAllowDirectMessagesValue (val) {
+    getObjectFromAllowDirectMessagesValue(val) {
       if (val) {
         return {
-          text: this.$i18n.t('user.edit.privacy.dialog.allowDmOptionDisplayYes'),
+          text: this.$i18n.t(
+            'user.edit.privacy.dialog.allowDmOptionDisplayYes'
+          ),
           value: true
         }
       }

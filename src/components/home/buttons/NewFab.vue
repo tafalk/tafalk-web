@@ -1,10 +1,10 @@
 <template>
   <v-speed-dial
-      v-model="fab"
-      bottom
-      right
-      fixed
-      transition="slide-x-reverse-transition"
+    v-model="fab"
+    bottom
+    right
+    fixed
+    transition="slide-x-reverse-transition"
   >
     <template v-slot:activator>
       <v-btn
@@ -61,7 +61,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'NewFab',
-  data () {
+  data() {
     return {
       fab: null,
       mainButtonColor: 'pink',
@@ -73,21 +73,23 @@ export default {
     ...mapGetters({
       getAuthenticatedUser: 'authenticatedUser/getUser'
     }),
-    authenticatedUser () {
+    authenticatedUser() {
       return this.getAuthenticatedUser
     }
   },
   methods: {
-    onPourNewStreamClick () {
+    onPourNewStreamClick() {
       // Route to Account Deleted Page
       this.$router.push({ name: 'pourStream' })
     },
-    onOpenCantoClick () {
-      this.$router.push({ name: 'pourCanto', params: { username: this.authenticatedUser.username } })
+    onOpenCantoClick() {
+      this.$router.push({
+        name: 'pourCanto',
+        params: { username: this.authenticatedUser.username }
+      })
     }
   }
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

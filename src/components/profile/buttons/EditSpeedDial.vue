@@ -59,7 +59,7 @@ import { mapMutations } from 'vuex'
 
 export default {
   name: 'EditSpeedDial',
-  data () {
+  data() {
     return {
       fab: false,
       mainButtonColor: 'cyan'
@@ -67,17 +67,20 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setIsUserInfoEditDialogVisible: 'visitedUser/dialog/setIsUserInfoEditDialogVisible',
-      setIsUserPrivacyEditDialogVisible: 'visitedUser/dialog/setIsUserPrivacyEditDialogVisible',
-      setIsDeleteAccountConfirmationDialogVisible: 'visitedUser/dialog/setIsDeleteAccountConfirmationDialogVisible'
+      setIsUserInfoEditDialogVisible:
+        'visitedUser/dialog/setIsUserInfoEditDialogVisible',
+      setIsUserPrivacyEditDialogVisible:
+        'visitedUser/dialog/setIsUserPrivacyEditDialogVisible',
+      setIsDeleteAccountConfirmationDialogVisible:
+        'visitedUser/dialog/setIsDeleteAccountConfirmationDialogVisible'
     }),
-    onEditInfoFabClick () {
+    onEditInfoFabClick() {
       this.setIsUserInfoEditDialogVisible(true)
     },
-    onEditPrivacyFabClick () {
+    onEditPrivacyFabClick() {
       this.setIsUserPrivacyEditDialogVisible(true)
     },
-    onDeleteAccountFabClick () {
+    onDeleteAccountFabClick() {
       this.setIsDeleteAccountConfirmationDialogVisible(true)
     }
   }

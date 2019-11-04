@@ -1,7 +1,13 @@
 <template>
-  <v-dialog v-model="getIsDeleteAccountConfirmationDialogVisible" persistent max-width="290">
+  <v-dialog
+    v-model="getIsDeleteAccountConfirmationDialogVisible"
+    persistent
+    max-width="290"
+  >
     <v-card>
-      <v-card-title class="headline">{{ $t('user.deleteAccount.dialog.title') }}</v-card-title>
+      <v-card-title class="headline">{{
+        $t('user.deleteAccount.dialog.title')
+      }}</v-card-title>
       <v-card-text>{{ $t('user.deleteAccount.dialog.body') }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -10,13 +16,15 @@
           color="red darken-1"
           text
           @click.native="onDeleteAccountConfirmClick"
-        >{{ $t('common.options.yesButtonText') }}</v-btn>
+          >{{ $t('common.options.yesButtonText') }}</v-btn
+        >
         <v-btn
           aria-label="No"
           color="light-blue darken-1"
           text
           @click.native="setIsDeleteAccountConfirmationDialogVisible(false)"
-        >{{ $t('common.options.noButtonText') }}</v-btn>
+          >{{ $t('common.options.noButtonText') }}</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -31,24 +39,25 @@ import { DeleteUser } from '@/graphql/Profile'
 export default {
   name: 'DeleteAccountConfirmationDialog',
   props: ['userId'],
-  data () {
-    return {
-    }
+  data() {
+    return {}
   },
   computed: {
     ...mapGetters({
-      getIsDeleteAccountConfirmationDialogVisible: 'visitedUser/dialog/getIsDeleteAccountConfirmationDialogVisible'
+      getIsDeleteAccountConfirmationDialogVisible:
+        'visitedUser/dialog/getIsDeleteAccountConfirmationDialogVisible'
     })
   },
   methods: {
     ...mapMutations({
-      setIsDeleteAccountConfirmationDialogVisible: 'visitedUser/dialog/setIsDeleteAccountConfirmationDialogVisible',
+      setIsDeleteAccountConfirmationDialogVisible:
+        'visitedUser/dialog/setIsDeleteAccountConfirmationDialogVisible',
       clearAuthenticatedUser: 'authenticatedUser/clearUser'
     }),
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError'
     }),
-    async onDeleteAccountConfirmClick () {
+    async onDeleteAccountConfirmClick() {
       const authenticatedCognitoUser = await Auth.currentAuthenticatedUser()
 
       authenticatedCognitoUser.deleteUser((err, result) => {
@@ -58,9 +67,11 @@ export default {
         }
 
         // Remove from DB (UserTable)
-        API.graphql(graphqlOperation(DeleteUser, {
-          userId: this.userId
-        })).then(() => {
+        API.graphql(
+          graphqlOperation(DeleteUser, {
+            userId: this.userId
+          })
+        ).then(() => {
           // Route to Account Deleted Page
           this.$router.push({ name: 'farewell' })
 

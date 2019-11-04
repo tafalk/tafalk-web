@@ -1,5 +1,6 @@
 <template>
-  <v-dialog v-model="isFirstVisitIntroDialogVisible"
+  <v-dialog
+    v-model="isFirstVisitIntroDialogVisible"
     transition="dialog-bottom-transition"
     :fullscreen="$vuetify.breakpoint.xsOnly"
     :hide-overlay="$vuetify.breakpoint.xsOnly"
@@ -18,7 +19,10 @@
             >
               <template v-slot:placeholder>
                 <v-row align="center" justify="center" class="ma-0">
-                  <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
                 </v-row>
               </template>
             </v-img>
@@ -76,7 +80,7 @@ import { siteImagesBaseUrl } from '@/utils/constants'
 
 export default {
   name: 'TheFirstVisiIntroDialog',
-  data () {
+  data() {
     return {
       isFirstVisitIntroDialogVisible: true,
       itemNum: 0,
@@ -106,7 +110,7 @@ export default {
     }
   },
   computed: {
-    itemCount () {
+    itemCount() {
       return this.windowItems.length
     }
   },
@@ -114,13 +118,14 @@ export default {
     ...mapActions({
       setHasVisitedBefore: 'setHasVisitedBefore'
     }),
-    next () {
+    next() {
       this.itemNum = this.itemNum + 1 === this.itemCount ? 0 : this.itemNum + 1
     },
-    prev () {
-      this.itemNum = this.itemNum - 1 < 0 ? this.itemCount - 1 : this.itemNum - 1
+    prev() {
+      this.itemNum =
+        this.itemNum - 1 < 0 ? this.itemCount - 1 : this.itemNum - 1
     },
-    onEndIntroClick () {
+    onEndIntroClick() {
       // TESTME: For testing welcome screen, remove following line as well as the existing localStorage object in browser
       this.setHasVisitedBefore('true')
       this.isFirstVisitIntroDialogVisible = false

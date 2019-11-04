@@ -1,59 +1,59 @@
 <template>
-<v-container>
-  <v-row>
-    <v-col cols="12" md="6" offset-md="3" class="text-center">
-      <v-form v-model="valid" @submit.prevent="onLoginBtnClick">
-        <!-- Form Fields -->
-        <v-text-field
-          :label="$t('auth.login.userNameOrEmailLabel')"
-          v-model="username"
-          autofocus
-          :min="minUsernameOrEmailLength"
-          :max="maxUsernameOrEmailLength"
-          :maxlength="maxUsernameOrEmailLength"
-          :rules="usernameRules"
-          prepend-icon="mdi-account"
-        ></v-text-field>
-        <v-text-field
-          :label="$t('auth.login.passwordLabel')"
-          v-model="password"
-          name="password"
-          :min="minPasswordLength"
-          :rules="passwordRules"
-          type="password"
-          prepend-icon="mdi-lock"
-        ></v-text-field>
-        <v-btn
-          aria-label="Login"
-          color="primary"
-          :loading="loading"
-          :disabled="!valid || loading"
-          type="submit"
-        >{{ $t('auth.login.loginButtonText') }}</v-btn>
-      </v-form>
-    </v-col>
-  </v-row>
-  <v-row class="py-3" justify="center">
-    <!-- Forgot Password Button -->
-    <a v-on:click="onForgotPassBtnClick">{{ $t('auth.login.forgotPasswordButtonText') }}</a>
-  </v-row>
-  <v-row>
-    <v-col xs="12" md="6" offset-md="3">
-      <v-divider></v-divider>
-    </v-col>
-  </v-row>
-  <v-row justify="center">
-    <v-subheader>{{ $t('auth.login.signinSectionTitle') }}</v-subheader>
-  </v-row>
-  <v-row justify="center">
-    <v-btn
-      aria-label="To Sign In"
-      color="primary"
-      @click="onRegisterBtnClick"
-    >{{ $t('auth.login.goToSigninButtonText') }}
-    </v-btn>
-  </v-row>
-</v-container>
+  <v-container>
+    <v-row>
+      <v-col cols="12" md="6" offset-md="3" class="text-center">
+        <v-form v-model="valid" @submit.prevent="onLoginBtnClick">
+          <!-- Form Fields -->
+          <v-text-field
+            :label="$t('auth.login.userNameOrEmailLabel')"
+            v-model="username"
+            autofocus
+            :min="minUsernameOrEmailLength"
+            :max="maxUsernameOrEmailLength"
+            :maxlength="maxUsernameOrEmailLength"
+            :rules="usernameRules"
+            prepend-icon="mdi-account"
+          ></v-text-field>
+          <v-text-field
+            :label="$t('auth.login.passwordLabel')"
+            v-model="password"
+            name="password"
+            :min="minPasswordLength"
+            :rules="passwordRules"
+            type="password"
+            prepend-icon="mdi-lock"
+          ></v-text-field>
+          <v-btn
+            aria-label="Login"
+            color="primary"
+            :loading="loading"
+            :disabled="!valid || loading"
+            type="submit"
+            >{{ $t('auth.login.loginButtonText') }}</v-btn
+          >
+        </v-form>
+      </v-col>
+    </v-row>
+    <v-row class="py-3" justify="center">
+      <!-- Forgot Password Button -->
+      <a v-on:click="onForgotPassBtnClick">{{
+        $t('auth.login.forgotPasswordButtonText')
+      }}</a>
+    </v-row>
+    <v-row>
+      <v-col xs="12" md="6" offset-md="3">
+        <v-divider></v-divider>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-subheader>{{ $t('auth.login.signinSectionTitle') }}</v-subheader>
+    </v-row>
+    <v-row justify="center">
+      <v-btn aria-label="To Sign In" color="primary" @click="onRegisterBtnClick"
+        >{{ $t('auth.login.goToSigninButtonText') }}
+      </v-btn>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -61,15 +61,22 @@ import API, { graphqlOperation } from '@aws-amplify/api'
 import Auth from '@aws-amplify/auth'
 import { Logger } from '@aws-amplify/core'
 import { mapActions } from 'vuex'
-import { GetUserProfileData, UpdateUserCognitoIdentityId } from '@/graphql/Profile'
-import { minUsernameOrEmailLength, maxUsernameOrEmailLength, minPasswordLength } from '@/utils/constants'
+import {
+  GetUserProfileData,
+  UpdateUserCognitoIdentityId
+} from '@/graphql/Profile'
+import {
+  minUsernameOrEmailLength,
+  maxUsernameOrEmailLength,
+  minPasswordLength
+} from '@/utils/constants'
 import { GetHexColorOfString } from '@/utils/generators'
 
 const logger = new Logger('Login')
 
 export default {
   name: 'Login',
-  data () {
+  data() {
     return {
       user: null,
       valid: true,
@@ -87,15 +94,21 @@ export default {
       // Rules
       usernameRules: [
         v => !!v || this.$i18n.t('auth.message.validation.userNameOrEmailReq'),
-        v => (v && v.length > 1) || this.$i18n.t('auth.message.validation.userNameLengthLowLimit'),
-        v => (v && v.length <= 254) || this.$i18n.t('auth.message.validation.userNameOrEmailLengthUpLimit')
+        v =>
+          (v && v.length > 1) ||
+          this.$i18n.t('auth.message.validation.userNameLengthLowLimit'),
+        v =>
+          (v && v.length <= 254) ||
+          this.$i18n.t('auth.message.validation.userNameOrEmailLengthUpLimit')
       ],
       passwordRules: [
         v => !!v || this.$i18n.t('auth.message.validation.passwordReq')
       ],
 
       // Messages
-      userDoesNotExistError: this.$i18n.t('auth.message.validation.userDoesNotExist'),
+      userDoesNotExistError: this.$i18n.t(
+        'auth.message.validation.userDoesNotExist'
+      ),
       delayBeforeRouteInMillis: 500
     }
   },
@@ -106,7 +119,7 @@ export default {
     }),
 
     // Click
-    async onLoginBtnClick () {
+    async onLoginBtnClick() {
       this.loading = true
 
       try {
@@ -140,22 +153,24 @@ export default {
         // Push to home route
         this.$router.push({ name: 'home' })
       } catch (err) {
-        logger.error('an error occurred while logging in: ', JSON.stringify(err))
+        logger.error(
+          'an error occurred while logging in: ',
+          JSON.stringify(err)
+        )
         this.setNewSiteError(err.message || err)
         if (err === this.userDoesNotExistError) {
-          setTimeout(
-            () => { this.$router.push({ name: 'register' }) },
-            this.delayBeforeRouteInMillis
-          )
+          setTimeout(() => {
+            this.$router.push({ name: 'register' })
+          }, this.delayBeforeRouteInMillis)
         }
       } finally {
         this.loading = false
       }
     },
-    onForgotPassBtnClick () {
+    onForgotPassBtnClick() {
       this.$router.push({ name: 'forgotPassword' })
     },
-    onRegisterBtnClick () {
+    onRegisterBtnClick() {
       this.$router.push({ name: 'register' })
     }
   }

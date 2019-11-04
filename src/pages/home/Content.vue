@@ -2,147 +2,200 @@
   <div class="home">
     <!-- full page loader -->
     <v-col cols="12" offset-md="2" md="8">
-    <v-skeleton-loader
-      :loading="!getIsPageReady"
-      type="list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider"
-    >
-      <!-- Regular Content -->
-      <v-row v-if="!searchText || searchText.length === 0">
-        <!-- Streams (No search) -->
-        <v-col cols="12" infinite-wrapper v-if="isStreamListType">
-          <v-row row wrap>
-            <v-col cols="12">
-              <v-list>
-                <template v-for="(stream, index) in streamList">
-                  <tafalk-stream-list-item
-                    :key="stream.id"
-                    :displayType="listItemDisplayType"
-                    :stream="stream"
-                    :dense="denseItems"
-                    :displayUserInfo="displayUserInfoInItems"
-                  ></tafalk-stream-list-item>
-                  <v-divider
-                    v-if="index + 1 < streamList.length"
-                    :key="index"
-                  ></v-divider>
-                </template>
-              </v-list>
-            </v-col>
-            <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
-          </v-row>
-        </v-col>
-        <!-- Cantos (No search) -->
-        <v-col cols="12" infinite-wrapper v-else-if="isCantoListType">
-          <v-row>
-            <v-col cols="12">
-              <v-list>
-                <template v-for="(canto, index) in cantoList">
-                  <tafalk-canto-list-item
-                    :key="canto.id"
-                    :displayType="listItemDisplayType"
-                    :canto="canto"
-                    :dense="denseItems"
-                    :displayUserInfo="displayUserInfoInItems"
-                    :showUserInteractionData="showUserInteractionDataForCantoItems"
-                  ></tafalk-canto-list-item>
-                  <v-divider
-                    v-if="index + 1 < cantoList.length"
-                    :key="index"
-                  ></v-divider>
-                </template>
-              </v-list>
-            </v-col>
-            <infinite-loading force-use-infinite-wrapper="true" @infinite="infiniteHomeHandler"></infinite-loading>
-          </v-row>
-        </v-col>
-      </v-row>
-      <!-- Search Text Not Long Enough -->
-      <v-row v-else-if="!isSearchTextLongEnough">
-        <v-col cols="12">
-          <h1 class="grey--text">{{ $t('home.search.searchTextNotLongEnoughWarning') }}</h1>
-        </v-col>
-      </v-row>
-      <!-- No Results matching search -->
-      <v-row v-else-if="searchResults.length === 0">
-        <v-col cols="12">
-          <h1 class="grey--text">{{ $t('home.search.noResult', { searchText: searchText }) }}</h1>
-        </v-col>
-      </v-row>
-      <!-- Search Results -->
-      <v-row v-else>
-        <!-- Search Result (Users) -->
-        <v-col cols="12" class="mb-4" v-if="searchUserTypeResultList && searchUserTypeResultList.length > 0">
-          <span class="title grey--text">{{ $t('home.search.result.userTitle', { resultCount: searchUserTypeResultList.length }) }}</span>
-          <v-row>
-            <v-col cols="12" class="mt-2">
-              <v-list>
-                <template v-for="(searchUserTypeResult, index) in searchUserTypeResultList">
-                  <tafalk-user-list-item
-                    :key="searchUserTypeResult.id"
-                    :displayType="listItemDisplayType"
-                    :user="searchUserTypeResult"
-                    :dense="denseItems"
-                  ></tafalk-user-list-item>
-                  <v-divider
-                    v-if="index + 1 < searchUserTypeResultList.length"
-                    :key="index"
-                  ></v-divider>
-                </template>
-              </v-list>
-            </v-col>
-          </v-row>
-        </v-col>
-        <br />
-        <!-- Search Result (Streams) -->
-        <v-col cols="12" class="mb-4" v-if="searchStreamTypeResultList && searchStreamTypeResultList.length > 0">
-          <span class="title grey--text">{{ $t('home.search.result.streamTitle', { resultCount: searchStreamTypeResultList.length }) }}</span>
-          <v-row>
-            <v-col cols="12" class="mt-2">
-              <v-list>
-                <template v-for="(searchStreamTypeResult, index) in searchStreamTypeResultList">
-                  <tafalk-stream-list-item
-                    :key="searchStreamTypeResult.id"
-                    :displayType="listItemDisplayType"
-                    :stream="searchStreamTypeResult"
-                    :dense="denseItems"
-                    :displayUserInfo="displayUserInfoInItems"
-                  ></tafalk-stream-list-item>
-                  <v-divider
-                    v-if="index + 1 < searchStreamTypeResultList.length"
-                    :key="index"
-                  ></v-divider>
-                </template>
-              </v-list>
-            </v-col>
-          </v-row>
-        </v-col>
-        <br />
-        <!-- Search Result (Cantos) -->
-        <v-col cols="12" v-if="searchCantoTypeResultList && searchCantoTypeResultList.length > 0">
-          <span class="title grey--text">{{ $t('home.search.result.cantoTitle', { resultCount: searchCantoTypeResultList.length }) }}</span>
-          <v-row>
-            <v-col cols="12" class="mt-2">
-              <v-list>
-                <template v-for="(searchCantoTypeResult, index) in searchCantoTypeResultList">
-                  <tafalk-canto-list-item
-                    :key="searchCantoTypeResult.id"
-                    :displayType="listItemDisplayType"
-                    :canto="searchCantoTypeResult"
-                    :dense="denseItems"
-                    :displayUserInfo="displayUserInfoInItems"
-                    :showUserInteractionData="showUserInteractionDataForCantoItems"
-                  ></tafalk-canto-list-item>
-                  <v-divider
-                    v-if="index + 1 < searchCantoTypeResultList.length"
-                    :key="index"
-                  ></v-divider>
-                </template>
-              </v-list>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-skeleton-loader>
+      <v-skeleton-loader
+        :loading="!getIsPageReady"
+        type="list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider"
+      >
+        <!-- Regular Content -->
+        <v-row v-if="!searchText || searchText.length === 0">
+          <!-- Streams (No search) -->
+          <v-col cols="12" infinite-wrapper v-if="isStreamListType">
+            <v-row row wrap>
+              <v-col cols="12">
+                <v-list>
+                  <template v-for="(stream, index) in streamList">
+                    <tafalk-stream-list-item
+                      :key="stream.id"
+                      :displayType="listItemDisplayType"
+                      :stream="stream"
+                      :dense="denseItems"
+                      :displayUserInfo="displayUserInfoInItems"
+                    ></tafalk-stream-list-item>
+                    <v-divider
+                      v-if="index + 1 < streamList.length"
+                      :key="index"
+                    ></v-divider>
+                  </template>
+                </v-list>
+              </v-col>
+              <infinite-loading
+                force-use-infinite-wrapper="true"
+                @infinite="infiniteHomeHandler"
+              ></infinite-loading>
+            </v-row>
+          </v-col>
+          <!-- Cantos (No search) -->
+          <v-col cols="12" infinite-wrapper v-else-if="isCantoListType">
+            <v-row>
+              <v-col cols="12">
+                <v-list>
+                  <template v-for="(canto, index) in cantoList">
+                    <tafalk-canto-list-item
+                      :key="canto.id"
+                      :displayType="listItemDisplayType"
+                      :canto="canto"
+                      :dense="denseItems"
+                      :displayUserInfo="displayUserInfoInItems"
+                      :showUserInteractionData="
+                        showUserInteractionDataForCantoItems
+                      "
+                    ></tafalk-canto-list-item>
+                    <v-divider
+                      v-if="index + 1 < cantoList.length"
+                      :key="index"
+                    ></v-divider>
+                  </template>
+                </v-list>
+              </v-col>
+              <infinite-loading
+                force-use-infinite-wrapper="true"
+                @infinite="infiniteHomeHandler"
+              ></infinite-loading>
+            </v-row>
+          </v-col>
+        </v-row>
+        <!-- Search Text Not Long Enough -->
+        <v-row v-else-if="!isSearchTextLongEnough">
+          <v-col cols="12">
+            <h1 class="grey--text">
+              {{ $t('home.search.searchTextNotLongEnoughWarning') }}
+            </h1>
+          </v-col>
+        </v-row>
+        <!-- No Results matching search -->
+        <v-row v-else-if="searchResults.length === 0">
+          <v-col cols="12">
+            <h1 class="grey--text">
+              {{ $t('home.search.noResult', { searchText: searchText }) }}
+            </h1>
+          </v-col>
+        </v-row>
+        <!-- Search Results -->
+        <v-row v-else>
+          <!-- Search Result (Users) -->
+          <v-col
+            cols="12"
+            class="mb-4"
+            v-if="
+              searchUserTypeResultList && searchUserTypeResultList.length > 0
+            "
+          >
+            <span class="title grey--text">{{
+              $t('home.search.result.userTitle', {
+                resultCount: searchUserTypeResultList.length
+              })
+            }}</span>
+            <v-row>
+              <v-col cols="12" class="mt-2">
+                <v-list>
+                  <template
+                    v-for="(searchUserTypeResult,
+                    index) in searchUserTypeResultList"
+                  >
+                    <tafalk-user-list-item
+                      :key="searchUserTypeResult.id"
+                      :displayType="listItemDisplayType"
+                      :user="searchUserTypeResult"
+                      :dense="denseItems"
+                    ></tafalk-user-list-item>
+                    <v-divider
+                      v-if="index + 1 < searchUserTypeResultList.length"
+                      :key="index"
+                    ></v-divider>
+                  </template>
+                </v-list>
+              </v-col>
+            </v-row>
+          </v-col>
+          <br />
+          <!-- Search Result (Streams) -->
+          <v-col
+            cols="12"
+            class="mb-4"
+            v-if="
+              searchStreamTypeResultList &&
+                searchStreamTypeResultList.length > 0
+            "
+          >
+            <span class="title grey--text">{{
+              $t('home.search.result.streamTitle', {
+                resultCount: searchStreamTypeResultList.length
+              })
+            }}</span>
+            <v-row>
+              <v-col cols="12" class="mt-2">
+                <v-list>
+                  <template
+                    v-for="(searchStreamTypeResult,
+                    index) in searchStreamTypeResultList"
+                  >
+                    <tafalk-stream-list-item
+                      :key="searchStreamTypeResult.id"
+                      :displayType="listItemDisplayType"
+                      :stream="searchStreamTypeResult"
+                      :dense="denseItems"
+                      :displayUserInfo="displayUserInfoInItems"
+                    ></tafalk-stream-list-item>
+                    <v-divider
+                      v-if="index + 1 < searchStreamTypeResultList.length"
+                      :key="index"
+                    ></v-divider>
+                  </template>
+                </v-list>
+              </v-col>
+            </v-row>
+          </v-col>
+          <br />
+          <!-- Search Result (Cantos) -->
+          <v-col
+            cols="12"
+            v-if="
+              searchCantoTypeResultList && searchCantoTypeResultList.length > 0
+            "
+          >
+            <span class="title grey--text">{{
+              $t('home.search.result.cantoTitle', {
+                resultCount: searchCantoTypeResultList.length
+              })
+            }}</span>
+            <v-row>
+              <v-col cols="12" class="mt-2">
+                <v-list>
+                  <template
+                    v-for="(searchCantoTypeResult,
+                    index) in searchCantoTypeResultList"
+                  >
+                    <tafalk-canto-list-item
+                      :key="searchCantoTypeResult.id"
+                      :displayType="listItemDisplayType"
+                      :canto="searchCantoTypeResult"
+                      :dense="denseItems"
+                      :displayUserInfo="displayUserInfoInItems"
+                      :showUserInteractionData="
+                        showUserInteractionDataForCantoItems
+                      "
+                    ></tafalk-canto-list-item>
+                    <v-divider
+                      v-if="index + 1 < searchCantoTypeResultList.length"
+                      :key="index"
+                    ></v-divider>
+                  </template>
+                </v-list>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-skeleton-loader>
     </v-col>
     <v-bottom-navigation
       app
@@ -156,7 +209,11 @@
         <span>{{ $t('home.bottomnav.sealed') }}</span>
         <v-icon>mdi-ghost-off</v-icon>
       </v-btn>
-      <v-btn aria-label="Live Now" v-if="authenticatedUser" :value="liveNowValue">
+      <v-btn
+        aria-label="Live Now"
+        v-if="authenticatedUser"
+        :value="liveNowValue"
+      >
         <span>{{ $t('home.bottomnav.liveNow') }}</span>
         <v-icon>mdi-play-circle-outline</v-icon>
       </v-btn>
@@ -181,7 +238,7 @@ import { homeStreamFetchLength } from '@/utils/constants'
 
 export default {
   name: 'Content',
-  data () {
+  data() {
     return {
       listItemDisplayType: 'card', // other option: item
       userTypeName: 'User',
@@ -207,22 +264,26 @@ export default {
     TafalkCantoListItem,
     TafalkUserListItem
   },
-  async created () {
+  async created() {
     const typeQueryVal = this.$route.query.type || this.sealedValue
-    this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(typeQueryVal)
+    this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(
+      typeQueryVal
+    )
     this.isCantoListType = [this.cantoValue].includes(typeQueryVal)
     this.footerEl = typeQueryVal
     await this.fetchInitial(typeQueryVal)
     this.setIsPageReady(true)
   },
   watch: {
-    '$route.query.type' (val) {
+    '$route.query.type'(val) {
       const typeQueryVal = val || this.sealedValue
-      this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(typeQueryVal)
+      this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(
+        typeQueryVal
+      )
       this.isCantoListType = [this.cantoValue].includes(typeQueryVal)
       this.fetchInitial(typeQueryVal)
     },
-    footerEl (val, oldVal) {
+    footerEl(val, oldVal) {
       if (val == null || val === '' || val === oldVal) {
         this.clearAll()
       }
@@ -230,8 +291,11 @@ export default {
       // Clear search text if changed
       if (val !== oldVal) this.clearSearchText()
 
-      this.$router.push({ name: 'content', query: { type: val } })
-        .catch(err => { /* eslint handle-callback-err: "warn" */ })
+      this.$router
+        .push({ name: 'content', query: { type: val } })
+        .catch(err => {
+          /* eslint handle-callback-err: "warn" */
+        })
     }
   },
   computed: {
@@ -247,31 +311,33 @@ export default {
       getNextStreamToken: 'getNextStreamToken',
       getNextCantoToken: 'getNextCantoToken'
     }),
-    authenticatedUser () {
+    authenticatedUser() {
       return this.getAuthenticatedUser
     },
-    streamList () {
+    streamList() {
       return this.getStreamList
     },
-    cantoList () {
+    cantoList() {
       return this.getCantoList
     },
-    searchText () {
+    searchText() {
       return this.getSearchText
     },
-    isSearchTextLongEnough () {
+    isSearchTextLongEnough() {
       return this.getIsSearchTextLongEnough
     },
-    searchResults () {
+    searchResults() {
       return this.getSearchSiteResults
     },
-    searchUserTypeResultList () {
+    searchUserTypeResultList() {
       return this.searchResults.filter(r => r.__typename === this.userTypeName)
     },
-    searchStreamTypeResultList () {
-      return this.searchResults.filter(r => r.__typename === this.streamTypeName)
+    searchStreamTypeResultList() {
+      return this.searchResults.filter(
+        r => r.__typename === this.streamTypeName
+      )
     },
-    searchCantoTypeResultList () {
+    searchCantoTypeResultList() {
       return this.searchResults.filter(r => r.__typename === this.cantoTypeName)
     },
     /*
@@ -282,10 +348,10 @@ export default {
       return [this.cantoValue].includes(this.footerEl)
     },
     */
-    nextStreamToken () {
+    nextStreamToken() {
       return this.getNextStreamToken
     },
-    nextCantoToken () {
+    nextCantoToken() {
       return this.getNextCantoToken
     }
   },
@@ -297,41 +363,70 @@ export default {
     ...mapActions({
       fetchInitialSealedBriefStreams: 'fetchInitialSealedBriefStreams',
       fetchInitialLiveBriefStreams: 'fetchInitialLiveBriefStreams',
-      fetchInitialSealedBriefStreamsByFaveUsers: 'fetchInitialSealedBriefStreamsByFaveUsers',
+      fetchInitialSealedBriefStreamsByFaveUsers:
+        'fetchInitialSealedBriefStreamsByFaveUsers',
       fetchInitialBriefCantos: 'fetchInitialBriefCantos',
       fetchFurtherSealedBriefStreams: 'fetchFurtherSealedBriefStreams',
       fetchFurtherLiveBriefStreams: 'fetchFurtherLiveBriefStreams',
-      fetchFurtherSealedBriefStreamsByFaveUsers: 'fetchFurtherSealedBriefStreamsByFaveUsers',
+      fetchFurtherSealedBriefStreamsByFaveUsers:
+        'fetchFurtherSealedBriefStreamsByFaveUsers',
       fetchFurtherBriefCantos: 'fetchFurtherBriefCantos',
       clearAll: 'clearAll'
     }),
-    async fetchInitial (val) {
+    async fetchInitial(val) {
       if (this.sealedValue === val) {
-        await this.fetchInitialSealedBriefStreams({ limit: this.fetchLimit, nextToken: null })
+        await this.fetchInitialSealedBriefStreams({
+          limit: this.fetchLimit,
+          nextToken: null
+        })
       } else if (this.liveNowValue === val) {
-        await this.fetchInitialLiveBriefStreams({ limit: this.fetchLimit, nextToken: null })
+        await this.fetchInitialLiveBriefStreams({
+          limit: this.fetchLimit,
+          nextToken: null
+        })
       } else if (this.byFaveUsersValue === val) {
-        await this.fetchInitialSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: null })
+        await this.fetchInitialSealedBriefStreamsByFaveUsers({
+          limit: this.fetchLimit,
+          nextToken: null
+        })
       } else if (this.cantoValue === val) {
-        await this.fetchInitialBriefCantos({ limit: this.fetchLimit, nextToken: null })
+        await this.fetchInitialBriefCantos({
+          limit: this.fetchLimit,
+          nextToken: null
+        })
       }
     },
-    async infiniteHomeHandler ($state) {
+    async infiniteHomeHandler($state) {
       // if no new things to load, complete
-      if ((this.isStreamListType && this.nextStreamToken == null) || (this.isCantoListType && this.nextCantoToken == null)) {
+      if (
+        (this.isStreamListType && this.nextStreamToken == null) ||
+        (this.isCantoListType && this.nextCantoToken == null)
+      ) {
         $state.complete()
       } else {
         if (this.footerEl === this.sealedValue) {
-          await this.fetchFurtherSealedBriefStreams({ limit: this.fetchLimit, nextToken: this.nextStreamToken })
+          await this.fetchFurtherSealedBriefStreams({
+            limit: this.fetchLimit,
+            nextToken: this.nextStreamToken
+          })
           $state.loaded()
         } else if (this.footerEl === this.liveNowValue) {
-          await this.fetchFurtherLiveBriefStreams({ limit: this.fetchLimit, nextToken: this.nextStreamToken })
+          await this.fetchFurtherLiveBriefStreams({
+            limit: this.fetchLimit,
+            nextToken: this.nextStreamToken
+          })
           $state.loaded()
         } else if (this.footerEl === this.byFaveUsersValue) {
-          await this.fetchFurtherSealedBriefStreamsByFaveUsers({ limit: this.fetchLimit, nextToken: this.nextStreamToken })
+          await this.fetchFurtherSealedBriefStreamsByFaveUsers({
+            limit: this.fetchLimit,
+            nextToken: this.nextStreamToken
+          })
           $state.loaded()
         } else if (this.footerEl === this.cantoValue) {
-          await this.fetchFurtherBriefCantos({ limit: this.fetchLimit, nextToken: this.nextCantoToken })
+          await this.fetchFurtherBriefCantos({
+            limit: this.fetchLimit,
+            nextToken: this.nextCantoToken
+          })
           $state.loaded()
         } else if (this.footerEl === this.topRatedValue) {
           // popularism not implemeted yet :9
@@ -341,6 +436,4 @@ export default {
   }
 }
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>

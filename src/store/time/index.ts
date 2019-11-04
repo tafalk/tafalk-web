@@ -5,19 +5,19 @@ const state = {
 }
 
 const getters = {
-  getNowTime (state: any) {
+  getNowTime(state: any) {
     return state.nowTime
   }
 }
 
 const mutations = {
-  setNowTime (state: any) {
+  setNowTime(state: any) {
     state.nowTime = new Date().getTime()
   }
 }
 
 const actions = {
-  setNowTime ({ commit }: any) {
+  setNowTime({ commit }: any) {
     setInterval(() => {
       commit('setNowTime')
     }, 1000 * timeRefreshIntervalSeconds)

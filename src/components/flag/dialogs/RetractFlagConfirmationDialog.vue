@@ -1,7 +1,9 @@
 <template>
-<v-dialog v-model="getIsRetractFlagDialogVisible" persistent max-width="600">
+  <v-dialog v-model="getIsRetractFlagDialogVisible" persistent max-width="600">
     <v-card>
-      <v-card-title class="headline">{{ $t('flag.retractDialog.title') }}</v-card-title>
+      <v-card-title class="headline">{{
+        $t('flag.retractDialog.title')
+      }}</v-card-title>
       <v-card-text>{{ $t('flag.retractDialog.body') }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -10,16 +12,18 @@
           color="red darken-1"
           text
           @click.native="onRetractFlagConfirmClick"
-        >{{ $t('common.options.yesButtonText') }}</v-btn>
+          >{{ $t('common.options.yesButtonText') }}</v-btn
+        >
         <v-btn
           aria-label="No"
           color="light-blue darken-1"
           text
           @click.native="setIsRetractFlagDialogVisible(false)"
-        >{{ $t('common.options.noButtonText') }}</v-btn>
+          >{{ $t('common.options.noButtonText') }}</v-btn
+        >
       </v-card-actions>
     </v-card>
-</v-dialog>
+  </v-dialog>
 </template>
 
 <script>
@@ -33,9 +37,8 @@ const logger = new Logger('RetractFlagConfirmationDialog')
 export default {
   name: 'RetractFlagConfirmationDialog',
   props: ['id'],
-  data () {
-    return {
-    }
+  data() {
+    return {}
   },
   computed: {
     ...mapGetters({
@@ -51,13 +54,18 @@ export default {
     ...mapActions({
       setNewSiteError: 'shared/setNewSiteError'
     }),
-    async onRetractFlagConfirmClick () {
+    async onRetractFlagConfirmClick() {
       try {
-        await API.graphql(graphqlOperation(DeleteFlag, {
-          id: this.id
-        }))
+        await API.graphql(
+          graphqlOperation(DeleteFlag, {
+            id: this.id
+          })
+        )
       } catch (err) {
-        logger.error('An error occurred while retracting flag', JSON.stringify(err))
+        logger.error(
+          'An error occurred while retracting flag',
+          JSON.stringify(err)
+        )
         this.setNewSiteError(err.message || err)
       } finally {
         this.setIsRetractFlagDialogVisible(false)
