@@ -30,7 +30,9 @@ module.exports = {
       pwa: false,
       enableCloudfront: false,
       uploadConcurrency: 5,
-      pluginVersion: '3.0.0'
+      pluginVersion: '3.0.0',
+      cacheControl: 'max-age=31556952', // 1 year in seconds
+      gzip: 'true'
     }
   },
   chainWebpack: config => {
