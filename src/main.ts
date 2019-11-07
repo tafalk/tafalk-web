@@ -10,7 +10,7 @@ import {
   GoogleAnalyticsConfig,
   AwsConfig
 } from './config'
-import { GetPolicyS3BucketRootUrl } from './utils/generators'
+import { GetPolicyS3BucketRootUrl } from '@/utils/generators'
 import Amplify from '@aws-amplify/core'
 import PubSub from '@aws-amplify/pubsub'
 import axios from 'axios'
