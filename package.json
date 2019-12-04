@@ -75,14 +75,7 @@
     "rules": {
       "prettier/prettier": [
         "error",
-        {
-          "singleQuote": true,
-          "semi": false,
-          "trailingComma": "none",
-          "tabWidth": 2,
-          "useTabs": false,
-          "spaceBeforeFunctionParen": true
-        }
+        {}
       ]
     },
     "parserOptions": {
