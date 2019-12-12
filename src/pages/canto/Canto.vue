@@ -30,7 +30,7 @@
           </v-avatar>
           &nbsp;
           <!-- User name -->
-          <span class="headline grey--text">{{ (author || {}).username }}</span>
+          <span class="headline grey--text">{{ authorUsername }}</span>
         </v-col>
         <!-- Action Menu -->
         <v-col cols="1">
@@ -275,7 +275,7 @@ export default {
       getIsPageReady: 'getIsPageReady'
     }),
     canto() {
-      return this.getCanto || {}
+      return this.getCanto ?? {}
     },
     cantoBody() {
       if (!this.canto || !this.canto.body) return ''
@@ -285,22 +285,23 @@ export default {
       return this.canto ? this.canto.likes : []
     },
     authenticatedUser() {
-      return this.getAuthenticatedUser || {}
+      return this.getAuthenticatedUser ?? {}
     },
     author() {
       return this.canto ? this.canto.user : null
     },
+    authorUsername() {
+      return this.author?.username ?? ''
+    },
     authorColor() {
-      return this.canto
-        ? GetHexColorOfString((this.author || {}).username)
-        : null
+      return this.canto ? GetHexColorOfString(this.author?.username) : null
     },
     // visibilty deciders
     isVisitingOwnCanto() {
       return (
         this.authenticatedUser &&
         this.author &&
-        this.authenticatedUser.username === (this.author || {}).username
+        this.authenticatedUser.username === this.author?.username
       )
     },
     isVisitorAllowed() {
@@ -312,7 +313,7 @@ export default {
       return this.isVisitingOwnCanto || this.isVisitorAllowed
     },
     likeCount() {
-      return (this.likes || []).length
+      return this.likes?.length
     },
     authenticatedUserLikeId() {
       if (!this.likes) return undefined
@@ -324,7 +325,7 @@ export default {
         : authenticatedUserLikeItem
     },
     authenticatedUserLikeIndices() {
-      const authenticatedUserLikeItem = (this.likes || []).find(
+      const authenticatedUserLikeItem = this.likes?.find(
         item => item.userId === this.authenticatedUser.id
       )
       if (!authenticatedUserLikeItem || !authenticatedUserLikeItem.indices)
@@ -342,11 +343,9 @@ export default {
         : null
     },
     authenticatedUserFlagId() {
-      return (
-        ((this.canto || {}).flags || []).find(
-          item => item.userId === this.authenticatedUser.id
-        ) || {}
-      ).id
+      return this.canto?.flags?.find(
+        item => item.userId === this.authenticatedUser.id
+      )?.id
     },
     cantoBodyUserSelection() {
       return this.getCantoBodyUserSelection
@@ -466,7 +465,7 @@ export default {
           next: eventData => {
             this.cantoChange = eventData.value.data.onUpdateCanto
           },
-          error: err => this.setNewSiteError(err.message || err)
+          error: err => this.setNewSiteError(err.message ?? err)
         })
 
         // Subscribe to likes
@@ -479,7 +478,7 @@ export default {
             )
             this.likeObjects = graphqlLikeListResult.data.listCantoLikes
           },
-          error: err => this.setNewSiteError(err.message || err)
+          error: err => this.setNewSiteError(err.message ?? err)
         })
 
         // Subscribe to flags
@@ -492,12 +491,12 @@ export default {
             )
             this.flagObjects = graphqlFlagListResult.data.listFlags
           },
-          error: err => this.setNewSiteError(err.message || err)
+          error: err => this.setNewSiteError(err.message ?? err)
         })
 
         const graphqlConnectionsFromVisitedCantoAuthorToAuthenticatedUserResult = await API.graphql(
           graphqlOperation(GetInteractionsBetweenUsers, {
-            actorUserId: (this.author || {}).id,
+            actorUserId: this.author?.id,
             targetUserId: this.authenticatedUser.id
           })
         )
@@ -520,11 +519,11 @@ export default {
           outboundBlockingTypeConnections
         )
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     },
     onShowShareCantoLinkDialog() {
-      this.setShareCantoLink(GetCantoLink((this.author || {}).username))
+      this.setShareCantoLink(GetCantoLink(this.author?.username))
       this.showShareCantoLinkDialog()
     },
     async onFirstLikeClick() {
@@ -532,15 +531,14 @@ export default {
       try {
         // Get end index of first string
         const words = this.cantoBody.split(' ')
-        const indexEnd =
-          words && words.length
-            ? (words[0] || '').length
-            : (this.cantoBody || '').length
+        const indexEnd = words?.length
+          ? words[0]?.length
+          : this.cantoBody?.length
 
         // Create Like with index
         await API.graphql(
           graphqlOperation(CreateLike, {
-            cantoId: (this.author || {}).id,
+            cantoId: this.author?.id,
             userId: this.authenticatedUser.id,
             time: new Date().toISOString(),
             indices: `0${this.likeIndexSeparator}${indexEnd}`
@@ -638,7 +636,7 @@ export default {
       ) {
         const siblingSpans = GetSiblings(rangeStartContainer.parentNode)
         const indexOffset = siblingSpans.reduce(
-          (prev, next) => prev + (next.innerText || '').length,
+          (prev, next) => prev + (next.innerText ?? '').length,
           0
         )
         // Range starts after the existing bookmark
@@ -651,7 +649,7 @@ export default {
     onToAuthorProfileClick() {
       this.$router.push({
         name: 'profile',
-        params: { username: (this.author || {}).username }
+        params: { username: this.author?.username }
       })
     },
     onFlagDialogShowClick() {

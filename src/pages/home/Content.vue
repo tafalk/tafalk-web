@@ -7,7 +7,7 @@
         type="list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider, list-item-three-line, divider"
       >
         <!-- Regular Content -->
-        <v-row v-if="!searchText || searchText.length === 0">
+        <v-row v-if="!searchText">
           <!-- Streams (No search) -->
           <v-col cols="12" infinite-wrapper v-if="isStreamListType">
             <v-row row wrap>
@@ -265,7 +265,7 @@ export default {
     TafalkUserListItem
   },
   async created() {
-    const typeQueryVal = this.$route.query.type || this.sealedValue
+    const typeQueryVal = this.$route.query.type ?? this.sealedValue
     this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(
       typeQueryVal
     )
@@ -276,7 +276,7 @@ export default {
   },
   watch: {
     '$route.query.type'(val) {
-      const typeQueryVal = val || this.sealedValue
+      const typeQueryVal = val ?? this.sealedValue
       this.isStreamListType = [this.sealedValue, this.liveNowValue].includes(
         typeQueryVal
       )
@@ -284,7 +284,7 @@ export default {
       this.fetchInitial(typeQueryVal)
     },
     footerEl(val, oldVal) {
-      if (val == null || val === '' || val === oldVal) {
+      if (!val || val === oldVal) {
         this.clearAll()
       }
 

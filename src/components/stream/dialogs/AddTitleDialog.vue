@@ -67,10 +67,10 @@ export default {
       } catch (err) {
         logger.error(
           'An error occurred while updating the stream title',
-          err.message || JSON.stringify(err)
+          JSON.stringify(err.message ?? err)
         )
         this.processState = this.errorStateConstant
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     }
   },
@@ -95,7 +95,7 @@ export default {
       const initialTitle = this.title
       const titleTextLength = titleTextField.value.length
 
-      if (!titleTextLength || titleTextLength === 0) return
+      if (!titleTextLength) return
 
       if (selectionStartPos === selectionEndPos) {
         // There is no selection, but regular cursor
@@ -142,7 +142,7 @@ export default {
       const titleTextField = this.$refs.pourTitle.$el.querySelector('input')
       const titleTextLength = titleTextField.value.length
 
-      if (!titleTextLength || titleTextLength === 0) return
+      if (!titleTextLength) return
 
       clearTimeout(this.timeoutID)
       this.timeoutID = setTimeout(() => {

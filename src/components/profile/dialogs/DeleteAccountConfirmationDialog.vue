@@ -62,7 +62,7 @@ export default {
 
       authenticatedCognitoUser.deleteUser((err, result) => {
         if (err) {
-          this.setNewSiteError(err.message || err)
+          this.setNewSiteError(err.message ?? err)
           return
         }
 

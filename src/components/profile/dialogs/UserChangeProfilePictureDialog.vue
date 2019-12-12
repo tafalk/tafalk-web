@@ -110,7 +110,7 @@ export default {
         })
         this.setIsChangeProfilePictureDialogVisible(false)
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.clearDialog()
       }

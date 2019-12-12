@@ -151,7 +151,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
       logger.error(
         'Unexpected error getting autheticated user info',
-        err.message || err
+        err.message ?? err
       )
     }
   }
@@ -190,7 +190,7 @@ router.beforeEach(async (to, from, next) => {
       next()
     }
   } catch (err) {
-    logger.error('Unexpected Error during before-routing', err.message || err)
+    logger.error('Unexpected Error during before-routing', err.message ?? err)
     next()
   }
 })

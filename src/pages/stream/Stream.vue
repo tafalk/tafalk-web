@@ -126,7 +126,7 @@
       <!-- Body -->
       <v-row>
         <v-col cols="12" md="10" offset-md="1">
-          {{ (stream || {}).body }}
+          {{ streamBody }}
         </v-col>
       </v-row>
       <!-- Add-Comment Sliding Box -->
@@ -222,7 +222,7 @@
       <!-- Flag stream dialog -->
       <tafalk-flag-dialog
         contentType="stream"
-        :contentId="(stream || {}).id"
+        :contentId="streamId"
       ></tafalk-flag-dialog>
       <!-- Retract flag stream dialog -->
       <tafalk-retract-flag-confirmation-dialog
@@ -312,34 +312,40 @@ export default {
     stream() {
       return this.getStream
     },
+    streamId() {
+      return this.stream?.id
+    },
+    streamBody() {
+      return this.stream?.body
+    },
     hasTitle() {
-      return (this.stream || {}).title && this.stream.title.trim()
+      return this.stream?.title && this.stream.title.trim()
     },
     likes() {
-      return (this.stream || {}).likes
+      return this.stream?.likes ?? []
     },
     comments() {
-      return (this.stream || {}).comments
+      return this.stream?.comments ?? []
     },
     authenticatedUser() {
-      return this.getAuthenticatedUser || {}
+      return this.getAuthenticatedUser ?? {}
     },
     author() {
-      return (this.stream || {}).user
+      return this.stream?.user
     },
     authorDisplayUsername() {
       if (!this.author) return null
-      return (this.author || {}).accountStatus !== this.activeUserAccountStatus
-        ? (this.author || {}).id
-        : (this.author || {}).username
+      return this.author?.accountStatus !== this.activeUserAccountStatus
+        ? this.author?.id
+        : this.author?.username
     },
     authorColor() {
-      return GetHexColorOfString((this.author || {}).username)
+      return GetHexColorOfString(this.author?.username)
     },
     isVisitingOwnStream() {
       return (
         this.authenticatedUser &&
-        this.authenticatedUser.username === (this.author || {}).username
+        this.authenticatedUser.username === this.author?.username
       )
     },
     isVisitorAllowed() {
@@ -347,7 +353,7 @@ export default {
       return true
     },
     isStreamAllowed() {
-      return this.isVisitingOwnStream || this.isVisitorAllowed
+      return this.isVisitingOwnStream ?? this.isVisitorAllowed
     },
     likeCount() {
       if (!this.likes) return 0
@@ -374,32 +380,24 @@ export default {
       )
     },
     isSealed() {
-      return (this.stream || {}).isSealed
+      return !!this.stream?.isSealed
     },
     timeFromSealedToNow() {
       if (!this.isSealed) return null
-      return GetElapsedTimeTillNow(
-        this.getNowTime,
-        (this.stream || {}).sealTime
-      )
+      return GetElapsedTimeTillNow(this.getNowTime, this.stream?.sealTime)
     },
     timeSpentForStream() {
       if (!this.isSealed)
-        return GetElapsedTimeTillNow(
-          this.getNowTime,
-          (this.stream || {}).startTime
-        )
+        return GetElapsedTimeTillNow(this.getNowTime, this.stream?.startTime)
       return GetElapsedTimeBetween(
-        (this.stream || {}).startTime,
-        (this.stream || {}).sealTime
+        this.stream?.startTime,
+        this.stream?.sealTime
       )
     },
     authenticatedUserFlagId() {
-      return (
-        ((this.stream || {}).flags || []).find(
-          item => item.userId === this.authenticatedUser.id
-        ) || {}
-      ).id
+      return this.stream?.flags?.find(
+        item => item.userId === this.authenticatedUser.id
+      )?.id
     }
   },
   watch: {
@@ -476,63 +474,63 @@ export default {
 
         // set profile pic
         this.authorProfilePictureObjectUrl =
-          this.authenticatedUser && (this.author || {}).profilePictureKey
-            ? await Storage.get((this.author || {}).profilePictureKey, {
+          this.authenticatedUser && this.author?.profilePictureKey
+            ? await Storage.get(this.author?.profilePictureKey, {
                 level: 'protected',
-                identityId: (this.author || {}).cognitoIdentityId
+                identityId: this.author?.cognitoIdentityId
               })
             : null
 
         // Subscribe to stream itself for live content changes
         this.streamChangeSubscription = API.graphql(
-          graphqlOperation(OnUpdateStream, { id: (this.stream || {}).id })
+          graphqlOperation(OnUpdateStream, { id: this.stream?.id })
         ).subscribe({
           next: eventData => {
             this.streamChange = eventData.value.data.onUpdateStream
           },
           error: err => {
-            this.setNewSiteError(err.message || err)
+            this.setNewSiteError(err.message ?? err)
           }
         })
         // Subscribe to likes
         this.likeChangeSubscription = API.graphql(
           graphqlOperation(OnCreateOrDeleteStreamLike, {
-            streamId: (this.stream || {}).id
+            streamId
           })
         ).subscribe({
           next: async eventData => {
             const graphqlLikeListResult = await API.graphql(
               graphqlOperation(ListStreamLikes, {
-                streamId: (this.stream || {}).id
+                streamId
               })
             )
             this.likeObjects = graphqlLikeListResult.data.listStreamLikes
           },
           error: err => {
-            this.setNewSiteError(err.message || err)
+            this.setNewSiteError(err.message ?? err)
           }
         })
         // Subscribe to flags
         this.flagChangeSubscription = API.graphql(
           graphqlOperation(OnCreateOrDeleteFlag, {
-            contentId: (this.stream || {}).id
+            contentId: this.stream?.id
           })
         ).subscribe({
           next: async eventData => {
             const graphqlFlagListResult = await API.graphql(
-              graphqlOperation(ListFlags, { contentId: (this.stream || {}).id })
+              graphqlOperation(ListFlags, { contentId: this.stream?.id })
             )
             this.flagObjects = graphqlFlagListResult.data.listFlags
           },
           error: err => {
-            this.setNewSiteError(err.message || err)
+            this.setNewSiteError(err.message ?? err)
           }
         })
 
         if (this.authenticatedUser.id && this.author) {
           const graphqlConnectionsFromVisitedStreamAuthorToAuthenticatedUserResult = await API.graphql(
             graphqlOperation(GetInteractionsBetweenUsers, {
-              actorUserId: (this.author || {}).id,
+              actorUserId: this.author?.id,
               targetUserId: this.authenticatedUser.id
             })
           )
@@ -555,11 +553,11 @@ export default {
           )
         }
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     },
     onShowShareStreamLinkDialog() {
-      this.setShareStreamLink(GetStreamLink((this.stream || {}).id))
+      this.setShareStreamLink(GetStreamLink(this.stream?.id))
       this.showShareStreamLinkDialog()
     },
     async onLikeClick() {
@@ -567,7 +565,7 @@ export default {
       try {
         await API.graphql(
           graphqlOperation(CreateLike, {
-            streamId: (this.stream || {}).id,
+            streamId,
             userId: this.authenticatedUser.id,
             time: new Date().toISOString()
           })
@@ -600,16 +598,12 @@ export default {
       if (!this.author) return
       this.$router.push({
         name: 'profile',
-        params: { username: (this.author || {}).username }
+        params: { username: this.author?.username }
       })
     },
     onCommentTextAreaToggleShowClick() {
       this.comment = ''
-      if (!this.showCommentBox) {
-        this.commentButtonColor = 'grey'
-      } else {
-        this.commentButtonColor = 'orange'
-      }
+      this.commentButtonColor = this.showCommentBox ? 'orange' : 'grey'
       this.showCommentBox = !this.showCommentBox
 
       this.$refs.newcommentbox.focus() // TODO: This does not work
@@ -627,7 +621,7 @@ export default {
       try {
         await API.graphql(
           graphqlOperation(CreateComment, {
-            streamId: (this.stream || {}).id,
+            streamId,
             userId: this.authenticatedUser.id,
             time: new Date().toISOString(),
             content: this.comment
@@ -640,7 +634,7 @@ export default {
         // Load comments
         const commentsGraphqlResult = await API.graphql(
           graphqlOperation(ListPaginatedStreamComments, {
-            streamId: (this.stream || {}).id,
+            streamId,
             limit: this.commentFetchLimit,
             nextToken: null
           })

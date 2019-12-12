@@ -332,7 +332,7 @@ export default {
             flaggerUserId: this.authenticatedUser.id,
             category: this.selectedCategory,
             type: this.selectedType,
-            detail: this.additionalInfo || null,
+            detail: this.additionalInfo ?? null,
             createTime: new Date().toISOString()
           })
         )

@@ -4,7 +4,7 @@ import { TimeDifference } from '@/types'
 
 // String
 export const IsNullOrWhitespace = (str: string) => {
-  return str === null || str.match(/^ *$/) !== null
+  return !str || str.match(/^ *$/)
 }
 
 export const StrikethroughStr = (str: string) => {
@@ -18,10 +18,10 @@ export const GetFirstOrDefaultIdStr = (inputObj: any) => {
   if (Array.isArray(inputObj)) {
     if (inputObj.length) {
       const firstElem = inputObj[0].id
-      return firstElem || ''
+      return firstElem ?? ''
     }
   } else {
-    return inputObj || ''
+    return inputObj ?? ''
   }
 }
 
@@ -59,7 +59,7 @@ export const GetElapsedTimeTillNow = (
   } else if (diff.days > 0 && diff.days < 30) {
     return `${diff.days}${timeUnitChars.day}`
   } else {
-    return (referenceTimeISOString || '').slice(0, 10)
+    return (referenceTimeISOString ?? '').slice(0, 10)
   }
 }
 

@@ -187,9 +187,7 @@ export default {
     )
     const userStreamsShortList =
       graphqlVisitedProfileStreamsResult.data.listStreamsByUser.items
-    if (userStreamsShortList == null || userStreamsShortList.length === 0) {
-      this.isFirstStreamOfUser = true
-    }
+    this.isFirstStreamOfUser = !userStreamsShortList?.length
 
     // Require confirmation for accidental route changes
     this.setIsRouteChangeSafe(false)
@@ -199,7 +197,7 @@ export default {
       await this.sealForEver()
     } catch (err) {
       logger.error('Error occurred while sealing the stream', err)
-      this.setNewSiteError(err.message || err)
+      this.setNewSiteError(err.message ?? err)
     } finally {
       window.removeEventListener('beforeunload', this.onBeforeUnload)
       // window.removeEventListener('unload', this.sealForEver)
@@ -216,7 +214,7 @@ export default {
         await this.sealForEver()
       } catch (err) {
         logger.error('Error occurred while sealing the stream', err)
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         next()
       }
@@ -242,7 +240,7 @@ export default {
       // Check if the text is all whitespace
       if (IsNullOrWhitespace(newBody)) return
 
-      if (oldBody == null || oldBody.length === 0) {
+      if (!oldBody) {
         // Old body is null or empty, so create the entry here
         try {
           this.processState = this.savingStateConstant
@@ -268,10 +266,10 @@ export default {
         } catch (err) {
           logger.error(
             'An error occurred while creating the stream',
-            err.message || JSON.stringify(err)
+            JSON.stringify(err.message ?? err)
           )
           this.processState = this.errorStateConstant
-          this.setNewSiteError(err.message || err)
+          this.setNewSiteError(err.message ?? err)
         }
       }
     },
@@ -289,10 +287,10 @@ export default {
       } catch (err) {
         logger.error(
           'An error occurred while updating the stream title',
-          err.message || JSON.stringify(err)
+          JSON.stringify(err.message ?? err)
         )
         this.processState = this.errorStateConstant
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     }
   },
@@ -316,7 +314,7 @@ export default {
       const initialBody = this.body
       const bodyTextLength = bodyTextArea.value.length
 
-      if (!bodyTextLength || bodyTextLength === 0) return
+      if (!bodyTextLength) return
 
       if (selectionStartPos === selectionEndPos) {
         // There is no selection, but regular cursor
@@ -365,7 +363,7 @@ export default {
       const bodyTextArea = this.$refs.pourBody.$el.querySelector('textarea')
       const bodyTextLength = bodyTextArea.value.length
 
-      if (!bodyTextLength || bodyTextLength === 0) return
+      if (!bodyTextLength) return
 
       clearTimeout(this.timeoutID)
       this.timeoutID = setTimeout(() => {
@@ -383,7 +381,7 @@ export default {
       const initialTitle = this.title
       const titleTextLength = titleTextField.value.length
 
-      if (!titleTextLength || titleTextLength === 0) return
+      if (!titleTextLength) return
 
       if (selectionStartPos === selectionEndPos) {
         // There is no selection, but regular cursor
@@ -430,7 +428,7 @@ export default {
       const titleTextField = this.$refs.pourTitle.$el.querySelector('input')
       const titleTextLength = titleTextField.value.length
 
-      if (!titleTextLength || titleTextLength === 0) return
+      if (!titleTextLength) return
 
       clearTimeout(this.timeoutID)
       this.timeoutID = setTimeout(() => {
@@ -465,10 +463,10 @@ export default {
       } catch (err) {
         logger.error(
           'An error occurred while updating the stream',
-          err.message || JSON.stringify(err)
+          JSON.stringify(err.message ?? err)
         )
         this.processState = this.errorStateConstant
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     },
     onDefaultKeydown(event) {
@@ -481,7 +479,7 @@ export default {
       // already prevented. do nothing
     },
     async onMoodChange() {
-      if (!this.body || !this.body.length) return
+      if (!this.body?.length) return
       try {
         this.processState = this.savingStateConstant
         await API.graphql(
@@ -495,14 +493,14 @@ export default {
       } catch (err) {
         logger.error(
           'An error occurred while updating the mood',
-          err.message || JSON.stringify(err)
+          JSON.stringify(err.message ?? err)
         )
         this.processState = this.errorStateConstant
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     },
     async onPositionChange() {
-      if (!this.body || !this.body.length) return
+      if (!this.body?.length) return
       try {
         this.processState = this.savingStateConstant
         await API.graphql(
@@ -516,10 +514,10 @@ export default {
       } catch (err) {
         logger.error(
           'An error occurred while updating the position',
-          err.message || JSON.stringify(err)
+          JSON.stringify(err.message ?? err)
         )
         this.processState = this.errorStateConstant
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     },
     async onDoneClick() {
@@ -528,7 +526,7 @@ export default {
         await this.sealForEver()
       } catch (err) {
         logger.error('Error occurred while sealing the stream', err)
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.$router.push({ name: 'stream', params: { id: this.streamId } })
         this.setIsRouteChangeSafe(false)
@@ -537,7 +535,7 @@ export default {
     },
     async sealForEver() {
       // Check if something to seal
-      if (!this.body || !this.body.length) return
+      if (!this.body?.length) return
       try {
         await API.graphql(
           graphqlOperation(SealStreamForEver, {
@@ -555,9 +553,9 @@ export default {
       } catch (err) {
         logger.error(
           'An error occurred while sealing the stream',
-          err.message || JSON.stringify(err)
+          JSON.stringify(err.message ?? err)
         )
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     },
     async onBeforeUnload(event) {

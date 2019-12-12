@@ -66,7 +66,7 @@ export default {
           'An error occurred while retracting flag',
           JSON.stringify(err)
         )
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.setIsRetractFlagDialogVisible(false)
       }

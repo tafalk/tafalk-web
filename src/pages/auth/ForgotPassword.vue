@@ -191,7 +191,7 @@ export default {
         this.forgotPasswordCurrentStep = 2
       } catch (err) {
         logger.error('code resent error', err)
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.loadingSend = false
       }
@@ -216,7 +216,7 @@ export default {
         this.$router.push({ name: 'home' })
       } catch (err) {
         logger.error('password refresh error', err)
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.loadingSubmit = false
       }

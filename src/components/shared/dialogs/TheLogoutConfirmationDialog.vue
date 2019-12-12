@@ -63,7 +63,7 @@ export default {
         // redirect to home page
         this.$router.push({ name: 'home' })
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.setIsLogoutConfirmationDialogVisible(false)
       }

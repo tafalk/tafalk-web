@@ -97,7 +97,7 @@ export default {
         }, this.delayBeforeRouteInMillis)
       } catch (err) {
         logger.error('confirm registration error', err)
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.loadingSend = false
       }
@@ -107,7 +107,7 @@ export default {
       try {
         await Auth.resendSignUp(this.username)
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.loadingResend = false
       }
