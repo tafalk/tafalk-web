@@ -3,7 +3,7 @@ version: 2.1
 # YAML Anchors
 node-image: &node-image
   docker:
-    - image: circleci/node:13.0.1-stretch
+    - image: circleci/node:latest
 
 # Use a package of configuration called an orb, see https://circleci.com/docs/2.0/orb-intro/
 jobs:
