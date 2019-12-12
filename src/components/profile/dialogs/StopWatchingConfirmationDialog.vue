@@ -84,7 +84,7 @@ export default {
           )
         }
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         // close the dialog
         this.setIsStopWatchingConfirmationDialogVisible(false)

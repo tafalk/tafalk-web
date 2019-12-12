@@ -157,7 +157,7 @@ export default {
           'an error occurred while logging in: ',
           JSON.stringify(err)
         )
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
         if (err === this.userDoesNotExistError) {
           setTimeout(() => {
             this.$router.push({ name: 'register' })

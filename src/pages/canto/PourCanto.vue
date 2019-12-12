@@ -110,7 +110,7 @@ export default {
 
     API.graphql(graphqlOperation(GetCantoBody, { id: cantoId }))
       .then(resp => {
-        const currentBody = (resp.data.getCanto || {}).body
+        const currentBody = resp.data.getCanto?.body
         if (!currentBody) {
           this.isCantoNew = true
         } else {
@@ -124,7 +124,7 @@ export default {
           'Error occurred while getting canto info',
           JSON.stringify(err)
         )
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       })
       .finally(() => {
         this.setIsPageReady(true)
@@ -142,7 +142,7 @@ export default {
     async body(newBody, oldBody) {
       if (!this.getIsPageReady || IsNullOrWhitespace(newBody)) return
 
-      if (oldBody == null || oldBody.length === 0) {
+      if (!oldBody) {
         // Old body is null or empty, so create the entry here
         try {
           this.processState = this.savingStateConstant
@@ -161,10 +161,10 @@ export default {
         } catch (err) {
           logger.error(
             'An error occurred while creating the canto',
-            err.message || JSON.stringify(err)
+            JSON.stringify(err.message ?? err)
           )
           this.processState = this.errorStateConstant
-          this.setNewSiteError(err.message || err)
+          this.setNewSiteError(err.message ?? err)
         }
       }
     }
@@ -188,7 +188,7 @@ export default {
       const initialBody = this.body
       const bodyTextLength = bodyTextArea.value.length
 
-      if (!bodyTextLength || bodyTextLength === 0) return
+      if (!bodyTextLength) return
 
       if (selectionStartPos === selectionEndPos) {
         // There is no selection, but regular cursor
@@ -237,7 +237,7 @@ export default {
       const bodyTextArea = this.$refs.pourBody.$el.querySelector('textarea')
       const bodyTextLength = bodyTextArea.value.length
 
-      if (!bodyTextLength || bodyTextLength === 0) return
+      if (!bodyTextLength) return
 
       clearTimeout(this.timeoutID)
       this.timeoutID = setTimeout(() => {
@@ -274,10 +274,10 @@ export default {
       } catch (err) {
         logger.error(
           'An error occurred while updating the canto',
-          err.message || JSON.stringify(err)
+          JSON.stringify(err.message ?? err)
         )
         this.processState = this.errorStateConstant
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     },
     onDefaultKeydown(event) {

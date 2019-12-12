@@ -212,10 +212,10 @@ export default {
       return this.getAuthenticatedUser
     },
     authenticatedUserId() {
-      return (this.authenticatedUser || {}).id
+      return this.authenticatedUser?.id ?? ''
     },
     authenticatedUserName() {
-      return (this.authenticatedUser || {}).username
+      return this.authenticatedUser?.username ?? ''
     },
     visitedUser() {
       return this.getVisitedUser
@@ -229,10 +229,8 @@ export default {
       )
     },
     isVisitorAllowed() {
-      const outboundBlockId = (
-        ((this.visitedUser || {}).connectionsWithAuthenticatedUser || {})
-          .outbound || {}
-      ).blockId
+      const outboundBlockId = this.visitedUser?.connectionsWithAuthenticatedUser
+        ?.outbound?.blockId
 
       if (outboundBlockId && outboundBlockId.length > 0) return false
 
@@ -252,10 +250,10 @@ export default {
         : this.defaultBio
     },
     visitedUserColor() {
-      return GetHexColorOfString(this.visitedUser.username || '')
+      return GetHexColorOfString(this.visitedUser.username ?? '')
     },
     visitedUserLocationValue() {
-      return (this.visitedUser || {}).location || this.defaultLocation
+      return this.visitedUser?.location ?? this.defaultLocation
     },
     visitedUserAccountCreationDateStr() {
       return this.visitedUser
@@ -329,7 +327,7 @@ export default {
 
           const graphqlConnectionsFromVisitedUserToAuthenticatedUserResult = await API.graphql(
             graphqlOperation(GetInteractionsBetweenUsers, {
-              actorUserId: (visitedUserProfile || {}).id || '',
+              actorUserId: visitedUserProfile?.id ?? '',
               targetUserId: this.authenticatedUserId
             })
           )
@@ -375,9 +373,9 @@ export default {
       } catch (err) {
         logger.error(
           'Error occurred while getting user info',
-          JSON.stringify(err.message || err)
+          JSON.stringify(err.message ?? err)
         )
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     }
   }

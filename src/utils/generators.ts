@@ -25,7 +25,7 @@ export const GenerateProfilePictureFileName = (
 
 export const GetHexColorOfString = (str: string) => {
   let hash = 0
-  for (let i = 0; i < (str || '').length; i++) {
+  for (let i = 0; i < str?.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash)
   }
   let hex = '#'
@@ -57,7 +57,7 @@ export const BookmarkCantoContent = (
 ) => {
   if (!originalBody) return originalBody
   const originalText = originalBody.textContent // .trim()
-  if (!indices || indices.length === 0)
+  if (!indices?.length)
     return `<span class="unbookmarked">${originalText}</span>`
   return `<span class="${cantoPreBookmarkClass}">${originalText.substring(
     0,

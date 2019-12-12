@@ -72,7 +72,7 @@ export default {
         const currentBlockId = this.visitedUser.connectionsWithAuthenticatedUser
           .inbound.watchId
 
-        if (!currentBlockId || !currentBlockId.length) {
+        if (!currentBlockId?.length) {
           const graphqlBlockResult = await API.graphql(
             graphqlOperation(BlockUser, {
               currentAuthenticatedUserId: this.authenticatedUser.id,
@@ -87,7 +87,7 @@ export default {
           this.setInboundBlockIdFromAuthenticatedUser(blockId)
         }
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         // close the dialog
         this.setIsBlockConfirmationDialogVisible(false)

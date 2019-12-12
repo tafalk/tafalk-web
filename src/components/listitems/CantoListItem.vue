@@ -168,17 +168,14 @@ export default {
     }
   },
   async mounted() {
-    this.authorColor = GetHexColorOfString(
-      ((this.canto || {}).user || {}).username || ''
-    )
+    this.authorColor = GetHexColorOfString(this.canto?.user?.username ?? '')
 
-    this.authorProfilePictureObjectUrl =
-      ((this.canto || {}).user || {}).profilePictureKey != null
-        ? await Storage.get(((this.canto || {}).user || {}).profilePictureKey, {
-            level: 'protected',
-            identityId: this.canto.user.cognitoIdentityId
-          })
-        : null
+    this.authorProfilePictureObjectUrl = this.canto?.user?.profilePictureKey
+      ? await Storage.get(this.canto?.user?.profilePictureKey, {
+          level: 'protected',
+          identityId: this.canto.user.cognitoIdentityId
+        })
+      : null
   },
   computed: {
     ...mapGetters({

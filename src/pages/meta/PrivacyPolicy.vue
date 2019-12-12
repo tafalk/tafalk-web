@@ -50,14 +50,14 @@ export default {
     }
   },
   created() {
-    const locale = this.$i18n.locale || GetBrowserLanguageInIso6391()
+    const locale = this.$i18n.locale ?? GetBrowserLanguageInIso6391()
     this.$httpSitePoliciesStorage
       .get(`${this.s3PrivacyPolicyFolder}/${locale}.html`)
       .then(resp => {
         this.content = resp.data
       })
       .catch(err => {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       })
   },
   computed: {

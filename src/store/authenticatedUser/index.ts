@@ -69,7 +69,7 @@ const actions = {
     await API.graphql(
       graphqlOperation(UpdateUserLanguage, {
         userId: payload.userId,
-        language: payload.language || null
+        language: payload.language ?? null
       })
     )
     commit('setLanguage', payload.language)

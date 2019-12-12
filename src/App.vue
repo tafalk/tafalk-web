@@ -77,7 +77,7 @@ export default {
       return this.authenticatedUser ? this.authenticatedUser.theme : 'light'
     },
     authenticatedUserLanguage() {
-      return (this.authenticatedUser || {}).language
+      return this.authenticatedUser?.language
     },
     hasVisitedBefore: {
       get: function() {

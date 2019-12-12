@@ -164,14 +164,14 @@ export default {
   watch: {
     locationSearchText(newVal) {
       // If less than 3 chars typed, do not search
-      if (!newVal || newVal.length < 3) return
+      if (newVal?.length < 3) return
 
       this.isLocationDataLoading = true
 
       try {
         this.searchLocations(newVal)
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.isLocationDataLoading = false
       }

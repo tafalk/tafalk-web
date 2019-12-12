@@ -136,7 +136,7 @@ export default {
         // persist to store
         this.setInboundWatchIdFromAuthenticatedUser(watchId)
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     },
     onUnwatchThisUserClick() {
@@ -162,7 +162,7 @@ export default {
           throw new Error(this.$i18n.t('user.block.message.notBlockedError'))
         }
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       }
     }
   }

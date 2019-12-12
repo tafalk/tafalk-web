@@ -59,7 +59,7 @@ export default {
   },
   created() {
     // Set initial value for current user's preferred language
-    if (!this.getAuthenticatedUser || !this.getAuthenticatedUser.language) {
+    if (!this.getAuthenticatedUser?.language) {
       this.languageModel = languageOptions.find(o => o.value === '')
       return
     }
@@ -74,7 +74,7 @@ export default {
         'authenticatedUser/dialog/getIsLanguageChooseDialogVisible'
     }),
     authenticatedUser() {
-      return this.getAuthenticatedUser || {}
+      return this.getAuthenticatedUser ?? {}
     },
     unsupportedLanguageAlert() {
       // If one of non-default values have chosen, no need to check
@@ -109,9 +109,9 @@ export default {
           language: langCode
         })
         const browserLanguage = navigator.language.split('-')[0]
-        this.$i18n.locale = langCode || browserLanguage
+        this.$i18n.locale = langCode ?? browserLanguage
       } catch (err) {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.setIsLanguageChooseDialogVisible(false)
       }

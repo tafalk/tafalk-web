@@ -37,7 +37,7 @@ export default {
         this.content = resp.data
       })
       .catch(err => {
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       })
   },
   computed: {

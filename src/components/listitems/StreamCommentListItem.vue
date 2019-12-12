@@ -117,7 +117,7 @@ export default {
       return this.getAuthenticatedUser
     },
     commentorUser() {
-      return comment.user || {}
+      return comment.user ?? {}
     },
     blocked() {
       if (!this.authenticatedUser) return false
@@ -131,11 +131,9 @@ export default {
       return this.authenticatedUser.username === this.commentorUser.username
     },
     authenticatedUserFlagId() {
-      return (
-        (this.comment.flags || []).find(
-          item => item.userId === this.authenticatedUser.id
-        ) || {}
-      ).id
+      return this.comment.flags?.find(
+        item => item.userId === this.authenticatedUser.id
+      )?.id
     }
   },
   beforeDestroy() {

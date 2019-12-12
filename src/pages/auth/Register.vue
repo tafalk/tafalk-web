@@ -258,7 +258,7 @@ export default {
         this.$router.push({ name: 'confirmRegistration' })
       } catch (err) {
         logger.error('register error', err)
-        this.setNewSiteError(err.message || err)
+        this.setNewSiteError(err.message ?? err)
       } finally {
         this.loading = false
       }
