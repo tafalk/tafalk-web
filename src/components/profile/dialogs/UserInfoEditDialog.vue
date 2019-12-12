@@ -113,14 +113,11 @@ export default {
       ],
       bioRules: [
         v =>
-          (v != null && v.length <= 1000) ||
-          this.$i18n.t('user.edit.info.rules.bioUpLimit')
+          v?.length <= 1000 || this.$i18n.t('user.edit.info.rules.bioUpLimit')
       ],
       siteRules: [
         v =>
-          v === null ||
-          v === undefined ||
-          v === '' ||
+          !v ||
           /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(
             v
           ) ||
