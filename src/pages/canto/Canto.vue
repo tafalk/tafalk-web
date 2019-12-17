@@ -436,7 +436,7 @@ export default {
           graphqlOperation(GetUserIdByUserName, { username })
         )
         const getUserIdByUserNameGraphqlResult =
-          getUserIdByUserNameGraphqlReq.data.getUserByUsername[0]
+          getUserIdByUserNameGraphqlReq.data.getUserByUsername
         const cantoId = getUserIdByUserNameGraphqlResult.id
 
         const cantoGraphqlResult = await API.graphql(
