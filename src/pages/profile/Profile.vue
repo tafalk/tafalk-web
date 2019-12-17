@@ -295,7 +295,7 @@ export default {
           graphqlOperation(GetUserProfileData, { username })
         )
         const visitedUserProfile =
-          graphqlVisitedProfileResult.data.getUserByUsername[0]
+          graphqlVisitedProfileResult.data.getUserByUsername
 
         if (!visitedUserProfile) {
           this.$router.push({ name: 'notFound' })

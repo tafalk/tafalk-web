@@ -172,7 +172,7 @@ router.beforeEach(async (to, from, next) => {
           username: currentAuthenticatedUser.username
         })
       )
-      const userProfile = userProfiles.data.getUserByUsername[0]
+      const userProfile = userProfiles.data.getUserByUsername
 
       const profilePictureObjectUrl = userProfile.profilePictureKey
         ? await Storage.get(userProfile.profilePictureKey, {

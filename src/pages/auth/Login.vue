@@ -130,7 +130,7 @@ export default {
           graphqlOperation(GetUserProfileData, { username: user.username })
         )
 
-        let userProfile = userProfiles.data.getUserByUsername[0]
+        let userProfile = userProfiles.data.getUserByUsername
 
         if (!userProfile.cognitoIdentityId) {
           // If first login, there may be need to update cognito identity id
