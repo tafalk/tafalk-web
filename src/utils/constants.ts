@@ -108,7 +108,6 @@ export const languageOptions = [
   { text: 'English', value: 'en' }
 ]
 
-export const siteImagesBaseUrl =
-  'https://tafalk-sitefiles.s3.eu-central-1.amazonaws.com/images'
+export const siteImagesBaseUrl = `https://tafalk-prod-sitefiles.s3-${process.env.VUE_APP_AWS_REGION}.amazonaws.com/images`
 
 export const geocodingRootUrl = 'https://geocoder.tilehosting.com'
