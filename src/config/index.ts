@@ -29,7 +29,6 @@ export const AwsConfig = {
   aws_appsync_graphqlEndpoint: process.env.VUE_APP_APPSYNC_GRAPHQL_ENDPOINT,
   aws_appsync_region: process.env.VUE_APP_AWS_REGION,
   aws_appsync_authenticationType: 'AMAZON_COGNITO_USER_POOLS'
-  // aws_appsync_apiKey: process.env.VUE_APP_APPSYNC_API_KEY
 }
 
 // MapTiler Geocoder
