@@ -38,8 +38,7 @@ Some
 |--------------------------------------|---------------------------------------------------------------|
 | AWS_ACCESS_KEY_ID                    | `{YOUR_AWS_ACCESS_KEY_ID}`                                    |
 | AWS_SECRET_ACCESS_KEY                | `{SECRET_KEY_FOR_THE_ACCESS_KEY}`                             |
-| VUE_APP_AWS_REGION                   | `eu-central-1` *or another region*                            |
-| VUE_APP_APPSYNC_API_KEY (Deprecated) | `{YOUR_APPSYNC_API_KEY}`                                      |
+| VUE_APP_AWS_REGION                   | `eu-west-1` *or another region*                               |
 | VUE_APP_APPSYNC_GRAPHQL_ENDPOINT     | `https://{api_id}.appsync-api.{region}.amazonaws.com/graphql` |
 | VUE_APP_COGNITO_IDENTITY_POOL_ID     | `{region}:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`               |
 | VUE_APP_COGNITO_USER_POOL_CLIENT_ID  | `xxxxxxxxxxxxxxxxxxxxxxxxxx`                                  |
