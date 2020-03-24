@@ -59,7 +59,7 @@
       "result": {
         "userTitle": "Users ({resultCount})",
         "streamTitle": "Streams ({resultCount})",
-        "cantoTitle":  "Cantos ({resultCount})"
+        "cantoTitle": "Cantos ({resultCount})"
       }
     },
     "bottomnav": {
@@ -68,7 +68,7 @@
       "byFaveUsers": "By Fave Users",
       "cantos": "Cantos"
     },
-    "addFab" : {
+    "addFab": {
       "canto": {
         "tooltip": "Canto"
       },
@@ -163,9 +163,7 @@
       "receiveCodeButtonText": "Receive Code",
       "codeLabel": "Code",
       "newPasswordLabel": "New Password",
-      "rules": {
-
-      }
+      "rules": {}
     },
     "message": {
       "validation": {
@@ -265,6 +263,7 @@
       "positionSelectLabel": "Position",
       "doneButtonText": "Done",
       "sealButtonText": "Seal",
+      "showUncloggerPromptButtonText": "Show Prompt, Unclog Your Rhythm",
       "message": {
         "beforeRouteConfirmationText": "Do you really want to leave? Your stream will be sealed!"
       }
@@ -357,7 +356,6 @@
           "profilePrivacyProtectedHint": "Profile is visible to only members of the site",
           "profilePrivacyPrivateHint": "Profile is visible to nobody but you",
           "profilePrivacyUnknownHint": "Unknown input"
-
         }
       }
     },

@@ -6,31 +6,45 @@
     ></tafalk-stream-introduction>
     <v-card flat>
       <v-toolbar dense flat>
-        <v-toolbar-title v-if="processState === 'saved'">
-          <span class="grey--text"
-            ><v-icon>mdi-check-circle-outline</v-icon>&nbsp;{{
-              $t('stream.pour.savedLabel')
-            }}</span
-          >
-        </v-toolbar-title>
-        <v-toolbar-title v-else-if="processState === 'saving'">
-          <span class="grey--text"
-            ><v-icon>mdi-cached</v-icon>&nbsp;{{
-              $t('stream.pour.savingLabel')
-            }}</span
-          >
-        </v-toolbar-title>
-        <v-toolbar-title v-else-if="processState === 'error'"
-          ><span class="grey--text"
-            ><v-icon>mdi-close-circle-outline</v-icon>&nbsp;{{
-              $t('stream.pour.saveErrorLabel')
-            }}</span
-          >
+        <v-toolbar-title>
+          <!-- Saved -->
+          <template v-if="processState === 'saved'">
+            <span class="grey--text">
+              <v-icon>mdi-check-circle-outline</v-icon>&nbsp;
+              {{ $t('stream.pour.savedLabel') }}
+            </span>
+          </template>
+          <!-- Saving -->
+          <template v-else-if="processState === 'saving'">
+            <span class="grey--text">
+              <v-icon>mdi-cached</v-icon>&nbsp;
+              {{ $t('stream.pour.savingLabel') }}
+            </span>
+          </template>
+          <!-- Error -->
+          <template v-else-if="processState === 'error'">
+            <span class="grey--text">
+              <v-icon>mdi-close-circle-outline</v-icon>&nbsp;
+              {{ $t('stream.pour.saveErrorLabel') }}
+            </span>
+          </template>
         </v-toolbar-title>
         <v-spacer />
-        <span class="grey--text caption">{{
-          $t('stream.pour.regularLeavePageDisclaimerLabel')
-        }}</span>
+        <span class="grey--text caption">
+          {{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}
+        </span>
+        <!-- Extension -->
+        <template v-slot:extension>
+          <v-btn
+            v-if="currentUncloggerPrompt"
+            text
+            small
+            color="grey--darken-1"
+            @click="onShowUncloggerPromptClick"
+          >
+            {{ $t('stream.pour.showUncloggerPromptButtonText') }}
+          </v-btn>
+        </template>
       </v-toolbar>
       <v-form>
         <v-container pt-0>
@@ -113,6 +127,7 @@
 
 <!-- UUID -->
 <script src="http://wzrd.in/standalone/uuid%2Fv5@latest"></script>
+
 <script>
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { Logger } from '@aws-amplify/core'
@@ -146,6 +161,7 @@ export default {
       valid: false,
       title: null,
       body: null,
+      currentUncloggerPrompt: null,
       isStreamCreated: false,
       privacy: 'Public', // Default
       moodModel: null,
@@ -519,6 +535,10 @@ export default {
         this.processState = this.errorStateConstant
         this.setNewSiteError(err.message ?? err)
       }
+    },
+    onShowUncloggerPromptClick() {
+      // TODO: Implement getting a random unclogger prompt here
+      this.currentUncloggerPrompt = "Hi, I'm a prompt"
     },
     async onDoneClick() {
       this.loading = true
