@@ -6,33 +6,45 @@
     ></tafalk-stream-introduction>
     <v-card flat>
       <v-toolbar dense flat>
+        <!-- Microphone -->
+        <v-btn
+          v-if="isSpeechRecognitionAllowed"
+          icon
+          @click="onStartVoiceRecordClick"
+        >
+          <v-icon>mdi-microphone</v-icon>
+        </v-btn>
+        <!-- State -->
         <v-toolbar-title>
           <!-- Saved -->
           <template v-if="processState === 'saved'">
             <span class="grey--text">
-              <v-icon>mdi-check-circle-outline</v-icon>&nbsp;
+              <v-icon>mdi-check-circle-outline</v-icon>
+              &nbsp;
               {{ $t('stream.pour.savedLabel') }}
             </span>
           </template>
           <!-- Saving -->
           <template v-else-if="processState === 'saving'">
             <span class="grey--text">
-              <v-icon>mdi-cached</v-icon>&nbsp;
+              <v-icon>mdi-cached</v-icon>
+              &nbsp;
               {{ $t('stream.pour.savingLabel') }}
             </span>
           </template>
           <!-- Error -->
           <template v-else-if="processState === 'error'">
             <span class="grey--text">
-              <v-icon>mdi-close-circle-outline</v-icon>&nbsp;
+              <v-icon>mdi-close-circle-outline</v-icon>
+              &nbsp;
               {{ $t('stream.pour.saveErrorLabel') }}
             </span>
           </template>
         </v-toolbar-title>
         <v-spacer />
-        <span class="grey--text caption">
-          {{ $t('stream.pour.regularLeavePageDisclaimerLabel') }}
-        </span>
+        <span class="grey--text caption">{{
+          $t('stream.pour.regularLeavePageDisclaimerLabel')
+        }}</span>
         <!-- Extension -->
         <template v-slot:extension>
           <v-btn
@@ -41,9 +53,8 @@
             small
             color="grey--darken-1"
             @click="onShowUncloggerPromptClick"
+            >{{ $t('stream.pour.showUncloggerPromptButtonText') }}</v-btn
           >
-            {{ $t('stream.pour.showUncloggerPromptButtonText') }}
-          </v-btn>
         </template>
       </v-toolbar>
       <v-form>
@@ -114,9 +125,8 @@
                 @click="onDoneClick"
                 :disabled="!body || !body.length || loading"
                 :loading="loading"
+                >{{ $t('stream.pour.sealButtonText') }}</v-btn
               >
-                {{ $t('stream.pour.sealButtonText') }}
-              </v-btn>
             </v-col>
           </v-row>
         </v-container>
@@ -163,6 +173,7 @@ export default {
       body: null,
       currentUncloggerPrompt: null,
       isStreamCreated: false,
+      isSpeechRecognitionAllowed: false,
       privacy: 'Public', // Default
       moodModel: null,
       positionModel: null,
@@ -177,7 +188,9 @@ export default {
       incompleteSealTimeValue: 'NA',
       timeoutID: null,
       deleteTimeToIdle: pourStrikethroughTimeToIdle,
-      loading: false
+      loading: false,
+      voiceRecognition: null,
+      hasVoiceRecognitionStarted: false
     }
   },
   components: {
@@ -191,6 +204,21 @@ export default {
 
     // Create a UUID for the new stream
     this.streamId = uuidv4()
+
+    // Check if browser supports a possible speech recognition
+    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+    if (SpeechRecognition) {
+      this.voiceRecognition = new SpeechRecognition()
+      this.voiceRecognition.continuous = true
+      this.voiceRecognition.interimResults = true
+
+      this.voiceRecognition.onresult = event => {
+        var transcript = event.results[0][0].transcript
+        console.log('You told: ' + transcript)
+      }
+    } else {
+      this.isSpeechRecognitionAllowed = false
+    }
   },
   async mounted() {
     // Check if first stream of user
@@ -539,6 +567,10 @@ export default {
     onShowUncloggerPromptClick() {
       // TODO: Implement getting a random unclogger prompt here
       this.currentUncloggerPrompt = "Hi, I'm a prompt"
+    },
+    onStartVoiceRecordClick() {
+      this.hasVoiceRecognitionStarted = true
+      this.voiceRecognition.start()
     },
     async onDoneClick() {
       this.loading = true

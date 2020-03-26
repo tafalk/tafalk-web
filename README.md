@@ -30,15 +30,15 @@ Some
 
 - user-specific
 
- information are preferred to be kept in CircleCI environment variables.
+information are preferred to be kept in CircleCI environment variables.
 
- So, the following should be added to CircleCI environment variables beforehand:
+So, the following should be added to CircleCI environment variables beforehand:
 
-|  **Environment Variable Key**        | **Environment Variable Value**                                |
-|--------------------------------------|---------------------------------------------------------------|
+| **Environment Variable Key**         | **Environment Variable Value**                                |
+| ------------------------------------ | ------------------------------------------------------------- |
 | AWS_ACCESS_KEY_ID                    | `{YOUR_AWS_ACCESS_KEY_ID}`                                    |
 | AWS_SECRET_ACCESS_KEY                | `{SECRET_KEY_FOR_THE_ACCESS_KEY}`                             |
-| VUE_APP_AWS_REGION                   | `eu-west-1` *or another region*                               |
+| VUE_APP_AWS_REGION                   | `eu-west-1` _or another region_                               |
 | VUE_APP_APPSYNC_GRAPHQL_ENDPOINT     | `https://{api_id}.appsync-api.{region}.amazonaws.com/graphql` |
 | VUE_APP_COGNITO_IDENTITY_POOL_ID     | `{region}:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`               |
 | VUE_APP_COGNITO_USER_POOL_CLIENT_ID  | `xxxxxxxxxxxxxxxxxxxxxxxxxx`                                  |
@@ -49,21 +49,3 @@ Some
 | VUE_APP_S3_USER_STORAGE_BUCKET       | `{USER_STORAGE_BUCKET_NAME}`                                  |
 | VUE_APP_S3_SITE_POLICIES_BUCKET      | `{SITE_POLICIES_BUCKET_NAME}`                                 |
 | VUE_APP_S3_HOSTING_BUCKET            | `{HOSTING_BUCKET_NAME}`                                       |
-
-## Trying Other Stuff
-
-### Vue
-
-### React
-
-#### Create-React-App
-
-I have started it, but gave up when there is no equivalent of `v-if` or `ngIf`
-
-#### GatsbyJs
-
-It is a good option for SPA generation, but *Dynamic Routing* is not so straightforward
-
-#### NextJs
-
-It is mainly for Server-side rendered (SSR) apps but those require a webserver (like Nginx) and thus, cannot directly served on an S3 bucket.
