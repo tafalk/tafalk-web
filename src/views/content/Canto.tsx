@@ -119,17 +119,17 @@ const Canto: React.FC = () => {
           graphqlOperation(GetCantoById, {
             id: routeCantoId
           })
-        )
+        ) as PromiseLike<{ data: GetCantoQuery }>
         const cantoAuthUserBookmarkGraphqlQuery = API.graphql(
           graphqlOperation(GetContentBookmarkIdByUser, {
             userId: authUser.id
           })
-        )
+        ) as PromiseLike<{ data: GetContentBookmarkByUserQuery }>
         const cantoAuthUserFlagGraphqlQuery = API.graphql(
           graphqlOperation(GetFlagIdByUser, {
             userId: authUser.id
           })
-        )
+        ) as PromiseLike<{ data: GetFlagByUserQuery }>
 
         // const cantoGraphqlResponse = (await cantoGraphqlQuery) as {
         //   data: GetCantoQuery
@@ -168,6 +168,7 @@ const Canto: React.FC = () => {
             })) as string)
           : ''
 
+        // Set states
         setAuthorProfilePictureObjectUrl(profilePictureObjectUrl)
         setCanto(cantoResult)
         setAuthUserBookmarkId(cantoAuthUserBookmarkResult?.id ?? '')
