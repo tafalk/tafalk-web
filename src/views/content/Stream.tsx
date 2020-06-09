@@ -11,7 +11,7 @@ import { GetStreamQuery } from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
 import { useSiteMessage } from 'hooks'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { GetStream } from 'graphql/custom'
+import { GetStreamById } from 'graphql/custom'
 import { Grid } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 
@@ -54,7 +54,7 @@ const Stream: React.FC = () => {
       try {
         // DB data
         const streamGraphqlResponse = (await API.graphql(
-          graphqlOperation(GetStream, {
+          graphqlOperation(GetStreamById, {
             id: routeStreamId
           })
         )) as {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link as RouterLink, useHistory, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Helmet } from 'react-helmet'
 import {
   createStyles,
@@ -20,11 +21,20 @@ import {
   ListItemText
 } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
-import { GetCantoQuery } from 'types/appsync/API'
+import {
+  GetCantoQuery,
+  GetContentBookmarkByUserQuery,
+  GetFlagByUserQuery
+} from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
-import API, { graphqlOperation } from '@aws-amplify/api'
+import API, { graphqlOperation, GraphQLResult } from '@aws-amplify/api'
 import Storage from '@aws-amplify/storage'
-import { GetCanto, OnUpdateCanto } from 'graphql/custom'
+import {
+  GetCantoById,
+  OnUpdateCantoById,
+  GetContentBookmarkIdByUser,
+  GetFlagIdByUser
+} from 'graphql/custom'
 import { useSiteMessage } from 'hooks'
 import { getSiblings } from 'utils/derivations'
 import Observable from 'zen-observable'
@@ -80,6 +90,8 @@ const Canto: React.FC = () => {
     authorProfilePictureObjectUrl,
     setAuthorProfilePictureObjectUrl
   ] = useState('')
+  const [authUserBookmarkId, setAuthUserBookmarkId] = useState('')
+  const [authUserFlagId, setAuthUserFlagId] = useState('')
   const [
     bodySelectionRange,
     setBodySelectionRange
@@ -103,14 +115,45 @@ const Canto: React.FC = () => {
       try {
         let unsubscribe
         // DB data
-        const cantoGraphqlResponse = (await API.graphql(
-          graphqlOperation(GetCanto, {
+        const cantoGraphqlQuery = API.graphql(
+          graphqlOperation(GetCantoById, {
             id: routeCantoId
           })
-        )) as {
-          data: GetCantoQuery
-        }
+        )
+        const cantoAuthUserBookmarkGraphqlQuery = API.graphql(
+          graphqlOperation(GetContentBookmarkIdByUser, {
+            userId: authUser.id
+          })
+        )
+        const cantoAuthUserFlagGraphqlQuery = API.graphql(
+          graphqlOperation(GetFlagIdByUser, {
+            userId: authUser.id
+          })
+        )
+
+        // const cantoGraphqlResponse = (await cantoGraphqlQuery) as {
+        //   data: GetCantoQuery
+        // }
+
+        const [
+          cantoGraphqlResponse,
+          cantoAuthUserBookmarkGraphqlResponse,
+          cantoAuthUserFlagGraphqlResponse
+        ] = (await Promise.all([
+          cantoGraphqlQuery,
+          cantoAuthUserBookmarkGraphqlQuery,
+          cantoAuthUserFlagGraphqlQuery
+        ])) as [
+          { data: GetCantoQuery },
+          { data: GetContentBookmarkByUserQuery },
+          { data: GetFlagByUserQuery }
+        ]
+
         const cantoResult = cantoGraphqlResponse.data.getCanto
+        const cantoAuthUserBookmarkResult =
+          cantoAuthUserBookmarkGraphqlResponse.data.getContentBookmarkByUser
+        const cantoAuthUserFlagResult =
+          cantoAuthUserFlagGraphqlResponse.data.getFlagByUser
 
         if (!cantoResult) {
           routerHistory.push('/notfound')
@@ -127,10 +170,12 @@ const Canto: React.FC = () => {
 
         setAuthorProfilePictureObjectUrl(profilePictureObjectUrl)
         setCanto(cantoResult)
+        setAuthUserBookmarkId(cantoAuthUserBookmarkResult?.id ?? '')
+        setAuthUserFlagId(cantoAuthUserFlagResult?.id ?? '')
 
         // Subscribe to canto itself for live content changes
         const cantoChangeSubscription = API.graphql(
-          graphqlOperation(OnUpdateCanto, { id: routeCantoId })
+          graphqlOperation(OnUpdateCantoById, { id: routeCantoId })
         )
         if (cantoChangeSubscription instanceof Observable) {
           const sub = cantoChangeSubscription.subscribe({
@@ -168,7 +213,7 @@ const Canto: React.FC = () => {
         setInfoLoaded(true)
       }
     })()
-  }, [routeCantoId, routerHistory, setSiteMessageData])
+  }, [authUser.id, routeCantoId, routerHistory, setSiteMessageData])
 
   // Side effects: Event listener for text selection (or highlight)
   useEffect(() => {

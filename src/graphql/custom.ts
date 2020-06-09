@@ -140,11 +140,8 @@ export const GetStreamById = gql`
       startTime
       isSealed
       sealTime
-      bookmarks {
-        id
-        contentId
-        userId
-        time
+      bookmarkCount {
+        count
       }
       comments {
         id
@@ -200,13 +197,6 @@ export const GetCantoById = gql`
       isPaused
       bookmarkCount {
         count
-      }
-      bookmarks {
-        id
-        contentId
-        userId
-        time
-        indices
       }
     }
   }
@@ -443,6 +433,21 @@ export const SearchSiteContent = gql`
         }
       }
     }
+  }
+`
+
+export const GetContentBookmarkIdByUser = gql`
+  query GetContentBookmarkIdByUser($userId: ID!, $contentType: ContentType) {
+    getContentBookmarkByUser(userId: $userId, contentType: $contentType) {
+      id
+    }
+  }
+`
+
+export const GetFlagIdByUser = gql`
+  query GetFlagIdByUser($flaggerUserId: ID!, $contentType: ContentType) {
+    getFlagByUser(flaggerUserId: $flaggerUserId, contentType: $contentType) {
+      id
   }
 `
 

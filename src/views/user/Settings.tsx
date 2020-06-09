@@ -31,7 +31,7 @@ import { AuthUserContext } from 'context/Auth'
 import { useSiteMessage } from 'hooks'
 import { TabContext, TabList, TabPanel } from '@material-ui/lab'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { UpdateUserBio, DeleteUser } from 'graphql/custom'
+import { UpdateUserBio, DeleteUserById } from 'graphql/custom'
 import DeleteForeverIcon from 'mdi-material-ui/DeleteForever'
 import Auth from '@aws-amplify/auth'
 import { Formik, Form, Field } from 'formik'
@@ -287,7 +287,7 @@ const Settings: React.FC = () => {
         })
       )
       await API.graphql(
-        graphqlOperation(DeleteUser, {
+        graphqlOperation(DeleteUserById, {
           userId: authUser.id
         })
       )
