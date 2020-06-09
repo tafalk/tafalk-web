@@ -1,0 +1,43 @@
+name: Deploy to AWS S3
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+      - name: Install dependencies
+        run: npm i
+      - name: Build
+        run: npm run build
+      - name: Deploy
+        env:
+          REACT_APP_APPSYNC_GRAPHQL_ENDPOINT: ${{ secrets.REACT_APP_APPSYNC_GRAPHQL_ENDPOINT }}
+          REACT_APP_COGNITO_IDENTITY_POOL_ID: ${{ secrets.REACT_APP_COGNITO_IDENTITY_POOL_ID }}
+          REACT_APP_COGNITO_USER_POOL_CLIENT_ID: ${{ secrets.REACT_APP_COGNITO_USER_POOL_CLIENT_ID }}
+          REACT_APP_COGNITO_USER_POOL_ID: ${{ secrets.REACT_APP_COGNITO_USER_POOL_ID }}
+          REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID }}
+          REACT_APP_GOOGLE_RECAPTCHA_V3_SITE_KEY: ${{ secrets.REACT_APP_GOOGLE_RECAPTCHA_V3_SITE_KEY }}
+          REACT_APP_MAPTILER_GEOCODER_API_KEY: ${{ secrets.REACT_APP_MAPTILER_GEOCODER_API_KEY }}
+          REACT_APP_S3_USER_STORAGE_BUCKET: ${{ secrets.REACT_APP_S3_USER_STORAGE_BUCKET }}
+          REACT_APP_S3_SITE_POLICIES_BUCKET: ${{ secrets.REACT_APP_S3_SITE_POLICIES_BUCKET }}
+          REACT_APP_S3_HOSTING_BUCKET: ${{ secrets.REACT_APP_S3_HOSTING_BUCKET }}
+        run: |
+          aws s3 sync build s3://${{ secrets.REACT_APP_S3_HOSTING_BUCKET }}

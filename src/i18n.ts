@@ -1,28 +1,20 @@
-import Vue from 'vue'
-import VueI18n, { LocaleMessages } from 'vue-i18n'
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
 
-Vue.use(VueI18n)
+import LanguageDetector from 'i18next-browser-languagedetector'
+import resources from 'locales'
 
-function loadLocaleMessages(): LocaleMessages {
-  const locales = require.context(
-    './locales',
-    true,
-    /[A-Za-z0-9-_,\s]+\.json$/i
-  )
-  const messages: LocaleMessages = {}
-  locales.keys().forEach(key => {
-    const matched = key.match(/([A-Za-z0-9-_]+)\./i)
-    if (matched && matched.length > 1) {
-      const locale = matched[1]
-      messages[locale] = locales(key)
+i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources,
+    fallbackLng: 'en',
+    debug: true,
+
+    interpolation: {
+      escapeValue: false // not needed for react as it escapes by default
     }
   })
-  return messages
-}
 
-export default new VueI18n({
-  locale: process.env.VUE_APP_I18N_LOCALE ?? 'en', // navigator.language.split('-')[0]
-  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE ?? 'en',
-  messages: loadLocaleMessages(),
-  silentTranslationWarn: true
-})
+export default i18n

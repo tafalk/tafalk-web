@@ -1,0 +1,15 @@
+{
+    "prod": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-tafalkweb-prod-163453-authRole",
+            "UnauthRoleArn": "arn:aws:iam::837986049821:role/amplify-tafalkweb-prod-163453-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::837986049821:role/amplify-tafalkweb-prod-163453-authRole",
+            "Region": "eu-west-1",
+            "DeploymentBucketName": "amplify-tafalkweb-prod-163453-deployment",
+            "UnauthRoleName": "amplify-tafalkweb-prod-163453-unauthRole",
+            "StackName": "amplify-tafalkweb-prod-163453",
+            "StackId": "arn:aws:cloudformation:eu-west-1:837986049821:stack/amplify-tafalkweb-prod-163453/b8b43250-8c79-11ea-8e0d-0ab00e1da5ee",
+            "AmplifyAppId": "d2731oa9672e1n"
+        }
+    }
+}
