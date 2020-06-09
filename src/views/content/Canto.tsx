@@ -280,7 +280,19 @@ const Canto: React.FC = () => {
   }, [])
 
   // Functions
+  const onBookmarkClick = () => {
+    //TODO: Implement
+  }
+
   const onRemoveBookmarkClick = () => {
+    //TODO: Implement
+  }
+
+  const onRaiseFlagClick = () => {
+    //TODO: Implement
+  }
+
+  const onRetractFlagClick = () => {
     //TODO: Implement
   }
 
@@ -342,21 +354,49 @@ const Canto: React.FC = () => {
               setAnchorEl(null)
             }}
           >
-            {authUser.contextMeta.isReady && authUser.id && (
-              <React.Fragment>{/** Auth Users */}</React.Fragment>
-            )}
-            {/** TODO: Show if the auth user has already bookmarked this */}
-            <MenuItem
-              key="remove-bookmark-menu-item"
-              onClick={onRemoveBookmarkClick}
-            >
-              <ListItemIcon>
-                <BookmarkOffIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText
-                primary={t('canto.topBarActionsMenu.buttons.unbookmark')}
-              />
-            </MenuItem>
+            {authUser.contextMeta.isReady &&
+              authUser.id && [
+                authUserBookmarkId ? (
+                  <MenuItem
+                    key="remove-bookmark-menu-item"
+                    onClick={onRemoveBookmarkClick}
+                  >
+                    <ListItemIcon>
+                      <BookmarkOffIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={t('canto.topBarActionsMenu.buttons.unbookmark')}
+                    />
+                  </MenuItem>
+                ) : undefined,
+                authUserFlagId ? (
+                  // Retract Flag
+                  <MenuItem
+                    key="retract-flag-menu-item"
+                    onClick={onRetractFlagClick}
+                  >
+                    <ListItemIcon>
+                      <BookmarkOffIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={t('canto.topBarActionsMenu.buttons.unflag')}
+                    />
+                  </MenuItem>
+                ) : (
+                  // Raise Flag
+                  <MenuItem
+                    key="raise-flag-menu-item"
+                    onClick={onRaiseFlagClick}
+                  >
+                    <ListItemIcon>
+                      <BookmarkOffIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={t('canto.topBarActionsMenu.buttons.flag')}
+                    />
+                  </MenuItem>
+                )
+              ]}
           </Menu>
         </Grid>
       )}

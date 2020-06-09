@@ -373,7 +373,10 @@ const englishTranslation = {
   canto: {
     topBarActionsMenu: {
       buttons: {
-        unbookmark: 'Remove Bookmark'
+        bookmark: 'Bookmark',
+        flag: 'Raise Flag',
+        unbookmark: 'Remove Bookmark',
+        unflag: 'Retract Flag'
       }
     }
   }
