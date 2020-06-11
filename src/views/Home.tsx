@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   Route,
   Link as RouterLink,
   useHistory,
   useLocation,
-  Switch,
-  useRouteMatch
+  Switch
 } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroller'
 import {

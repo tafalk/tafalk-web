@@ -1,4 +1,4 @@
-import { enUS, eo, tr } from 'date-fns/locale'
+import { enUS, tr } from 'date-fns/locale'
 import { Language } from 'types/appsync/API'
 
 export const getUserLocale = (userLanguage: Language): Locale => {

@@ -1,11 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme
-} from '@material-ui/core/styles'
+import React from 'react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,7 +10,6 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const About: React.FC = () => {
-  const theme = useTheme()
   const classes = useStyles()
 
   return <div className={classes.root}></div>

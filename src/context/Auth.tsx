@@ -10,7 +10,7 @@ import Storage from '@aws-amplify/storage'
 import { GetColor } from '@tafalk/material-color-generator'
 import { GetUser, UpdateUserCognitoIdentityId } from 'graphql/custom'
 import { useSiteMessage } from 'hooks'
-import { GetUserByUsernameQuery } from 'types/appsync/API'
+import { GetUserByUsernameQuery, Language } from 'types/appsync/API'
 
 interface AuthUserContextDataType
   extends Pick<
@@ -23,6 +23,7 @@ interface AuthUserContextDataType
     | 'email'
     | 'bio'
     | 'theme'
+    | 'language'
     | 'cognitoIdentityId'
     | 'userWatchInteractions'
     | 'userBlockInteractions'
@@ -48,6 +49,7 @@ export const AuthUserContext = React.createContext<AuthUserContextType>({
     theme: 'light',
     cognitoIdentityId: '',
     color: '',
+    language: Language.en,
     profilePictureObjectUrl: '',
     userWatchInteractions: [],
     userBlockInteractions: [],
@@ -67,6 +69,7 @@ export default ({ children }: any) => {
     theme: 'light',
     cognitoIdentityId: '',
     color: '',
+    language: Language.en,
     profilePictureObjectUrl: '',
     userWatchInteractions: [],
     userBlockInteractions: [],
@@ -91,6 +94,7 @@ export default ({ children }: any) => {
             bio: '',
             theme: 'light',
             color: '',
+            language: Language.en,
             cognitoIdentityId: '',
             profilePictureObjectUrl: '',
             userWatchInteractions: [],
@@ -150,6 +154,7 @@ export default ({ children }: any) => {
           bio: '',
           theme: 'light',
           color: '',
+          language: Language.en,
           cognitoIdentityId: '',
           profilePictureObjectUrl: '',
           userWatchInteractions: [],

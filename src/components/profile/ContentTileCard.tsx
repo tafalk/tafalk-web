@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, ReactNode } from 'react'
+import React, { useState, useEffect, ReactNode } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Storage from '@aws-amplify/storage'
@@ -21,7 +21,6 @@ import {
   Hidden
 } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
-import { AuthUserContext } from 'context/Auth'
 import { TileCardProps } from 'types/props'
 import { Skeleton } from '@material-ui/lab'
 import { getContentRoute } from 'utils/derivations'
@@ -348,7 +347,7 @@ const getHeaderAction = (
 
 const ContentTileCard: React.FC<TileCardProps> = React.memo((props) => {
   const {
-    type: itemType,
+    // type: itemType,
     userInteractionType: itemUserInteractionType,
     contentInteractionType: itemContentInteractionType,
     item,
@@ -356,7 +355,7 @@ const ContentTileCard: React.FC<TileCardProps> = React.memo((props) => {
   } = props
   const classes = useStyles()
   const { t } = useTranslation()
-  const { user: authUser } = useContext(AuthUserContext)
+  // const { user: authUser } = useContext(AuthUserContext)
   const [, setSiteMessageData] = useSiteMessage()
   const [cardData, setCardData] = useState<CardData>()
 

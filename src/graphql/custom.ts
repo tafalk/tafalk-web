@@ -448,6 +448,7 @@ export const GetFlagIdByUser = gql`
   query GetFlagIdByUser($flaggerUserId: ID!, $contentType: ContentType) {
     getFlagByUser(flaggerUserId: $flaggerUserId, contentType: $contentType) {
       id
+    }
   }
 `
 

@@ -18,13 +18,15 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Box
 } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 import {
   GetCantoQuery,
   GetContentBookmarkByUserQuery,
-  GetFlagByUserQuery
+  GetFlagByUserQuery,
+  Language
 } from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
 import API, { graphqlOperation, GraphQLResult } from '@aws-amplify/api'
@@ -40,6 +42,14 @@ import { getSiblings } from 'utils/derivations'
 import Observable from 'zen-observable'
 import DotsVerticalIcon from 'mdi-material-ui/DotsVertical'
 import BookmarkOffIcon from 'mdi-material-ui/BookmarkOff'
+import AccessPointIcon from 'mdi-material-ui/AccessPoint'
+import PauseIcon from 'mdi-material-ui/Pause'
+import BalloonIcon from 'mdi-material-ui/Balloon'
+import SleepIcon from 'mdi-material-ui/Sleep'
+import BookmarkIcon from 'mdi-material-ui/Bookmark'
+import BookmarkOutlineIcon from 'mdi-material-ui/BookmarkOutline'
+import { formatDistanceToNow } from 'date-fns'
+import { getUserLocale } from 'utils/conversions'
 
 const selectApplicableClass = 'select-applicable'
 const cantoPreBookmarkClass = 'canto-pre-bm-hl'
@@ -49,8 +59,14 @@ const cantoPostBookmarkClass = 'canto-post-bm-hl'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    topBar: {
+    grow: {
       flexGrow: 1
+    },
+    topAppBar: {
+      flexGrow: 1
+    },
+    cantoStatusIcon: {
+      marginRight: theme.spacing(2)
     },
     avatar: {
       color: theme.palette.primary.contrastText,
@@ -127,14 +143,11 @@ const Canto: React.FC = () => {
         ) as PromiseLike<{ data: GetContentBookmarkByUserQuery }>
         const cantoAuthUserFlagGraphqlQuery = API.graphql(
           graphqlOperation(GetFlagIdByUser, {
-            userId: authUser.id
+            flaggerUserId: authUser.id
           })
         ) as PromiseLike<{ data: GetFlagByUserQuery }>
 
-        // const cantoGraphqlResponse = (await cantoGraphqlQuery) as {
-        //   data: GetCantoQuery
-        // }
-
+        console.log('Sent requests')
         const [
           cantoGraphqlResponse,
           cantoAuthUserBookmarkGraphqlResponse,
@@ -148,6 +161,8 @@ const Canto: React.FC = () => {
           { data: GetContentBookmarkByUserQuery },
           { data: GetFlagByUserQuery }
         ]
+
+        console.log('Got results')
 
         const cantoResult = cantoGraphqlResponse.data.getCanto
         const cantoAuthUserBookmarkResult =
@@ -315,11 +330,12 @@ const Canto: React.FC = () => {
           {/** Top Bar (User Info & Action Buttons) */}
           <AppBar
             position="static"
-            className={classes.topBar}
+            className={classes.topAppBar}
             color="transparent"
             elevation={0}
           >
             <Toolbar>
+              {canto?.isPaused ? <PauseIcon /> : <AccessPointIcon />}
               <Avatar
                 alt={canto?.user?.username}
                 className={classes.avatar}
@@ -328,6 +344,23 @@ const Canto: React.FC = () => {
               <Typography variant="h6" className={classes.authorUserName}>
                 {canto?.user?.username}
               </Typography>
+              <div className={classes.grow} />
+              {/** Created */}
+              <BalloonIcon />
+              {formatDistanceToNow(new Date(canto?.startTime ?? 0), {
+                locale: getUserLocale(authUser.language ?? Language.en),
+                addSuffix: true
+              })}
+              {/** Last Update */}
+              <SleepIcon />
+              {formatDistanceToNow(new Date(canto?.lastUpdateTime ?? 0), {
+                locale: getUserLocale(authUser.language ?? Language.en),
+                addSuffix: true
+              })}
+              {/** Bookmarks */}
+              {authUserBookmarkId ? <BookmarkIcon /> : <BookmarkOutlineIcon />}
+              {` ${canto?.bookmarkCount?.count}`}
+              {/** More... button */}
               <IconButton
                 className={classes.menuButton}
                 edge="end"
@@ -398,6 +431,9 @@ const Canto: React.FC = () => {
                 )
               ]}
           </Menu>
+
+          {/** Body */}
+          <Box fontFamily="Monospace">{canto?.body}</Box>
         </Grid>
       )}
     </React.Fragment>

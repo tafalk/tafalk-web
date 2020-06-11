@@ -17,7 +17,7 @@ import {
   useTheme
 } from '@material-ui/core/styles'
 
-import { grey, deepOrange } from '@material-ui/core/colors'
+import { grey } from '@material-ui/core/colors'
 import {
   useMediaQuery,
   AppBar,
@@ -227,7 +227,7 @@ const TheHeader: React.FC = () => {
       const isDarkModeEnabled = event.target.checked
       await API.graphql(
         graphqlOperation(UpdateUserTheme, {
-          userId: authUser.id,
+          userId: authUser?.id,
           theme: !isDarkModeEnabled ? 'light' : 'dark'
         })
       )
@@ -292,11 +292,11 @@ const TheHeader: React.FC = () => {
           setAnchorEl(event.currentTarget)
         }}
       >
-        {authUser.profilePictureObjectUrl ? (
+        {authUser?.profilePictureObjectUrl ? (
           <Avatar
             alt="Woolfie"
-            src={authUser.profilePictureObjectUrl}
-            style={{ color: '#fff', backgroundColor: authUser.color }}
+            src={authUser?.profilePictureObjectUrl}
+            style={{ color: '#fff', backgroundColor: authUser?.color }}
           />
         ) : (
           <Skeleton variant="circle" width={40} height={40}></Skeleton>
@@ -523,7 +523,7 @@ const TheHeader: React.FC = () => {
           <div className={classes.grow} />
           {/* Top Bar Buttons */}
           {authUser?.contextMeta.isReady ? (
-            authUser.id ? (
+            authUser?.id ? (
               renderAuthButtons
             ) : (
               renderUnauthButtons
