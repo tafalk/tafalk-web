@@ -22,5 +22,8 @@ export const watchUserValue = 'Watch'
 export const blockUserValue = 'Block'
 export const bookmarkContentValue = 'Bookmark'
 
-//URLs
+// URLs
 export const sitePoliciesBucketBaseUrl = `https://${process.env.REACT_APP_S3_SITE_POLICIES_BUCKET}.s3.${process.env.REACT_APP_AWS_REGION}.amazonaws.com/`
+
+// Cookie names
+export const hasVisitedBeforeCookieName = 'hasVisitedTafalkBefore'

@@ -7,6 +7,7 @@ import {
   Switch
 } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroller'
+import { useCookies } from 'react-cookie'
 import {
   createStyles,
   makeStyles,
@@ -44,7 +45,7 @@ import {
   ListLiveCantosForInfoCard
 } from 'graphql/custom'
 import TafalkGridListTileCard from 'components/content/GridListTileCard'
-import { itemsPerFetch } from 'utils/constants'
+import { itemsPerFetch, hasVisitedBeforeCookieName } from 'utils/constants'
 import {
   ListSealedStreamsForInfoCardQuery,
   ListLiveStreamsForInfoCardQuery,
@@ -101,10 +102,15 @@ const Home: React.FC = () => {
   let routerHistory = useHistory()
   const scrollTrigger = useScrollTrigger()
   const [addContentFabOpen, setAddContentFabOpen] = useState(false)
+  const [cookies] = useCookies([hasVisitedBeforeCookieName])
 
   // Side effects
   useEffect(() => {
     ;(async () => {
+      if (!cookies[hasVisitedBeforeCookieName]) {
+        // if first visit, redirect to welcome page
+        routerHistory.push('/welcome')
+      }
       // Whenever query params change load relevant content
       const pathname = routeLocation.pathname
       const type = routePathBottomNavigationMap.get(pathname) ?? 'sealedStream'
@@ -174,7 +180,7 @@ const Home: React.FC = () => {
           return
       }
     })()
-  }, [fetchNextToken, routeLocation.pathname])
+  }, [cookies, fetchNextToken, routeLocation.pathname, routerHistory])
 
   // Functions
   const loadMore = async () => {

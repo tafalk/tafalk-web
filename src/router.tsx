@@ -11,6 +11,7 @@ import TafalkStreamView from 'views/content/Stream'
 import TafalkCantoView from 'views/content/Canto'
 import TafalkAboutView from 'views/meta/About'
 import TafalkNotFoundView from 'views/meta/NotFound'
+import TafalkWelcomeView from 'views/Welcome'
 
 const router = [
   // Content
@@ -79,6 +80,10 @@ const router = [
   {
     path: '/about',
     component: TafalkAboutView
+  },
+  {
+    path: '/welcome',
+    component: TafalkWelcomeView
   },
   {
     component: TafalkNotFoundView
