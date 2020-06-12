@@ -53,9 +53,8 @@ import { getUserLocale } from 'utils/conversions'
 
 const selectApplicableClass = 'select-applicable'
 const cantoPreBookmarkClass = 'canto-pre-bm-hl'
-const cantoBookmarkId = 'canto-bookmark-1'
-const cantoBookmarkClass = 'canto-bm-hl'
 const cantoPostBookmarkClass = 'canto-post-bm-hl'
+// const cantoBookmarkId = 'canto-bookmark-1'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,6 +74,10 @@ const useStyles = makeStyles((theme: Theme) =>
     authorUserName: {},
     menuButton: {
       marginLeft: theme.spacing(0)
+    },
+    highlight: {
+      backgroundColor: 'yellow',
+      borderRadius: theme.spacing(1)
     }
   })
 )
@@ -96,7 +99,7 @@ const Canto: React.FC = () => {
   const theme = useTheme()
   const { t } = useTranslation()
   const classes = useStyles()
-  const { user: authUser, setUser: setAuthUser } = useContext(AuthUserContext)
+  const { user: authUser } = useContext(AuthUserContext)
   const [, setSiteMessageData] = useSiteMessage()
   const routeParams = useParams<CantoRouteParams>()
 
@@ -116,7 +119,7 @@ const Canto: React.FC = () => {
 
   const routeCantoId = routeParams.id
 
-  let isVisitorAuthUser
+  let isVisitorAuthUser: boolean | undefined = undefined
   if (authUser.contextMeta.isReady) {
     isVisitorAuthUser = !!authUser.username
   }
@@ -234,27 +237,32 @@ const Canto: React.FC = () => {
   // Side effects: Event listener for text selection (or highlight)
   useEffect(() => {
     // Event handler function as a closure
-    const onSelectionChange = (_event: Event) => {
+    const onMouseUp = (e: Event) => {
+      e.preventDefault()
+      if (!isVisitorAuthUser) return
+      // TODO: Show a dialog, snackbar, buttoned tooltip etc. for 'Change bookmark? Remember decision (cookie)'
       // Get selection Range
       const range = document.getSelection()?.getRangeAt(0)
-      if (!range || range.collapsed) {
-        // if a single click (not a tafalkish selection indeed)
-        setBodySelectionRange(null)
-        return
-      }
-      const { startContainer, endContainer, startOffset, endOffset } = range
-
       if (
-        startContainer !== endContainer &&
+        !range ||
+        range.collapsed ||
         (range.commonAncestorContainer as HTMLElement).classList.contains(
           selectApplicableClass
         )
       ) {
-        //TODO: Add this class 'selectApplicableClass' to text box (i.e. Canto.vue line:118)
-        // start and end are not in the body
+        // if a single click (not a tafalkish selection indeed)
         setBodySelectionRange(null)
         return
       }
+
+      const { startContainer, endContainer, startOffset, endOffset } = range
+
+      // TODO: It should not be needed, but must be tested later
+      // if (startContainer !== endContainer) {
+      //   // start and end are not in the body
+      //   setBodySelectionRange(null)
+      //   return
+      // }
 
       const startContainerParentNodeClassList = (startContainer.parentNode as HTMLElement)
         .classList
@@ -288,27 +296,33 @@ const Canto: React.FC = () => {
         })
       }
     }
-    window.addEventListener('selectionchange', onSelectionChange)
+    //window.addEventListener('selectionchange', onSelectionChange)
+    window.addEventListener('mouseup', onMouseUp)
     // Cleanup
     return () =>
-      window.removeEventListener('selectionchange', onSelectionChange)
-  }, [])
+      //window.removeEventListener('selectionchange', onSelectionChange)
+      window.removeEventListener('mouseup', onMouseUp)
+  }, [isVisitorAuthUser])
 
   // Functions
   const onBookmarkClick = () => {
     //TODO: Implement
+    return
   }
 
   const onRemoveBookmarkClick = () => {
     //TODO: Implement
+    return
   }
 
   const onRaiseFlagClick = () => {
     //TODO: Implement
+    return
   }
 
   const onRetractFlagClick = () => {
     //TODO: Implement
+    return
   }
 
   return (
@@ -433,7 +447,26 @@ const Canto: React.FC = () => {
           </Menu>
 
           {/** Body */}
-          <Box fontFamily="Monospace">{canto?.body}</Box>
+          <Box fontFamily="Monospace" className={selectApplicableClass}>
+            {isVisitorAuthUser || !bodySelectionRange ? (
+              <span>{canto?.body}</span>
+            ) : (
+              <React.Fragment>
+                <span className={cantoPreBookmarkClass}>
+                  {canto?.body.substring(0, bodySelectionRange.startOffset)}
+                </span>
+                <span className={classes.highlight}>
+                  {canto?.body.substring(
+                    bodySelectionRange.startOffset,
+                    bodySelectionRange.endOffset
+                  )}
+                </span>
+                <span className={cantoPostBookmarkClass}>
+                  {canto?.body.substring(bodySelectionRange.endOffset)}
+                </span>
+              </React.Fragment>
+            )}
+          </Box>
         </Grid>
       )}
     </React.Fragment>

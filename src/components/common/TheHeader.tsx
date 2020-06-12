@@ -141,7 +141,7 @@ const TheHeader: React.FC = () => {
   // Hooks
   let routerHistory = useHistory()
   let routeLocation = useLocation()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const theme = useTheme()
   const classes = useStyles()
   const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
