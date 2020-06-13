@@ -25,6 +25,16 @@ const englishTranslation = {
         'Bad of us.. Somehow, this is not redirecting to a valid content.'
     }
   },
+  intro: {
+    paragraph: {
+      basic:
+        'Welcome, this site utilizes only forward-typing. It is indifferent to errors, typos or finger thickness: Like a typewriter.',
+      streams:
+        'The main option is the streams, texts are saved as you type. No deleting but striking through the input.',
+      cantos:
+        'Cantos are similar but every user has one. You can add up your canto until whenever you like, but again no deleting.'
+    }
+  },
   cookieConsent: {
     button: 'Got It!',
     message:
@@ -370,6 +380,13 @@ const englishTranslation = {
       messaging: { title: 'In-site messaging' }
     }
   },
+  shareContentDialog: {
+    title: 'Share',
+    body: 'Give away the link below to share the content',
+    message: {
+      linkCopied: 'Copied to clipboard!'
+    }
+  },
   canto: {
     topBarActionsMenu: {
       buttons: {
@@ -378,6 +395,11 @@ const englishTranslation = {
         unbookmark: 'Remove Bookmark',
         unflag: 'Retract Flag'
       }
+    },
+    message: {
+      createBookmarkSuccess: 'Bookmark created!',
+      updateBookmarkSuccess: 'Bookmark updated',
+      bookmarkError: 'Error with persisting bookmark'
     }
   }
 }

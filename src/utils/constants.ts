@@ -24,6 +24,10 @@ export const bookmarkContentValue = 'Bookmark'
 
 // URLs
 export const sitePoliciesBucketBaseUrl = `https://${process.env.REACT_APP_S3_SITE_POLICIES_BUCKET}.s3.${process.env.REACT_APP_AWS_REGION}.amazonaws.com/`
+export const siteImagesBaseUrl = `https://tafalk-prod-sitefiles.s3-${process.env.REACT_APP_AWS_REGION}.amazonaws.com/images`
 
 // Cookie names
 export const hasVisitedBeforeCookieName = 'hasVisitedTafalkBefore'
+
+// Durations
+export const defaultSnackbarAutoHideDuration = 6000

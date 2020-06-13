@@ -501,6 +501,34 @@ export const DeleteUserById = gql`
   }
 `
 
+export const CreateCantoBookmark = gql`
+  mutation CreateCantoBookmark(
+    $userId: String!
+    $contentId: String!
+    $indices: String
+  ) {
+    createContentInteraction(
+      input: {
+        userId: $userId
+        interactionType: "Bookmark"
+        contentType: "stream"
+        contentId: $contentId
+        indices: $indices
+      }
+    ) {
+      id
+    }
+  }
+`
+
+export const UpdateCantoBookmark = gql`
+  mutation UpdateCantoBookmark($id: ID!, $indices: String!) {
+    updateContentInteraction(input: { id: $id, indices: $indices }) {
+      id
+    }
+  }
+`
+
 // Subscribe
 export const OnUpdateCantoById = gql`
   subscription OnUpdateCantoById($id: ID!) {

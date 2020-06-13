@@ -8,6 +8,7 @@ import {
   Theme,
   useTheme
 } from '@material-ui/core/styles'
+import { green } from '@material-ui/core/colors'
 import {
   Grid,
   AppBar,
@@ -19,7 +20,8 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Box
+  Box,
+  Fab
 } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
 import {
@@ -35,10 +37,13 @@ import {
   GetCantoById,
   OnUpdateCantoById,
   GetContentBookmarkIdByUser,
-  GetFlagIdByUser
+  GetFlagIdByUser,
+  CreateCantoBookmark,
+  UpdateCantoBookmark
 } from 'graphql/custom'
 import { useSiteMessage } from 'hooks'
-import { getSiblings } from 'utils/derivations'
+import TafalkShareContentDialog from 'components/common/dialogs/TheShareContentDialog'
+import { getSiblings, getContentRoute } from 'utils/derivations'
 import Observable from 'zen-observable'
 import DotsVerticalIcon from 'mdi-material-ui/DotsVertical'
 import BookmarkOffIcon from 'mdi-material-ui/BookmarkOff'
@@ -48,13 +53,17 @@ import BalloonIcon from 'mdi-material-ui/Balloon'
 import SleepIcon from 'mdi-material-ui/Sleep'
 import BookmarkIcon from 'mdi-material-ui/Bookmark'
 import BookmarkOutlineIcon from 'mdi-material-ui/BookmarkOutline'
+import ShareVariantIcon from 'mdi-material-ui/ShareVariant'
+
 import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
+import { useSnackbar } from 'notistack'
 
+const bookmarkStartEndIndexSeparator = '-'
 const selectApplicableClass = 'select-applicable'
 const cantoPreBookmarkClass = 'canto-pre-bm-hl'
 const cantoPostBookmarkClass = 'canto-post-bm-hl'
-// const cantoBookmarkId = 'canto-bookmark-1'
+const bookmarkedSectionId = 'canto-bookmark-1'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,6 +87,12 @@ const useStyles = makeStyles((theme: Theme) =>
     highlight: {
       backgroundColor: 'yellow',
       borderRadius: theme.spacing(1)
+    },
+    shareFab: {
+      backgroundColor: green['700'],
+      position: 'fixed',
+      bottom: theme.spacing(2),
+      right: theme.spacing(2)
     }
   })
 )
@@ -102,6 +117,7 @@ const Canto: React.FC = () => {
   const { user: authUser } = useContext(AuthUserContext)
   const [, setSiteMessageData] = useSiteMessage()
   const routeParams = useParams<CantoRouteParams>()
+  const { enqueueSnackbar } = useSnackbar()
 
   const [infoLoaded, setInfoLoaded] = useState(false)
   const [canto, setCanto] = useState<CantoDataType | null>(null)
@@ -116,6 +132,9 @@ const Canto: React.FC = () => {
     setBodySelectionRange
   ] = useState<CantoBodySelectionType | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [shareContentDialogVisible, setShareContentDialogVisible] = useState(
+    false
+  )
 
   const routeCantoId = routeParams.id
 
@@ -218,6 +237,10 @@ const Canto: React.FC = () => {
           }
         }
 
+        // Scroll to bookmarked section, if exists
+        const bookmarkedSection = document.getElementById(bookmarkedSectionId)
+        bookmarkedSection?.scrollIntoView()
+
         // Cleanup
         return unsubscribe
       } catch (err) {
@@ -304,12 +327,58 @@ const Canto: React.FC = () => {
       window.removeEventListener('mouseup', onMouseUp)
   }, [isVisitorAuthUser])
 
-  // Functions
-  const onBookmarkClick = () => {
-    //TODO: Implement
-    return
-  }
+  // Side effects: Add/change bookmark when selection changes
+  useEffect(() => {
+    ;(async () => {
+      try {
+        if (
+          !bodySelectionRange ||
+          !bodySelectionRange?.startOffset ||
+          !bodySelectionRange?.endOffset
+        ) {
+          return
+        }
 
+        if (!authUserBookmarkId) {
+          // Create new bookmark
+          await API.graphql(
+            graphqlOperation(CreateCantoBookmark, {
+              userId: authUser.id,
+              contentId: canto?.id,
+              indices: `${bodySelectionRange.startOffset}${bookmarkStartEndIndexSeparator}${bodySelectionRange.endOffset}`
+            })
+          )
+          enqueueSnackbar(t('canto.message.createBookmarkSuccess'), {
+            variant: 'success'
+          })
+        } else {
+          // Update existing bookmark
+          await API.graphql(
+            graphqlOperation(UpdateCantoBookmark, {
+              id: authUserBookmarkId,
+              indices: `${bodySelectionRange.startOffset}${bookmarkStartEndIndexSeparator}${bodySelectionRange.endOffset}`
+            })
+          )
+          enqueueSnackbar(t('canto.message.updateBookmarkSuccess'), {
+            variant: 'success'
+          })
+        }
+      } catch (err) {
+        enqueueSnackbar(
+          `${t('canto.message.bookmarkError')}: ${err.message ?? err}`
+        )
+      }
+    })()
+  }, [
+    authUser.id,
+    authUserBookmarkId,
+    bodySelectionRange,
+    canto,
+    enqueueSnackbar,
+    t
+  ])
+
+  // Functions
   const onRemoveBookmarkClick = () => {
     //TODO: Implement
     return
@@ -455,7 +524,7 @@ const Canto: React.FC = () => {
                 <span className={cantoPreBookmarkClass}>
                   {canto?.body.substring(0, bodySelectionRange.startOffset)}
                 </span>
-                <span className={classes.highlight}>
+                <span id={bookmarkedSectionId} className={classes.highlight}>
                   {canto?.body.substring(
                     bodySelectionRange.startOffset,
                     bodySelectionRange.endOffset
@@ -469,6 +538,21 @@ const Canto: React.FC = () => {
           </Box>
         </Grid>
       )}
+      {/** Share Fab */}
+      <Fab
+        color="primary"
+        aria-label="share"
+        className={classes.shareFab}
+        onClick={() => setShareContentDialogVisible(true)}
+      >
+        <ShareVariantIcon />
+      </Fab>
+      {/** Dialogs */}
+      <TafalkShareContentDialog
+        open={shareContentDialogVisible}
+        onClose={() => setShareContentDialogVisible(false)}
+        contentLink={getContentRoute({ __typename: 'Canto', id: canto?.id })}
+      />
     </React.Fragment>
   )
 }
