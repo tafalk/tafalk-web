@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { BasicDialogProps } from 'types/props'
 import {
   DialogContentText,
@@ -23,19 +23,21 @@ interface ShareContentDialogProps extends BasicDialogProps {
 
 const TheShareContentDialog: React.FC<ShareContentDialogProps> = (props) => {
   const { onClose, open, contentLink } = props
+  const copyLinkTextFieldRef = useRef<HTMLInputElement>()
   const { t } = useTranslation()
   const [tooltipOpen, setTooltipOpen] = useState(false)
 
   // Functions
   const onCopyLink = () => {
-    //TODO: Implement and show a small tooltip if successful
+    console.log(copyLinkTextFieldRef.current?.value)
+    copyLinkTextFieldRef.current?.select()
     document.execCommand('copy')
     setTooltipOpen(true)
     setTimeout(() => setTooltipOpen(false), tooltipShowDuration)
   }
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} maxWidth="lg">
       <DialogTitle>{t('shareContentDialog.title')}</DialogTitle>
       <DialogContent>
         <DialogContentText>{t('shareContentDialog.body')}</DialogContentText>
@@ -48,8 +50,9 @@ const TheShareContentDialog: React.FC<ShareContentDialogProps> = (props) => {
         >
           <TextField
             defaultValue={contentLink}
-            disabled
+            inputRef={copyLinkTextFieldRef}
             InputProps={{
+              readOnly: true,
               endAdornment: (
                 <InputAdornment position="end">
                   <Button
@@ -68,7 +71,12 @@ const TheShareContentDialog: React.FC<ShareContentDialogProps> = (props) => {
         </Tooltip>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={onClose}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onClose}
+          disableElevation
+        >
           {t('common.ok')}
         </Button>
       </DialogActions>

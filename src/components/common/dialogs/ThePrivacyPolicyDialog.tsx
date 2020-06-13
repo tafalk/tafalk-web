@@ -42,7 +42,12 @@ const ThePrivacyPolicyDialog: React.FC<BasicDialogProps> = (props) => {
         <DialogContentText>{body}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant="contained" color="primary" onClick={onClose}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onClose}
+          disableElevation
+        >
           {t('common.ok')}
         </Button>
       </DialogActions>

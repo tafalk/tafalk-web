@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Link as RouterLink, useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Helmet } from 'react-helmet'
 import {
@@ -8,7 +8,6 @@ import {
   Theme,
   useTheme
 } from '@material-ui/core/styles'
-import { green } from '@material-ui/core/colors'
 import {
   Grid,
   AppBar,
@@ -31,7 +30,7 @@ import {
   Language
 } from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
-import API, { graphqlOperation, GraphQLResult } from '@aws-amplify/api'
+import API, { graphqlOperation } from '@aws-amplify/api'
 import Storage from '@aws-amplify/storage'
 import {
   GetCantoById,
@@ -89,7 +88,6 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: theme.spacing(1)
     },
     shareFab: {
-      backgroundColor: green['700'],
       position: 'fixed',
       bottom: theme.spacing(2),
       right: theme.spacing(2)
@@ -169,7 +167,6 @@ const Canto: React.FC = () => {
           })
         ) as PromiseLike<{ data: GetFlagByUserQuery }>
 
-        console.log('Sent requests')
         const [
           cantoGraphqlResponse,
           cantoAuthUserBookmarkGraphqlResponse,
@@ -183,8 +180,6 @@ const Canto: React.FC = () => {
           { data: GetContentBookmarkByUserQuery },
           { data: GetFlagByUserQuery }
         ]
-
-        console.log('Got results')
 
         const cantoResult = cantoGraphqlResponse.data.getCanto
         const cantoAuthUserBookmarkResult =
@@ -260,16 +255,22 @@ const Canto: React.FC = () => {
   // Side effects: Event listener for text selection (or highlight)
   useEffect(() => {
     // Event handler function as a closure
-    const onMouseUp = (e: Event) => {
-      e.preventDefault()
+    const onSelectionChange = (e: Event) => {
+      console.log('boo')
+      if (!(e.target as HTMLElement).closest(`.${selectApplicableClass}`)) {
+        setBodySelectionRange(null)
+        return
+      }
       if (!isVisitorAuthUser) return
-      // TODO: Show a dialog, snackbar, buttoned tooltip etc. for 'Change bookmark? Remember decision (cookie)'
-      // Get selection Range
-      const range = document.getSelection()?.getRangeAt(0)
+
+      const selection = document.getSelection()
+      console.log(JSON.stringify(selection))
+      const range = selection?.getRangeAt(0)
+      console.log(JSON.stringify(range))
       if (
         !range ||
         range.collapsed ||
-        (range.commonAncestorContainer as HTMLElement).classList.contains(
+        !(range.commonAncestorContainer as HTMLElement).classList.contains(
           selectApplicableClass
         )
       ) {
@@ -279,13 +280,7 @@ const Canto: React.FC = () => {
       }
 
       const { startContainer, endContainer, startOffset, endOffset } = range
-
-      // TODO: It should not be needed, but must be tested later
-      // if (startContainer !== endContainer) {
-      //   // start and end are not in the body
-      //   setBodySelectionRange(null)
-      //   return
-      // }
+      console.log('offsets: ' + startOffset + ', ' + endOffset)
 
       const startContainerParentNodeClassList = (startContainer.parentNode as HTMLElement)
         .classList
@@ -307,24 +302,27 @@ const Canto: React.FC = () => {
         startContainerParentNodeClassList.contains(cantoPostBookmarkClass) &&
         endContainerParentNodeClassList.contains(cantoPostBookmarkClass)
       ) {
+        // Range starts and ends after the existing bookmark
         const siblingSpans = getSiblings(startContainer.parentNode)
         const indexOffset = siblingSpans.reduce(
           (prev, next) => prev + ((next as HTMLElement).innerText ?? '').length,
           0
         )
-        // Range starts after the existing bookmark
         setBodySelectionRange({
           startOffset: startOffset + indexOffset,
           endOffset: endOffset + indexOffset
         })
       }
     }
-    //window.addEventListener('selectionchange', onSelectionChange)
-    window.addEventListener('mouseup', onMouseUp)
+    console.log('zoo')
+    //window.addEventListener('mouseup', onMouseUp)
+    window.addEventListener('selectionchange', onSelectionChange)
+
     // Cleanup
-    return () =>
-      //window.removeEventListener('selectionchange', onSelectionChange)
-      window.removeEventListener('mouseup', onMouseUp)
+    return () => {
+      // window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('selectionchange', onSelectionChange)
+    }
   }, [isVisitorAuthUser])
 
   // Side effects: Add/change bookmark when selection changes
@@ -551,7 +549,10 @@ const Canto: React.FC = () => {
       <TafalkShareContentDialog
         open={shareContentDialogVisible}
         onClose={() => setShareContentDialogVisible(false)}
-        contentLink={getContentRoute({ __typename: 'Canto', id: canto?.id })}
+        contentLink={`https://tafalk.com${getContentRoute({
+          __typename: 'Canto',
+          id: canto?.id
+        })}`}
       />
     </React.Fragment>
   )
