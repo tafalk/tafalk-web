@@ -383,6 +383,9 @@ const englishTranslation = {
   shareContentDialog: {
     title: 'Share',
     body: 'Give away the link below to share the content',
+    buttons: {
+      copyLink: 'Copy'
+    },
     message: {
       linkCopied: 'Copied to clipboard!'
     }

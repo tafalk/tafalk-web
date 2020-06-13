@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { BasicDialogProps } from 'types/props'
 import {
   DialogContentText,
@@ -8,10 +8,14 @@ import {
   Button,
   DialogContent,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Tooltip,
+  Zoom
 } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
 import ContentCopyIcon from 'mdi-material-ui/ContentCopy'
+
+const tooltipShowDuration = 1000
 
 interface ShareContentDialogProps extends BasicDialogProps {
   contentLink: string
@@ -20,11 +24,14 @@ interface ShareContentDialogProps extends BasicDialogProps {
 const TheShareContentDialog: React.FC<ShareContentDialogProps> = (props) => {
   const { onClose, open, contentLink } = props
   const { t } = useTranslation()
+  const [tooltipOpen, setTooltipOpen] = useState(false)
 
   // Functions
   const onCopyLink = () => {
     //TODO: Implement and show a small tooltip if successful
-    return
+    document.execCommand('copy')
+    setTooltipOpen(true)
+    setTimeout(() => setTooltipOpen(false), tooltipShowDuration)
   }
 
   return (
@@ -32,23 +39,33 @@ const TheShareContentDialog: React.FC<ShareContentDialogProps> = (props) => {
       <DialogTitle>{t('shareContentDialog.title')}</DialogTitle>
       <DialogContent>
         <DialogContentText>{t('shareContentDialog.body')}</DialogContentText>
-        <TextField
-          defaultValue={contentLink}
-          disabled
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disableElevation
-                  startIcon={<ContentCopyIcon />}
-                  onClick={onCopyLink}
-                ></Button>
-              </InputAdornment>
-            )
-          }}
-        />
+        <Tooltip
+          title={t('shareContentDialog.message.linkCopied') ?? ''}
+          open={tooltipOpen}
+          onOpen={(e) => e.preventDefault()}
+          onClose={(e) => e.preventDefault()}
+          TransitionComponent={Zoom}
+        >
+          <TextField
+            defaultValue={contentLink}
+            disabled
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    startIcon={<ContentCopyIcon />}
+                    onClick={onCopyLink}
+                  >
+                    {t('shareContentDialog.buttons.copyLink')}
+                  </Button>
+                </InputAdornment>
+              )
+            }}
+          />
+        </Tooltip>
       </DialogContent>
       <DialogActions>
         <Button variant="contained" color="primary" onClick={onClose}>
