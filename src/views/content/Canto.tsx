@@ -137,11 +137,6 @@ const Canto: React.FC = () => {
 
   const routeCantoId = routeParams.id
 
-  let isVisitorAuthUser: boolean | undefined = undefined
-  if (authUser.contextMeta.isReady) {
-    isVisitorAuthUser = !!authUser.username
-  }
-
   // Constants
   const isTopBarActionsMenuOpen = Boolean(anchorEl)
   const topBarActionsMenuId = 'top-bar-actions-menu'
@@ -256,10 +251,8 @@ const Canto: React.FC = () => {
   // Side effects: Event listener for text selection (or highlight)
   useEffect(() => {
     // Event handler function as a closure
-    const onSelectionChange = (e: Event) => {
+    const onSelectionChange = (_e: Event) => {
       console.log('boo')
-      if (!isVisitorAuthUser) return
-
       const selection = document.getSelection()
       console.log(JSON.stringify(selection))
       const range = selection?.getRangeAt(0)
@@ -311,7 +304,9 @@ const Canto: React.FC = () => {
         })
       }
     }
-    console.log('zoo')
+    if (authUser.contextMeta.isReady && !authUser.id) {
+      return
+    }
     //window.addEventListener('mouseup', onMouseUp)
     document
       .getElementById(cantoBodyBoxId)
@@ -324,7 +319,7 @@ const Canto: React.FC = () => {
         .getElementById(cantoBodyBoxId)
         ?.removeEventListener('selectionchange', onSelectionChange)
     }
-  }, [isVisitorAuthUser])
+  }, [authUser.contextMeta.isReady, authUser.id])
 
   // Side effects: Add/change bookmark when selection changes
   useEffect(() => {
@@ -520,7 +515,7 @@ const Canto: React.FC = () => {
             className={selectApplicableClass}
             id={cantoBodyBoxId}
           >
-            {isVisitorAuthUser || !bodySelectionRange ? (
+            {!bodySelectionRange ? (
               <span>{canto?.body}</span>
             ) : (
               <React.Fragment>
