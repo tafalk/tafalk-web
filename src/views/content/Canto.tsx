@@ -62,6 +62,7 @@ const bookmarkStartEndIndexSeparator = '-'
 const selectApplicableClass = 'select-applicable'
 const cantoPreBookmarkClass = 'canto-pre-bm-hl'
 const cantoPostBookmarkClass = 'canto-post-bm-hl'
+const cantoBodyBoxId = 'canto-body-box'
 const bookmarkedSectionId = 'canto-bookmark-1'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -257,10 +258,6 @@ const Canto: React.FC = () => {
     // Event handler function as a closure
     const onSelectionChange = (e: Event) => {
       console.log('boo')
-      if (!(e.target as HTMLElement).closest(`.${selectApplicableClass}`)) {
-        setBodySelectionRange(null)
-        return
-      }
       if (!isVisitorAuthUser) return
 
       const selection = document.getSelection()
@@ -316,12 +313,16 @@ const Canto: React.FC = () => {
     }
     console.log('zoo')
     //window.addEventListener('mouseup', onMouseUp)
-    window.addEventListener('selectionchange', onSelectionChange)
+    document
+      .getElementById(cantoBodyBoxId)
+      ?.addEventListener('selectionchange', onSelectionChange)
 
     // Cleanup
     return () => {
       // window.removeEventListener('mouseup', onMouseUp)
-      window.removeEventListener('selectionchange', onSelectionChange)
+      document
+        .getElementById(cantoBodyBoxId)
+        ?.removeEventListener('selectionchange', onSelectionChange)
     }
   }, [isVisitorAuthUser])
 
@@ -514,7 +515,11 @@ const Canto: React.FC = () => {
           </Menu>
 
           {/** Body */}
-          <Box fontFamily="Monospace" className={selectApplicableClass}>
+          <Box
+            fontFamily="Monospace"
+            className={selectApplicableClass}
+            id={cantoBodyBoxId}
+          >
             {isVisitorAuthUser || !bodySelectionRange ? (
               <span>{canto?.body}</span>
             ) : (
