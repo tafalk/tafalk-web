@@ -32,6 +32,7 @@ import {
 import { AuthUserContext } from 'context/Auth'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import Storage from '@aws-amplify/storage'
+import debounce from 'debounce'
 import {
   GetCantoById,
   OnUpdateCantoById,
@@ -64,6 +65,7 @@ const cantoPreBookmarkClass = 'canto-pre-bm-hl'
 const cantoPostBookmarkClass = 'canto-post-bm-hl'
 const cantoBodyBoxId = 'canto-body-box'
 const bookmarkedSectionId = 'canto-bookmark-1'
+const selectionChangeDebounceDuration = 500
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -235,7 +237,6 @@ const Canto: React.FC = () => {
         // Cleanup
         return unsubscribe
       } catch (err) {
-        console.log(err.message ?? err)
         setSiteMessageData({
           show: true,
           type: 'error',
@@ -252,29 +253,32 @@ const Canto: React.FC = () => {
   useEffect(() => {
     // Event handler function as a closure
     const onSelectionChange = (_e: Event) => {
-      console.log('boo')
       const selection = document.getSelection()
-      console.log(JSON.stringify(selection))
-      const range = selection?.getRangeAt(0)
-      console.log(JSON.stringify(range))
-      if (
-        !range ||
-        range.collapsed ||
-        !(range.commonAncestorContainer as HTMLElement).classList.contains(
-          selectApplicableClass
-        )
-      ) {
-        // if a single click (not a tafalkish selection indeed)
+      if (!selection || selection.type !== 'Range') {
+        setBodySelectionRange(null)
+        return
+      }
+      const range = selection.getRangeAt(0)
+      if (!range || range.collapsed) {
+        setBodySelectionRange(null)
+        return
+      }
+
+      const commonNonTextNode =
+        range.commonAncestorContainer.nodeType === Node.TEXT_NODE
+          ? range.commonAncestorContainer.parentNode
+          : range.commonAncestorContainer
+
+      if (!(commonNonTextNode as Element)?.closest(`#${cantoBodyBoxId}`)) {
         setBodySelectionRange(null)
         return
       }
 
       const { startContainer, endContainer, startOffset, endOffset } = range
-      console.log('offsets: ' + startOffset + ', ' + endOffset)
 
-      const startContainerParentNodeClassList = (startContainer.parentNode as HTMLElement)
+      const startContainerParentNodeClassList = (startContainer.parentNode as Element)
         .classList
-      const endContainerParentNodeClassList = (endContainer.parentNode as HTMLElement)
+      const endContainerParentNodeClassList = (endContainer.parentNode as Element)
         .classList
 
       if (
@@ -307,17 +311,16 @@ const Canto: React.FC = () => {
     if (authUser.contextMeta.isReady && !authUser.id) {
       return
     }
-    //window.addEventListener('mouseup', onMouseUp)
-    document
-      .getElementById(cantoBodyBoxId)
-      ?.addEventListener('selectionchange', onSelectionChange)
+    // Debounce the event handler function
+    const debOnSelectionChange = debounce(
+      onSelectionChange,
+      selectionChangeDebounceDuration
+    )
+    document?.addEventListener('selectionchange', debOnSelectionChange)
 
     // Cleanup
     return () => {
-      // window.removeEventListener('mouseup', onMouseUp)
-      document
-        .getElementById(cantoBodyBoxId)
-        ?.removeEventListener('selectionchange', onSelectionChange)
+      document?.removeEventListener('selectionchange', debOnSelectionChange)
     }
   }, [authUser.contextMeta.isReady, authUser.id])
 
@@ -325,6 +328,7 @@ const Canto: React.FC = () => {
   useEffect(() => {
     ;(async () => {
       try {
+        // TODO: Is triggered?
         if (
           !bodySelectionRange ||
           !bodySelectionRange?.startOffset ||

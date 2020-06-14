@@ -8,9 +8,9 @@ import {
   Button,
   DialogContent,
   TextField,
-  InputAdornment,
   Tooltip,
-  Zoom
+  Zoom,
+  Grid
 } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
 import ContentCopyIcon from 'mdi-material-ui/ContentCopy'
@@ -37,38 +37,42 @@ const TheShareContentDialog: React.FC<ShareContentDialogProps> = (props) => {
   }
 
   return (
-    <Dialog open={open} maxWidth="lg">
+    <Dialog open={open} maxWidth="md" fullWidth={true}>
       <DialogTitle>{t('shareContentDialog.title')}</DialogTitle>
       <DialogContent>
         <DialogContentText>{t('shareContentDialog.body')}</DialogContentText>
-        <Tooltip
-          title={t('shareContentDialog.message.linkCopied') ?? ''}
-          open={tooltipOpen}
-          onOpen={(e) => e.preventDefault()}
-          onClose={(e) => e.preventDefault()}
-          TransitionComponent={Zoom}
-        >
-          <TextField
-            defaultValue={contentLink}
-            inputRef={copyLinkTextFieldRef}
-            InputProps={{
-              readOnly: true,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disableElevation
-                    startIcon={<ContentCopyIcon />}
-                    onClick={onCopyLink}
-                  >
-                    {t('shareContentDialog.buttons.copyLink')}
-                  </Button>
-                </InputAdornment>
-              )
-            }}
-          />
-        </Tooltip>
+        <Grid container alignItems="center" justify="space-between" spacing={1}>
+          <Grid item xs={10}>
+            <Tooltip
+              title={t('shareContentDialog.message.linkCopied') ?? ''}
+              open={tooltipOpen}
+              onOpen={(e) => e.preventDefault()}
+              onClose={(e) => e.preventDefault()}
+              TransitionComponent={Zoom}
+            >
+              <TextField
+                defaultValue={contentLink}
+                fullWidth
+                inputRef={copyLinkTextFieldRef}
+                InputProps={{
+                  readOnly: true
+                }}
+              />
+            </Tooltip>
+          </Grid>
+          <Grid item xs={2}>
+            <Button
+              variant="outlined"
+              color="primary"
+              disableElevation
+              fullWidth
+              startIcon={<ContentCopyIcon />}
+              onClick={onCopyLink}
+            >
+              {t('shareContentDialog.buttons.copyLink')}
+            </Button>
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions>
         <Button

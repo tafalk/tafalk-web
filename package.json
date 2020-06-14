@@ -23,6 +23,7 @@
     "@types/react-router-dom": "^5.1.5",
     "axios": "^0.19.2",
     "date-fns": "^2.14.0",
+    "debounce": "^1.2.0",
     "formik": "^2.1.4",
     "formik-material-ui": "^2.0.0-beta.1",
     "formik-material-ui-pickers": "0.0.8",
@@ -88,6 +89,7 @@
     ]
   },
   "devDependencies": {
+    "@types/debounce": "^1.2.0",
     "@types/i18next-xhr-backend": "^1.4.2",
     "@types/react": "^16.9.35",
     "@types/react-helmet": "^6.0.0",
