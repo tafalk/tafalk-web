@@ -109,6 +109,9 @@ const englishTranslation = {
     title: 'Logout',
     body: 'You are going to log out. Are you sure that you want to log out?'
   },
+  confirmationDialog: {
+    defaultBody: 'Are you sure?'
+  },
   loginForm: {
     text: {
       title: 'Login',
@@ -398,6 +401,10 @@ const englishTranslation = {
         unbookmark: 'Remove Bookmark',
         unflag: 'Retract Flag'
       }
+    },
+    removeBookmarkConfirmationDialog: {
+      title: 'Remove Bookmark',
+      body: 'Are you sure?'
     },
     message: {
       createBookmarkSuccess: 'Bookmark created!',

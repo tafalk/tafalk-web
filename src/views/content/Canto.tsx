@@ -39,10 +39,12 @@ import {
   GetContentBookmarkIdByUser,
   GetFlagIdByUser,
   CreateCantoBookmark,
-  UpdateCantoBookmark
+  UpdateCantoBookmark,
+  DeleteCantoBookmark
 } from 'graphql/custom'
 import { useSiteMessage } from 'hooks'
 import TafalkShareContentDialog from 'components/common/dialogs/TheShareContentDialog'
+import TafalkConfirmationDialog from 'components/common/dialogs/TheConfirmationDialog'
 import { getSiblings, getContentRoute } from 'utils/derivations'
 import Observable from 'zen-observable'
 import DotsVerticalIcon from 'mdi-material-ui/DotsVertical'
@@ -54,6 +56,8 @@ import SleepIcon from 'mdi-material-ui/Sleep'
 import BookmarkIcon from 'mdi-material-ui/Bookmark'
 import BookmarkOutlineIcon from 'mdi-material-ui/BookmarkOutline'
 import ShareVariantIcon from 'mdi-material-ui/ShareVariant'
+import FlagIcon from 'mdi-material-ui/Flag'
+import FlagOutlineIcon from 'mdi-material-ui/FlagOutline'
 
 import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
@@ -128,14 +132,17 @@ const Canto: React.FC = () => {
   ] = useState('')
   const [authUserBookmarkId, setAuthUserBookmarkId] = useState('')
   const [authUserFlagId, setAuthUserFlagId] = useState('')
-  const [
-    bodySelectionRange,
-    setBodySelectionRange
-  ] = useState<CantoBodySelectionType | null>(null)
+  const [bodySelectionRange, setBodySelectionRange] = useState<
+    CantoBodySelectionType
+  >({ startOffset: 0, endOffset: 0 })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [shareContentDialogVisible, setShareContentDialogVisible] = useState(
     false
   )
+  const [
+    confirmRemoveBookmarkDialogVisible,
+    setConfirmRemoveBookmarkDialogVisible
+  ] = useState(false)
 
   const routeCantoId = routeParams.id
 
@@ -255,12 +262,12 @@ const Canto: React.FC = () => {
     const onSelectionChange = (_e: Event) => {
       const selection = document.getSelection()
       if (!selection || selection.type !== 'Range') {
-        setBodySelectionRange(null)
+        setBodySelectionRange({ startOffset: 0, endOffset: 0 })
         return
       }
       const range = selection.getRangeAt(0)
       if (!range || range.collapsed) {
-        setBodySelectionRange(null)
+        setBodySelectionRange({ startOffset: 0, endOffset: 0 })
         return
       }
 
@@ -270,7 +277,7 @@ const Canto: React.FC = () => {
           : range.commonAncestorContainer
 
       if (!(commonNonTextNode as Element)?.closest(`#${cantoBodyBoxId}`)) {
-        setBodySelectionRange(null)
+        setBodySelectionRange({ startOffset: 0, endOffset: 0 })
         return
       }
 
@@ -328,14 +335,10 @@ const Canto: React.FC = () => {
   useEffect(() => {
     ;(async () => {
       try {
-        // TODO: Is triggered?
-        if (
-          !bodySelectionRange ||
-          !bodySelectionRange?.startOffset ||
-          !bodySelectionRange?.endOffset
-        ) {
+        if (!bodySelectionRange.startOffset || !bodySelectionRange.endOffset) {
           return
         }
+        console.log('selection changed!')
 
         if (!authUserBookmarkId) {
           // Create new bookmark
@@ -363,33 +366,61 @@ const Canto: React.FC = () => {
         }
       } catch (err) {
         enqueueSnackbar(
-          `${t('canto.message.bookmarkError')}: ${err.message ?? err}`
+          `${t('canto.message.bookmarkError')}: ${JSON.stringify(err)}`,
+          {
+            variant: 'error'
+          }
         )
       }
     })()
   }, [
     authUser.id,
     authUserBookmarkId,
-    bodySelectionRange,
+    bodySelectionRange.endOffset,
+    bodySelectionRange.startOffset,
     canto,
     enqueueSnackbar,
     t
   ])
 
   // Functions
-  const onRemoveBookmarkClick = () => {
-    //TODO: Implement
+  const onRemoveBookmarkClick = async () => {
+    try {
+      await API.graphql(
+        graphqlOperation(DeleteCantoBookmark, {
+          id: authUserBookmarkId
+        })
+      )
+    } catch (err) {
+      enqueueSnackbar(JSON.stringify(err), {
+        variant: 'error'
+      })
+    } finally {
+      setConfirmRemoveBookmarkDialogVisible(false)
+    }
     return
   }
 
-  const onRaiseFlagClick = () => {
-    //TODO: Implement
-    return
+  const onRaiseFlagClick = async () => {
+    try {
+      //TODO: Implement
+    } catch (err) {
+      enqueueSnackbar(JSON.stringify(err), {
+        variant: 'error'
+      })
+    } finally {
+    }
   }
 
-  const onRetractFlagClick = () => {
-    //TODO: Implement
-    return
+  const onRetractFlagClick = async () => {
+    try {
+      //TODO: Implement
+    } catch (err) {
+      enqueueSnackbar(JSON.stringify(err), {
+        variant: 'error'
+      })
+    } finally {
+    }
   }
 
   return (
@@ -432,15 +463,17 @@ const Canto: React.FC = () => {
                 locale: getUserLocale(authUser.language ?? Language.en),
                 addSuffix: true
               })}
+              <span>,&nbsp;</span>
               {/** Last Update */}
               <SleepIcon />
               {formatDistanceToNow(new Date(canto?.lastUpdateTime ?? 0), {
                 locale: getUserLocale(authUser.language ?? Language.en),
                 addSuffix: true
               })}
+              <span>,&nbsp;</span>
               {/** Bookmarks */}
               {authUserBookmarkId ? <BookmarkIcon /> : <BookmarkOutlineIcon />}
-              {` ${canto?.bookmarkCount?.count}`}
+              {` ${canto?.bookmarkCount?.count ?? 0}`}
               {/** More... button */}
               <IconButton
                 className={classes.menuButton}
@@ -473,7 +506,7 @@ const Canto: React.FC = () => {
                 authUserBookmarkId ? (
                   <MenuItem
                     key="remove-bookmark-menu-item"
-                    onClick={onRemoveBookmarkClick}
+                    onClick={() => setConfirmRemoveBookmarkDialogVisible(true)}
                   >
                     <ListItemIcon>
                       <BookmarkOffIcon fontSize="small" />
@@ -490,7 +523,7 @@ const Canto: React.FC = () => {
                     onClick={onRetractFlagClick}
                   >
                     <ListItemIcon>
-                      <BookmarkOffIcon fontSize="small" />
+                      <FlagOutlineIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText
                       primary={t('canto.topBarActionsMenu.buttons.unflag')}
@@ -503,7 +536,7 @@ const Canto: React.FC = () => {
                     onClick={onRaiseFlagClick}
                   >
                     <ListItemIcon>
-                      <BookmarkOffIcon fontSize="small" />
+                      <FlagIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText
                       primary={t('canto.topBarActionsMenu.buttons.flag')}
@@ -519,7 +552,8 @@ const Canto: React.FC = () => {
             className={selectApplicableClass}
             id={cantoBodyBoxId}
           >
-            {!bodySelectionRange ? (
+            {!bodySelectionRange.startOffset &&
+            !bodySelectionRange.endOffset ? (
               <span>{canto?.body}</span>
             ) : (
               <React.Fragment>
@@ -557,6 +591,14 @@ const Canto: React.FC = () => {
           __typename: 'Canto',
           id: canto?.id
         })}`}
+      />
+      {/** Remove Bookmark COnfirmation Dialog */}
+      <TafalkConfirmationDialog
+        open={confirmRemoveBookmarkDialogVisible}
+        onConfirm={onRemoveBookmarkClick}
+        onClose={() => setConfirmRemoveBookmarkDialogVisible(false)}
+        title={t('canto.removeBookmarkConfirmationDialog.title')}
+        body={t('canto.removeBookmarkConfirmationDialog.body')}
       />
     </React.Fragment>
   )

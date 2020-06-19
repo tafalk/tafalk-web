@@ -510,8 +510,8 @@ export const CreateCantoBookmark = gql`
     createContentInteraction(
       input: {
         userId: $userId
-        interactionType: "Bookmark"
-        contentType: "stream"
+        interactionType: Bookmark
+        contentType: stream
         contentId: $contentId
         indices: $indices
       }
@@ -524,6 +524,14 @@ export const CreateCantoBookmark = gql`
 export const UpdateCantoBookmark = gql`
   mutation UpdateCantoBookmark($id: ID!, $indices: String!) {
     updateContentInteraction(input: { id: $id, indices: $indices }) {
+      id
+    }
+  }
+`
+
+export const DeleteCantoBookmark = gql`
+  mutation DeleteCantoBookmark($id: ID!) {
+    deleteContentInteraction(input: { id: $id }) {
       id
     }
   }
