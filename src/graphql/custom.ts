@@ -529,9 +529,55 @@ export const UpdateCantoBookmark = gql`
   }
 `
 
-export const DeleteCantoBookmark = gql`
-  mutation DeleteCantoBookmark($id: ID!) {
+export const DeleteBookmark = gql`
+  mutation DeleteBookmark($id: ID!) {
     deleteContentInteraction(input: { id: $id }) {
+      id
+    }
+  }
+`
+
+export const CreateCantoFlag = gql`
+  mutation CreateCantoFlag(
+    $contentId: String
+    $flaggerUserId: String!
+    $category: String!
+    $type: String!
+    $detail: String
+  ) {
+    createFlag(
+      input: {
+        contentId: $contentId
+        contentType: canto
+        flaggerUserId: $flaggerUserId
+        category: $category
+        type: $type
+        detail: $detail
+      }
+    ) {
+      id
+    }
+  }
+`
+
+export const UpdateCantoFlag = gql`
+  mutation UpdateCantoFlag(
+    $id: ID!
+    $category: String
+    $type: String
+    $detail: String
+  ) {
+    updateFlagContent(
+      input: { id: $id, category: $category, type: $type, detail: $detail }
+    ) {
+      id
+    }
+  }
+`
+
+export const DeleteFlagById = gql`
+  mutation DeleteFlagById($id: ID!) {
+    deleteFlag(input: { id: $id }) {
       id
     }
   }

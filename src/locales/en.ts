@@ -393,6 +393,9 @@ const englishTranslation = {
       linkCopied: 'Copied to clipboard!'
     }
   },
+  flagContentDialog: {
+    title: 'Flag Content'
+  },
   canto: {
     topBarActionsMenu: {
       buttons: {

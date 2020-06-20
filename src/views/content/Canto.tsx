@@ -27,7 +27,8 @@ import {
   GetCantoQuery,
   GetContentBookmarkByUserQuery,
   GetFlagByUserQuery,
-  Language
+  Language,
+  ContentType
 } from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
 import API, { graphqlOperation } from '@aws-amplify/api'
@@ -40,11 +41,12 @@ import {
   GetFlagIdByUser,
   CreateCantoBookmark,
   UpdateCantoBookmark,
-  DeleteCantoBookmark
+  DeleteBookmark
 } from 'graphql/custom'
 import { useSiteMessage } from 'hooks'
 import TafalkShareContentDialog from 'components/common/dialogs/TheShareContentDialog'
 import TafalkConfirmationDialog from 'components/common/dialogs/TheConfirmationDialog'
+import TafalkFlagContentDialog from 'components/content/dialogs/FlagContentDialog'
 import { getSiblings, getContentRoute } from 'utils/derivations'
 import Observable from 'zen-observable'
 import DotsVerticalIcon from 'mdi-material-ui/DotsVertical'
@@ -143,6 +145,7 @@ const Canto: React.FC = () => {
     confirmRemoveBookmarkDialogVisible,
     setConfirmRemoveBookmarkDialogVisible
   ] = useState(false)
+  const [flagDialogVisible, setFlagDialogVisible] = useState(false)
 
   const routeCantoId = routeParams.id
 
@@ -387,7 +390,7 @@ const Canto: React.FC = () => {
   const onRemoveBookmarkClick = async () => {
     try {
       await API.graphql(
-        graphqlOperation(DeleteCantoBookmark, {
+        graphqlOperation(DeleteBookmark, {
           id: authUserBookmarkId
         })
       )
@@ -592,13 +595,22 @@ const Canto: React.FC = () => {
           id: canto?.id
         })}`}
       />
-      {/** Remove Bookmark COnfirmation Dialog */}
+      {/** Remove Bookmark Confirmation Dialog */}
       <TafalkConfirmationDialog
         open={confirmRemoveBookmarkDialogVisible}
         onConfirm={onRemoveBookmarkClick}
         onClose={() => setConfirmRemoveBookmarkDialogVisible(false)}
         title={t('canto.removeBookmarkConfirmationDialog.title')}
         body={t('canto.removeBookmarkConfirmationDialog.body')}
+      />
+      {/** Flag Dialog */}
+      <TafalkFlagContentDialog
+        open={flagDialogVisible}
+        onClose={() => setFlagDialogVisible(false)}
+        contentType={ContentType.canto}
+        contentId={canto?.id ?? ''}
+        flaggerUserId={authUser.id}
+        flagId={authUserFlagId ? authUserFlagId : undefined}
       />
     </React.Fragment>
   )
