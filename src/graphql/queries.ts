@@ -376,7 +376,7 @@ export const getUserByUsername = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const getStream = /* GraphQL */ `
   query GetStream($id: ID!) {
     getStream(id: $id) {
@@ -655,7 +655,7 @@ export const getStream = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const listStreamsByUser = /* GraphQL */ `
   query ListStreamsByUser($first: Int, $after: String, $userId: ID!) {
     listStreamsByUser(first: $first, after: $after, userId: $userId) {
@@ -748,7 +748,7 @@ export const listStreamsByUser = /* GraphQL */ `
       nextToken
     }
   }
-`
+`;
 export const listSealedStreams = /* GraphQL */ `
   query ListSealedStreams($first: Int, $after: String) {
     listSealedStreams(first: $first, after: $after) {
@@ -841,7 +841,7 @@ export const listSealedStreams = /* GraphQL */ `
       nextToken
     }
   }
-`
+`;
 export const listLiveStreams = /* GraphQL */ `
   query ListLiveStreams($first: Int, $after: String) {
     listLiveStreams(first: $first, after: $after) {
@@ -934,7 +934,7 @@ export const listLiveStreams = /* GraphQL */ `
       nextToken
     }
   }
-`
+`;
 export const getCanto = /* GraphQL */ `
   query GetCanto($id: ID!) {
     getCanto(id: $id) {
@@ -1110,7 +1110,7 @@ export const getCanto = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const listPausedCantos = /* GraphQL */ `
   query ListPausedCantos($first: Int, $after: String) {
     listPausedCantos(first: $first, after: $after) {
@@ -1172,7 +1172,7 @@ export const listPausedCantos = /* GraphQL */ `
       nextToken
     }
   }
-`
+`;
 export const listLiveCantos = /* GraphQL */ `
   query ListLiveCantos($first: Int, $after: String) {
     listLiveCantos(first: $first, after: $after) {
@@ -1234,7 +1234,7 @@ export const listLiveCantos = /* GraphQL */ `
       nextToken
     }
   }
-`
+`;
 export const getUserInteractions = /* GraphQL */ `
   query GetUserInteractions(
     $interactionType: UserInteractionType
@@ -1415,7 +1415,7 @@ export const getUserInteractions = /* GraphQL */ `
       lastChangeTime
     }
   }
-`
+`;
 export const listUserInteractionsByActorUserId = /* GraphQL */ `
   query ListUserInteractionsByActorUserId(
     $interactionType: UserInteractionType
@@ -1598,21 +1598,115 @@ export const listUserInteractionsByActorUserId = /* GraphQL */ `
       lastChangeTime
     }
   }
-`
+`;
+export const getContentBookmark = /* GraphQL */ `
+  query GetContentBookmark($id: ID!) {
+    getContentBookmark(id: $id) {
+      id
+      userId
+      user {
+        id
+        username
+        email
+        preferredName
+        accountStatus
+        allowDirectMessages
+        theme
+        bio
+        birthDate
+        cognitoIdentityId
+        createdAt
+        lastAccess
+        location
+        language
+        profilePictureKey
+        site
+        canto {
+          id
+          body
+          isPaused
+          startTime
+          lastUpdateTime
+        }
+        streams {
+          nextToken
+        }
+        userWatchInteractions {
+          id
+          actorUserId
+          targetUserId
+          interactionType
+          lastChangeTime
+        }
+        userBlockInteractions {
+          id
+          actorUserId
+          targetUserId
+          interactionType
+          lastChangeTime
+        }
+        committedStreamCommentCount {
+          count
+        }
+        committedStreamComments {
+          id
+          userId
+          body
+          contentType
+          contentId
+          time
+        }
+        bookmarkedStreamCount {
+          count
+        }
+        bookmarkedStreams {
+          id
+          title
+          body
+          userId
+          isSealed
+          location
+          mood
+          position
+          privacy
+          startTime
+          sealTime
+          track
+          uncloggerPromptId
+        }
+        bookmarkedCantoCount {
+          count
+        }
+        bookmarkedCantos {
+          id
+          body
+          isPaused
+          startTime
+          lastUpdateTime
+        }
+      }
+      interactionType
+      contentType
+      contentId
+      indices
+      time
+    }
+  }
+`;
 export const countContentBookmarks = /* GraphQL */ `
   query CountContentBookmarks($contentId: ID!, $contentType: ContentType) {
     countContentBookmarks(contentId: $contentId, contentType: $contentType) {
       count
     }
   }
-`
+`;
 export const countContentBookmarksByUser = /* GraphQL */ `
   query CountContentBookmarksByUser($userId: ID!, $contentType: ContentType) {
     countContentBookmarksByUser(userId: $userId, contentType: $contentType) {
       count
     }
   }
-`
+`;
 export const listContentBookmarks = /* GraphQL */ `
   query ListContentBookmarks(
     $contentId: ID!
@@ -1716,7 +1810,7 @@ export const listContentBookmarks = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const listContentBookmarksByUser = /* GraphQL */ `
   query ListContentBookmarksByUser(
     $userId: ID!
@@ -1820,7 +1914,7 @@ export const listContentBookmarksByUser = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const getContentBookmarkByUser = /* GraphQL */ `
   query GetContentBookmarkByUser($userId: ID!, $contentType: ContentType) {
     getContentBookmarkByUser(userId: $userId, contentType: $contentType) {
@@ -1914,14 +2008,14 @@ export const getContentBookmarkByUser = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const countContentComments = /* GraphQL */ `
   query CountContentComments($contentId: ID!, $contentType: ContentType) {
     countContentComments(contentId: $contentId, contentType: $contentType) {
       count
     }
   }
-`
+`;
 export const listContentComments = /* GraphQL */ `
   query ListContentComments(
     $contentId: ID!
@@ -2078,7 +2172,7 @@ export const listContentComments = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const listContentCommentsByUser = /* GraphQL */ `
   query ListContentCommentsByUser(
     $userId: ID!
@@ -2235,14 +2329,195 @@ export const listContentCommentsByUser = /* GraphQL */ `
       time
     }
   }
-`
+`;
+export const getFlag = /* GraphQL */ `
+  query GetFlag($id: ID!) {
+    getFlag(id: $id) {
+      id
+      contentType
+      contentId
+      flaggerUserId
+      flaggerUser {
+        id
+        username
+        email
+        preferredName
+        accountStatus
+        allowDirectMessages
+        theme
+        bio
+        birthDate
+        cognitoIdentityId
+        createdAt
+        lastAccess
+        location
+        language
+        profilePictureKey
+        site
+        canto {
+          id
+          body
+          isPaused
+          startTime
+          lastUpdateTime
+        }
+        streams {
+          nextToken
+        }
+        userWatchInteractions {
+          id
+          actorUserId
+          targetUserId
+          interactionType
+          lastChangeTime
+        }
+        userBlockInteractions {
+          id
+          actorUserId
+          targetUserId
+          interactionType
+          lastChangeTime
+        }
+        committedStreamCommentCount {
+          count
+        }
+        committedStreamComments {
+          id
+          userId
+          body
+          contentType
+          contentId
+          time
+        }
+        bookmarkedStreamCount {
+          count
+        }
+        bookmarkedStreams {
+          id
+          title
+          body
+          userId
+          isSealed
+          location
+          mood
+          position
+          privacy
+          startTime
+          sealTime
+          track
+          uncloggerPromptId
+        }
+        bookmarkedCantoCount {
+          count
+        }
+        bookmarkedCantos {
+          id
+          body
+          isPaused
+          startTime
+          lastUpdateTime
+        }
+      }
+      category
+      type
+      detail
+      reviewerUserId
+      reviewerUser {
+        id
+        username
+        email
+        preferredName
+        accountStatus
+        allowDirectMessages
+        theme
+        bio
+        birthDate
+        cognitoIdentityId
+        createdAt
+        lastAccess
+        location
+        language
+        profilePictureKey
+        site
+        canto {
+          id
+          body
+          isPaused
+          startTime
+          lastUpdateTime
+        }
+        streams {
+          nextToken
+        }
+        userWatchInteractions {
+          id
+          actorUserId
+          targetUserId
+          interactionType
+          lastChangeTime
+        }
+        userBlockInteractions {
+          id
+          actorUserId
+          targetUserId
+          interactionType
+          lastChangeTime
+        }
+        committedStreamCommentCount {
+          count
+        }
+        committedStreamComments {
+          id
+          userId
+          body
+          contentType
+          contentId
+          time
+        }
+        bookmarkedStreamCount {
+          count
+        }
+        bookmarkedStreams {
+          id
+          title
+          body
+          userId
+          isSealed
+          location
+          mood
+          position
+          privacy
+          startTime
+          sealTime
+          track
+          uncloggerPromptId
+        }
+        bookmarkedCantoCount {
+          count
+        }
+        bookmarkedCantos {
+          id
+          body
+          isPaused
+          startTime
+          lastUpdateTime
+        }
+      }
+      status
+      reviewNote
+      createTime
+      reviewTime
+      lastUpdateTime
+    }
+  }
+`;
 export const countFlags = /* GraphQL */ `
   query CountFlags($searchText: String, $status: FlagApprovalStatus) {
     countFlags(searchText: $searchText, status: $status) {
       count
     }
   }
-`
+`;
 export const listFlags = /* GraphQL */ `
   query ListFlags(
     $limit: Int
@@ -2433,7 +2708,7 @@ export const listFlags = /* GraphQL */ `
       lastUpdateTime
     }
   }
-`
+`;
 export const getFlagByUser = /* GraphQL */ `
   query GetFlagByUser($flaggerUserId: ID!, $contentType: ContentType) {
     getFlagByUser(flaggerUserId: $flaggerUserId, contentType: $contentType) {
@@ -2614,7 +2889,7 @@ export const getFlagByUser = /* GraphQL */ `
       lastUpdateTime
     }
   }
-`
+`;
 export const listUncloggerPrompts = /* GraphQL */ `
   query ListUncloggerPrompts(
     $limit: Int
@@ -2802,7 +3077,7 @@ export const listUncloggerPrompts = /* GraphQL */ `
       reviewTime
     }
   }
-`
+`;
 export const countUncloggerPrompts = /* GraphQL */ `
   query CountUncloggerPrompts(
     $searchText: String
@@ -2812,7 +3087,7 @@ export const countUncloggerPrompts = /* GraphQL */ `
       count
     }
   }
-`
+`;
 export const getRandomUncloggerPrompt = /* GraphQL */ `
   query GetRandomUncloggerPrompt(
     $category: UncloggerPromptCategory
@@ -2993,7 +3268,7 @@ export const getRandomUncloggerPrompt = /* GraphQL */ `
       reviewTime
     }
   }
-`
+`;
 export const search = /* GraphQL */ `
   query Search($query: String!) {
     search(query: $query) {
@@ -3817,7 +4092,7 @@ export const search = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const getRecaptchaTokenResult = /* GraphQL */ `
   query GetRecaptchaTokenResult($token: String!, $ip: String) {
     getRecaptchaTokenResult(token: $token, ip: $ip) {
@@ -3827,4 +4102,4 @@ export const getRecaptchaTokenResult = /* GraphQL */ `
       success
     }
   }
-`
+`;
