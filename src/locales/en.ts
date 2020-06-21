@@ -469,7 +469,8 @@ const englishTranslation = {
         bookmark: 'Bookmark',
         flag: 'Raise Flag',
         unbookmark: 'Remove Bookmark',
-        unflag: 'Retract Flag'
+        unflag: 'Retract Flag',
+        editFlag: 'Edit Flag'
       }
     },
     removeBookmarkConfirmationDialog: {

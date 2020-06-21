@@ -18,7 +18,8 @@ import {
   Theme,
   IconButton,
   Typography,
-  CircularProgress
+  CircularProgress,
+  useTheme
 } from '@material-ui/core'
 import CloseIcon from 'mdi-material-ui/Close'
 import { useTranslation } from 'react-i18next'
@@ -26,6 +27,7 @@ import { ContentType, GetFlagByIdQuery } from 'types/appsync/API'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { CreateCantoFlag, GetFlagById } from 'graphql/custom'
 import { useSnackbar } from 'notistack'
+import { Skeleton } from '@material-ui/lab'
 
 interface FlagContentDialogProps extends BasicDialogProps {
   contentType: ContentType
@@ -55,14 +57,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
   const { onClose, open, contentType, contentId, flaggerUserId, flagId } = props
+  const theme = useTheme()
   const classes = useStyles()
   const { t } = useTranslation()
   const [activeStep, setActiveStep] = useState(0)
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0)
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0)
-  const detailTextRef = useRef<HTMLInputElement>()
+  // const detailTextRef = useRef<HTMLInputElement>()
   const [detailText, setDetailText] = useState('')
   const [saveLoading, setSaveLoading] = useState(false)
+  const [initialInfoLoaded, setInitialInfoLoaded] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
 
   const steps = [
@@ -175,9 +179,11 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
         enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
+      } finally {
+        setInitialInfoLoaded(true)
       }
     })()
-  }, [flagId])
+  }, [categories, enqueueSnackbar, flagId, types])
 
   // Functions
   const saveFlag = async () => {
@@ -190,7 +196,7 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
             flaggerUserId,
             category: categories[selectedCategoryIndex].code,
             type: types[selectedTypeIndex].code,
-            detail: detailTextRef.current?.value
+            detail: detailText
           })
         )
       }
@@ -246,7 +252,7 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
 
   const renderDetailStepContent = (
     <TextField
-      inputRef={detailTextRef}
+      // inputRef={detailTextRef}
       label={t('flagContentDialog.steps.detail.textfield.label')}
       placeholder={t('flagContentDialog.steps.detail.textfield.placeholder')}
       multiline
@@ -256,7 +262,18 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
       onChange={(e) => setDetailText(e.target.value)}
     />
   )
+
   const GetStepContent = () => {
+    if (!initialInfoLoaded) {
+      return (
+        <React.Fragment>
+          <Skeleton height={theme.spacing(6)}></Skeleton>
+          <Skeleton height={theme.spacing(6)}></Skeleton>
+          <Skeleton height={theme.spacing(6)}></Skeleton>
+          <Skeleton height={theme.spacing(6)}></Skeleton>
+        </React.Fragment>
+      )
+    }
     if (activeStep === steps.findIndex((el) => el.code === 'category')) {
       return <div>{renderCategoryStepContent}</div>
     }

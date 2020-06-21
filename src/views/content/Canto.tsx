@@ -60,7 +60,8 @@ import BookmarkIcon from 'mdi-material-ui/Bookmark'
 import BookmarkOutlineIcon from 'mdi-material-ui/BookmarkOutline'
 import ShareVariantIcon from 'mdi-material-ui/ShareVariant'
 import FlagIcon from 'mdi-material-ui/Flag'
-import FlagOutlineIcon from 'mdi-material-ui/FlagOutline'
+import FlagRemoveIcon from 'mdi-material-ui/FlagRemove'
+import FlagCheckeredIcon from 'mdi-material-ui/FlagCheckered'
 
 import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
@@ -512,18 +513,32 @@ const Canto: React.FC = () => {
                   </MenuItem>
                 ) : undefined,
                 authUserFlagId ? (
-                  // Retract Flag
-                  <MenuItem
-                    key="retract-flag-menu-item"
-                    onClick={onRetractFlagClick}
-                  >
-                    <ListItemIcon>
-                      <FlagOutlineIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={t('canto.topBarActionsMenu.buttons.unflag')}
-                    />
-                  </MenuItem>
+                  [
+                    // Retract Flag
+                    <MenuItem
+                      key="retract-flag-menu-item"
+                      onClick={onRetractFlagClick}
+                    >
+                      <ListItemIcon>
+                        <FlagRemoveIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={t('canto.topBarActionsMenu.buttons.unflag')}
+                      />
+                    </MenuItem>,
+                    // Edit Flag
+                    <MenuItem
+                      key="edit-flag-menu-item"
+                      onClick={() => setFlagDialogVisible(true)}
+                    >
+                      <ListItemIcon>
+                        <FlagCheckeredIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={t('canto.topBarActionsMenu.buttons.editFlag')}
+                      />
+                    </MenuItem>
+                  ]
                 ) : (
                   // Raise Flag
                   <MenuItem
