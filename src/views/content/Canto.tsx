@@ -41,7 +41,8 @@ import {
   GetFlagIdByUser,
   CreateCantoBookmark,
   UpdateCantoBookmark,
-  DeleteBookmark
+  DeleteBookmark,
+  DeleteFlagById
 } from 'graphql/custom'
 import { useSiteMessage } from 'hooks'
 import TafalkShareContentDialog from 'components/common/dialogs/TheShareContentDialog'
@@ -404,20 +405,11 @@ const Canto: React.FC = () => {
     return
   }
 
-  const onRaiseFlagClick = async () => {
-    try {
-      //TODO: Implement
-    } catch (err) {
-      enqueueSnackbar(JSON.stringify(err), {
-        variant: 'error'
-      })
-    } finally {
-    }
-  }
-
   const onRetractFlagClick = async () => {
     try {
-      //TODO: Implement
+      await API.graphql(DeleteFlagById, {
+        id: authUserFlagId
+      })
     } catch (err) {
       enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
@@ -536,7 +528,7 @@ const Canto: React.FC = () => {
                   // Raise Flag
                   <MenuItem
                     key="raise-flag-menu-item"
-                    onClick={onRaiseFlagClick}
+                    onClick={() => setFlagDialogVisible(true)}
                   >
                     <ListItemIcon>
                       <FlagIcon fontSize="small" />

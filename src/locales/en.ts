@@ -11,6 +11,8 @@ const englishTranslation = {
     upload: 'Upload',
     change: 'Change',
     delete: 'Delete',
+    previous: 'Previous',
+    next: 'Next',
     validation: {
       required: 'Required',
       tooShort: 'Too short',
@@ -394,7 +396,72 @@ const englishTranslation = {
     }
   },
   flagContentDialog: {
-    title: 'Flag Content'
+    title: 'Flag Content',
+    steps: {
+      category: {
+        label: 'Category',
+        items: {
+          spam: {
+            primary: 'Spam',
+            secondary: 'Go sell it somewhere else!'
+          },
+          rude: {
+            primary: 'Rude/Abusive',
+            secondary: 'It may hurt some audience in some way.'
+          },
+          loQlty: {
+            primary: 'Low Quality',
+            secondary: 'WTF did I read?'
+          }
+        }
+      },
+      type: {
+        label: 'Type',
+        items: {
+          spam: {
+            ad: {
+              primary: 'Spam',
+              secondary: 'Go sell it somewhere else!'
+            },
+            harmful: {
+              primary: 'Rude/Abusive',
+              secondary: 'It may hurt some audience in some way.'
+            }
+          },
+          rude: {
+            hate: {
+              primary: 'Hate speech',
+              secondary: 'Expresses hate to a person or group'
+            },
+            threat: {
+              primary: 'Threat',
+              secondary: 'Directs threating words'
+            },
+            offensive: {
+              primary: 'Offensive',
+              secondary: 'The content may be offensive to someone'
+            },
+            private: {
+              primary: 'Private',
+              secondary: 'The content exposes sensitive and/or private info'
+            }
+          },
+          loQlty: {
+            nonsense: {
+              primary: 'Nonsense',
+              secondary: 'Definitely none..'
+            }
+          }
+        }
+      },
+      detail: {
+        label: 'Detail',
+        textfield: {
+          label: 'Further Details (Optional)',
+          placeholder: 'Tell us why this post is suspicious...'
+        }
+      }
+    }
   },
   canto: {
     topBarActionsMenu: {

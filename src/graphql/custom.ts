@@ -452,6 +452,21 @@ export const GetFlagIdByUser = gql`
   }
 `
 
+export const GetFlagById = gql`
+  query GetFlagById($id: ID!) {
+    getFlag(id: $id) {
+      id
+      contentType
+      contentId
+      flaggerUserId
+      category
+      type
+      detail
+      status
+    }
+  }
+`
+
 // Mutate
 export const UpdateUserTheme = gql`
   mutation UpdateUserTheme($userId: ID!, $theme: String) {
