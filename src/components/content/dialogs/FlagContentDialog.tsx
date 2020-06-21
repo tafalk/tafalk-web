@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core'
 import CloseIcon from 'mdi-material-ui/Close'
 import { useTranslation } from 'react-i18next'
-import { ContentType } from 'types/appsync/API'
+import { ContentType, GetFlagByIdQuery } from 'types/appsync/API'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { CreateCantoFlag, GetFlagById } from 'graphql/custom'
 import { useSnackbar } from 'notistack'
@@ -156,17 +156,25 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
       try {
         if (!flagId) return
 
-        const flagGraphqlResponse = await API.graphql(
+        const flagGraphqlResponse = (await API.graphql(
           graphqlOperation(GetFlagById, {
             id: flagId
           })
+        )) as {
+          data: GetFlagByIdQuery
+        }
+        const flagResult = flagGraphqlResponse.data.getFlag
+        setSelectedCategoryIndex(
+          categories.findIndex((c) => c.code === flagResult?.category)
         )
-        // as {
-        //   data: GetUserProfileContentQuery
-        // }
-        // const userResult = userGraphqlResponse.data.getUserByUsername
+        setSelectedTypeIndex(
+          types.findIndex((t) => t.code === flagResult?.type)
+        )
+        setDetailText(flagResult?.detail ?? '')
       } catch (err) {
-      } finally {
+        enqueueSnackbar(JSON.stringify(err), {
+          variant: 'error'
+        })
       }
     })()
   }, [flagId])
