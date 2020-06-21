@@ -79,9 +79,12 @@ const Welcome: React.FC = () => {
         </Box>
       </Typography>
       <Container
+        component="div"
         disableGutters
         className={`${classes.imageContainer} ${classes.generalImageContainer}`}
-      ></Container>
+      >
+        <div></div>
+      </Container>
       {/** Streams */}
       <Typography component="div">
         <Box
@@ -93,9 +96,12 @@ const Welcome: React.FC = () => {
         </Box>
       </Typography>
       <Container
+        component="div"
         disableGutters
         className={`${classes.imageContainer} ${classes.streamsImageContainer}`}
-      ></Container>
+      >
+        <div></div>
+      </Container>
       {/** Streams */}
       <Typography component="div">
         <Box
@@ -107,9 +113,12 @@ const Welcome: React.FC = () => {
         </Box>
       </Typography>
       <Container
+        component="div"
         disableGutters
         className={`${classes.imageContainer} ${classes.cantosImageContainer}`}
-      ></Container>
+      >
+        <div></div>
+      </Container>
 
       {/** Home Button */}
       <Fab

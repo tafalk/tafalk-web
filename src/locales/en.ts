@@ -420,12 +420,12 @@ const englishTranslation = {
         items: {
           spam: {
             ad: {
-              primary: 'Spam',
-              secondary: 'Go sell it somewhere else!'
+              primary: 'Ad',
+              secondary: 'Totally ad oriented content.'
             },
             harmful: {
-              primary: 'Rude/Abusive',
-              secondary: 'It may hurt some audience in some way.'
+              primary: 'Harmful',
+              secondary: 'Contains link to a potentially harmful site.'
             }
           },
           rude: {
@@ -475,6 +475,10 @@ const englishTranslation = {
     },
     removeBookmarkConfirmationDialog: {
       title: 'Remove Bookmark',
+      body: 'Are you sure?'
+    },
+    retractFlagConfirmationDialog: {
+      title: 'Retract Flag',
       body: 'Are you sure?'
     },
     message: {

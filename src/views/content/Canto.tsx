@@ -28,7 +28,8 @@ import {
   GetContentBookmarkByUserQuery,
   GetFlagByUserQuery,
   Language,
-  ContentType
+  ContentType,
+  CreateCantoBookmarkMutation
 } from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
 import API, { graphqlOperation } from '@aws-amplify/api'
@@ -146,6 +147,10 @@ const Canto: React.FC = () => {
   const [
     confirmRemoveBookmarkDialogVisible,
     setConfirmRemoveBookmarkDialogVisible
+  ] = useState(false)
+  const [
+    confirmRetractFlagDialogVisible,
+    setConfirmRetractFlagDialogVisible
   ] = useState(false)
   const [flagDialogVisible, setFlagDialogVisible] = useState(false)
 
@@ -347,13 +352,18 @@ const Canto: React.FC = () => {
 
         if (!authUserBookmarkId) {
           // Create new bookmark
-          await API.graphql(
+          const createBookmarkGraphqlResponse = (await API.graphql(
             graphqlOperation(CreateCantoBookmark, {
               userId: authUser.id,
               contentId: canto?.id,
               indices: `${bodySelectionRange.startOffset}${bookmarkStartEndIndexSeparator}${bodySelectionRange.endOffset}`
             })
-          )
+          )) as {
+            data: CreateCantoBookmarkMutation
+          }
+          const bookmarkResult =
+            createBookmarkGraphqlResponse.data.createContentInteraction
+          setAuthUserBookmarkId(bookmarkResult?.id ?? '')
           enqueueSnackbar(t('canto.message.createBookmarkSuccess'), {
             variant: 'success'
           })
@@ -408,15 +418,20 @@ const Canto: React.FC = () => {
 
   const onRetractFlagClick = async () => {
     try {
-      await API.graphql(DeleteFlagById, {
-        id: authUserFlagId
-      })
+      await API.graphql(
+        graphqlOperation(DeleteFlagById, {
+          id: authUserFlagId
+        })
+      )
     } catch (err) {
+      console.log(err)
       enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
       })
     } finally {
+      setConfirmRetractFlagDialogVisible(false)
     }
+    return
   }
 
   return (
@@ -517,7 +532,7 @@ const Canto: React.FC = () => {
                     // Retract Flag
                     <MenuItem
                       key="retract-flag-menu-item"
-                      onClick={onRetractFlagClick}
+                      onClick={() => setConfirmRetractFlagDialogVisible(true)}
                     >
                       <ListItemIcon>
                         <FlagRemoveIcon fontSize="small" />
@@ -618,6 +633,14 @@ const Canto: React.FC = () => {
         contentId={canto?.id ?? ''}
         flaggerUserId={authUser.id}
         flagId={authUserFlagId ? authUserFlagId : undefined}
+      />
+      {/** Remove Flag Confirmation Dialog */}
+      <TafalkConfirmationDialog
+        open={confirmRetractFlagDialogVisible}
+        onConfirm={onRetractFlagClick}
+        onClose={() => setConfirmRetractFlagDialogVisible(false)}
+        title={t('canto.retractFlagConfirmationDialog.title')}
+        body={t('canto.retractFlagConfirmationDialog.body')}
       />
     </React.Fragment>
   )

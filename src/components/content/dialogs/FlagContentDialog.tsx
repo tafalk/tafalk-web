@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { BasicDialogProps } from 'types/props'
 import {
   Dialog,
@@ -63,8 +63,8 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
   const [activeStep, setActiveStep] = useState(0)
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0)
   const [selectedTypeIndex, setSelectedTypeIndex] = useState(0)
-  // const detailTextRef = useRef<HTMLInputElement>()
   const [detailText, setDetailText] = useState('')
+  const [defaultDetailText, setDefaultDetailText] = useState('')
   const [saveLoading, setSaveLoading] = useState(false)
   const [initialInfoLoaded, setInitialInfoLoaded] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
@@ -174,7 +174,7 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
         setSelectedTypeIndex(
           types.findIndex((t) => t.code === flagResult?.type)
         )
-        setDetailText(flagResult?.detail ?? '')
+        setDefaultDetailText(flagResult?.detail ?? '')
       } catch (err) {
         enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
@@ -186,6 +186,11 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
   }, [categories, enqueueSnackbar, flagId, types])
 
   // Functions
+  const handleDetailTextChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setDetailText(event.target.value)
+  }
   const saveFlag = async () => {
     setSaveLoading(true)
     try {
@@ -209,6 +214,14 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
       setSaveLoading(false)
     }
   }
+
+  const clearAndClose = () => {
+    setActiveStep(0)
+    setSelectedCategoryIndex(0)
+    setSelectedTypeIndex(0)
+    setDetailText('')
+    onClose()
+  }
   // render
   const renderCategoryStepContent = (
     <List aria-label="category">
@@ -219,11 +232,12 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
             selectedCategoryIndex ===
             categories.findIndex((el) => el.code === c.code)
           }
-          onClick={() =>
+          onClick={() => {
             setSelectedCategoryIndex(
               categories.findIndex((el) => el.code === c.code)
             )
-          }
+            setActiveStep((prevActiveStep) => prevActiveStep + 1)
+          }}
         >
           <ListItemText primary={c.primaryText} secondary={c.secondaryText} />
         </ListItem>
@@ -240,51 +254,16 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
             selected={
               selectedTypeIndex === types.findIndex((el) => el.code === t.code)
             }
-            onClick={() =>
+            onClick={() => {
               setSelectedTypeIndex(types.findIndex((el) => el.code === t.code))
-            }
+              setActiveStep((prevActiveStep) => prevActiveStep + 1)
+            }}
           >
             <ListItemText primary={t.primaryText} secondary={t.secondaryText} />
           </ListItem>
         ))}
     </List>
   )
-
-  const renderDetailStepContent = (
-    <TextField
-      // inputRef={detailTextRef}
-      label={t('flagContentDialog.steps.detail.textfield.label')}
-      placeholder={t('flagContentDialog.steps.detail.textfield.placeholder')}
-      multiline
-      rowsMax={4}
-      // defaultValue="Default Value"
-      variant="outlined"
-      onChange={(e) => setDetailText(e.target.value)}
-    />
-  )
-
-  const GetStepContent = () => {
-    if (!initialInfoLoaded) {
-      return (
-        <React.Fragment>
-          <Skeleton height={theme.spacing(6)}></Skeleton>
-          <Skeleton height={theme.spacing(6)}></Skeleton>
-          <Skeleton height={theme.spacing(6)}></Skeleton>
-          <Skeleton height={theme.spacing(6)}></Skeleton>
-        </React.Fragment>
-      )
-    }
-    if (activeStep === steps.findIndex((el) => el.code === 'category')) {
-      return <div>{renderCategoryStepContent}</div>
-    }
-    if (activeStep === steps.findIndex((el) => el.code === 'type')) {
-      return <div>{renderTypeStepContent}</div>
-    }
-    if (activeStep === steps.findIndex((el) => el.code === 'detail')) {
-      return <div>{renderDetailStepContent}</div>
-    }
-    return <div></div>
-  }
 
   return (
     <Dialog open={open} maxWidth="md" fullWidth={true}>
@@ -293,7 +272,7 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
         <IconButton
           aria-label="close"
           className={classes.dialogCloseButton}
-          onClick={onClose}
+          onClick={clearAndClose}
         >
           <CloseIcon />
         </IconButton>
@@ -301,19 +280,49 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
       <DialogContent>
         {/** Stepper Header */}
         <Stepper activeStep={activeStep}>
-          <Step>
-            {steps.map((el) => (
-              <Step key={el.code}>
-                <StepLabel>{el.label}</StepLabel>
-              </Step>
-            ))}
-          </Step>
+          {steps.map((el) => (
+            <Step key={el.code}>
+              <StepLabel>{el.label}</StepLabel>
+            </Step>
+          ))}
         </Stepper>
-        <GetStepContent />
+        <div>
+          {!initialInfoLoaded ? (
+            <React.Fragment>
+              <Skeleton height={theme.spacing(6)}></Skeleton>
+              <Skeleton height={theme.spacing(6)}></Skeleton>
+              <Skeleton height={theme.spacing(6)}></Skeleton>
+              <Skeleton height={theme.spacing(6)}></Skeleton>
+            </React.Fragment>
+          ) : activeStep === steps.findIndex((el) => el.code === 'category') ? (
+            renderCategoryStepContent
+          ) : activeStep === steps.findIndex((el) => el.code === 'type') ? (
+            renderTypeStepContent
+          ) : activeStep === steps.findIndex((el) => el.code === 'detail') ? (
+            <TextField
+              label={t('flagContentDialog.steps.detail.textfield.label')}
+              placeholder={t(
+                'flagContentDialog.steps.detail.textfield.placeholder'
+              )}
+              multiline
+              rowsMax={4}
+              fullWidth
+              defaultValue={defaultDetailText}
+              variant="outlined"
+              value={detailText}
+              onChange={handleDetailTextChange}
+            />
+          ) : undefined}
+        </div>
       </DialogContent>
       <DialogActions>
         {activeStep > 0 ? (
-          <Button onClick={onClose} disableElevation>
+          <Button
+            onClick={() => {
+              setActiveStep((prevActiveStep) => prevActiveStep - 1)
+            }}
+            disableElevation
+          >
             {t('common.previous')}
           </Button>
         ) : undefined}
