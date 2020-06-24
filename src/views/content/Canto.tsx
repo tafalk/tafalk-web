@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { Link as RouterLink, useHistory, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Helmet } from 'react-helmet'
 import {
@@ -17,11 +17,12 @@ import {
   ListItemIcon,
   ListItemText,
   Box,
-  Fab,
   CardHeader,
-  Badge
+  Badge,
+  Collapse,
+  Link
 } from '@material-ui/core'
-import { Skeleton, AvatarGroup } from '@material-ui/lab'
+import { Skeleton, Alert, AlertTitle } from '@material-ui/lab'
 import {
   GetCantoQuery,
   GetContentBookmarkByUserQuery,
@@ -47,11 +48,11 @@ import {
 import { useSiteMessage } from 'hooks'
 import TafalkShareContentDialog from 'components/common/dialogs/TheShareContentDialog'
 import TafalkConfirmationDialog from 'components/common/dialogs/TheConfirmationDialog'
+import TafalkLoginRequiredDialog from 'components/common/dialogs/TheLoginRequiredDialog'
 import TafalkFlagContentDialog from 'components/content/dialogs/FlagContentDialog'
 import { getSiblings, getContentRoute } from 'utils/derivations'
 import Observable from 'zen-observable'
 import DotsVerticalIcon from 'mdi-material-ui/DotsVertical'
-import BookmarkOffIcon from 'mdi-material-ui/BookmarkOff'
 import AccessPointIcon from 'mdi-material-ui/AccessPoint'
 import PauseIcon from 'mdi-material-ui/Pause'
 import BalloonIcon from 'mdi-material-ui/Balloon'
@@ -62,6 +63,8 @@ import ShareVariantIcon from 'mdi-material-ui/ShareVariant'
 import FlagIcon from 'mdi-material-ui/Flag'
 import FlagRemoveIcon from 'mdi-material-ui/FlagRemove'
 import FlagCheckeredIcon from 'mdi-material-ui/FlagCheckered'
+import CloseIcon from 'mdi-material-ui/Close'
+import { red } from '@material-ui/core/colors'
 
 import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
@@ -91,6 +94,14 @@ const useStyles = makeStyles((theme: Theme) =>
     avatar: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.primary.main
+    },
+    smallAvatarPaused: {
+      color: theme.palette.primary.contrastText,
+      backgroundColor: theme.palette.primary.main
+    },
+    smallAvatarLive: {
+      color: theme.palette.primary.contrastText,
+      backgroundColor: red.A700
     },
     authorUserName: {},
     menuButton: {
@@ -145,18 +156,21 @@ const Canto: React.FC = () => {
     CantoBodySelectionType
   >({ startOffset: 0, endOffset: 0 })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [
+    updateBookmarkIndicesInfoOpen,
+    setUpdateBookmarkIndicesInfoOpen
+  ] = useState(false)
   const [shareContentDialogVisible, setShareContentDialogVisible] = useState(
     false
   )
-  const [
-    confirmRemoveBookmarkDialogVisible,
-    setConfirmRemoveBookmarkDialogVisible
-  ] = useState(false)
   const [
     confirmRetractFlagDialogVisible,
     setConfirmRetractFlagDialogVisible
   ] = useState(false)
   const [flagDialogVisible, setFlagDialogVisible] = useState(false)
+  const [loginRequiredDialogVisible, setLoginRequiredDialogVisible] = useState(
+    false
+  )
 
   const routeCantoId = routeParams.id
 
@@ -287,6 +301,10 @@ const Canto: React.FC = () => {
   useEffect(() => {
     // Event handler function as a closure
     const onSelectionChange = (_e: Event) => {
+      // Only updates for creation
+      if (!authUserBookmarkId) {
+        return
+      }
       const selection = document.getSelection()
       if (!selection || selection.type !== 'Range') {
         setBodySelectionRange({ startOffset: 0, endOffset: 0 })
@@ -351,45 +369,28 @@ const Canto: React.FC = () => {
     return () => {
       document?.removeEventListener('selectionchange', debOnSelectionChange)
     }
-  }, [authUser.contextMeta.isReady, authUser.id])
+  }, [authUser.contextMeta.isReady, authUser.id, authUserBookmarkId])
 
   // Side effects: Add/change bookmark when selection changes
   useEffect(() => {
     ;(async () => {
       try {
+        if (!authUserBookmarkId) {
+          return
+        }
         if (!bodySelectionRange.startOffset || !bodySelectionRange.endOffset) {
           return
         }
 
-        if (!authUserBookmarkId) {
-          // Create new bookmark
-          const createBookmarkGraphqlResponse = (await API.graphql(
-            graphqlOperation(CreateCantoBookmark, {
-              userId: authUser.id,
-              contentId: canto?.id,
-              indices: `${bodySelectionRange.startOffset}${bookmarkStartEndIndexSeparator}${bodySelectionRange.endOffset}`
-            })
-          )) as {
-            data: CreateCantoBookmarkMutation
-          }
-          const bookmarkResult =
-            createBookmarkGraphqlResponse.data.createContentInteraction
-          setAuthUserBookmarkId(bookmarkResult?.id ?? '')
-          enqueueSnackbar(t('canto.message.createBookmarkSuccess'), {
-            variant: 'success'
+        // Update existing bookmark
+        await API.graphql(
+          graphqlOperation(UpdateCantoBookmark, {
+            id: authUserBookmarkId,
+            indices: `${bodySelectionRange.startOffset}${bookmarkStartEndIndexSeparator}${bodySelectionRange.endOffset}`
           })
-        } else {
-          // Update existing bookmark
-          await API.graphql(
-            graphqlOperation(UpdateCantoBookmark, {
-              id: authUserBookmarkId,
-              indices: `${bodySelectionRange.startOffset}${bookmarkStartEndIndexSeparator}${bodySelectionRange.endOffset}`
-            })
-          )
-          enqueueSnackbar(t('canto.message.updateBookmarkSuccess'), {
-            variant: 'success'
-          })
-        }
+        )
+        enqueueSnackbar(t('canto.message.updateBookmarkSuccess'))
+
         setBodyHighlightRange({
           startOffset: bodySelectionRange.startOffset,
           endOffset: bodySelectionRange.endOffset
@@ -414,6 +415,39 @@ const Canto: React.FC = () => {
   ])
 
   // Functions
+  const onCreateBookmarkClick = async () => {
+    try {
+      if (!authUser.id) {
+        // Guest User, ask if wants to login or register
+        setLoginRequiredDialogVisible(true)
+        return
+      }
+      const firstWordLength = (canto?.body || '').split(' ')[0].length
+      // Create new bookmark
+      const createBookmarkGraphqlResponse = (await API.graphql(
+        graphqlOperation(CreateCantoBookmark, {
+          userId: authUser.id,
+          contentId: canto?.id,
+          indices: `${0}${bookmarkStartEndIndexSeparator}${firstWordLength}`
+        })
+      )) as {
+        data: CreateCantoBookmarkMutation
+      }
+      const bookmarkResult =
+        createBookmarkGraphqlResponse.data.createContentInteraction
+      setAuthUserBookmarkId(bookmarkResult?.id ?? '')
+      setBodyHighlightRange({
+        startOffset: 0,
+        endOffset: firstWordLength
+      })
+      setUpdateBookmarkIndicesInfoOpen(true)
+    } catch (err) {
+      enqueueSnackbar(JSON.stringify(err), {
+        variant: 'error'
+      })
+    }
+  }
+
   const onRemoveBookmarkClick = async () => {
     try {
       await API.graphql(
@@ -421,6 +455,7 @@ const Canto: React.FC = () => {
           id: authUserBookmarkId
         })
       )
+      setAuthUserBookmarkId('')
       setBodyHighlightRange({
         startOffset: 0,
         endOffset: 0
@@ -429,10 +464,7 @@ const Canto: React.FC = () => {
       enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
       })
-    } finally {
-      setConfirmRemoveBookmarkDialogVisible(false)
     }
-    return
   }
 
   const onRetractFlagClick = async () => {
@@ -473,58 +505,115 @@ const Canto: React.FC = () => {
           <CardHeader
             className={classes.topAppBar}
             avatar={
-              <Badge
-                overlap="circle"
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right'
-                }}
-                badgeContent={
-                  <SmallAvatar alt="content-status">
-                    {canto?.isPaused ? <PauseIcon /> : <AccessPointIcon />}
-                  </SmallAvatar>
-                }
-              >
-                <Avatar
-                  alt={canto?.user?.username}
-                  className={classes.avatar}
-                  src={authorProfilePictureObjectUrl}
-                />
-              </Badge>
-            }
-            action={
               <IconButton
-                aria-label="display more actions"
-                aria-controls={topBarActionsMenuId}
-                aria-haspopup="true"
-                onClick={(event) => setAnchorEl(event.currentTarget)}
+                disableRipple
+                component={RouterLink}
+                to={`/u/${canto?.user?.username ?? ''}`}
               >
-                <DotsVerticalIcon />
+                <Badge
+                  overlap="circle"
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right'
+                  }}
+                  badgeContent={
+                    canto?.isPaused ? (
+                      <SmallAvatar
+                        alt="content-status"
+                        className={classes.smallAvatarPaused}
+                      >
+                        <PauseIcon fontSize="small" />
+                      </SmallAvatar>
+                    ) : (
+                      <SmallAvatar
+                        alt="content-status"
+                        className={classes.smallAvatarLive}
+                      >
+                        <AccessPointIcon fontSize="small" />
+                      </SmallAvatar>
+                    )
+                  }
+                >
+                  <Avatar
+                    alt={canto?.user?.username}
+                    className={classes.avatar}
+                    src={authorProfilePictureObjectUrl}
+                  />
+                </Badge>
               </IconButton>
             }
-            title={canto?.user?.username}
+            title={
+              <Link
+                component={RouterLink}
+                to={`/u/${canto?.user?.username ?? ''}`}
+              >
+                {canto?.user?.username}
+              </Link>
+            }
             subheader={
-              <React.Fragment>
-                <BalloonIcon />
+              <Grid container alignItems="flex-end">
+                {/** Bookmarks */}
+                {authUserBookmarkId ? (
+                  <BookmarkIcon fontSize="small" />
+                ) : (
+                  <BookmarkOutlineIcon fontSize="small" />
+                )}
+                {` ${canto?.bookmarkCount?.count ?? 0}`}
+                &emsp;{'('}
+                {/** Created */}
+                <BalloonIcon fontSize="small" />
                 {formatDistanceToNow(new Date(canto?.startTime ?? 0), {
                   locale: getUserLocale(authUser.language ?? Language.en),
                   addSuffix: true
                 })}
-                {', '}
+                {','}&ensp;
                 {/** Last Update */}
-                <SleepIcon />
+                <SleepIcon fontSize="small" />
                 {formatDistanceToNow(new Date(canto?.lastUpdateTime ?? 0), {
                   locale: getUserLocale(authUser.language ?? Language.en),
                   addSuffix: true
                 })}
-                {', '}
-                {/** Bookmarks */}
-                {authUserBookmarkId ? (
-                  <BookmarkIcon />
+                {')'}
+              </Grid>
+            }
+            action={
+              <React.Fragment>
+                {/** Bookmark/Unbookmark */}
+                {!authUserBookmarkId ? (
+                  <IconButton
+                    color="default"
+                    aria-label="bookmark"
+                    onClick={onCreateBookmarkClick}
+                  >
+                    <BookmarkOutlineIcon />
+                  </IconButton>
                 ) : (
-                  <BookmarkOutlineIcon />
+                  <IconButton
+                    color="secondary"
+                    aria-label="unbookmark"
+                    onClick={onRemoveBookmarkClick}
+                  >
+                    <BookmarkIcon />
+                  </IconButton>
                 )}
-                {` ${canto?.bookmarkCount?.count ?? 0}`}
+
+                {/** Share */}
+                <IconButton
+                  color="primary"
+                  aria-label="share"
+                  onClick={() => setShareContentDialogVisible(true)}
+                >
+                  <ShareVariantIcon />
+                </IconButton>
+                {/** More */}
+                <IconButton
+                  aria-label="display more actions"
+                  aria-controls={topBarActionsMenuId}
+                  aria-haspopup="true"
+                  onClick={(event) => setAnchorEl(event.currentTarget)}
+                >
+                  <DotsVerticalIcon />
+                </IconButton>
               </React.Fragment>
             }
           />
@@ -541,19 +630,6 @@ const Canto: React.FC = () => {
           >
             {authUser.contextMeta.isReady &&
               authUser.id && [
-                authUserBookmarkId ? (
-                  <MenuItem
-                    key="remove-bookmark-menu-item"
-                    onClick={() => setConfirmRemoveBookmarkDialogVisible(true)}
-                  >
-                    <ListItemIcon>
-                      <BookmarkOffIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={t('canto.topBarActionsMenu.buttons.unbookmark')}
-                    />
-                  </MenuItem>
-                ) : undefined,
                 authUserFlagId ? (
                   [
                     // Retract Flag
@@ -598,6 +674,35 @@ const Canto: React.FC = () => {
               ]}
           </Menu>
 
+          {/** Update Bookmark Method Info */}
+          {authUserBookmarkId && (
+            <Collapse in={updateBookmarkIndicesInfoOpen}>
+              <Alert
+                severity="info"
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setUpdateBookmarkIndicesInfoOpen(false)
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+              >
+                <AlertTitle>
+                  <span role="img" aria-label="dynamic-bookmark-emoji">
+                    🧶
+                  </span>{' '}
+                  {t('canto.updateBookmarkIndicesInfo.title')}
+                </AlertTitle>
+                {t('canto.updateBookmarkIndicesInfo.body')}
+              </Alert>
+            </Collapse>
+          )}
+
           {/** Body */}
           <Box
             fontFamily="Monospace"
@@ -626,15 +731,6 @@ const Canto: React.FC = () => {
           </Box>
         </Grid>
       )}
-      {/** Share Fab */}
-      <Fab
-        color="primary"
-        aria-label="share"
-        className={classes.shareFab}
-        onClick={() => setShareContentDialogVisible(true)}
-      >
-        <ShareVariantIcon />
-      </Fab>
       {/** Dialogs */}
       <TafalkShareContentDialog
         open={shareContentDialogVisible}
@@ -643,14 +739,6 @@ const Canto: React.FC = () => {
           __typename: 'Canto',
           id: canto?.id
         })}`}
-      />
-      {/** Remove Bookmark Confirmation Dialog */}
-      <TafalkConfirmationDialog
-        open={confirmRemoveBookmarkDialogVisible}
-        onConfirm={onRemoveBookmarkClick}
-        onClose={() => setConfirmRemoveBookmarkDialogVisible(false)}
-        title={t('canto.removeBookmarkConfirmationDialog.title')}
-        body={t('canto.removeBookmarkConfirmationDialog.body')}
       />
       {/** Flag Dialog */}
       <TafalkFlagContentDialog
@@ -669,6 +757,11 @@ const Canto: React.FC = () => {
         title={t('canto.retractFlagConfirmationDialog.title')}
         body={t('canto.retractFlagConfirmationDialog.body')}
       />
+      {/** Login required to bookmark */}
+      <TafalkLoginRequiredDialog
+        open={loginRequiredDialogVisible}
+        onClose={() => setLoginRequiredDialogVisible(false)}
+      ></TafalkLoginRequiredDialog>
     </React.Fragment>
   )
 }

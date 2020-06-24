@@ -395,6 +395,14 @@ const englishTranslation = {
       linkCopied: 'Copied to clipboard!'
     }
   },
+  loginRequiredDialog: {
+    title: 'Login required',
+    body:
+      'You are expected to login to your account before proceeding with this action ',
+    buttons: {
+      redirectToLogin: 'Go to Login page'
+    }
+  },
   flagContentDialog: {
     title: 'Flag Content',
     steps: {
@@ -473,9 +481,10 @@ const englishTranslation = {
         editFlag: 'Edit Flag'
       }
     },
-    removeBookmarkConfirmationDialog: {
-      title: 'Remove Bookmark',
-      body: 'Are you sure?'
+    updateBookmarkIndicesInfo: {
+      title: 'Mhmm. Dynamic Bookmarking Here',
+      body:
+        'Cantos may grow long and you may not always remember you left lasts time. So, now, you can change the selection in the canto body to move your bookmark. It will be noted by a highlight and auto scroll to it when you revisit the page'
     },
     retractFlagConfirmationDialog: {
       title: 'Retract Flag',
