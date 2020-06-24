@@ -10,19 +10,17 @@ import {
 } from '@material-ui/core/styles'
 import {
   Grid,
-  AppBar,
-  Toolbar,
   Avatar,
-  Typography,
   IconButton,
   Menu,
   MenuItem,
   ListItemIcon,
   ListItemText,
   Box,
-  Fab
+  Fab,
+  CardHeader
 } from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab'
+import { Skeleton, AvatarGroup } from '@material-ui/lab'
 import {
   GetCantoQuery,
   GetContentBookmarkByUserQuery,
@@ -82,7 +80,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1
     },
     topAppBar: {
-      flexGrow: 1
+      width: '100%',
+      paddingInline: theme.spacing(2, 0, 2, 0)
     },
     cantoStatusIcon: {
       marginRight: theme.spacing(2)
@@ -469,45 +468,22 @@ const Canto: React.FC = () => {
       ) : (
         <Grid container>
           {/** Top Bar (User Info & Action Buttons) */}
-          <AppBar
-            position="static"
+          <CardHeader
             className={classes.topAppBar}
-            color="transparent"
-            elevation={0}
-          >
-            <Toolbar>
-              {canto?.isPaused ? <PauseIcon /> : <AccessPointIcon />}
-              <Avatar
-                alt={canto?.user?.username}
-                className={classes.avatar}
-                src={authorProfilePictureObjectUrl}
-              ></Avatar>
-              <Typography variant="h6" className={classes.authorUserName}>
-                {canto?.user?.username}
-              </Typography>
-              <div className={classes.grow} />
-              {/** Created */}
-              <BalloonIcon />
-              {formatDistanceToNow(new Date(canto?.startTime ?? 0), {
-                locale: getUserLocale(authUser.language ?? Language.en),
-                addSuffix: true
-              })}
-              <span>,&nbsp;</span>
-              {/** Last Update */}
-              <SleepIcon />
-              {formatDistanceToNow(new Date(canto?.lastUpdateTime ?? 0), {
-                locale: getUserLocale(authUser.language ?? Language.en),
-                addSuffix: true
-              })}
-              <span>,&nbsp;</span>
-              {/** Bookmarks */}
-              {authUserBookmarkId ? <BookmarkIcon /> : <BookmarkOutlineIcon />}
-              {` ${canto?.bookmarkCount?.count ?? 0}`}
-              {/** More... button */}
+            avatar={
+              <AvatarGroup>
+                <Avatar
+                  alt={canto?.user?.username}
+                  className={classes.avatar}
+                  src={authorProfilePictureObjectUrl}
+                ></Avatar>
+                <Avatar aria-label="content-state">
+                  {canto?.isPaused ? <PauseIcon /> : <AccessPointIcon />}
+                </Avatar>
+              </AvatarGroup>
+            }
+            action={
               <IconButton
-                className={classes.menuButton}
-                edge="end"
-                color="inherit"
                 aria-label="display more actions"
                 aria-controls={topBarActionsMenuId}
                 aria-haspopup="true"
@@ -515,10 +491,33 @@ const Canto: React.FC = () => {
               >
                 <DotsVerticalIcon />
               </IconButton>
-            </Toolbar>
-          </AppBar>
-          {/** Top Bar - Actions Button Menu */}
-
+            }
+            title={canto?.user?.username}
+            subheader={
+              <React.Fragment>
+                <BalloonIcon />
+                {formatDistanceToNow(new Date(canto?.startTime ?? 0), {
+                  locale: getUserLocale(authUser.language ?? Language.en),
+                  addSuffix: true
+                })}
+                <span>,&nbsp;</span>
+                {/** Last Update */}
+                <SleepIcon />
+                {formatDistanceToNow(new Date(canto?.lastUpdateTime ?? 0), {
+                  locale: getUserLocale(authUser.language ?? Language.en),
+                  addSuffix: true
+                })}
+                <span>,&nbsp;</span>
+                {/** Bookmarks */}
+                {authUserBookmarkId ? (
+                  <BookmarkIcon />
+                ) : (
+                  <BookmarkOutlineIcon />
+                )}
+                {` ${canto?.bookmarkCount?.count ?? 0}`}
+              </React.Fragment>
+            }
+          />
           <Menu
             id={topBarActionsMenuId}
             anchorEl={anchorEl}
