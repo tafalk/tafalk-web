@@ -440,6 +440,7 @@ export const GetContentBookmarkIdByUser = gql`
   query GetContentBookmarkIdByUser($userId: ID!, $contentType: ContentType) {
     getContentBookmarkByUser(userId: $userId, contentType: $contentType) {
       id
+      indices
     }
   }
 `
@@ -526,7 +527,7 @@ export const CreateCantoBookmark = gql`
       input: {
         userId: $userId
         interactionType: Bookmark
-        contentType: stream
+        contentType: canto
         contentId: $contentId
         indices: $indices
       }

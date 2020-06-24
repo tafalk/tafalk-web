@@ -140,6 +140,9 @@ const Canto: React.FC = () => {
   const [bodySelectionRange, setBodySelectionRange] = useState<
     CantoBodySelectionType
   >({ startOffset: 0, endOffset: 0 })
+  const [bodyHighlightRange, setBodyHighlightRange] = useState<
+    CantoBodySelectionType
+  >({ startOffset: 0, endOffset: 0 })
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [shareContentDialogVisible, setShareContentDialogVisible] = useState(
     false
@@ -220,6 +223,18 @@ const Canto: React.FC = () => {
         setCanto(cantoResult)
         setAuthUserBookmarkId(cantoAuthUserBookmarkResult?.id ?? '')
         setAuthUserFlagId(cantoAuthUserFlagResult?.id ?? '')
+        if (cantoAuthUserBookmarkResult?.id) {
+          const [
+            bookmarkStartOffset,
+            bookmarkEndOffset
+          ] = cantoAuthUserBookmarkResult?.indices
+            ?.split(bookmarkStartEndIndexSeparator, 2)
+            .map((str) => parseInt(str)) ?? [0, 0]
+          setBodyHighlightRange({
+            startOffset: bookmarkStartOffset,
+            endOffset: bookmarkEndOffset
+          })
+        }
 
         // Subscribe to canto itself for live content changes
         const cantoChangeSubscription = API.graphql(
@@ -232,6 +247,7 @@ const Canto: React.FC = () => {
             }) => {
               const updateCantoSubscriptionResult =
                 eventData.value.data.onUpdateCanto
+              // TODO: Make use of this updated result i.e. update the canto body
               console.log(JSON.stringify(updateCantoSubscriptionResult))
             },
             error: (err: any) =>
@@ -275,6 +291,7 @@ const Canto: React.FC = () => {
         setBodySelectionRange({ startOffset: 0, endOffset: 0 })
         return
       }
+
       const range = selection.getRangeAt(0)
       if (!range || range.collapsed) {
         setBodySelectionRange({ startOffset: 0, endOffset: 0 })
@@ -293,22 +310,11 @@ const Canto: React.FC = () => {
 
       const { startContainer, endContainer, startOffset, endOffset } = range
 
-      const startContainerParentNodeClassList = (startContainer.parentNode as Element)
+      const startContainerParentNodeClassList = (startContainer.parentNode as HTMLElement)
         .classList
-      const endContainerParentNodeClassList = (endContainer.parentNode as Element)
+      const endContainerParentNodeClassList = (endContainer.parentNode as HTMLElement)
         .classList
 
-      if (
-        startContainerParentNodeClassList.contains(cantoPreBookmarkClass) &&
-        endContainerParentNodeClassList.contains(cantoPreBookmarkClass)
-      ) {
-        // Range starts and ends before the existing bookmark
-        setBodySelectionRange({
-          startOffset,
-          endOffset
-        })
-        return
-      }
       if (
         startContainerParentNodeClassList.contains(cantoPostBookmarkClass) &&
         endContainerParentNodeClassList.contains(cantoPostBookmarkClass)
@@ -322,6 +328,11 @@ const Canto: React.FC = () => {
         setBodySelectionRange({
           startOffset: startOffset + indexOffset,
           endOffset: endOffset + indexOffset
+        })
+      } else {
+        setBodySelectionRange({
+          startOffset,
+          endOffset
         })
       }
     }
@@ -348,7 +359,6 @@ const Canto: React.FC = () => {
         if (!bodySelectionRange.startOffset || !bodySelectionRange.endOffset) {
           return
         }
-        console.log('selection changed!')
 
         if (!authUserBookmarkId) {
           // Create new bookmark
@@ -379,6 +389,10 @@ const Canto: React.FC = () => {
             variant: 'success'
           })
         }
+        setBodyHighlightRange({
+          startOffset: bodySelectionRange.startOffset,
+          endOffset: bodySelectionRange.endOffset
+        })
       } catch (err) {
         enqueueSnackbar(
           `${t('canto.message.bookmarkError')}: ${JSON.stringify(err)}`,
@@ -406,6 +420,10 @@ const Canto: React.FC = () => {
           id: authUserBookmarkId
         })
       )
+      setBodyHighlightRange({
+        startOffset: 0,
+        endOffset: 0
+      })
     } catch (err) {
       enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
@@ -577,22 +595,22 @@ const Canto: React.FC = () => {
             className={selectApplicableClass}
             id={cantoBodyBoxId}
           >
-            {!bodySelectionRange.startOffset &&
-            !bodySelectionRange.endOffset ? (
+            {!bodyHighlightRange.startOffset &&
+            !bodyHighlightRange.endOffset ? (
               <span>{canto?.body}</span>
             ) : (
               <React.Fragment>
                 <span className={cantoPreBookmarkClass}>
-                  {canto?.body.substring(0, bodySelectionRange.startOffset)}
+                  {canto?.body.substring(0, bodyHighlightRange.startOffset)}
                 </span>
                 <span id={bookmarkedSectionId} className={classes.highlight}>
                   {canto?.body.substring(
-                    bodySelectionRange.startOffset,
-                    bodySelectionRange.endOffset
+                    bodyHighlightRange.startOffset,
+                    bodyHighlightRange.endOffset
                   )}
                 </span>
                 <span className={cantoPostBookmarkClass}>
-                  {canto?.body.substring(bodySelectionRange.endOffset)}
+                  {canto?.body.substring(bodyHighlightRange.endOffset)}
                 </span>
               </React.Fragment>
             )}
