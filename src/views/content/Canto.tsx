@@ -18,7 +18,8 @@ import {
   ListItemText,
   Box,
   Fab,
-  CardHeader
+  CardHeader,
+  Badge
 } from '@material-ui/core'
 import { Skeleton, AvatarGroup } from '@material-ui/lab'
 import {
@@ -65,6 +66,7 @@ import FlagCheckeredIcon from 'mdi-material-ui/FlagCheckered'
 import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
 import { useSnackbar } from 'notistack'
+import { SmallAvatar } from 'components/common/avatars/SmallAvatar'
 
 const bookmarkStartEndIndexSeparator = '-'
 const selectApplicableClass = 'select-applicable'
@@ -471,16 +473,24 @@ const Canto: React.FC = () => {
           <CardHeader
             className={classes.topAppBar}
             avatar={
-              <AvatarGroup>
+              <Badge
+                overlap="circle"
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right'
+                }}
+                badgeContent={
+                  <SmallAvatar alt="content-status">
+                    {canto?.isPaused ? <PauseIcon /> : <AccessPointIcon />}
+                  </SmallAvatar>
+                }
+              >
                 <Avatar
                   alt={canto?.user?.username}
                   className={classes.avatar}
                   src={authorProfilePictureObjectUrl}
-                ></Avatar>
-                <Avatar aria-label="content-state">
-                  {canto?.isPaused ? <PauseIcon /> : <AccessPointIcon />}
-                </Avatar>
-              </AvatarGroup>
+                />
+              </Badge>
             }
             action={
               <IconButton
@@ -500,14 +510,14 @@ const Canto: React.FC = () => {
                   locale: getUserLocale(authUser.language ?? Language.en),
                   addSuffix: true
                 })}
-                <span>,&nbsp;</span>
+                {', '}
                 {/** Last Update */}
                 <SleepIcon />
                 {formatDistanceToNow(new Date(canto?.lastUpdateTime ?? 0), {
                   locale: getUserLocale(authUser.language ?? Language.en),
                   addSuffix: true
                 })}
-                <span>,&nbsp;</span>
+                {', '}
                 {/** Bookmarks */}
                 {authUserBookmarkId ? (
                   <BookmarkIcon />
