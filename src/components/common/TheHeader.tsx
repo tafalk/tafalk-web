@@ -22,7 +22,6 @@ import {
   useMediaQuery,
   AppBar,
   Toolbar,
-  InputLabel,
   Button,
   IconButton,
   MenuItem,
@@ -32,18 +31,15 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Select,
   Switch,
   TextField,
   Typography,
   Grid
 } from '@material-ui/core'
 import { Skeleton, Autocomplete } from '@material-ui/lab'
+
+import TafalkLanguageSelectionDialog from 'components/common/dialogs/TheLanguageSelectionDialog'
+import TafalkConfirmationDialog from 'components/common/dialogs/GenericConfirmationDialog'
 
 import AccountIcon from 'mdi-material-ui/Account'
 import MagnifyIcon from 'mdi-material-ui/Magnify'
@@ -63,7 +59,7 @@ import logo from 'assets/logo.svg'
 import smlogo from 'assets/smlogo.svg'
 
 import { AuthUserContext } from 'context/Auth'
-import { supportedLanguages, maxNumOfSearchResults } from 'utils/constants'
+import { maxNumOfSearchResults } from 'utils/constants'
 import { UpdateUserTheme, SearchSiteContent } from 'graphql/custom'
 import { SearchQuery } from 'types/appsync/API'
 
@@ -147,7 +143,6 @@ const TheHeader: React.FC = () => {
   const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
   const { user: authUser, setUser: setAuthUser } = useContext(AuthUserContext)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [language, setLanguage] = useState('')
   const [darkModeSwitchChecked, setDarkModeSwitchChecked] = useState(false)
   const [languageDialogOpen, setLanguageDialogOpen] = useState(false)
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
@@ -206,11 +201,6 @@ const TheHeader: React.FC = () => {
   const onAboutClick = () => {
     routerHistory.push('/about')
     setAnchorEl(null)
-  }
-  const onLanguageChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>
-  ) => {
-    setLanguage(event.target.value as string)
   }
 
   const onConfirmLogout = async (): Promise<void> => {
@@ -546,73 +536,20 @@ const TheHeader: React.FC = () => {
       </Menu>
 
       {/* Language Selection Dialog */}
-      <Dialog
+      <TafalkLanguageSelectionDialog
         open={languageDialogOpen}
+        onConfirm={onConfirmLanguage}
         onClose={() => setLanguageDialogOpen(false)}
-        aria-labelledby="language-dialog-title"
-        aria-describedby="language-dialog-body"
-      >
-        <DialogTitle id="language-dialog-title">
-          {t('languageDialog.title')}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="language-dialog-body">
-            {t('languageDialog.body')}
-          </DialogContentText>
-          <InputLabel htmlFor="language-select">Language</InputLabel>
-          <Select
-            native
-            value={language}
-            onChange={onLanguageChange}
-            inputProps={{
-              name: 'language',
-              id: 'language-select'
-            }}
-          >
-            {supportedLanguages.map((l) => (
-              <option key={l.value} value={l.value}>
-                {l.text}
-              </option>
-            ))}
-          </Select>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setLanguageDialogOpen(false)} color="default">
-            {t('common.cancel')}
-          </Button>
-          <Button onClick={onConfirmLanguage} color="primary" autoFocus>
-            {t('common.ok')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      />
+
       {/* Logout Confirmation Dialog */}
-      <Dialog
+      <TafalkConfirmationDialog
         open={logoutDialogOpen}
+        onConfirm={onConfirmLogout}
         onClose={() => setLogoutDialogOpen(false)}
-        aria-labelledby="logout-confirmation-dialog-title"
-        aria-describedby="logout-confirmation-dialog-body"
-      >
-        <DialogTitle id="logout-confirmation-dialog-title">
-          {t('logoutConfirmationDialog.title')}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="logout-confirmation-dialog-body">
-            {t('logoutConfirmationDialog.body')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setLogoutDialogOpen(false)}
-            color="default"
-            autoFocus
-          >
-            {t('common.no')}
-          </Button>
-          <Button onClick={onConfirmLogout} color="primary">
-            {t('common.yes')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        title={t('logoutConfirmationDialog.title')}
+        body={t('logoutConfirmationDialog.body')}
+      />
     </div>
   )
 }

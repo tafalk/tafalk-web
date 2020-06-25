@@ -24,21 +24,13 @@ import {
   AppBar,
   GridList,
   InputLabel,
-  NativeSelect,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  RootRef,
-  CircularProgress
+  NativeSelect
 } from '@material-ui/core'
 import { TabContext, TabList, TabPanel } from '@material-ui/lab'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import Storage from '@aws-amplify/storage'
 import {
   GetUserProfileContent,
-  UpdateUserProfilePictureKey,
   ListUserStreamsForProfile,
   ListContentBookmarksByUserForProfile,
   ListUserInteractionsByUserForProfile,
@@ -48,11 +40,9 @@ import { GetColor } from '@tafalk/material-color-generator'
 import { Skeleton } from '@material-ui/lab'
 import { AuthUserContext } from 'context/Auth'
 import { useTranslation } from 'react-i18next'
-import { useDropzone } from 'react-dropzone'
 
 import CameraIcon from 'mdi-material-ui/Camera'
 import CogIcon from 'mdi-material-ui/Cog'
-import UploadIcon from 'mdi-material-ui/Upload'
 import StarIcon from 'mdi-material-ui/Star'
 import CancelIcon from 'mdi-material-ui/Cancel'
 import StarOffIcon from 'mdi-material-ui/StarOff'
@@ -61,12 +51,10 @@ import HomeLockIcon from 'mdi-material-ui/HomeLock'
 import {
   watchUserValue,
   blockUserValue,
-  bookmarkContentValue,
-  avatarPictureSizeMinSize,
-  avatarPictureSizeMaxSize
+  bookmarkContentValue
 } from 'utils/constants'
 
-import TafalkProfileContentTileCard from 'components/profile/ContentTileCard'
+import TafalkProfileContentTileCard from 'components/user/profile/ContentTileCard'
 import { itemsPerFetch } from 'utils/constants'
 import {
   ContentType,
@@ -76,8 +64,11 @@ import {
   ListUserStreamsForProfileQuery,
   GetUserProfileContentQuery
 } from 'types/appsync/API'
-import { generateProfilePictureFileName } from 'utils/derivations'
+
 import { useSiteMessage } from 'hooks'
+
+import TafalkAvatarUploadDialog from 'components/user/profile/dialogs/AvatarUploadDialog'
+import { UserDataType } from 'types/props'
 
 const avatarThemeSpacing = 28
 
@@ -139,21 +130,13 @@ interface ProfileRouteParams {
 interface ImageFile extends File {
   objecturl: string
 }
-interface UserDataType
-  extends Omit<
-    Exclude<GetUserProfileContentQuery['getUserByUsername'], null>,
-    '__typename'
-  > {
-  color: string
-  profilePictureObjectUrl: string
-}
 
 const Profile: React.FC = () => {
   let routerHistory = useHistory()
   const theme = useTheme()
   const classes = useStyles()
   const { t } = useTranslation()
-  const { user: authUser, setUser: setAuthUser } = useContext(AuthUserContext)
+  const { user: authUser } = useContext(AuthUserContext)
   const [, setSiteMessageData] = useSiteMessage()
   const routeLocation = useLocation()
   const routeParams = useParams<ProfileRouteParams>()
@@ -176,28 +159,6 @@ const Profile: React.FC = () => {
   const [tabValue, setTabValue] = useState('streams')
   let { url } = useRouteMatch()
   const routeUsername = routeParams.username
-
-  // Dialog
-  const [uploadedFile, setUploadedFile] = useState<ImageFile | null>(null)
-  const [uploadInProgress, setUploadInProgress] = useState(false)
-  const [uploadEnabled, setUploadEnabled] = useState(false)
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
-    minSize: avatarPictureSizeMinSize,
-    maxSize: avatarPictureSizeMaxSize,
-    multiple: false,
-    onDrop: (acceptedFiles, fileRejections) => {
-      // TODO: Do something with the files
-      console.log(JSON.stringify(acceptedFiles))
-      const acceptedFile = acceptedFiles[0]
-      setUploadedFile({
-        ...acceptedFile,
-        objecturl: URL.createObjectURL(acceptedFile)
-      })
-      setUploadEnabled(true)
-    }
-  })
-  const { ref: avatarDialogRef, ...rootProps } = getRootProps()
 
   // Side effects: Load initial profile data
   useEffect(() => {
@@ -342,13 +303,6 @@ const Profile: React.FC = () => {
     user
   ])
 
-  // Side effects: Clean up the data URI to avoid memory leaks
-  useEffect(() => {
-    return uploadedFile
-      ? () => URL.revokeObjectURL(uploadedFile.objecturl ?? '')
-      : undefined
-  }, [uploadedFile])
-
   // Functions
   const loadMoreItems = async () => {
     switch (tabValue) {
@@ -444,53 +398,6 @@ const Profile: React.FC = () => {
         return
       default:
         return
-    }
-  }
-
-  // Functions
-  const onConfirmAvatar = async (): Promise<void> => {
-    if (!uploadedFile) return
-    try {
-      setUploadInProgress(true)
-      // TODO: Compress image on the fly
-      const profilePictureKey = generateProfilePictureFileName(
-        uploadedFile,
-        authUser.id
-      )
-      await Promise.all([
-        // Upload to S3 storage
-        Storage.put(profilePictureKey, uploadedFile, {
-          level: 'protected',
-          contentType: uploadedFile?.type
-        }),
-        // Update User DB Table
-        API.graphql(
-          graphqlOperation(UpdateUserProfilePictureKey, {
-            userId: authUser.id,
-            profilePictureKey
-          })
-        )
-      ])
-
-      // Set the avatar picture of profile and auth user contextuntil it is reloaded some time
-      if (user) {
-        user.profilePictureObjectUrl = uploadedFile.objecturl
-        setAuthUser({
-          ...user,
-          profilePictureObjectUrl: uploadedFile.objecturl
-        })
-      }
-
-      setAvatarDialogOpen(false)
-    } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
-      })
-    } finally {
-      setUploadInProgress(false)
     }
   }
 
@@ -843,70 +750,12 @@ const Profile: React.FC = () => {
           </Grid>
         </Grid>
       </InfiniteScroll>
-
       {/* Avatar Upload Dialog */}
-      <Dialog
-        fullWidth
-        maxWidth="md"
+      <TafalkAvatarUploadDialog
         open={avatarDialogOpen}
         onClose={() => setAvatarDialogOpen(false)}
-        aria-labelledby="avatar-dialog-title"
-        aria-describedby="avatar-dialog-body"
-      >
-        <DialogTitle id="avatar-dialog-title">
-          {t('profile.dialogs.avatar.title')}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="avatar-dialog-body">
-            {t('profile.dialogs.avatar.body')}
-          </DialogContentText>
-          <RootRef rootRef={avatarDialogRef}>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              p={1}
-              bgcolor="grey.300"
-              {...rootProps}
-              className={classes.dropzone}
-            >
-              <Grid container direction="column" alignItems="center">
-                <Avatar
-                  src={
-                    uploadedFile
-                      ? uploadedFile.objecturl
-                      : user?.profilePictureObjectUrl
-                  }
-                  variant="square"
-                  className={classes.avatar}
-                  style={{ color: '#fff', backgroundColor: user?.color }}
-                ></Avatar>
-                <p>{t('profile.dialogs.avatar.dropzone')}</p>
-              </Grid>
-              <input {...getInputProps()} />
-            </Box>
-          </RootRef>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setAvatarDialogOpen(false)} color="default">
-            {t('common.cancel')}
-          </Button>
-          <Button
-            onClick={onConfirmAvatar}
-            variant="contained"
-            color="primary"
-            autoFocus
-            disabled={!uploadEnabled || uploadInProgress}
-            startIcon={<UploadIcon />}
-          >
-            {!uploadInProgress ? (
-              t('common.upload')
-            ) : (
-              <CircularProgress size={14} />
-            )}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        user={user}
+      ></TafalkAvatarUploadDialog>
     </React.Fragment>
   )
 }

@@ -17,13 +17,7 @@ import {
   GridListTile,
   Card,
   CardHeader,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  CircularProgress
+  Button
 } from '@material-ui/core'
 import { useTranslation, Trans } from 'react-i18next'
 import { Helmet } from 'react-helmet'
@@ -31,17 +25,11 @@ import { AuthUserContext } from 'context/Auth'
 import { useSiteMessage } from 'hooks'
 import { TabContext, TabList, TabPanel } from '@material-ui/lab'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { UpdateUserBio, DeleteUserById } from 'graphql/custom'
+import { UpdateUserBio } from 'graphql/custom'
 import DeleteForeverIcon from 'mdi-material-ui/DeleteForever'
-import Auth from '@aws-amplify/auth'
-import { Formik, Form, Field } from 'formik'
-import * as Yup from 'yup'
-import {
-  passwordMinLength,
-  passwordMaxLength,
-  passwordRegex
-} from 'utils/constants'
-import FormikTextField from 'components/common/wrappers/TheHelpedFormikTextField'
+import TafalkChangeEmailDialog from 'components/user/settings/TheChangeEmailDialog'
+import TafalkChangePasswordDialog from 'components/user/settings/TheChangePasswordDialog'
+import TafalkDeleteAccountConfirmationDialog from 'components/user/settings/TheDeleteAccountConfirmationDialog'
 
 const subPathTabValueMap = new Map([
   ['/profile', 'profile'],
@@ -83,7 +71,6 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Settings: React.FC = () => {
-  const redirectMilliseconds = 500
   const { t } = useTranslation()
   const classes = useStyles()
   let routerHistory = useHistory()
@@ -96,39 +83,12 @@ const Settings: React.FC = () => {
 
   const [instantBio, setInstantBio] = useState('')
   const [lastSavedBio, setLastSavedBio] = useState('')
-  const [newEmail, setNewEmail] = useState('')
-  // const [newPassword, setNewPassword] = useState('')
-  // const [oldPassword, setOldPassword] = useState('')
 
   const [changeEmailDialogOpen, setChangeEmailDialogOpen] = useState(false)
   const [changePasswordDialogOpen, setChangePasswordDialogOpen] = useState(
     false
   )
   const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState(false)
-
-  const [emailChangeInProgress, setEmailChangeInProgress] = useState(false)
-  const [deleteAccountInProgress, setDeleteAccountInProgress] = useState(false)
-
-  const newPasswordFormValidationSchema = () =>
-    Yup.object().shape({
-      oldPassword: Yup.string().required(t('common.validation.required')),
-      newPassword: Yup.string()
-        .min(passwordMinLength, t('common.validation.tooShort'))
-        .max(passwordMaxLength, t('common.validation.tooLong'))
-        .matches(
-          passwordRegex,
-          t(
-            'settings.tabs.account.basicInfo.changePassword.dialog.validation.weakPassword'
-          )
-        )
-        .required(t('common.validation.required')),
-      retypeNewPassword: Yup.string()
-        .oneOf(
-          [Yup.ref('password'), null],
-          'settings.tabs.account.basicInfo.changePassword.dialog.validation.passwordsNotMatch'
-        )
-        .required(t('common.validation.required'))
-    })
 
   // Side effects: Load initial profile data
   useEffect(() => {
@@ -192,116 +152,6 @@ const Settings: React.FC = () => {
         timeout: null,
         text: err.message ?? err
       })
-    }
-  }
-
-  const onClickChangeEmail = async () => {
-    if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: t('common.validation.invalidEntry')
-      })
-      return
-    }
-    try {
-      setEmailChangeInProgress(true)
-      await Auth.updateUserAttributes(await Auth.currentAuthenticatedUser(), {
-        email: newEmail
-      })
-      setSiteMessageData({
-        show: true,
-        text: t(
-          'settings.tabs.account.basicInfo.changeEmail.dialog.message.success'
-        ),
-        type: 'success',
-        timeout: redirectMilliseconds
-      })
-      setTimeout(() => {
-        routerHistory.push({
-          pathname: '/auth/confirmRegistration',
-          search: `?${new URLSearchParams({ u: authUser.username })}`
-        })
-      }, redirectMilliseconds)
-    } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
-      })
-    } finally {
-      setEmailChangeInProgress(false)
-    }
-  }
-
-  const onClickChangePassword = async (values: any, { setSubmitting }: any) => {
-    try {
-      setSubmitting(true)
-      await Auth.changePassword(
-        await Auth.currentAuthenticatedUser(),
-        values.oldPassword,
-        values.newPassword
-      )
-      await Auth.signOut()
-      setSiteMessageData({
-        show: true,
-        text: t(
-          'settings.tabs.account.basicInfo.changePassword.dialog.message.success'
-        ),
-        type: 'success',
-        timeout: redirectMilliseconds
-      })
-      setTimeout(() => {
-        routerHistory.push('/auth/login')
-      }, redirectMilliseconds)
-    } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
-      })
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const onClickDeleteAccount = async () => {
-    try {
-      setDeleteAccountInProgress(true)
-      let currAuthUser = await Auth.currentAuthenticatedUser()
-
-      await new Promise((res, rej) =>
-        currAuthUser.deleteUser((err: any) => {
-          if (err) {
-            setSiteMessageData({
-              show: true,
-              type: 'error',
-              timeout: null,
-              text: err.message ?? err
-            })
-            return
-          }
-        })
-      )
-      await API.graphql(
-        graphqlOperation(DeleteUserById, {
-          userId: authUser.id
-        })
-      )
-      await Auth.signOut()
-      routerHistory.push('/auth/farewell')
-    } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
-      })
-    } finally {
-      setDeleteAccountInProgress(false)
     }
   }
 
@@ -397,7 +247,7 @@ const Settings: React.FC = () => {
                 color="secondary"
                 variant="outlined"
                 disableElevation
-                onClick={() => setDeleteAccountDialogOpen(false)}
+                onClick={() => setDeleteAccountDialogOpen(true)}
               >
                 {t('common.delete')}
               </Button>
@@ -406,175 +256,6 @@ const Settings: React.FC = () => {
         </Card>
       </Box>
     </React.Fragment>
-  )
-
-  const newEmailDialog = (
-    <Dialog
-      fullWidth
-      maxWidth="md"
-      open={changeEmailDialogOpen}
-      onClose={() => setChangeEmailDialogOpen(false)}
-      aria-labelledby="change-email-dialog-title"
-      aria-describedby="change-email-dialog-body"
-    >
-      <DialogTitle id="change-email-dialog-title">
-        {t('settings.tabs.account.basicInfo.changeEmail.dialog.title')}
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText id="change-email-dialog-body">
-          {t('settings.tabs.account.basicInfo.changeEmail.dialog.body')}
-        </DialogContentText>
-        {/** New Email Text Field */}
-        <TextField
-          type="email"
-          label={t(
-            'settings.tabs.account.basicInfo.changeEmail.dialog.labels.newEmail'
-          )}
-          value={newEmail}
-          onChange={(e) => setNewEmail(e.target.value)}
-          variant="outlined"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setChangeEmailDialogOpen(false)} color="default">
-          {t('common.cancel')}
-        </Button>
-        <Button
-          onClick={onClickChangeEmail}
-          variant="contained"
-          color="primary"
-          autoFocus
-          disabled={emailChangeInProgress}
-        >
-          {!emailChangeInProgress ? (
-            t('common.submit')
-          ) : (
-            <CircularProgress size={14} />
-          )}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  )
-
-  const newPasswordDialog = () => (
-    <Formik
-      initialValues={{
-        oldPassword: '',
-        newPassword: '',
-        retypeNewPassword: ''
-      }}
-      validationSchema={newPasswordFormValidationSchema}
-      onSubmit={onClickChangePassword}
-    >
-      {({ submitForm, isSubmitting }) => (
-        <Dialog
-          fullWidth
-          maxWidth="md"
-          open={changePasswordDialogOpen}
-          onClose={() => setChangePasswordDialogOpen(false)}
-          aria-labelledby="change-password-dialog-title"
-          aria-describedby="change-password-dialog-body"
-        >
-          <DialogTitle id="change-password-dialog-title">
-            {t('settings.tabs.account.basicInfo.changePassword.dialog.title')}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="change-password-dialog-body">
-              {t('settings.tabs.account.basicInfo.changePassword.dialog.body')}
-            </DialogContentText>
-            <Form className={classes.form}>
-              <Field
-                component={FormikTextField}
-                type="password"
-                name="oldPassword"
-                label={t(
-                  'settings.tabs.account.basicInfo.changePassword.dialog.labels.oldPassword'
-                )}
-              />
-              <Field
-                component={FormikTextField}
-                type="password"
-                name="newPassword"
-                label={t(
-                  'settings.tabs.account.basicInfo.changePassword.dialog.labels.newPassword'
-                )}
-              />
-              <Field
-                component={FormikTextField}
-                type="password"
-                name="retypeNewPassword"
-                label={t(
-                  'settings.tabs.account.basicInfo.changePassword.dialog.labels.retypeNewPassword'
-                )}
-              />
-            </Form>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => setChangePasswordDialogOpen(false)}
-              color="default"
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              type="submit"
-              onClick={submitForm}
-              variant="contained"
-              color="secondary"
-              autoFocus
-              disabled={isSubmitting}
-            >
-              {!isSubmitting ? (
-                t('common.delete')
-              ) : (
-                <CircularProgress size={14} />
-              )}
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-    </Formik>
-  )
-
-  const deleteAccountDialog = (
-    <Dialog
-      fullWidth
-      maxWidth="md"
-      open={deleteAccountDialogOpen}
-      onClose={() => setDeleteAccountDialogOpen(false)}
-      aria-labelledby="delete-account-dialog-title"
-      aria-describedby="delete-account-dialog-body"
-    >
-      <DialogTitle id="delete-account-dialog-title">
-        {t('settings.tabs.account.basicInfo.deleteAccount.dialog.title')}
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText id="delete-account-dialog-body">
-          {t('settings.tabs.account.basicInfo.deleteAccount.dialog.body')}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={() => setDeleteAccountDialogOpen(false)}
-          color="default"
-        >
-          {t('common.cancel')}
-        </Button>
-        <Button
-          onClick={onClickDeleteAccount}
-          variant="contained"
-          color="secondary"
-          autoFocus
-          disabled={deleteAccountInProgress}
-        >
-          {!deleteAccountInProgress ? (
-            t('common.delete')
-          ) : (
-            <CircularProgress size={14} />
-          )}
-        </Button>
-      </DialogActions>
-    </Dialog>
   )
 
   const privacyTabPanelContext = tabValue === 'privacy' && (
@@ -658,9 +339,18 @@ const Settings: React.FC = () => {
             <React.Fragment>
               {accountTabPanelContext}
               {/** Dialogs */}
-              {newEmailDialog}
-              {newPasswordDialog}
-              {deleteAccountDialog}
+              <TafalkChangeEmailDialog
+                open={changeEmailDialogOpen}
+                onClose={() => setChangeEmailDialogOpen(false)}
+              ></TafalkChangeEmailDialog>
+              <TafalkChangePasswordDialog
+                open={changePasswordDialogOpen}
+                onClose={() => setChangePasswordDialogOpen(false)}
+              ></TafalkChangePasswordDialog>
+              <TafalkDeleteAccountConfirmationDialog
+                open={deleteAccountDialogOpen}
+                onClose={() => setDeleteAccountDialogOpen(false)}
+              ></TafalkDeleteAccountConfirmationDialog>
             </React.Fragment>
           </TabPanel>
           <TabPanel value="privacy">{privacyTabPanelContext}</TabPanel>

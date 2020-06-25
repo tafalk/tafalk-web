@@ -3,6 +3,7 @@ import {
   blockUserValue,
   bookmarkContentValue
 } from 'utils/constants'
+import { GetUserProfileContentQuery } from 'types/appsync/API'
 
 const userInteractionTypes = [watchUserValue, blockUserValue] as const
 
@@ -28,4 +29,13 @@ export interface TileCardProps {
   contentInteractionType?: typeof contentInteractionTypes[number]
   item: any
   showUserInfo: boolean
+}
+
+export interface UserDataType
+  extends Omit<
+    Exclude<GetUserProfileContentQuery['getUserByUsername'], null>,
+    '__typename'
+  > {
+  color: string
+  profilePictureObjectUrl: string
 }

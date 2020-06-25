@@ -105,7 +105,10 @@ const englishTranslation = {
   },
   languageDialog: {
     title: 'Language',
-    body: 'Choose to change the site language'
+    body: 'Choose to change the site language',
+    input: {
+      label: 'Language'
+    }
   },
   logoutConfirmationDialog: {
     title: 'Logout',

@@ -18,7 +18,9 @@ interface ConfirmationDialogProps extends BasicDialogProps {
   onConfirm: () => Promise<void>
 }
 
-const TheConfirmationDialog: React.FC<ConfirmationDialogProps> = (props) => {
+const GenericConfirmationDialog: React.FC<ConfirmationDialogProps> = (
+  props
+) => {
   const {
     onClose,
     open,
@@ -55,4 +57,4 @@ const TheConfirmationDialog: React.FC<ConfirmationDialogProps> = (props) => {
   )
 }
 
-export default TheConfirmationDialog
+export default GenericConfirmationDialog

@@ -21,7 +21,9 @@ interface ShareContentDialogProps extends BasicDialogProps {
   contentLink: string
 }
 
-const TheShareContentDialog: React.FC<ShareContentDialogProps> = (props) => {
+const GenericShareContentDialog: React.FC<ShareContentDialogProps> = (
+  props
+) => {
   const { onClose, open, contentLink } = props
   const copyLinkTextFieldRef = useRef<HTMLInputElement>()
   const { t } = useTranslation()
@@ -88,4 +90,4 @@ const TheShareContentDialog: React.FC<ShareContentDialogProps> = (props) => {
   )
 }
 
-export default TheShareContentDialog
+export default GenericShareContentDialog
