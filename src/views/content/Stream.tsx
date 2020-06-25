@@ -59,6 +59,7 @@ import ShareVariantIcon from 'mdi-material-ui/ShareVariant'
 import FlagIcon from 'mdi-material-ui/Flag'
 import FlagRemoveIcon from 'mdi-material-ui/FlagRemove'
 import FlagCheckeredIcon from 'mdi-material-ui/FlagCheckered'
+import CommentPlusOutlineIcon from 'mdi-material-ui/CommentPlusOutline'
 import { red } from '@material-ui/core/colors'
 import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
@@ -72,6 +73,7 @@ interface StreamRouteParams {
 interface StreamDataType
   extends Omit<Exclude<GetStreamQuery['getStream'], null>, '__typename'> {}
 
+const commentTextAreaId = 'comment-textarea'
 const topBarActionsMenuId = 'top-bar-actions-menu'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -240,6 +242,16 @@ const Stream: React.FC = () => {
   }, [authUser.id, enqueueSnackbar, routeStreamId, routerHistory])
 
   // Functions
+  const onToCommentSectionClick = () => {
+    if (!authUser.id) {
+      // Guest User, ask if wants to login or register
+      setLoginRequiredDialogOpen(true)
+      return
+    }
+    // Scroll to bookmarked section, if exists
+    const commentTextAreaEl = document.getElementById(commentTextAreaId)
+    commentTextAreaEl?.scrollIntoView()
+  }
   const onCreateBookmarkClick = async () => {
     try {
       if (!authUser.id) {
@@ -396,6 +408,14 @@ const Stream: React.FC = () => {
             }
             action={
               <React.Fragment>
+                {/** Comment */}
+                <IconButton
+                  color="secondary"
+                  aria-label="comment"
+                  onClick={onToCommentSectionClick}
+                >
+                  <CommentPlusOutlineIcon />
+                </IconButton>
                 {/** Bookmark/Unbookmark */}
                 {!authUserBookmarkId ? (
                   <IconButton
@@ -496,6 +516,9 @@ const Stream: React.FC = () => {
           <Box fontFamily="Monospace">
             <span>{stream?.body}</span>
           </Box>
+          {/** TODO: Add Comment */}
+          <div id={commentTextAreaId}></div>
+          {/** TODO: List existing comments */}
         </Grid>
       )}
       {/** Dialogs */}
