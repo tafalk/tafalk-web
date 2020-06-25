@@ -57,13 +57,10 @@ const Register: React.FC = () => {
   const { t } = useTranslation()
   const classes = useStyles()
   let routerHistory = useHistory()
-  const [
-    termsOfServiceDialogVisible,
-    setTermsOfServiceDialogVisible
-  ] = useState(false)
-  const [privacyPolicyDialogVisible, setPrivacyPolicyDialogVisible] = useState(
+  const [termsOfServiceDialogOpen, setTermsOfServiceDialogOpen] = useState(
     false
   )
+  const [privacyPolicyDialogOpen, setPrivacyPolicyDialogOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
 
   const maxBirthDate = getMaxDateFor18OrMoreYearsOld()
@@ -228,12 +225,12 @@ const Register: React.FC = () => {
                 label={
                   <Trans i18nKey="registerForm.labels.terms">
                     Do you agree the{' '}
-                    <Link onClick={() => setTermsOfServiceDialogVisible(true)}>
+                    <Link onClick={() => setTermsOfServiceDialogOpen(true)}>
                       {' '}
                       terms of service
                     </Link>{' '}
                     and{' '}
-                    <Link onClick={() => setPrivacyPolicyDialogVisible(true)}>
+                    <Link onClick={() => setPrivacyPolicyDialogOpen(true)}>
                       {' '}
                       privacy policy
                     </Link>
@@ -266,12 +263,12 @@ const Register: React.FC = () => {
       </MuiPickersUtilsProvider>
       {/* Dialogs */}
       <TafalkTermsOfServiceDialog
-        open={termsOfServiceDialogVisible}
-        onClose={() => setTermsOfServiceDialogVisible(false)}
+        open={termsOfServiceDialogOpen}
+        onClose={() => setTermsOfServiceDialogOpen(false)}
       />
       <TafalkPrivacyPolicyDialog
-        open={privacyPolicyDialogVisible}
-        onClose={() => setPrivacyPolicyDialogVisible(false)}
+        open={privacyPolicyDialogOpen}
+        onClose={() => setPrivacyPolicyDialogOpen(false)}
       />
     </React.Fragment>
   )

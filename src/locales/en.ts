@@ -494,10 +494,25 @@ const englishTranslation = {
       body: 'Are you sure?'
     },
     message: {
-      createBookmarkSuccess: 'Bookmark created!',
       updateBookmarkSuccess: 'Bookmark updated',
       bookmarkError: 'Error with persisting bookmark'
     }
+  },
+  stream: {
+    topBarActionsMenu: {
+      buttons: {
+        bookmark: 'Bookmark',
+        flag: 'Raise Flag',
+        unbookmark: 'Remove Bookmark',
+        unflag: 'Retract Flag',
+        editFlag: 'Edit Flag'
+      }
+    },
+    retractFlagConfirmationDialog: {
+      title: 'Retract Flag',
+      body: 'Are you sure?'
+    },
+    message: {}
   }
 }
 export default englishTranslation

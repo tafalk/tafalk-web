@@ -69,6 +69,19 @@ import { getUserLocale } from 'utils/conversions'
 import { SmallAvatar } from 'components/common/avatars/SmallAvatar'
 import { useSnackbar } from 'notistack'
 
+interface CantoRouteParams {
+  id: string
+}
+
+type CantoBodySelectionType = {
+  startOffset: number
+  endOffset: number
+}
+
+interface CantoDataType
+  extends Omit<Exclude<GetCantoQuery['getCanto'], null>, '__typename'> {}
+
+const topBarActionsMenuId = 'top-bar-actions-menu'
 const bookmarkStartEndIndexSeparator = '-'
 const selectApplicableClass = 'select-applicable'
 const cantoPreBookmarkClass = 'canto-pre-bm-hl'
@@ -86,9 +99,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       paddingInline: theme.spacing(2, 0, 2, 0)
     },
-    cantoStatusIcon: {
-      marginRight: theme.spacing(2)
-    },
     avatar: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.primary.main
@@ -101,33 +111,12 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.contrastText,
       backgroundColor: red.A700
     },
-    authorUserName: {},
-    menuButton: {
-      marginLeft: theme.spacing(0)
-    },
     highlight: {
       backgroundColor: 'yellow',
       borderRadius: theme.spacing(1)
-    },
-    shareFab: {
-      position: 'fixed',
-      bottom: theme.spacing(2),
-      right: theme.spacing(2)
     }
   })
 )
-
-interface CantoRouteParams {
-  id: string
-}
-
-type CantoBodySelectionType = {
-  startOffset: number
-  endOffset: number
-}
-
-interface CantoDataType
-  extends Omit<Exclude<GetCantoQuery['getCanto'], null>, '__typename'> {}
 
 const Canto: React.FC = () => {
   let routerHistory = useHistory()
@@ -152,28 +141,22 @@ const Canto: React.FC = () => {
   const [bodyHighlightRange, setBodyHighlightRange] = useState<
     CantoBodySelectionType
   >({ startOffset: 0, endOffset: 0 })
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [
     updateBookmarkIndicesInfoOpen,
     setUpdateBookmarkIndicesInfoOpen
   ] = useState(false)
-  const [shareContentDialogVisible, setShareContentDialogVisible] = useState(
-    false
-  )
+  const [shareContentDialogOpen, setShareContentDialogOpen] = useState(false)
   const [
-    confirmRetractFlagDialogVisible,
-    setConfirmRetractFlagDialogVisible
+    confirmRetractFlagDialogOpen,
+    setConfirmRetractFlagDialogOpen
   ] = useState(false)
-  const [flagDialogVisible, setFlagDialogVisible] = useState(false)
-  const [loginRequiredDialogVisible, setLoginRequiredDialogVisible] = useState(
-    false
-  )
+  const [flagDialogOpen, setFlagDialogOpen] = useState(false)
+  const [loginRequiredDialogOpen, setLoginRequiredDialogOpen] = useState(false)
 
+  // Derive some constants
   const routeCantoId = routeParams.id
-
-  // Constants
   const isTopBarActionsMenuOpen = Boolean(anchorEl)
-  const topBarActionsMenuId = 'top-bar-actions-menu'
 
   // Side effects: Load initial canto data
   useEffect(() => {
@@ -410,7 +393,7 @@ const Canto: React.FC = () => {
     try {
       if (!authUser.id) {
         // Guest User, ask if wants to login or register
-        setLoginRequiredDialogVisible(true)
+        setLoginRequiredDialogOpen(true)
         return
       }
       const firstWordLength = (canto?.body || '').split(' ')[0].length
@@ -471,7 +454,7 @@ const Canto: React.FC = () => {
         variant: 'error'
       })
     } finally {
-      setConfirmRetractFlagDialogVisible(false)
+      setConfirmRetractFlagDialogOpen(false)
     }
     return
   }
@@ -592,7 +575,7 @@ const Canto: React.FC = () => {
                 <IconButton
                   color="primary"
                   aria-label="share"
-                  onClick={() => setShareContentDialogVisible(true)}
+                  onClick={() => setShareContentDialogOpen(true)}
                 >
                   <ShareVariantIcon />
                 </IconButton>
@@ -626,7 +609,7 @@ const Canto: React.FC = () => {
                     // Retract Flag
                     <MenuItem
                       key="retract-flag-menu-item"
-                      onClick={() => setConfirmRetractFlagDialogVisible(true)}
+                      onClick={() => setConfirmRetractFlagDialogOpen(true)}
                     >
                       <ListItemIcon>
                         <FlagRemoveIcon fontSize="small" />
@@ -638,7 +621,7 @@ const Canto: React.FC = () => {
                     // Edit Flag
                     <MenuItem
                       key="edit-flag-menu-item"
-                      onClick={() => setFlagDialogVisible(true)}
+                      onClick={() => setFlagDialogOpen(true)}
                     >
                       <ListItemIcon>
                         <FlagCheckeredIcon fontSize="small" />
@@ -652,7 +635,7 @@ const Canto: React.FC = () => {
                   // Raise Flag
                   <MenuItem
                     key="raise-flag-menu-item"
-                    onClick={() => setFlagDialogVisible(true)}
+                    onClick={() => setFlagDialogOpen(true)}
                   >
                     <ListItemIcon>
                       <FlagIcon fontSize="small" />
@@ -724,8 +707,8 @@ const Canto: React.FC = () => {
       )}
       {/** Dialogs */}
       <TafalkShareContentDialog
-        open={shareContentDialogVisible}
-        onClose={() => setShareContentDialogVisible(false)}
+        open={shareContentDialogOpen}
+        onClose={() => setShareContentDialogOpen(false)}
         contentLink={`https://tafalk.com${getContentRoute({
           __typename: 'Canto',
           id: canto?.id
@@ -733,8 +716,8 @@ const Canto: React.FC = () => {
       />
       {/** Flag Dialog */}
       <TafalkFlagContentDialog
-        open={flagDialogVisible}
-        onClose={() => setFlagDialogVisible(false)}
+        open={flagDialogOpen}
+        onClose={() => setFlagDialogOpen(false)}
         contentType={ContentType.canto}
         contentId={canto?.id ?? ''}
         flaggerUserId={authUser.id}
@@ -742,16 +725,16 @@ const Canto: React.FC = () => {
       />
       {/** Remove Flag Confirmation Dialog */}
       <TafalkConfirmationDialog
-        open={confirmRetractFlagDialogVisible}
+        open={confirmRetractFlagDialogOpen}
         onConfirm={onRetractFlagClick}
-        onClose={() => setConfirmRetractFlagDialogVisible(false)}
+        onClose={() => setConfirmRetractFlagDialogOpen(false)}
         title={t('canto.retractFlagConfirmationDialog.title')}
         body={t('canto.retractFlagConfirmationDialog.body')}
       />
       {/** Login required to bookmark */}
       <TafalkLoginRequiredDialog
-        open={loginRequiredDialogVisible}
-        onClose={() => setLoginRequiredDialogVisible(false)}
+        open={loginRequiredDialogOpen}
+        onClose={() => setLoginRequiredDialogOpen(false)}
       ></TafalkLoginRequiredDialog>
     </React.Fragment>
   )

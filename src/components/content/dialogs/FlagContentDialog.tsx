@@ -25,7 +25,12 @@ import CloseIcon from 'mdi-material-ui/Close'
 import { useTranslation } from 'react-i18next'
 import { ContentType, GetFlagByIdQuery } from 'types/appsync/API'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import { CreateCantoFlag, GetFlagById } from 'graphql/custom'
+import {
+  CreateCantoFlag,
+  GetFlagById,
+  CreateStreamFlag,
+  UpdateContentFlag
+} from 'graphql/custom'
 import { useSnackbar } from 'notistack'
 import { Skeleton } from '@material-ui/lab'
 
@@ -194,6 +199,18 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
   const saveFlag = async () => {
     setSaveLoading(true)
     try {
+      if (flagId) {
+        // Update
+        await API.graphql(
+          graphqlOperation(UpdateContentFlag, {
+            id: flagId,
+            category: categories[selectedCategoryIndex].code,
+            type: types[selectedTypeIndex].code,
+            detail: detailText
+          })
+        )
+        return
+      }
       if (contentType === ContentType.canto) {
         await API.graphql(
           graphqlOperation(CreateCantoFlag, {
@@ -204,14 +221,27 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
             detail: detailText
           })
         )
+        return
       }
-      onClose()
+      if (contentType === ContentType.stream) {
+        await API.graphql(
+          graphqlOperation(CreateStreamFlag, {
+            contentId,
+            flaggerUserId,
+            category: categories[selectedCategoryIndex].code,
+            type: types[selectedTypeIndex].code,
+            detail: detailText
+          })
+        )
+        return
+      }
     } catch (err) {
       enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
       })
     } finally {
       setSaveLoading(false)
+      onClose()
     }
   }
 

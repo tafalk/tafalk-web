@@ -517,6 +517,21 @@ export const DeleteUserById = gql`
   }
 `
 
+export const CreateStreamBookmark = gql`
+  mutation CreateStreamBookmark($userId: String!, $contentId: String!) {
+    createContentInteraction(
+      input: {
+        userId: $userId
+        interactionType: Bookmark
+        contentType: stream
+        contentId: $contentId
+      }
+    ) {
+      id
+    }
+  }
+`
+
 export const CreateCantoBookmark = gql`
   mutation CreateCantoBookmark(
     $userId: String!
@@ -553,6 +568,29 @@ export const DeleteBookmark = gql`
   }
 `
 
+export const CreateStreamFlag = gql`
+  mutation CreateStreamFlag(
+    $contentId: String
+    $flaggerUserId: String!
+    $category: String!
+    $type: String!
+    $detail: String
+  ) {
+    createFlag(
+      input: {
+        contentId: $contentId
+        contentType: stream
+        flaggerUserId: $flaggerUserId
+        category: $category
+        type: $type
+        detail: $detail
+      }
+    ) {
+      id
+    }
+  }
+`
+
 export const CreateCantoFlag = gql`
   mutation CreateCantoFlag(
     $contentId: String
@@ -576,8 +614,8 @@ export const CreateCantoFlag = gql`
   }
 `
 
-export const UpdateCantoFlag = gql`
-  mutation UpdateCantoFlag(
+export const UpdateContentFlag = gql`
+  mutation UpdateContentFlag(
     $id: ID!
     $category: String
     $type: String
@@ -608,6 +646,27 @@ export const OnUpdateCantoById = gql`
       startTime
       lastUpdateTime
       isPaused
+      bookmarks {
+        id
+        contentType
+        contentId
+        userId
+        indices
+        time
+      }
+    }
+  }
+`
+
+export const OnUpdateStreamById = gql`
+  subscription OnUpdateStreamById($id: ID!) {
+    onUpdateStream(id: $id) {
+      id
+      title
+      body
+      startTime
+      sealTime
+      isSealed
       bookmarks {
         id
         contentType
