@@ -6,18 +6,20 @@ import {
   DialogTitle,
   DialogActions,
   Button,
-  DialogContent
+  DialogContent,
+  IconButton
 } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
 import { httpSitePoliciesStorage } from 'httpCall'
 import i18n from 'i18n'
-import { useSiteMessage } from 'hooks'
+import { useSnackbar } from 'notistack'
+import CloseIcon from 'mdi-material-ui/Close'
 
 const TheTermsOfServiceDialog: React.FC<BasicDialogProps> = (props) => {
   const { onClose, open } = props
   const [body, setBody] = useState('')
   const { t } = useTranslation()
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const s3TermsOfUseFolder = 'terms-of-use'
 
   useEffect(() => {
@@ -27,14 +29,24 @@ const TheTermsOfServiceDialog: React.FC<BasicDialogProps> = (props) => {
         setBody(resp.data)
       })
       .catch((err) => {
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: err.message ?? err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error',
+          persist: true,
+          action: (key) => (
+            <React.Fragment>
+              <IconButton
+                aria-label="dismiss"
+                onClick={() => {
+                  closeSnackbar(key)
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </React.Fragment>
+          )
         })
       })
-  }, [setSiteMessageData])
+  }, [closeSnackbar, enqueueSnackbar])
   return (
     <Dialog open={open}>
       <DialogTitle>{t('agreements.termsOfService.title')}</DialogTitle>

@@ -22,7 +22,6 @@ import {
 import { useTranslation, Trans } from 'react-i18next'
 import { Helmet } from 'react-helmet'
 import { AuthUserContext } from 'context/Auth'
-import { useSiteMessage } from 'hooks'
 import { TabContext, TabList, TabPanel } from '@material-ui/lab'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { UpdateUserBio } from 'graphql/custom'
@@ -30,6 +29,7 @@ import DeleteForeverIcon from 'mdi-material-ui/DeleteForever'
 import TafalkChangeEmailDialog from 'components/user/settings/TheChangeEmailDialog'
 import TafalkChangePasswordDialog from 'components/user/settings/TheChangePasswordDialog'
 import TafalkDeleteAccountConfirmationDialog from 'components/user/settings/TheDeleteAccountConfirmationDialog'
+import { useSnackbar } from 'notistack'
 
 const subPathTabValueMap = new Map([
   ['/profile', 'profile'],
@@ -75,7 +75,6 @@ const Settings: React.FC = () => {
   const classes = useStyles()
   let routerHistory = useHistory()
   const { user: authUser } = useContext(AuthUserContext)
-  const [, setSiteMessageData] = useSiteMessage()
   const routeLocation = useLocation()
   let { url } = useRouteMatch()
 
@@ -89,6 +88,7 @@ const Settings: React.FC = () => {
     false
   )
   const [deleteAccountDialogOpen, setDeleteAccountDialogOpen] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
 
   // Side effects: Load initial profile data
   useEffect(() => {
@@ -108,11 +108,8 @@ const Settings: React.FC = () => {
         setInstantBio(authUser.bio ?? '')
         setLastSavedBio(authUser.bio ?? '')
       } catch (err) {
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: err.message ?? err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
         })
       }
     })()
@@ -120,9 +117,9 @@ const Settings: React.FC = () => {
     authUser.bio,
     authUser.contextMeta.isReady,
     authUser.username,
+    enqueueSnackbar,
     routeLocation.pathname,
     routerHistory,
-    setSiteMessageData,
     url
   ])
 
@@ -139,18 +136,12 @@ const Settings: React.FC = () => {
       setLastSavedBio(instantBio)
 
       // Success message
-      setSiteMessageData({
-        show: true,
-        type: 'success',
-        timeout: 3000,
-        text: t('settings.tabs.profile.message.bioUpdated')
+      enqueueSnackbar(t('settings.tabs.profile.message.bioUpdated'), {
+        variant: 'success'
       })
     } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
       })
     }
   }

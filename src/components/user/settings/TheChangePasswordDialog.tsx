@@ -1,4 +1,5 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom'
 import Auth from '@aws-amplify/auth'
 import { BasicDialogProps } from 'types/props'
 import {
@@ -22,8 +23,7 @@ import {
   passwordMaxLength,
   passwordRegex
 } from 'utils/constants'
-import { useSiteMessage } from 'hooks'
-import { useHistory } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 
 interface ChangePasswordDialogProps extends BasicDialogProps {}
 
@@ -48,7 +48,7 @@ const TheChangePasswordDialog: React.FC<ChangePasswordDialogProps> = (
   const classes = useStyles()
   const { t } = useTranslation()
   let routerHistory = useHistory()
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
 
   // validation schema
   const changePasswordFormValidationSchema = () =>
@@ -82,23 +82,21 @@ const TheChangePasswordDialog: React.FC<ChangePasswordDialogProps> = (
         values.newPassword
       )
       await Auth.signOut()
-      setSiteMessageData({
-        show: true,
-        text: t(
+      enqueueSnackbar(
+        t(
           'settings.tabs.account.basicInfo.changePassword.dialog.message.success'
         ),
-        type: 'success',
-        timeout: redirectMilliseconds
-      })
+        {
+          variant: 'success',
+          autoHideDuration: redirectMilliseconds
+        }
+      )
       setTimeout(() => {
         routerHistory.push('/auth/login')
       }, redirectMilliseconds)
     } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
       })
     } finally {
       setSubmitting(false)

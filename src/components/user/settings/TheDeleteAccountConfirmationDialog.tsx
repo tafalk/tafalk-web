@@ -13,9 +13,9 @@ import {
   CircularProgress
 } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
-import { useSiteMessage } from 'hooks'
 import { AuthUserContext } from 'context/Auth'
 import { DeleteUserById } from 'graphql/custom'
+import { useSnackbar } from 'notistack'
 
 interface DeleteAccountConfirmationDialogProps extends BasicDialogProps {}
 
@@ -27,7 +27,7 @@ const TheDeleteAccountConfirmationDialog: React.FC<DeleteAccountConfirmationDial
   let routerHistory = useHistory()
   const { user: authUser } = useContext(AuthUserContext)
   const [deleteAccountInProgress, setDeleteAccountInProgress] = useState(false)
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
 
   // Functions
   const onClickDeleteAccount = async () => {
@@ -38,11 +38,8 @@ const TheDeleteAccountConfirmationDialog: React.FC<DeleteAccountConfirmationDial
       await new Promise((res, rej) =>
         currAuthUser.deleteUser((err: any) => {
           if (err) {
-            setSiteMessageData({
-              show: true,
-              type: 'error',
-              timeout: null,
-              text: err.message ?? err
+            enqueueSnackbar(err.message ?? err, {
+              variant: 'error'
             })
             return
           }
@@ -56,11 +53,8 @@ const TheDeleteAccountConfirmationDialog: React.FC<DeleteAccountConfirmationDial
       await Auth.signOut()
       routerHistory.push('/auth/farewell')
     } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
       })
     } finally {
       setDeleteAccountInProgress(false)

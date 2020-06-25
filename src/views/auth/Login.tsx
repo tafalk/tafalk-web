@@ -26,7 +26,7 @@ import {
   emailMaxLength,
   usernameMaxLength
 } from 'utils/constants'
-import { useSiteMessage } from 'hooks'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,12 +48,11 @@ const Login: React.FC = () => {
   if (executeRecaptcha) {
     executeRecaptcha('login_page')
   }
-
   const { t } = useTranslation()
   const classes = useStyles()
   let routerHistory = useHistory()
   const { setUser: setAuthUser } = useContext(AuthUserContext)
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
 
   const redirectMilliseconds = 500
 
@@ -84,12 +83,9 @@ const Login: React.FC = () => {
       // Push to home route
       routerHistory.push('/')
     } catch (err) {
-      // Set site message
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: redirectMilliseconds,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error',
+        autoHideDuration: redirectMilliseconds
       })
       // Distinct sign in error types
       // For other types: https://aws-amplify.github.io/docs/js/authentication#sign-in

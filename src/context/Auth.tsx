@@ -1,16 +1,11 @@
-// See
-// https://dev.to/nazmifeeroz/using-usecontext-and-usestate-hooks-as-a-store-mnm
-// https://github.com/aws-amplify/amplify-js/issues/3090
-// https://reactjs.org/docs/hooks-reference.html#usecontext
-
 import React, { useState, useEffect } from 'react'
 import Auth from '@aws-amplify/auth'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import Storage from '@aws-amplify/storage'
 import { GetColor } from '@tafalk/material-color-generator'
 import { GetUser, UpdateUserCognitoIdentityId } from 'graphql/custom'
-import { useSiteMessage } from 'hooks'
 import { GetUserByUsernameQuery, Language } from 'types/appsync/API'
+import { useSnackbar } from 'notistack'
 
 interface AuthUserContextDataType
   extends Pick<
@@ -77,7 +72,7 @@ export default ({ children }: any) => {
       isReady: false
     }
   })
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
     const currUser = async (): Promise<void> => {
@@ -166,17 +161,14 @@ export default ({ children }: any) => {
         if (err.toString() === 'not authenticated') {
           // Guest User, do nothing
         } else {
-          setSiteMessageData({
-            show: true,
-            type: 'error',
-            text: err.message ?? err,
-            timeout: null
+          enqueueSnackbar(err.message ?? err, {
+            variant: 'error'
           })
         }
       }
     }
     currUser()
-  }, [setSiteMessageData])
+  }, [enqueueSnackbar])
 
   return (
     <AuthUserContext.Provider value={{ user, setUser }}>

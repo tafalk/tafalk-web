@@ -36,6 +36,7 @@ import { TFunction } from 'i18next'
 import { formatDistance, formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
 import { useSiteMessage } from 'hooks'
+import { useSnackbar } from 'notistack'
 
 interface CardData {
   content?: ReactNode
@@ -355,8 +356,7 @@ const ContentTileCard: React.FC<TileCardProps> = React.memo((props) => {
   } = props
   const classes = useStyles()
   const { t } = useTranslation()
-  // const { user: authUser } = useContext(AuthUserContext)
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
   const [cardData, setCardData] = useState<CardData>()
 
   useEffect(() => {
@@ -395,20 +395,17 @@ const ContentTileCard: React.FC<TileCardProps> = React.memo((props) => {
           },
           clickRoute: ''
         })
-        setSiteMessageData({
-          show: true,
-          timeout: null,
-          type: 'error',
-          text: err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
         })
       }
     })()
   }, [
     classes,
+    enqueueSnackbar,
     item,
     itemContentInteractionType,
     itemUserInteractionType,
-    setSiteMessageData,
     showUserInfo,
     t
   ])

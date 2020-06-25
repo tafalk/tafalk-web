@@ -26,16 +26,16 @@ import {
 } from 'utils/constants'
 import { generateProfilePictureFileName } from 'utils/derivations'
 import UploadIcon from 'mdi-material-ui/Upload'
-import { useSiteMessage } from 'hooks'
 import { UpdateUserProfilePictureKey } from 'graphql/custom'
 import { AuthUserContext } from 'context/Auth'
+import { useSnackbar } from 'notistack'
 
 interface ImageFile extends File {
   objecturl: string
 }
 
 interface AvatarUploadDialogProps extends BasicDialogProps {
-  user: UserDataType
+  user: UserDataType | null
   userProfilePictureObjectUrl?: string
   userColor?: string
 }
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
   const { onClose, open, user } = props
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
   const [uploadedFile, setUploadedFile] = useState<ImageFile | null>(null)
   const [uploadInProgress, setUploadInProgress] = useState(false)
   const [uploadEnabled, setUploadEnabled] = useState(false)
@@ -116,7 +116,6 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
           })
         )
       ])
-
       // Set the avatar picture of profile and auth user contextuntil it is reloaded some time
       if (user) {
         user.profilePictureObjectUrl = uploadedFile.objecturl
@@ -125,14 +124,11 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
           profilePictureObjectUrl: uploadedFile.objecturl
         })
       }
-
+      // Close
       onClose()
     } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
       })
     } finally {
       setUploadInProgress(false)
@@ -163,13 +159,13 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
                 src={
                   uploadedFile
                     ? uploadedFile.objecturl
-                    : user.profilePictureObjectUrl
+                    : user?.profilePictureObjectUrl
                 }
                 variant="square"
                 className={classes.avatar}
                 style={{
                   color: '#fff',
-                  backgroundColor: user.color
+                  backgroundColor: user?.color
                 }}
               ></Avatar>
               <p>{t('profile.dialogs.avatar.dropzone')}</p>

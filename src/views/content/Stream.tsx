@@ -1,27 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Link as RouterLink, useHistory, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme
-} from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles'
 import { GetStreamQuery } from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
-import { useSiteMessage } from 'hooks'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { GetStreamById } from 'graphql/custom'
 import { Grid } from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1
-    }
-  })
-)
+import { useSnackbar } from 'notistack'
 
 interface StreamRouteParams {
   id: string
@@ -33,9 +20,8 @@ interface StreamDataType
 const Stream: React.FC = () => {
   let routerHistory = useHistory()
   const theme = useTheme()
-  const classes = useStyles()
-  const { user: authUser, setUser: setAuthUser } = useContext(AuthUserContext)
-  const [, setSiteMessageData] = useSiteMessage()
+  const { user: authUser } = useContext(AuthUserContext)
+  const { enqueueSnackbar } = useSnackbar()
   const routeParams = useParams<StreamRouteParams>()
 
   const [infoLoaded, setInfoLoaded] = useState(false)
@@ -69,18 +55,14 @@ const Stream: React.FC = () => {
 
         setStream(streamResult)
       } catch (err) {
-        console.log(err.message ?? err)
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: err.message ?? err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
         })
       } finally {
         setInfoLoaded(true)
       }
     })()
-  }, [routeStreamId, routerHistory, setSiteMessageData])
+  }, [enqueueSnackbar, routeStreamId, routerHistory])
 
   return (
     <React.Fragment>

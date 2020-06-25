@@ -55,6 +55,7 @@ import {
 } from 'utils/constants'
 
 import TafalkProfileContentTileCard from 'components/user/profile/ContentTileCard'
+import TafalkAvatarUploadDialog from 'components/user/profile/dialogs/AvatarUploadDialog'
 import { itemsPerFetch } from 'utils/constants'
 import {
   ContentType,
@@ -64,11 +65,8 @@ import {
   ListUserStreamsForProfileQuery,
   GetUserProfileContentQuery
 } from 'types/appsync/API'
-
-import { useSiteMessage } from 'hooks'
-
-import TafalkAvatarUploadDialog from 'components/user/profile/dialogs/AvatarUploadDialog'
 import { UserDataType } from 'types/props'
+import { useSnackbar } from 'notistack'
 
 const avatarThemeSpacing = 28
 
@@ -127,17 +125,12 @@ interface ProfileRouteParams {
   username: string
 }
 
-interface ImageFile extends File {
-  objecturl: string
-}
-
 const Profile: React.FC = () => {
   let routerHistory = useHistory()
   const theme = useTheme()
   const classes = useStyles()
   const { t } = useTranslation()
   const { user: authUser } = useContext(AuthUserContext)
-  const [, setSiteMessageData] = useSiteMessage()
   const routeLocation = useLocation()
   const routeParams = useParams<ProfileRouteParams>()
   const [selfProfileVisit, setSelfProfileVisit] = useState<boolean | undefined>(
@@ -155,6 +148,7 @@ const Profile: React.FC = () => {
   const [bookmarkContentType, setBookmarkContentType] = useState<ContentType>(
     ContentType.stream
   )
+  const { enqueueSnackbar } = useSnackbar()
 
   const [tabValue, setTabValue] = useState('streams')
   let { url } = useRouteMatch()
@@ -214,11 +208,8 @@ const Profile: React.FC = () => {
         })
       } catch (err) {
         console.log(err.message ?? err)
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: err.message ?? err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
         })
       } finally {
         setInfoLoaded(true)
@@ -230,9 +221,9 @@ const Profile: React.FC = () => {
     authUser.userBlockInteractions,
     authUser.userWatchInteractions,
     authUser.username,
+    enqueueSnackbar,
     routeUsername,
-    routerHistory,
-    setSiteMessageData
+    routerHistory
   ])
 
   // Side effects: Load initial contents
@@ -287,21 +278,12 @@ const Profile: React.FC = () => {
         }
       } catch (err) {
         console.log(err.message ?? err)
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: err.message ?? err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
         })
       }
     })()
-  }, [
-    bookmarkContentType,
-    routeLocation.pathname,
-    setSiteMessageData,
-    url,
-    user
-  ])
+  }, [bookmarkContentType, enqueueSnackbar, routeLocation.pathname, url, user])
 
   // Functions
   const loadMoreItems = async () => {

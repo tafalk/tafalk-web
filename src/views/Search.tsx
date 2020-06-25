@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 
 import TafalkSearchResultTileCard from 'components/content/SearchResultTileCard'
 import { Skeleton } from '@material-ui/lab'
-import { useSiteMessage } from 'hooks'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,7 +26,7 @@ const Search: React.FC = () => {
   const [streamItems, setStreamItems] = useState<Array<any> | null>(null)
   const [cantoItems, setCantoItems] = useState<Array<any> | null>(null)
 
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
 
   // Side Effects
   useEffect(() => {
@@ -49,17 +49,14 @@ const Search: React.FC = () => {
           setCantoItems(result.filter((i) => i?.__typename === 'Canto'))
         }
       } catch (err) {
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: err.message ?? err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
         })
       } finally {
         setItemsLoaded(true)
       }
     })()
-  }, [routeLocation, setSiteMessageData])
+  }, [enqueueSnackbar, routeLocation])
 
   // DOM elements
   const renderStreamItemGrid = (

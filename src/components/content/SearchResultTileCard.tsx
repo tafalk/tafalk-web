@@ -18,10 +18,9 @@ import AllInclusiveIcon from 'mdi-material-ui/AllInclusive'
 import FeatherIcon from 'mdi-material-ui/Feather'
 import { Skeleton } from '@material-ui/lab'
 import { AuthUserContext } from 'context/Auth'
-// import { blockUserValue } from 'utils/constants'
 import { getContentRoute } from 'utils/derivations'
 import { SearchResultTileCardProps } from 'types/props'
-import { useSiteMessage } from 'hooks'
+import { useSnackbar } from 'notistack'
 
 interface CardData {
   header: {
@@ -134,11 +133,10 @@ const getSubheader = (item: SearchResultTileCardProps['item']) => {
 
 const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
   const { item } = props
-  // const theme = useTheme()
   const classes = useStyles()
   const { t } = useTranslation()
   const { user: authUser } = useContext(AuthUserContext)
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
   const [contentBlocked, setContentBlocked] = useState(false)
   const [showBlocked, setShowBlocked] = useState(false)
   const [cardData, setCardData] = useState<CardData>()
@@ -187,28 +185,12 @@ const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
           },
           clickRoute: ''
         })
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: err.message ?? err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
         })
       }
     })()
-  }, [
-    authUser.userBlockInteractions,
-    classes,
-    classes.avatar,
-    item,
-    item.__typename,
-    item.id,
-    item.profilePictureKey,
-    item.user.cognitoIdentityId,
-    item.user.id,
-    item.user.profilePictureKey,
-    item.user.username,
-    setSiteMessageData
-  ])
+  }, [authUser.userBlockInteractions, classes, enqueueSnackbar, item])
 
   return contentBlocked && !showBlocked ? (
     // Blocked Content

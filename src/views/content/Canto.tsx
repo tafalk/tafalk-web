@@ -45,7 +45,6 @@ import {
   DeleteBookmark,
   DeleteFlagById
 } from 'graphql/custom'
-import { useSiteMessage } from 'hooks'
 import TafalkShareContentDialog from 'components/common/dialogs/GenericShareContentDialog'
 import TafalkConfirmationDialog from 'components/common/dialogs/GenericConfirmationDialog'
 import TafalkLoginRequiredDialog from 'components/common/dialogs/TheLoginRequiredDialog'
@@ -65,11 +64,10 @@ import FlagRemoveIcon from 'mdi-material-ui/FlagRemove'
 import FlagCheckeredIcon from 'mdi-material-ui/FlagCheckered'
 import CloseIcon from 'mdi-material-ui/Close'
 import { red } from '@material-ui/core/colors'
-
 import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
-import { useSnackbar } from 'notistack'
 import { SmallAvatar } from 'components/common/avatars/SmallAvatar'
+import { useSnackbar } from 'notistack'
 
 const bookmarkStartEndIndexSeparator = '-'
 const selectApplicableClass = 'select-applicable'
@@ -137,7 +135,6 @@ const Canto: React.FC = () => {
   const { t } = useTranslation()
   const classes = useStyles()
   const { user: authUser } = useContext(AuthUserContext)
-  const [, setSiteMessageData] = useSiteMessage()
   const routeParams = useParams<CantoRouteParams>()
   const { enqueueSnackbar } = useSnackbar()
 
@@ -266,11 +263,8 @@ const Canto: React.FC = () => {
               console.log(JSON.stringify(updateCantoSubscriptionResult))
             },
             error: (err: any) =>
-              setSiteMessageData({
-                show: true,
-                type: 'error',
-                timeout: null,
-                text: err.message ?? err
+              enqueueSnackbar(err.message ?? err, {
+                variant: 'error'
               })
           })
           unsubscribe = () => {
@@ -285,17 +279,14 @@ const Canto: React.FC = () => {
         // Cleanup
         return unsubscribe
       } catch (err) {
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: err.message ?? err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
         })
       } finally {
         setInfoLoaded(true)
       }
     })()
-  }, [authUser.id, routeCantoId, routerHistory, setSiteMessageData])
+  }, [authUser.id, enqueueSnackbar, routeCantoId, routerHistory])
 
   // Side effects: Event listener for text selection (or highlight)
   useEffect(() => {

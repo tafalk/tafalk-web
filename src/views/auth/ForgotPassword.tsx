@@ -27,7 +27,7 @@ import {
   passwordMinLength,
   passwordMaxLength
 } from 'utils/constants'
-import { useSiteMessage } from 'hooks'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,13 +49,12 @@ const ForgotPassword: React.FC = () => {
   if (executeRecaptcha) {
     executeRecaptcha('forgot_password_page')
   }
-
   const { t } = useTranslation()
   const classes = useStyles()
   let routerHistory = useHistory()
   const [codeHasSent, setCodeHasSent] = useState(false)
   const usernameRef = useRef<HTMLInputElement>(null)
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
 
   const redirectMilliseconds = 500
 
@@ -93,11 +92,9 @@ const ForgotPassword: React.FC = () => {
       setCodeHasSent(true)
     } catch (err) {
       // Set site message
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        text: err.message ?? err,
-        timeout: redirectMilliseconds
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error',
+        autoHideDuration: redirectMilliseconds
       })
     } finally {
       setSubmitting(false)
@@ -113,22 +110,17 @@ const ForgotPassword: React.FC = () => {
         values.code,
         values.password
       )
-      setSiteMessageData({
-        show: true,
-        text: t('forgotPasswordForm.message.success'),
-        type: 'success',
-        timeout: redirectMilliseconds
+      enqueueSnackbar(t('forgotPasswordForm.message.success'), {
+        variant: 'success',
+        autoHideDuration: redirectMilliseconds
       })
       setTimeout(() => {
         routerHistory.push('/auth/login')
       }, redirectMilliseconds)
     } catch (err) {
-      // Set site message
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: redirectMilliseconds,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error',
+        autoHideDuration: redirectMilliseconds
       })
     } finally {
       setSubmitting(false)

@@ -17,6 +17,8 @@ export const itemsPerFetch = 10
 export const avatarPictureSizeMinSize = 1_024 // bytes
 export const avatarPictureSizeMaxSize = 2_097_152 // bytes
 
+export const maxNotistackSnacks = 3
+
 // Interaction
 export const watchUserValue = 'Watch'
 export const blockUserValue = 'Block'

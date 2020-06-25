@@ -13,8 +13,8 @@ import {
   CircularProgress
 } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
-import { useSiteMessage } from 'hooks'
 import { AuthUserContext } from 'context/Auth'
+import { useSnackbar } from 'notistack'
 
 interface ChangeEmailDialogProps extends BasicDialogProps {}
 
@@ -27,16 +27,13 @@ const TheChangeEmailDialog: React.FC<ChangeEmailDialogProps> = (props) => {
   const { user: authUser } = useContext(AuthUserContext)
   const [newEmail, setNewEmail] = useState('')
   const [emailChangeInProgress, setEmailChangeInProgress] = useState(false)
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
 
   // Functions
   const onClickChangeEmail = async () => {
     if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: t('common.validation.invalidEntry')
+      enqueueSnackbar(t('common.validation.invalidEntry'), {
+        variant: 'error'
       })
       return
     }
@@ -45,14 +42,13 @@ const TheChangeEmailDialog: React.FC<ChangeEmailDialogProps> = (props) => {
       await Auth.updateUserAttributes(await Auth.currentAuthenticatedUser(), {
         email: newEmail
       })
-      setSiteMessageData({
-        show: true,
-        text: t(
-          'settings.tabs.account.basicInfo.changeEmail.dialog.message.success'
-        ),
-        type: 'success',
-        timeout: redirectMilliseconds
-      })
+      enqueueSnackbar(
+        t('settings.tabs.account.basicInfo.changeEmail.dialog.message.success'),
+        {
+          variant: 'success',
+          autoHideDuration: redirectMilliseconds
+        }
+      )
       setTimeout(() => {
         routerHistory.push({
           pathname: '/auth/confirmRegistration',
@@ -60,11 +56,8 @@ const TheChangeEmailDialog: React.FC<ChangeEmailDialogProps> = (props) => {
         })
       }, redirectMilliseconds)
     } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
       })
     } finally {
       setEmailChangeInProgress(false)

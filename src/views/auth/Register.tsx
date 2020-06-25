@@ -36,7 +36,7 @@ import {
   emailRegex
 } from 'utils/constants'
 import { getMaxDateFor18OrMoreYearsOld } from 'utils/validations'
-import { useSiteMessage } from 'hooks'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -64,7 +64,7 @@ const Register: React.FC = () => {
   const [privacyPolicyDialogVisible, setPrivacyPolicyDialogVisible] = useState(
     false
   )
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
 
   const maxBirthDate = getMaxDateFor18OrMoreYearsOld()
 
@@ -125,12 +125,8 @@ const Register: React.FC = () => {
         search: `?${new URLSearchParams({ u: values.username })}`
       })
     } catch (err) {
-      // Set site message
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
       })
     } finally {
       setSubmitting(false)

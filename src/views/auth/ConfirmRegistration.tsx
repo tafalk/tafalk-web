@@ -19,7 +19,7 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { GoogleRecaptchaV3Config } from 'config'
-import { useSiteMessage } from 'hooks'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,7 +49,7 @@ const ConfirmRegistration: React.FC = () => {
   //let queryParams = new URLSearchParams(useLocation().search)
   const [resendLoading, setResendLoading] = useState(false)
 
-  const [, setSiteMessageData] = useSiteMessage()
+  const { enqueueSnackbar } = useSnackbar()
 
   const redirectMilliseconds = 500
   const formValidationSchema = () =>
@@ -61,21 +61,16 @@ const ConfirmRegistration: React.FC = () => {
     try {
       let queryParams = new URLSearchParams(routeLocation.search)
       await Auth.confirmSignUp(queryParams.get('u') ?? '', values.code)
-      setSiteMessageData({
-        show: true,
-        text: t('confirmRegistrationForm.message.success'),
-        type: 'success',
-        timeout: redirectMilliseconds
+      enqueueSnackbar(t('confirmRegistrationForm.message.success'), {
+        variant: 'success',
+        autoHideDuration: redirectMilliseconds
       })
       setTimeout(() => {
         routerHistory.push('/auth/login')
       }, redirectMilliseconds)
     } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
       })
     } finally {
       setSubmitting(false)
@@ -88,21 +83,15 @@ const ConfirmRegistration: React.FC = () => {
       let queryParams = new URLSearchParams(routeLocation.search)
       const username = queryParams.get('u') ?? ''
       if (!username) {
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: t('confirmRegistrationForm.message.requiredUsername')
+        enqueueSnackbar(t('confirmRegistrationForm.message.requiredUsername'), {
+          variant: 'error'
         })
         return
       }
       await Auth.resendSignUp(username)
     } catch (err) {
-      setSiteMessageData({
-        show: true,
-        type: 'error',
-        timeout: null,
-        text: err.message ?? err
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
       })
     } finally {
       setResendLoading(true)

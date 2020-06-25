@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useContext, ReactNode } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import {
-  createStyles,
-  makeStyles,
-  Theme
-  // useTheme
-} from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Storage from '@aws-amplify/storage'
 import {
   Card,
@@ -34,10 +29,10 @@ import { Skeleton } from '@material-ui/lab'
 import { AuthUserContext } from 'context/Auth'
 import { GridListTileCardProps } from 'types/props'
 import { getContentRoute } from 'utils/derivations'
-import { useSiteMessage } from 'hooks'
+import { useSnackbar } from 'notistack'
 
 interface CardData {
-  content?: ReactNode //JSXEleemnt? ReactElement?
+  content?: ReactNode // or ReactElement?
   header: {
     avatar?: ReactNode
     title?: ReactNode
@@ -286,14 +281,12 @@ const getHeaderSubheader = (
 
 const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
   const { item, status } = props
-  // const theme = useTheme()
   const classes = useStyles()
   const { t } = useTranslation()
   const { user: authUser } = useContext(AuthUserContext)
-  const [, setSiteMessageData] = useSiteMessage()
   const [contentBlocked, setContentBlocked] = useState(false)
   const [showBlocked, setShowBlocked] = useState(false)
-
+  const { enqueueSnackbar } = useSnackbar()
   const [cardData, setCardData] = useState<CardData>()
 
   useEffect(() => {
@@ -329,19 +322,16 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
           },
           clickRoute: ''
         })
-        setSiteMessageData({
-          show: true,
-          type: 'error',
-          timeout: null,
-          text: err.message ?? err
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
         })
       }
     })()
   }, [
     authUser.userBlockInteractions,
     classes,
+    enqueueSnackbar,
     item,
-    setSiteMessageData,
     status,
     t
   ])
