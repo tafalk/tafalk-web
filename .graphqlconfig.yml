@@ -11,8 +11,5 @@ projects:
         generatedFileName: src/types/appsync/API.ts
         docsFilePath: src/graphql
         region: eu-west-1
-        apiId: 6ymqegqelze3vcmufoqeqwbwyy
+        apiId: 7cl2zzrsynejraikhscaok4ofq
         maxDepth: 3
-extensions:
-  amplify:
-    version: 3
