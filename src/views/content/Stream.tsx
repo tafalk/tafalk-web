@@ -160,7 +160,9 @@ const Stream: React.FC = () => {
   const [authUserFlagId, setAuthUserFlagId] = useState('')
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [newComment, setNewComment] = useState('')
-  const [comments, setComments] = useState<StreamDataType['comments']>([])
+  const [comments, setComments] = useState<
+    StreamDataType['comments'] | ListStreamCommentsQuery['listContentComments']
+  >([])
   const [fetchNextOffset, setFetchNextOffset] = useState(0)
   const [commentSaveInProgress, setCommentSaveInProgress] = useState(false)
   const [shareContentDialogOpen, setShareContentDialogOpen] = useState(false)
