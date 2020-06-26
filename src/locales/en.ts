@@ -6,6 +6,7 @@ const englishTranslation = {
     no: 'No',
     ok: 'Ok',
     done: 'Done',
+    send: 'Send',
     submit: 'Submit',
     cancel: 'Cancel',
     upload: 'Upload',
@@ -512,7 +513,18 @@ const englishTranslation = {
       title: 'Retract Flag',
       body: 'Are you sure?'
     },
-    message: {}
+    message: {},
+    addComment: {
+      label: 'Your Comment',
+      placeholder: 'Add your comment here',
+      buttons: {
+        login: 'Login',
+        register: 'Register'
+      },
+      message: {
+        loginToComment: 'Login to comment on this stream'
+      }
+    }
   }
 }
 export default englishTranslation
