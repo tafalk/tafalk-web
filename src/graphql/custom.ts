@@ -149,11 +149,12 @@ export const GetStreamById = gql`
         contentType
         userId
         user {
+          id
           username
+          profilePictureKey
           accountStatus
           cognitoIdentityId
         }
-
         time
         flags {
           id
@@ -464,6 +465,40 @@ export const GetFlagById = gql`
       type
       detail
       status
+    }
+  }
+`
+
+export const ListStreamComments = gql`
+  query ListStreamComments($contentId: ID!, $limit: Int, $offset: Int) {
+    listContentComments(
+      contentId: $contentId
+      contentType: stream
+      limit: $limit
+      offset: $offset
+    ) {
+      id
+      contentId
+      contentType
+      userId
+      user {
+        id
+        username
+        profilePictureKey
+        accountStatus
+        cognitoIdentityId
+      }
+      time
+      flags {
+        id
+        contentType
+        contentId
+        flaggerUserId
+        category
+        type
+        detail
+        createTime
+      }
     }
   }
 `

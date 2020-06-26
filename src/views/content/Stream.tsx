@@ -40,7 +40,8 @@ import {
   ContentType,
   CreateStreamBookmarkMutation,
   CreateStreamCommentMutation,
-  GetStreamQuery
+  GetStreamQuery,
+  ListStreamCommentsQuery
 } from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
 import API, { graphqlOperation } from '@aws-amplify/api'
@@ -53,7 +54,8 @@ import {
   CreateStreamBookmark,
   DeleteBookmark,
   DeleteFlagById,
-  CreateStreamComment
+  CreateStreamComment,
+  ListStreamComments
 } from 'graphql/custom'
 import TafalkShareContentDialog from 'components/common/dialogs/GenericShareContentDialog'
 import TafalkConfirmationDialog from 'components/common/dialogs/GenericConfirmationDialog'
@@ -79,6 +81,8 @@ import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
 import { SmallAvatar } from 'components/common/avatars/SmallAvatar'
 import { useSnackbar } from 'notistack'
+import InfiniteScroll from 'react-infinite-scroller'
+import { itemsPerFetch } from 'utils/constants'
 
 interface StreamRouteParams {
   id: string
@@ -156,6 +160,8 @@ const Stream: React.FC = () => {
   const [authUserFlagId, setAuthUserFlagId] = useState('')
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [newComment, setNewComment] = useState('')
+  const [comments, setComments] = useState<StreamDataType['comments']>([])
+  const [fetchNextOffset, setFetchNextOffset] = useState(0)
   const [commentSaveInProgress, setCommentSaveInProgress] = useState(false)
   const [shareContentDialogOpen, setShareContentDialogOpen] = useState(false)
   const [
@@ -235,6 +241,7 @@ const Stream: React.FC = () => {
         // Set states
         setAuthorProfilePictureObjectUrl(profilePictureObjectUrl)
         setStream(streamResult)
+        setComments(streamResult.comments ?? [])
         setAuthUserBookmarkId(streamAuthUserBookmarkResult?.id ?? '')
         setAuthUserFlagId(streamAuthUserFlagResult?.id ?? '')
 
@@ -280,6 +287,21 @@ const Stream: React.FC = () => {
   }, [authUser.id, enqueueSnackbar, routeStreamId, routerHistory])
 
   // Functions
+  const loadMoreComments = async () => {
+    const streamCommentsGraphqlResponse = (await API.graphql(
+      graphqlOperation(ListStreamComments, {
+        contentId: stream?.id ?? '',
+        limit: itemsPerFetch,
+        offset: fetchNextOffset
+      })
+    )) as {
+      data: ListStreamCommentsQuery
+    }
+    const moreComments = streamCommentsGraphqlResponse.data.listContentComments
+    setFetchNextOffset(fetchNextOffset + itemsPerFetch)
+    setComments([...(comments ?? []), ...(moreComments ?? [])])
+    return
+  }
   const onSaveCommentClick = async () => {
     setCommentSaveInProgress(true)
     try {
@@ -372,358 +394,368 @@ const Stream: React.FC = () => {
       <Helmet>
         <title>{stream?.id ? `🚿 ${stream?.id}` : ''}</title>
       </Helmet>
-      {/** Content */}
-      {!infoLoaded ? (
-        <Grid container>
-          <Grid item xs={12}>
-            <Skeleton height={theme.spacing(6)}></Skeleton>
-            <Skeleton height={theme.spacing(24)}></Skeleton>
+      <InfiniteScroll
+        pageStart={0}
+        loadMore={loadMoreComments}
+        hasMore={(fetchNextOffset ?? 0) < (stream?.commentCount ?? 0)}
+        loader={<Skeleton variant="rect" width="100%" height={100} />}
+      >
+        {!infoLoaded ? (
+          <Grid container>
+            <Grid item xs={12}>
+              <Skeleton height={theme.spacing(6)}></Skeleton>
+              <Skeleton height={theme.spacing(24)}></Skeleton>
+            </Grid>
           </Grid>
-        </Grid>
-      ) : (
-        <Grid container>
-          {/** Top Bar (User Info & Action Buttons) */}
-          <CardHeader
-            className={classes.topAppBar}
-            avatar={
-              <IconButton
-                disableRipple
-                component={RouterLink}
-                to={`/u/${stream?.user?.username ?? ''}`}
-              >
-                <Badge
-                  overlap="circle"
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right'
-                  }}
-                  badgeContent={
-                    stream?.isSealed ? (
-                      <SmallAvatar
-                        alt="content-status"
-                        className={classes.smallAvatarSealed}
-                      >
-                        <StopIcon fontSize="small" />
-                      </SmallAvatar>
-                    ) : (
-                      <SmallAvatar
-                        alt="content-status"
-                        className={classes.smallAvatarLive}
-                      >
-                        <AccessPointIcon fontSize="small" />
-                      </SmallAvatar>
-                    )
-                  }
-                >
-                  <Avatar
-                    alt={stream?.user?.username}
-                    className={classes.avatar}
-                    src={authorProfilePictureObjectUrl}
-                  />
-                </Badge>
-              </IconButton>
-            }
-            title={
-              <Link
-                component={RouterLink}
-                to={`/u/${stream?.user?.username ?? ''}`}
-              >
-                {stream?.user?.username}
-              </Link>
-            }
-            subheader={
-              <Grid container alignItems="flex-end">
-                {/** Bookmarks */}
-                {authUserBookmarkId ? (
-                  <BookmarkIcon fontSize="small" />
-                ) : (
-                  <BookmarkOutlineIcon fontSize="small" />
-                )}
-                {` ${stream?.bookmarkCount?.count ?? 0}`}
-                &emsp;
-                <CommentOutlineIcon fontSize="small" />
-                {` ${stream?.commentCount?.count ?? 0}`}
-                &emsp;{'('}
-                {/** Created */}
-                <BalloonIcon fontSize="small" />
-                {formatDistanceToNow(new Date(stream?.startTime ?? 0), {
-                  locale: getUserLocale(authUser.language ?? Language.en),
-                  addSuffix: true
-                })}
-                {stream?.isSealed && (
-                  <React.Fragment>
-                    {','}&ensp;
-                    {/** Seal Time */}
-                    <SleepIcon fontSize="small" />
-                    {formatDistanceToNow(new Date(stream?.sealTime ?? 0), {
-                      locale: getUserLocale(authUser.language ?? Language.en),
-                      addSuffix: true
-                    })}
-                  </React.Fragment>
-                )}
-                {')'}
-              </Grid>
-            }
-            action={
-              <React.Fragment>
-                {/** Bookmark/Unbookmark */}
-                {!authUserBookmarkId ? (
-                  <IconButton
-                    color="default"
-                    aria-label="bookmark"
-                    onClick={onCreateBookmarkClick}
-                  >
-                    <BookmarkOutlineIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton
-                    color="secondary"
-                    aria-label="unbookmark"
-                    onClick={onRemoveBookmarkClick}
-                  >
-                    <BookmarkIcon />
-                  </IconButton>
-                )}
-
-                {/** Share */}
-                <IconButton
-                  color="primary"
-                  aria-label="share"
-                  onClick={() => setShareContentDialogOpen(true)}
-                >
-                  <ShareVariantIcon />
-                </IconButton>
-                {/** More */}
-                <IconButton
-                  aria-label="display more actions"
-                  aria-controls={topBarActionsMenuId}
-                  aria-haspopup="true"
-                  onClick={(event) => setAnchorEl(event.currentTarget)}
-                >
-                  <DotsVerticalIcon />
-                </IconButton>
-              </React.Fragment>
-            }
-          />
-          <Menu
-            id={topBarActionsMenuId}
-            anchorEl={anchorEl}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            keepMounted
-            open={isTopBarActionsMenuOpen}
-            onClose={() => {
-              setAnchorEl(null)
-            }}
-          >
-            {authUser.contextMeta.isReady &&
-              authUser.id && [
-                authUserFlagId ? (
-                  [
-                    // Retract Flag
-                    <MenuItem
-                      key="retract-flag-menu-item"
-                      onClick={() => setConfirmRetractFlagDialogOpen(true)}
-                    >
-                      <ListItemIcon>
-                        <FlagRemoveIcon fontSize="small" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={t('stream.topBarActionsMenu.buttons.unflag')}
-                      />
-                    </MenuItem>,
-                    // Edit Flag
-                    <MenuItem
-                      key="edit-flag-menu-item"
-                      onClick={() => setFlagDialogOpen(true)}
-                    >
-                      <ListItemIcon>
-                        <FlagCheckeredIcon fontSize="small" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={t('stream.topBarActionsMenu.buttons.editFlag')}
-                      />
-                    </MenuItem>
-                  ]
-                ) : (
-                  // Raise Flag
-                  <MenuItem
-                    key="raise-flag-menu-item"
-                    onClick={() => setFlagDialogOpen(true)}
-                  >
-                    <ListItemIcon>
-                      <FlagIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={t('stream.topBarActionsMenu.buttons.flag')}
-                    />
-                  </MenuItem>
-                )
-              ]}
-          </Menu>
-
-          {/** Body */}
-          <Box fontFamily="Monospace">
-            <span>{stream?.body}</span>
-          </Box>
-          {/** Stream | Comments horizontal separator */}
-          <hr />
-          {/** Add Comment */}
-          {authUser.contextMeta.isReady &&
-            (!authUser.id ? (
-              // Login to comment
-              <Alert
-                icon={false}
-                variant="outlined"
-                severity="info"
-                action={
-                  <React.Fragment>
-                    <Button color="inherit" size="small">
-                      {t('stream.addComment.buttons.login')}
-                    </Button>
-                    <Button color="inherit" size="small">
-                      {t('stream.addComment.buttons.register')}
-                    </Button>
-                  </React.Fragment>
-                }
-              >
-                {t('stream.addComment.message.loginToComment')}
-              </Alert>
-            ) : (
-              // Proudly allowed comment area
-              <Card
-                className={classes.addCommentCard}
-                color="transparent"
-                elevation={0}
-              >
-                <CardHeader
-                  avatar={
-                    <Avatar
-                      alt="Woolfie"
-                      aria-label="authenticated-user-avatar"
-                      src={authUser?.profilePictureObjectUrl}
-                      style={{
-                        color: '#fff',
-                        backgroundColor: authUser?.color
-                      }}
-                    />
-                  }
-                  title={authUser.username}
-                />
-                <CardContent>
-                  <TextField
-                    fullWidth
-                    label={t('stream.addComment.label')}
-                    placeholder={t('stream.addComment.placeholder')}
-                    multiline
-                    rowsMax={4}
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                  ></TextField>
-                </CardContent>
-                <CardActions>
-                  <div className={classes.grow} />
-                  <Button
-                    onClick={onSaveCommentClick}
-                    variant="contained"
-                    color="primary"
-                    startIcon={SendIcon}
-                    disabled={commentSaveInProgress}
-                  >
-                    {!commentSaveInProgress ? (
-                      t('common.send')
-                    ) : (
-                      <CircularProgress size={14} />
-                    )}
-                  </Button>
-                </CardActions>
-              </Card>
-            ))}
-
-          {/** TODO: List existing comments */}
-          <List
-            className={classes.commentList}
-            subheader={
-              <ListSubheader>
-                {t('stream.comments.label', {
-                  commentCount: stream?.commentCount?.count ?? 0
-                })}
-              </ListSubheader>
-            }
-          >
-            {stream?.comments?.map(async (c) => (
-              <ListItem
-                id={c?.id ?? ''}
-                key={c?.id ?? ''}
-                alignItems="flex-start"
-              >
+        ) : (
+          <Grid container>
+            {/** Top Bar (User Info & Action Buttons) */}
+            <CardHeader
+              className={classes.topAppBar}
+              avatar={
                 <IconButton
                   disableRipple
                   component={RouterLink}
-                  to={`/u/${c?.user?.username ?? ''}`}
+                  to={`/u/${stream?.user?.username ?? ''}`}
                 >
-                  <ListItemAvatar>
+                  <Badge
+                    overlap="circle"
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right'
+                    }}
+                    badgeContent={
+                      stream?.isSealed ? (
+                        <SmallAvatar
+                          alt="content-status"
+                          className={classes.smallAvatarSealed}
+                        >
+                          <StopIcon fontSize="small" />
+                        </SmallAvatar>
+                      ) : (
+                        <SmallAvatar
+                          alt="content-status"
+                          className={classes.smallAvatarLive}
+                        >
+                          <AccessPointIcon fontSize="small" />
+                        </SmallAvatar>
+                      )
+                    }
+                  >
                     <Avatar
-                      alt={c?.user?.username}
-                      src={
-                        await getProtectedLevelProfilePictureObjectUrlByKey(
-                          c?.user?.profilePictureKey ?? '',
-                          c?.user?.cognitoIdentityId ?? ''
-                        )
-                      }
-                      className={classes.commentListItemAvatar}
-                    ></Avatar>
-                  </ListItemAvatar>
+                      alt={stream?.user?.username}
+                      className={classes.avatar}
+                      src={authorProfilePictureObjectUrl}
+                    />
+                  </Badge>
                 </IconButton>
-
-                <ListItemText
-                  primary={
+              }
+              title={
+                <Link
+                  component={RouterLink}
+                  to={`/u/${stream?.user?.username ?? ''}`}
+                >
+                  {stream?.user?.username}
+                </Link>
+              }
+              subheader={
+                <Grid container alignItems="flex-end">
+                  {/** Bookmarks */}
+                  {authUserBookmarkId ? (
+                    <BookmarkIcon fontSize="small" />
+                  ) : (
+                    <BookmarkOutlineIcon fontSize="small" />
+                  )}
+                  {` ${stream?.bookmarkCount?.count ?? 0}`}
+                  &emsp;
+                  <CommentOutlineIcon fontSize="small" />
+                  {` ${stream?.commentCount?.count ?? 0}`}
+                  &emsp;{'('}
+                  {/** Created */}
+                  <BalloonIcon fontSize="small" />
+                  {formatDistanceToNow(new Date(stream?.startTime ?? 0), {
+                    locale: getUserLocale(authUser.language ?? Language.en),
+                    addSuffix: true
+                  })}
+                  {stream?.isSealed && (
                     <React.Fragment>
-                      {/** Commentor user name */}
-                      <Link
-                        component={RouterLink}
-                        to={`/u/${c?.user?.username ?? ''}`}
+                      {','}&ensp;
+                      {/** Seal Time */}
+                      <SleepIcon fontSize="small" />
+                      {formatDistanceToNow(new Date(stream?.sealTime ?? 0), {
+                        locale: getUserLocale(authUser.language ?? Language.en),
+                        addSuffix: true
+                      })}
+                    </React.Fragment>
+                  )}
+                  {')'}
+                </Grid>
+              }
+              action={
+                <React.Fragment>
+                  {/** Bookmark/Unbookmark */}
+                  {!authUserBookmarkId ? (
+                    <IconButton
+                      color="default"
+                      aria-label="bookmark"
+                      onClick={onCreateBookmarkClick}
+                    >
+                      <BookmarkOutlineIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      color="secondary"
+                      aria-label="unbookmark"
+                      onClick={onRemoveBookmarkClick}
+                    >
+                      <BookmarkIcon />
+                    </IconButton>
+                  )}
+
+                  {/** Share */}
+                  <IconButton
+                    color="primary"
+                    aria-label="share"
+                    onClick={() => setShareContentDialogOpen(true)}
+                  >
+                    <ShareVariantIcon />
+                  </IconButton>
+                  {/** More */}
+                  <IconButton
+                    aria-label="display more actions"
+                    aria-controls={topBarActionsMenuId}
+                    aria-haspopup="true"
+                    onClick={(event) => setAnchorEl(event.currentTarget)}
+                  >
+                    <DotsVerticalIcon />
+                  </IconButton>
+                </React.Fragment>
+              }
+            />
+            <Menu
+              id={topBarActionsMenuId}
+              anchorEl={anchorEl}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              keepMounted
+              open={isTopBarActionsMenuOpen}
+              onClose={() => {
+                setAnchorEl(null)
+              }}
+            >
+              {authUser.contextMeta.isReady &&
+                authUser.id && [
+                  authUserFlagId ? (
+                    [
+                      // Retract Flag
+                      <MenuItem
+                        key="retract-flag-menu-item"
+                        onClick={() => setConfirmRetractFlagDialogOpen(true)}
                       >
+                        <ListItemIcon>
+                          <FlagRemoveIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={t('stream.topBarActionsMenu.buttons.unflag')}
+                        />
+                      </MenuItem>,
+                      // Edit Flag
+                      <MenuItem
+                        key="edit-flag-menu-item"
+                        onClick={() => setFlagDialogOpen(true)}
+                      >
+                        <ListItemIcon>
+                          <FlagCheckeredIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={t(
+                            'stream.topBarActionsMenu.buttons.editFlag'
+                          )}
+                        />
+                      </MenuItem>
+                    ]
+                  ) : (
+                    // Raise Flag
+                    <MenuItem
+                      key="raise-flag-menu-item"
+                      onClick={() => setFlagDialogOpen(true)}
+                    >
+                      <ListItemIcon>
+                        <FlagIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={t('stream.topBarActionsMenu.buttons.flag')}
+                      />
+                    </MenuItem>
+                  )
+                ]}
+            </Menu>
+
+            {/** Body */}
+            <Box fontFamily="Monospace">
+              <span>{stream?.body}</span>
+            </Box>
+            {/** Stream | Comments horizontal separator */}
+            <hr />
+            {/** Add Comment */}
+            {authUser.contextMeta.isReady &&
+              (!authUser.id ? (
+                // Login to comment
+                <Alert
+                  icon={false}
+                  variant="outlined"
+                  severity="info"
+                  action={
+                    <React.Fragment>
+                      <Button color="inherit" size="small">
+                        {t('stream.addComment.buttons.login')}
+                      </Button>
+                      <Button color="inherit" size="small">
+                        {t('stream.addComment.buttons.register')}
+                      </Button>
+                    </React.Fragment>
+                  }
+                >
+                  {t('stream.addComment.message.loginToComment')}
+                </Alert>
+              ) : (
+                // Proudly allowed comment area
+                <Card
+                  className={classes.addCommentCard}
+                  color="transparent"
+                  elevation={0}
+                >
+                  <CardHeader
+                    avatar={
+                      <Avatar
+                        alt="Woolfie"
+                        aria-label="authenticated-user-avatar"
+                        src={authUser?.profilePictureObjectUrl}
+                        style={{
+                          color: '#fff',
+                          backgroundColor: authUser?.color
+                        }}
+                      />
+                    }
+                    title={authUser.username}
+                  />
+                  <CardContent>
+                    <TextField
+                      fullWidth
+                      label={t('stream.addComment.label')}
+                      placeholder={t('stream.addComment.placeholder')}
+                      multiline
+                      rowsMax={4}
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                    ></TextField>
+                  </CardContent>
+                  <CardActions>
+                    <div className={classes.grow} />
+                    <Button
+                      onClick={onSaveCommentClick}
+                      variant="contained"
+                      color="primary"
+                      startIcon={SendIcon}
+                      disabled={commentSaveInProgress}
+                    >
+                      {!commentSaveInProgress ? (
+                        t('common.send')
+                      ) : (
+                        <CircularProgress size={14} />
+                      )}
+                    </Button>
+                  </CardActions>
+                </Card>
+              ))}
+
+            {/** TODO: List existing comments */}
+            <List
+              className={classes.commentList}
+              subheader={
+                <ListSubheader>
+                  {t('stream.comments.label', {
+                    commentCount: stream?.commentCount?.count ?? 0
+                  })}
+                </ListSubheader>
+              }
+            >
+              {stream?.comments?.map(async (c) => (
+                <ListItem
+                  id={c?.id ?? ''}
+                  key={c?.id ?? ''}
+                  alignItems="flex-start"
+                >
+                  <IconButton
+                    disableRipple
+                    component={RouterLink}
+                    to={`/u/${c?.user?.username ?? ''}`}
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        alt={c?.user?.username}
+                        src={
+                          await getProtectedLevelProfilePictureObjectUrlByKey(
+                            c?.user?.profilePictureKey ?? '',
+                            c?.user?.cognitoIdentityId ?? ''
+                          )
+                        }
+                        className={classes.commentListItemAvatar}
+                      ></Avatar>
+                    </ListItemAvatar>
+                  </IconButton>
+
+                  <ListItemText
+                    primary={
+                      <React.Fragment>
+                        {/** Commentor user name */}
+                        <Link
+                          component={RouterLink}
+                          to={`/u/${c?.user?.username ?? ''}`}
+                        >
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="textPrimary"
+                          >
+                            {c?.user?.username ?? ''}
+                          </Typography>
+                        </Link>
+
+                        {/** Comment time */}
                         <Typography
                           component="span"
                           variant="body2"
-                          color="textPrimary"
+                          color="textSecondary"
                         >
-                          {c?.user?.username ?? ''}
+                          {' — '}
+                          {formatDistanceToNow(new Date(c?.time ?? 0), {
+                            locale: getUserLocale(
+                              authUser.language ?? Language.en
+                            ),
+                            addSuffix: true
+                          })}
                         </Typography>
-                      </Link>
-
-                      {/** Comment time */}
+                      </React.Fragment>
+                    }
+                    secondary={
                       <Typography
                         component="span"
-                        variant="body2"
-                        color="textSecondary"
+                        variant="body1"
+                        color="textPrimary"
                       >
-                        {' — '}
-                        {formatDistanceToNow(new Date(c?.time ?? 0), {
-                          locale: getUserLocale(
-                            authUser.language ?? Language.en
-                          ),
-                          addSuffix: true
-                        })}
+                        {c?.body ?? ''}
                       </Typography>
-                    </React.Fragment>
-                  }
-                  secondary={
-                    <Typography
-                      component="span"
-                      variant="body1"
-                      color="textPrimary"
-                    >
-                      {c?.body ?? ''}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Grid>
-      )}
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Grid>
+        )}
+      </InfiniteScroll>
+      {/** Content */}
+
       {/** Dialogs */}
       <TafalkShareContentDialog
         open={shareContentDialogOpen}

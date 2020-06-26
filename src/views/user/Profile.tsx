@@ -509,6 +509,7 @@ const Profile: React.FC = () => {
       <Helmet>
         <title>{user?.username ? `@${user.username}` : ''}</title>
       </Helmet>
+      {/** TODO:  Add sth like [ || (fetchNextOffset ?? 0) < (stream?.commentCount ?? 0)] o hasMore check*/}
       <InfiniteScroll
         pageStart={0}
         loadMore={loadMoreItems}
