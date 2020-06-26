@@ -322,7 +322,7 @@ const Home: React.FC = () => {
       </InfiniteScroll>
 
       {/* Speed Dial */}
-      {authUser.id && (
+      {authUser?.id && (
         <SpeedDial
           ariaLabel="Add content"
           className={classes.speedDial}
@@ -367,7 +367,7 @@ const Home: React.FC = () => {
             value="sealedStream"
             icon={<GhostOffIcon />}
           />
-          {authUser.id && (
+          {authUser?.id && (
             <BottomNavigationAction
               component={RouterLink}
               to={`/content/streams/live`}
@@ -383,7 +383,7 @@ const Home: React.FC = () => {
             value="pausedCanto"
             icon={<MusicRestQuarterIcon />}
           />
-          {authUser.id && (
+          {authUser?.id && (
             <BottomNavigationAction
               component={RouterLink}
               to={`/content/cantos/live`}

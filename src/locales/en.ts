@@ -526,7 +526,7 @@ const englishTranslation = {
       }
     },
     comments: {
-      label: 'Comments {{commentCount}}'
+      label: 'Comments ({{commentCount}})'
     }
   }
 }

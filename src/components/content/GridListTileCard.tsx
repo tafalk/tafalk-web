@@ -298,7 +298,7 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
         const headerSubheader = getHeaderSubheader(item, status, t)
         // Blocked?
         const isContentBlocked =
-          authUser.userBlockInteractions?.some(
+          authUser?.userBlockInteractions?.some(
             (el: any) => el.targetUserId === item.user.id
           ) ?? false
 
@@ -327,14 +327,7 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
         })
       }
     })()
-  }, [
-    authUser.userBlockInteractions,
-    classes,
-    enqueueSnackbar,
-    item,
-    status,
-    t
-  ])
+  }, [authUser, classes, enqueueSnackbar, item, status, t])
 
   return contentBlocked && !showBlocked ? (
     // Blocked Content

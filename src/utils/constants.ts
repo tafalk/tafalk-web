@@ -12,6 +12,8 @@ export const passwordMaxLength = 320
 export const nameMinLength = 1
 export const nameMaxLength = 50
 export const maxNumOfSearchResults = 3
+export const commentMinLength = 3
+export const commentMaxLength = 255
 
 export const itemsPerFetch = 10
 export const avatarPictureSizeMinSize = 1_024 // bytes

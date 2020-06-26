@@ -82,7 +82,11 @@ import { getUserLocale } from 'utils/conversions'
 import { SmallAvatar } from 'components/common/avatars/SmallAvatar'
 import { useSnackbar } from 'notistack'
 import InfiniteScroll from 'react-infinite-scroller'
-import { itemsPerFetch } from 'utils/constants'
+import {
+  itemsPerFetch,
+  commentMaxLength,
+  commentMinLength
+} from 'utils/constants'
 
 interface StreamRouteParams {
   id: string
@@ -127,6 +131,10 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: red.A700
     },
     addCommentCard: {
+      flexGrow: 1,
+      backgroundColor: 'transparent'
+    },
+    loginToAddCommentAlert: {
       flexGrow: 1
     },
     commentList: {
@@ -192,14 +200,14 @@ const Stream: React.FC = () => {
         }>
         const streamAuthUserBookmarkGraphqlQuery = API.graphql(
           graphqlOperation(GetContentBookmarkIdByUser, {
-            userId: authUser.id
+            userId: authUser?.id ?? ''
           })
         ) as PromiseLike<{
           data: GetContentBookmarkByUserQuery
         }>
         const streamAuthUserFlagGraphqlQuery = API.graphql(
           graphqlOperation(GetFlagIdByUser, {
-            flaggerUserId: authUser.id
+            flaggerUserId: authUser?.id ?? ''
           })
         ) as PromiseLike<{
           data: GetFlagByUserQuery
@@ -279,14 +287,15 @@ const Stream: React.FC = () => {
         // Cleanup
         return unsubscribe
       } catch (err) {
-        enqueueSnackbar(err.message ?? err, {
+        console.log(err)
+        enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
       } finally {
         setInfoLoaded(true)
       }
     })()
-  }, [authUser.id, enqueueSnackbar, routeStreamId, routerHistory])
+  }, [authUser, enqueueSnackbar, routeStreamId, routerHistory])
 
   // Functions
   const loadMoreComments = async () => {
@@ -309,7 +318,7 @@ const Stream: React.FC = () => {
     try {
       const createCommentGraphqlResponse = (await API.graphql(
         graphqlOperation(CreateStreamComment, {
-          userId: authUser.id,
+          userId: authUser?.id,
           contentId: stream?.id ?? '',
           body: newComment
         })
@@ -333,7 +342,7 @@ const Stream: React.FC = () => {
   }
   const onCreateBookmarkClick = async () => {
     try {
-      if (!authUser.id) {
+      if (!authUser?.id) {
         // Guest User, ask if wants to login or register
         setLoginRequiredDialogOpen(true)
         return
@@ -399,7 +408,7 @@ const Stream: React.FC = () => {
       <InfiniteScroll
         pageStart={0}
         loadMore={loadMoreComments}
-        hasMore={(fetchNextOffset ?? 0) < (stream?.commentCount ?? 0)}
+        hasMore={fetchNextOffset < (stream?.commentCount ?? 0)}
         loader={<Skeleton variant="rect" width="100%" height={100} />}
       >
         {!infoLoaded ? (
@@ -457,7 +466,7 @@ const Stream: React.FC = () => {
                   component={RouterLink}
                   to={`/u/${stream?.user?.username ?? ''}`}
                 >
-                  {stream?.user?.username}
+                  {stream?.user?.username ?? ''}
                 </Link>
               }
               subheader={
@@ -476,7 +485,7 @@ const Stream: React.FC = () => {
                   {/** Created */}
                   <BalloonIcon fontSize="small" />
                   {formatDistanceToNow(new Date(stream?.startTime ?? 0), {
-                    locale: getUserLocale(authUser.language ?? Language.en),
+                    locale: getUserLocale(authUser?.language ?? Language.en),
                     addSuffix: true
                   })}
                   {stream?.isSealed && (
@@ -485,7 +494,9 @@ const Stream: React.FC = () => {
                       {/** Seal Time */}
                       <SleepIcon fontSize="small" />
                       {formatDistanceToNow(new Date(stream?.sealTime ?? 0), {
-                        locale: getUserLocale(authUser.language ?? Language.en),
+                        locale: getUserLocale(
+                          authUser?.language ?? Language.en
+                        ),
                         addSuffix: true
                       })}
                     </React.Fragment>
@@ -545,8 +556,8 @@ const Stream: React.FC = () => {
                 setAnchorEl(null)
               }}
             >
-              {authUser.contextMeta.isReady &&
-                authUser.id && [
+              {authUser?.contextMeta.isReady &&
+                authUser?.id && [
                   authUserFlagId ? (
                     [
                       // Retract Flag
@@ -594,84 +605,108 @@ const Stream: React.FC = () => {
             </Menu>
 
             {/** Body */}
-            <Box fontFamily="Monospace">
-              <span>{stream?.body}</span>
-            </Box>
-            {/** Stream | Comments horizontal separator */}
-            <hr />
-            {/** Add Comment */}
-            {authUser.contextMeta.isReady &&
-              (!authUser.id ? (
-                // Login to comment
-                <Alert
-                  icon={false}
-                  variant="outlined"
-                  severity="info"
-                  action={
-                    <React.Fragment>
-                      <Button color="inherit" size="small">
-                        {t('stream.addComment.buttons.login')}
-                      </Button>
-                      <Button color="inherit" size="small">
-                        {t('stream.addComment.buttons.register')}
-                      </Button>
-                    </React.Fragment>
-                  }
-                >
-                  {t('stream.addComment.message.loginToComment')}
-                </Alert>
-              ) : (
-                // Proudly allowed comment area
-                <Card
-                  className={classes.addCommentCard}
-                  color="transparent"
-                  elevation={0}
-                >
-                  <CardHeader
-                    avatar={
-                      <Avatar
-                        alt="Woolfie"
-                        aria-label="authenticated-user-avatar"
-                        src={authUser?.profilePictureObjectUrl}
-                        style={{
-                          color: '#fff',
-                          backgroundColor: authUser?.color
-                        }}
-                      />
-                    }
-                    title={authUser.username}
-                  />
-                  <CardContent>
-                    <TextField
-                      fullWidth
-                      label={t('stream.addComment.label')}
-                      placeholder={t('stream.addComment.placeholder')}
-                      multiline
-                      rowsMax={4}
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                    ></TextField>
-                  </CardContent>
-                  <CardActions>
-                    <div className={classes.grow} />
-                    <Button
-                      onClick={onSaveCommentClick}
-                      variant="contained"
-                      color="primary"
-                      startIcon={SendIcon}
-                      disabled={commentSaveInProgress}
-                    >
-                      {!commentSaveInProgress ? (
-                        t('common.send')
-                      ) : (
-                        <CircularProgress size={14} />
-                      )}
-                    </Button>
-                  </CardActions>
-                </Card>
-              ))}
+            <Grid container className={classes.grow}>
+              <Box fontFamily="Monospace">
+                {stream?.title && (
+                  <Typography variant="h6" gutterBottom>
+                    {stream.title}
+                  </Typography>
+                )}
+                {stream?.body}
+              </Box>
+            </Grid>
 
-            {/** TODO: List existing comments */}
+            {/** Add Comment */}
+            <Grid container className={classes.grow}>
+              {authUser?.contextMeta.isReady &&
+                (!authUser?.id ? (
+                  // Login to comment
+                  <Alert
+                    icon={false}
+                    className={classes.loginToAddCommentAlert}
+                    variant="outlined"
+                    severity="info"
+                    action={
+                      <React.Fragment>
+                        <Button color="inherit" size="small">
+                          {t('stream.addComment.buttons.login')}
+                        </Button>
+                        <Button color="inherit" size="small">
+                          {t('stream.addComment.buttons.register')}
+                        </Button>
+                      </React.Fragment>
+                    }
+                  >
+                    {t('stream.addComment.message.loginToComment')}
+                  </Alert>
+                ) : (
+                  // Proudly allowed comment area
+                  <Card
+                    className={classes.addCommentCard}
+                    color="transparent"
+                    elevation={0}
+                  >
+                    <CardContent>
+                      <Grid container>
+                        <Grid item xs={1}>
+                          <IconButton
+                            disableRipple
+                            component={RouterLink}
+                            to={`/u/${authUser?.username ?? ''}`}
+                          >
+                            <Avatar
+                              alt="Woolfie"
+                              aria-label="authenticated-user-avatar"
+                              src={authUser?.profilePictureObjectUrl}
+                              style={{
+                                color: '#fff',
+                                backgroundColor: authUser?.color
+                              }}
+                            />
+                          </IconButton>
+                        </Grid>
+                        <Grid item xs={11}>
+                          <TextField
+                            fullWidth
+                            label={t('stream.addComment.label')}
+                            placeholder={t('stream.addComment.placeholder')}
+                            multiline
+                            rowsMax={4}
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            inputProps={{ maxLength: commentMaxLength }}
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          ></TextField>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                    <CardActions>
+                      <div className={classes.grow} />
+                      <Button
+                        onClick={onSaveCommentClick}
+                        variant="contained"
+                        color="primary"
+                        startIcon={<SendIcon />}
+                        disableElevation
+                        disabled={
+                          newComment.length < commentMinLength ||
+                          commentSaveInProgress
+                        }
+                      >
+                        {!commentSaveInProgress ? (
+                          t('common.send')
+                        ) : (
+                          <CircularProgress size={14} />
+                        )}
+                      </Button>
+                    </CardActions>
+                  </Card>
+                ))}
+            </Grid>
+
+            {/** List existing comments */}
             <List
               className={classes.commentList}
               subheader={
@@ -733,7 +768,7 @@ const Stream: React.FC = () => {
                           {' — '}
                           {formatDistanceToNow(new Date(c?.time ?? 0), {
                             locale: getUserLocale(
-                              authUser.language ?? Language.en
+                              authUser?.language ?? Language.en
                             ),
                             addSuffix: true
                           })}
@@ -773,7 +808,7 @@ const Stream: React.FC = () => {
         onClose={() => setFlagDialogOpen(false)}
         contentType={ContentType.stream}
         contentId={stream?.id ?? ''}
-        flaggerUserId={authUser.id}
+        flaggerUserId={authUser?.id ?? ''}
         flagId={authUserFlagId ? authUserFlagId : undefined}
       />
       {/** Remove Flag Confirmation Dialog */}

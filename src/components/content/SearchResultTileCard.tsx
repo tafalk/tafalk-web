@@ -164,7 +164,7 @@ const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
         // Blocked?
         const cardUserId = item.__typename === 'User' ? item.id : item.user.id
         const isContentBlocked =
-          authUser.userBlockInteractions?.some(
+          authUser?.userBlockInteractions?.some(
             (el: any) => el.targetUserId === cardUserId
           ) ?? false
         setContentBlocked(isContentBlocked)
@@ -190,7 +190,7 @@ const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
         })
       }
     })()
-  }, [authUser.userBlockInteractions, classes, enqueueSnackbar, item])
+  }, [authUser, classes, enqueueSnackbar, item])
 
   return contentBlocked && !showBlocked ? (
     // Blocked Content

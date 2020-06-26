@@ -31,73 +31,28 @@ interface AuthUserContextDataType
 }
 
 export interface AuthUserContextType {
-  user: AuthUserContextDataType
+  user: AuthUserContextDataType | null
   setUser: Function
 }
 
 export const AuthUserContext = React.createContext<AuthUserContextType>({
-  user: {
-    id: '',
-    username: '',
-    email: '',
-    bio: '',
-    theme: 'light',
-    cognitoIdentityId: '',
-    color: '',
-    language: Language.en,
-    profilePictureObjectUrl: '',
-    userWatchInteractions: [],
-    userBlockInteractions: [],
-    contextMeta: {
-      isReady: false
-    }
-  },
+  user: null,
   setUser: () => {}
 })
 
 export default ({ children }: any) => {
-  const [user, setUser] = useState<AuthUserContextDataType>({
-    id: '',
-    username: '',
-    email: '',
-    bio: '',
-    theme: 'light',
-    cognitoIdentityId: '',
-    color: '',
-    language: Language.en,
-    profilePictureObjectUrl: '',
-    userWatchInteractions: [],
-    userBlockInteractions: [],
-    contextMeta: {
-      isReady: false
-    }
-  })
+  const [user, setUser] = useState<AuthUserContextDataType | null>(null)
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
-    const currUser = async (): Promise<void> => {
+    ;(async () => {
       try {
         let [authUser, cognitoCredentials] = await Promise.all([
           Auth.currentAuthenticatedUser(),
           Auth.currentCredentials()
         ])
         if (!authUser) {
-          setUser({
-            id: '',
-            username: '',
-            email: '',
-            bio: '',
-            theme: 'light',
-            color: '',
-            language: Language.en,
-            cognitoIdentityId: '',
-            profilePictureObjectUrl: '',
-            userWatchInteractions: [],
-            userBlockInteractions: [],
-            contextMeta: {
-              isReady: false
-            }
-          })
+          setUser(null)
           return
         }
         // DB data
@@ -134,7 +89,16 @@ export default ({ children }: any) => {
           : ''
 
         setUser({
-          ...user,
+          // ...user,
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          bio: user.bio,
+          theme: user.theme,
+          language: user.language,
+          cognitoIdentityId: user.cognitoIdentityId,
+          userWatchInteractions: user.userWatchInteractions,
+          userBlockInteractions: user.userBlockInteractions,
           color: GetColor(user.username, 'dark'),
           profilePictureObjectUrl: profilePictureObjectUrl,
           contextMeta: {
@@ -161,13 +125,13 @@ export default ({ children }: any) => {
         if (err.toString() === 'not authenticated') {
           // Guest User, do nothing
         } else {
+          // console.log(err.message || err)
           enqueueSnackbar(err.message ?? err, {
             variant: 'error'
           })
         }
       }
-    }
-    currUser()
+    })()
   }, [enqueueSnackbar])
 
   return (
