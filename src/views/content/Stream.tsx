@@ -19,15 +19,22 @@ import {
   Box,
   CardHeader,
   Badge,
-  Link
+  Link,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  CircularProgress
 } from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab'
+import { Skeleton, Alert } from '@material-ui/lab'
 import {
   GetContentBookmarkByUserQuery,
   GetFlagByUserQuery,
   Language,
   ContentType,
   CreateStreamBookmarkMutation,
+  CreateStreamCommentMutation,
   GetStreamQuery
 } from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
@@ -40,7 +47,8 @@ import {
   GetFlagIdByUser,
   CreateStreamBookmark,
   DeleteBookmark,
-  DeleteFlagById
+  DeleteFlagById,
+  CreateStreamComment
 } from 'graphql/custom'
 import TafalkShareContentDialog from 'components/common/dialogs/GenericShareContentDialog'
 import TafalkConfirmationDialog from 'components/common/dialogs/GenericConfirmationDialog'
@@ -59,6 +67,8 @@ import ShareVariantIcon from 'mdi-material-ui/ShareVariant'
 import FlagIcon from 'mdi-material-ui/Flag'
 import FlagRemoveIcon from 'mdi-material-ui/FlagRemove'
 import FlagCheckeredIcon from 'mdi-material-ui/FlagCheckered'
+import CommentOutlineIcon from 'mdi-material-ui/CommentOutline'
+import SendIcon from 'mdi-material-ui/Send'
 import { red } from '@material-ui/core/colors'
 import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
@@ -94,6 +104,9 @@ const useStyles = makeStyles((theme: Theme) =>
     smallAvatarLive: {
       color: theme.palette.primary.contrastText,
       backgroundColor: red.A700
+    },
+    addCommentCard: {
+      flexGrow: 1
     }
   })
 )
@@ -117,6 +130,8 @@ const Stream: React.FC = () => {
   const [authUserBookmarkId, setAuthUserBookmarkId] = useState('')
   const [authUserFlagId, setAuthUserFlagId] = useState('')
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const [newComment, setNewComment] = useState('')
+  const [commentSaveInProgress, setCommentSaveInProgress] = useState(false)
   const [shareContentDialogOpen, setShareContentDialogOpen] = useState(false)
   const [
     confirmRetractFlagDialogOpen,
@@ -240,6 +255,29 @@ const Stream: React.FC = () => {
   }, [authUser.id, enqueueSnackbar, routeStreamId, routerHistory])
 
   // Functions
+  const onSaveCommentClick = async () => {
+    setCommentSaveInProgress(true)
+    try {
+      const createCommentGraphqlResponse = (await API.graphql(
+        graphqlOperation(CreateStreamComment, {
+          userId: authUser.id,
+          contentId: stream?.id ?? '',
+          body: newComment
+        })
+      )) as {
+        data: CreateStreamCommentMutation
+      }
+      const commentResponse = createCommentGraphqlResponse.data.createComment
+      const commentId = commentResponse?.id
+      // TODO: Scroll to comment with Id so that the user can be sure his/her comment is added properly
+    } catch (err) {
+      enqueueSnackbar(JSON.stringify(err), {
+        variant: 'error'
+      })
+    } finally {
+      setCommentSaveInProgress(false)
+    }
+  }
   const onCreateBookmarkClick = async () => {
     try {
       if (!authUser.id) {
@@ -373,6 +411,9 @@ const Stream: React.FC = () => {
                   <BookmarkOutlineIcon fontSize="small" />
                 )}
                 {` ${stream?.bookmarkCount?.count ?? 0}`}
+                &emsp;
+                <CommentOutlineIcon fontSize="small" />
+                {` ${stream?.commentCount?.count ?? 0}`}
                 &emsp;{'('}
                 {/** Created */}
                 <BalloonIcon fontSize="small" />
@@ -496,6 +537,82 @@ const Stream: React.FC = () => {
           <Box fontFamily="Monospace">
             <span>{stream?.body}</span>
           </Box>
+          {/** Stream | Comments horizontal separator */}
+          <hr />
+          {/** TODO: Add Comment */}
+          {authUser.contextMeta.isReady &&
+            (!authUser.id ? (
+              // Login to comment
+              <Alert
+                icon={false}
+                variant="outlined"
+                severity="info"
+                action={
+                  <React.Fragment>
+                    <Button color="inherit" size="small">
+                      {t('stream.addComment.buttons.login')}
+                    </Button>
+                    <Button color="inherit" size="small">
+                      {t('stream.addComment.buttons.register')}
+                    </Button>
+                  </React.Fragment>
+                }
+              >
+                {t('stream.addComment.message.loginToComment')}
+              </Alert>
+            ) : (
+              // Proudly allowed comment area
+              <Card
+                className={classes.addCommentCard}
+                color="transparent"
+                elevation={0}
+              >
+                <CardHeader
+                  avatar={
+                    <Avatar
+                      alt="Woolfie"
+                      aria-label="authenticated-user-avatar"
+                      src={authUser?.profilePictureObjectUrl}
+                      style={{
+                        color: '#fff',
+                        backgroundColor: authUser?.color
+                      }}
+                    />
+                  }
+                  title={authUser.username}
+                />
+                <CardContent>
+                  <TextField
+                    fullWidth
+                    label={t('stream.addComment.label')}
+                    placeholder={t('stream.addComment.placeholder')}
+                    multiline
+                    rowsMax={4}
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                  ></TextField>
+                </CardContent>
+                <CardActions>
+                  <div className={classes.grow} />
+                  <Button
+                    onClick={onSaveCommentClick}
+                    variant="contained"
+                    color="primary"
+                    startIcon={SendIcon}
+                    disabled={commentSaveInProgress}
+                  >
+                    {!commentSaveInProgress ? (
+                      t('common.send')
+                    ) : (
+                      <CircularProgress size={14} />
+                    )}
+                  </Button>
+                </CardActions>
+              </Card>
+            ))}
+
+          <div></div>
+          {/** TODO: List existing comments */}
         </Grid>
       )}
       {/** Dialogs */}

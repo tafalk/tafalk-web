@@ -637,6 +637,24 @@ export const DeleteFlagById = gql`
   }
 `
 
+export const CreateStreamComment = gql`
+  mutation CreateStreamComment(
+    $contentId: String!
+    $userId: String!
+    $body: String!
+  ) {
+    createComment(
+      input: {
+        contentType: stream
+        contentId: $contentId
+        userId: $userId
+        body: $body
+      }
+    ) {
+      id
+    }
+  }
+`
 // Subscribe
 export const OnUpdateCantoById = gql`
   subscription OnUpdateCantoById($id: ID!) {
