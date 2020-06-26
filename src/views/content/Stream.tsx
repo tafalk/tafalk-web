@@ -500,7 +500,7 @@ const Stream: React.FC = () => {
                         <FlagRemoveIcon fontSize="small" />
                       </ListItemIcon>
                       <ListItemText
-                        primary={t('canto.topBarActionsMenu.buttons.unflag')}
+                        primary={t('stream.topBarActionsMenu.buttons.unflag')}
                       />
                     </MenuItem>,
                     // Edit Flag
@@ -512,7 +512,7 @@ const Stream: React.FC = () => {
                         <FlagCheckeredIcon fontSize="small" />
                       </ListItemIcon>
                       <ListItemText
-                        primary={t('canto.topBarActionsMenu.buttons.editFlag')}
+                        primary={t('stream.topBarActionsMenu.buttons.editFlag')}
                       />
                     </MenuItem>
                   ]
@@ -526,7 +526,7 @@ const Stream: React.FC = () => {
                       <FlagIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText
-                      primary={t('canto.topBarActionsMenu.buttons.flag')}
+                      primary={t('stream.topBarActionsMenu.buttons.flag')}
                     />
                   </MenuItem>
                 )
@@ -638,8 +638,8 @@ const Stream: React.FC = () => {
         open={confirmRetractFlagDialogOpen}
         onConfirm={onRetractFlagClick}
         onClose={() => setConfirmRetractFlagDialogOpen(false)}
-        title={t('canto.retractFlagConfirmationDialog.title')}
-        body={t('canto.retractFlagConfirmationDialog.body')}
+        title={t('stream.retractFlagConfirmationDialog.title')}
+        body={t('stream.retractFlagConfirmationDialog.body')}
       />
       {/** Login required to bookmark */}
       <TafalkLoginRequiredDialog
