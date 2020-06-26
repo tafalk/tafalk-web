@@ -25,7 +25,12 @@ import {
   Card,
   CardContent,
   CardActions,
-  CircularProgress
+  CircularProgress,
+  List,
+  ListSubheader,
+  ListItem,
+  ListItemAvatar,
+  Typography
 } from '@material-ui/core'
 import { Skeleton, Alert } from '@material-ui/lab'
 import {
@@ -84,6 +89,18 @@ interface StreamDataType
 
 const topBarActionsMenuId = 'top-bar-actions-menu'
 
+//
+const getProtectedLevelProfilePictureObjectUrlByKey = async (
+  profilePictureKey: string,
+  cognitoIdentityId: string
+) => {
+  if (!profilePictureKey) return ''
+  return (await Storage.get(profilePictureKey, {
+    level: 'protected',
+    identityId: cognitoIdentityId
+  })) as string
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     grow: {
@@ -107,6 +124,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     addCommentCard: {
       flexGrow: 1
+    },
+    commentList: {
+      width: '100%',
+      backgroundColor: 'transparent'
+    },
+    commentListItemAvatar: {
+      color: theme.palette.primary.contrastText,
+      backgroundColor: theme.palette.primary.main
     }
   })
 )
@@ -269,7 +294,11 @@ const Stream: React.FC = () => {
       }
       const commentResponse = createCommentGraphqlResponse.data.createComment
       const commentId = commentResponse?.id
-      // TODO: Scroll to comment with Id so that the user can be sure his/her comment is added properly
+      // Scroll to comment with Id so that the user can be sure his/her comment is added properly
+      if (commentId) {
+        const commentSection = document.getElementById(commentId)
+        commentSection?.scrollIntoView()
+      }
     } catch (err) {
       enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
@@ -539,7 +568,7 @@ const Stream: React.FC = () => {
           </Box>
           {/** Stream | Comments horizontal separator */}
           <hr />
-          {/** TODO: Add Comment */}
+          {/** Add Comment */}
           {authUser.contextMeta.isReady &&
             (!authUser.id ? (
               // Login to comment
@@ -611,8 +640,88 @@ const Stream: React.FC = () => {
               </Card>
             ))}
 
-          <div></div>
           {/** TODO: List existing comments */}
+          <List
+            className={classes.commentList}
+            subheader={
+              <ListSubheader>
+                {t('stream.comments.label', {
+                  commentCount: stream?.commentCount?.count ?? 0
+                })}
+              </ListSubheader>
+            }
+          >
+            {stream?.comments?.map(async (c) => (
+              <ListItem
+                id={c?.id ?? ''}
+                key={c?.id ?? ''}
+                alignItems="flex-start"
+              >
+                <IconButton
+                  disableRipple
+                  component={RouterLink}
+                  to={`/u/${c?.user?.username ?? ''}`}
+                >
+                  <ListItemAvatar>
+                    <Avatar
+                      alt={c?.user?.username}
+                      src={
+                        await getProtectedLevelProfilePictureObjectUrlByKey(
+                          c?.user?.profilePictureKey ?? '',
+                          c?.user?.cognitoIdentityId ?? ''
+                        )
+                      }
+                      className={classes.commentListItemAvatar}
+                    ></Avatar>
+                  </ListItemAvatar>
+                </IconButton>
+
+                <ListItemText
+                  primary={
+                    <React.Fragment>
+                      {/** Commentor user name */}
+                      <Link
+                        component={RouterLink}
+                        to={`/u/${c?.user?.username ?? ''}`}
+                      >
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          color="textPrimary"
+                        >
+                          {c?.user?.username ?? ''}
+                        </Typography>
+                      </Link>
+
+                      {/** Comment time */}
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="textSecondary"
+                      >
+                        {' — '}
+                        {formatDistanceToNow(new Date(c?.time ?? 0), {
+                          locale: getUserLocale(
+                            authUser.language ?? Language.en
+                          ),
+                          addSuffix: true
+                        })}
+                      </Typography>
+                    </React.Fragment>
+                  }
+                  secondary={
+                    <Typography
+                      component="span"
+                      variant="body1"
+                      color="textPrimary"
+                    >
+                      {c?.body ?? ''}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            ))}
+          </List>
         </Grid>
       )}
       {/** Dialogs */}

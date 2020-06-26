@@ -524,6 +524,9 @@ const englishTranslation = {
       message: {
         loginToComment: 'Login to comment on this stream'
       }
+    },
+    comments: {
+      label: 'Comments {{commentCount}}'
     }
   }
 }
