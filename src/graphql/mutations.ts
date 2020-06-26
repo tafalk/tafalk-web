@@ -376,7 +376,7 @@ export const updateUser = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const deleteUser = /* GraphQL */ `
   mutation DeleteUser($input: DeleteUserInput!) {
     deleteUser(input: $input) {
@@ -751,7 +751,7 @@ export const deleteUser = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const createStream = /* GraphQL */ `
   mutation CreateStream($input: CreateStreamInput!) {
     createStream(input: $input) {
@@ -1030,7 +1030,7 @@ export const createStream = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const updateStream = /* GraphQL */ `
   mutation UpdateStream($input: UpdateStreamInput!) {
     updateStream(input: $input) {
@@ -1309,7 +1309,7 @@ export const updateStream = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const createCanto = /* GraphQL */ `
   mutation CreateCanto($input: CreateCantoInput!) {
     createCanto(input: $input) {
@@ -1485,7 +1485,7 @@ export const createCanto = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const updateCanto = /* GraphQL */ `
   mutation UpdateCanto($input: UpdateCantoInput!) {
     updateCanto(input: $input) {
@@ -1661,7 +1661,7 @@ export const updateCanto = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const createUserInteraction = /* GraphQL */ `
   mutation CreateUserInteraction($input: CreateUserInteractionInput!) {
     createUserInteraction(input: $input) {
@@ -1834,7 +1834,7 @@ export const createUserInteraction = /* GraphQL */ `
       lastChangeTime
     }
   }
-`
+`;
 export const deleteUserInteraction = /* GraphQL */ `
   mutation DeleteUserInteraction($input: DeleteUserInteractionInput!) {
     deleteUserInteraction(input: $input) {
@@ -2007,7 +2007,7 @@ export const deleteUserInteraction = /* GraphQL */ `
       lastChangeTime
     }
   }
-`
+`;
 export const createContentInteraction = /* GraphQL */ `
   mutation CreateContentInteraction($input: CreateContentInteractionInput!) {
     createContentInteraction(input: $input) {
@@ -2101,7 +2101,7 @@ export const createContentInteraction = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const updateContentInteraction = /* GraphQL */ `
   mutation UpdateContentInteraction($input: UpdateContentInteractionInput) {
     updateContentInteraction(input: $input) {
@@ -2195,7 +2195,7 @@ export const updateContentInteraction = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const deleteContentInteraction = /* GraphQL */ `
   mutation DeleteContentInteraction($input: DeleteContentInteractionInput!) {
     deleteContentInteraction(input: $input) {
@@ -2289,7 +2289,7 @@ export const deleteContentInteraction = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const createComment = /* GraphQL */ `
   mutation CreateComment($input: CreateCommentInput!) {
     createComment(input: $input) {
@@ -2436,7 +2436,7 @@ export const createComment = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const createFlag = /* GraphQL */ `
   mutation CreateFlag($input: CreateFlagInput!) {
     createFlag(input: $input) {
@@ -2617,7 +2617,7 @@ export const createFlag = /* GraphQL */ `
       lastUpdateTime
     }
   }
-`
+`;
 export const updateFlagContent = /* GraphQL */ `
   mutation UpdateFlagContent($input: UpdateFlagContentInput) {
     updateFlagContent(input: $input) {
@@ -2798,7 +2798,7 @@ export const updateFlagContent = /* GraphQL */ `
       lastUpdateTime
     }
   }
-`
+`;
 export const updateFlagReview = /* GraphQL */ `
   mutation UpdateFlagReview($input: UpdateFlagReviewInput) {
     updateFlagReview(input: $input) {
@@ -2979,7 +2979,7 @@ export const updateFlagReview = /* GraphQL */ `
       lastUpdateTime
     }
   }
-`
+`;
 export const deleteFlag = /* GraphQL */ `
   mutation DeleteFlag($input: DeleteFlagInput!) {
     deleteFlag(input: $input) {
@@ -3160,7 +3160,7 @@ export const deleteFlag = /* GraphQL */ `
       lastUpdateTime
     }
   }
-`
+`;
 export const createUncloggerPrompt = /* GraphQL */ `
   mutation CreateUncloggerPrompt($input: CreateUncloggerPromptInput!) {
     createUncloggerPrompt(input: $input) {
@@ -3338,7 +3338,7 @@ export const createUncloggerPrompt = /* GraphQL */ `
       reviewTime
     }
   }
-`
+`;
 export const updateUncloggerPromptContent = /* GraphQL */ `
   mutation UpdateUncloggerPromptContent(
     $input: UpdateUncloggerPromptContentInput!
@@ -3518,7 +3518,7 @@ export const updateUncloggerPromptContent = /* GraphQL */ `
       reviewTime
     }
   }
-`
+`;
 export const updateUncloggerPromptReview = /* GraphQL */ `
   mutation UpdateUncloggerPromptReview(
     $input: UpdateUncloggerPromptReviewInput!
@@ -3698,7 +3698,7 @@ export const updateUncloggerPromptReview = /* GraphQL */ `
       reviewTime
     }
   }
-`
+`;
 export const deleteUncloggerPrompt = /* GraphQL */ `
   mutation DeleteUncloggerPrompt($input: DeleteUncloggerPromptInput!) {
     deleteUncloggerPrompt(input: $input) {
@@ -3876,4 +3876,4 @@ export const deleteUncloggerPrompt = /* GraphQL */ `
       reviewTime
     }
   }
-`
+`;
