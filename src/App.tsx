@@ -35,7 +35,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <SnackbarProvider maxSnack={maxNotistackSnacks}>
+      <SnackbarProvider maxSnack={maxNotistackSnacks} preventDuplicate>
         <AuthUserContextProvider>
           <BrowserRouter>
             {/* Header */}

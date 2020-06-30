@@ -61,11 +61,10 @@ const Welcome: React.FC = () => {
   // Side Effects
   useEffect(() => {
     ;(async () => {
-      setCookie(hasVisitedBeforeCookieName, true, { path: '/' })
+      setCookie(hasVisitedBeforeCookieName, 'true', { path: '/' })
     })()
   }, [setCookie])
 
-  // TODO: Parallax for new visitor, instead of a dialog.
   return (
     <React.Fragment>
       {/** General */}
@@ -102,7 +101,7 @@ const Welcome: React.FC = () => {
       >
         <div></div>
       </Container>
-      {/** Streams */}
+      {/** Cantos */}
       <Typography component="div">
         <Box
           className={classes.textContainer}

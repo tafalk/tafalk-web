@@ -173,7 +173,7 @@ const getHeaderSubheader = (
     }
     return results.map((d) => {
       return (
-        <Grid item>
+        <Grid item key={`gli-${d.expression}`}>
           <Grid container direction="row" alignItems="center">
             <Grid item>{d.icon}&nbsp;</Grid>
             <Grid item>{d.expression}</Grid>
