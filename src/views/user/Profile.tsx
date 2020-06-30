@@ -283,6 +283,7 @@ const Profile: React.FC = () => {
         // TODO: Categorize by 'live' and 'sealed'
         const sealedStreamsGraphqlResponse = (await API.graphql(
           graphqlOperation(ListUserStreamsForProfile, {
+            userId: user?.id,
             limit: itemsPerFetch,
             nextToken: fetchNextToken
           })
