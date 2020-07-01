@@ -531,10 +531,25 @@ const englishTranslation = {
   },
   pour: {
     stream: {
-      windowTitle: 'Your New Stream'
+      windowTitle: 'Your New Stream',
+      input: {
+        label: 'Body',
+        placeholder: 'Your words go here...'
+      },
+      buttons: {
+        showUncloggerPrompt: 'Unclogger Prompt',
+        secretaryMode: 'Secretary Mode'
+      }
     },
     canto: {
-      windowTitle: 'Your Canto'
+      windowTitle: 'Your Canto',
+      input: {
+        label: 'Body',
+        placeholder: 'Your words go here...'
+      },
+      buttons: {
+        secretaryMode: 'Secretary Mode'
+      }
     },
     messages: {
       processState: {

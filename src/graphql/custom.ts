@@ -690,6 +690,44 @@ export const CreateStreamComment = gql`
     }
   }
 `
+
+export const CreateNewStream = gql`
+  mutation CreateNewStream(
+    $id: ID!
+    $body: String!
+    $startTime: String!
+    $sealTime: String
+    $userId: String!
+  ) {
+    createStream(
+      input: {
+        id: $id
+        body: $body
+        isSealed: 0
+        startTime: $startTime
+        sealTime: $sealTime
+        userId: $userId
+      }
+    ) {
+      id
+    }
+  }
+`
+
+export const UpdateStreamBody = gql`
+mutation UpdateStreamBody(
+  id: ID!
+  body: String
+	) {
+    updateStream(input: {
+      id: $id
+      body: $body
+    }) {
+      id
+    }
+  }
+`
+
 // Subscribe
 export const OnUpdateCantoById = gql`
   subscription OnUpdateCantoById($id: ID!) {
