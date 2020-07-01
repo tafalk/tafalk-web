@@ -12,6 +12,8 @@ export const passwordMaxLength = 320
 export const nameMinLength = 1
 export const nameMaxLength = 50
 export const maxNumOfSearchResults = 3
+export const commentMinLength = 3
+export const commentMaxLength = 255
 
 export const itemsPerFetch = 10
 export const avatarPictureSizeMinSize = 1_024 // bytes
@@ -33,3 +35,11 @@ export const hasVisitedBeforeCookieName = 'hasVisitedTafalkBefore'
 
 // Durations
 export const defaultSnackbarAutoHideDuration = 6000
+export const deleteTimeToIdleDuration = 1000
+export const persistDelayDuration = 300
+
+// Char & String
+export const strikethroughChar = '\u0336'
+
+// Misc
+export const naTimeValue = 'NA'

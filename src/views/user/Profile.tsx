@@ -158,10 +158,10 @@ const Profile: React.FC = () => {
   useEffect(() => {
     ;(async () => {
       // Check if auth user info ready
-      if (!authUser.contextMeta.isReady) return
+      if (!authUser?.contextMeta.isReady) return
       try {
         // Is self profile page visit?
-        setSelfProfileVisit(routeUsername === authUser.username)
+        setSelfProfileVisit(routeUsername === authUser?.username)
 
         // DB data
         const userGraphqlResponse = (await API.graphql(
@@ -179,18 +179,18 @@ const Profile: React.FC = () => {
         }
 
         setUserWatched(
-          authUser.userWatchInteractions?.some(
+          authUser?.userWatchInteractions?.some(
             (i) => i?.targetUser?.username === routeUsername
           ) === true
         )
         setUserBlocked(
-          authUser.userBlockInteractions?.some(
+          authUser?.userBlockInteractions?.some(
             (i) => i?.targetUser?.username === routeUsername
           ) === true
         )
         setAuthUserBlocked(
           userResult.userBlockInteractions?.some(
-            (i) => i?.targetUserId === authUser.id
+            (i) => i?.targetUserId === authUser?.id
           ) === true
         )
 
@@ -215,16 +215,7 @@ const Profile: React.FC = () => {
         setInfoLoaded(true)
       }
     })()
-  }, [
-    authUser.contextMeta.isReady,
-    authUser.id,
-    authUser.userBlockInteractions,
-    authUser.userWatchInteractions,
-    authUser.username,
-    enqueueSnackbar,
-    routeUsername,
-    routerHistory
-  ])
+  }, [authUser, enqueueSnackbar, routeUsername, routerHistory])
 
   // Side effects: Load initial contents
   useEffect(() => {
@@ -292,6 +283,7 @@ const Profile: React.FC = () => {
         // TODO: Categorize by 'live' and 'sealed'
         const sealedStreamsGraphqlResponse = (await API.graphql(
           graphqlOperation(ListUserStreamsForProfile, {
+            userId: user?.id,
             limit: itemsPerFetch,
             nextToken: fetchNextToken
           })

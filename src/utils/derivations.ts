@@ -1,4 +1,5 @@
 import { GridListTileCardProps, TileCardProps } from 'types/props'
+import { strikethroughChar } from './constants'
 
 export const getContentRoute = (
   item: GridListTileCardProps['item'] | TileCardProps['item']
@@ -46,4 +47,10 @@ export const getSiblings = (elem: Node | null) => {
   }
 
   return siblings
+}
+
+export const getStrikethroughStr = (str: string) => {
+  return [...str].reduce((acc, char) => {
+    return acc + char + strikethroughChar
+  }, '')
 }

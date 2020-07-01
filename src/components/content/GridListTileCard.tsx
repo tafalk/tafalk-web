@@ -173,7 +173,7 @@ const getHeaderSubheader = (
     }
     return results.map((d) => {
       return (
-        <Grid item>
+        <Grid item key={`gli-${d.expression}`}>
           <Grid container direction="row" alignItems="center">
             <Grid item>{d.icon}&nbsp;</Grid>
             <Grid item>{d.expression}</Grid>
@@ -298,7 +298,7 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
         const headerSubheader = getHeaderSubheader(item, status, t)
         // Blocked?
         const isContentBlocked =
-          authUser.userBlockInteractions?.some(
+          authUser?.userBlockInteractions?.some(
             (el: any) => el.targetUserId === item.user.id
           ) ?? false
 
@@ -327,14 +327,7 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
         })
       }
     })()
-  }, [
-    authUser.userBlockInteractions,
-    classes,
-    enqueueSnackbar,
-    item,
-    status,
-    t
-  ])
+  }, [authUser, classes, enqueueSnackbar, item, status, t])
 
   return contentBlocked && !showBlocked ? (
     // Blocked Content

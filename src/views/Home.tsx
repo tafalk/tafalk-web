@@ -250,7 +250,7 @@ const Home: React.FC = () => {
   }
 
   // Subroutes
-  const sealedStreamsGridList = () => (
+  const sealedStreamsGridList = items ? (
     <GridList cellHeight="auto" cols={1} className={classes.gridList}>
       {items?.map((i) => (
         <GridListTile key={`${bottomNavigationValue}-${i.id}`} cols={1}>
@@ -261,8 +261,10 @@ const Home: React.FC = () => {
         </GridListTile>
       ))}
     </GridList>
+  ) : (
+    <div></div>
   )
-  const liveStreamsGridList = () => (
+  const liveStreamsGridList = items ? (
     <GridList cellHeight="auto" cols={1} className={classes.gridList}>
       {items?.map((i) => (
         <GridListTile key={`${bottomNavigationValue}-${i.id}`} cols={1}>
@@ -273,8 +275,10 @@ const Home: React.FC = () => {
         </GridListTile>
       ))}
     </GridList>
+  ) : (
+    <div></div>
   )
-  const pausedCantosGridList = () => (
+  const pausedCantosGridList = items ? (
     <GridList cellHeight="auto" cols={1} className={classes.gridList}>
       {items?.map((i) => (
         <GridListTile key={`${bottomNavigationValue}-${i.id}`} cols={1}>
@@ -285,8 +289,10 @@ const Home: React.FC = () => {
         </GridListTile>
       ))}
     </GridList>
+  ) : (
+    <div></div>
   )
-  const liveCantosGridList = () => (
+  const liveCantosGridList = items ? (
     <GridList cellHeight="auto" cols={1} className={classes.gridList}>
       {items?.map((i) => (
         <GridListTile key={`${bottomNavigationValue}-${i.id}`} cols={1}>
@@ -297,6 +303,8 @@ const Home: React.FC = () => {
         </GridListTile>
       ))}
     </GridList>
+  ) : (
+    <div></div>
   )
 
   return (
@@ -322,7 +330,7 @@ const Home: React.FC = () => {
       </InfiniteScroll>
 
       {/* Speed Dial */}
-      {authUser.id && (
+      {authUser?.id && (
         <SpeedDial
           ariaLabel="Add content"
           className={classes.speedDial}
@@ -367,7 +375,7 @@ const Home: React.FC = () => {
             value="sealedStream"
             icon={<GhostOffIcon />}
           />
-          {authUser.id && (
+          {authUser?.id && (
             <BottomNavigationAction
               component={RouterLink}
               to={`/content/streams/live`}
@@ -383,7 +391,7 @@ const Home: React.FC = () => {
             value="pausedCanto"
             icon={<MusicRestQuarterIcon />}
           />
-          {authUser.id && (
+          {authUser?.id && (
             <BottomNavigationAction
               component={RouterLink}
               to={`/content/cantos/live`}

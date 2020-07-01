@@ -94,10 +94,10 @@ const Settings: React.FC = () => {
   useEffect(() => {
     ;(async () => {
       // Check if auth user info ready
-      if (!authUser.contextMeta.isReady) return
+      if (!authUser?.contextMeta.isReady) return
       try {
         // Redirect to login if not logged in
-        if (!authUser.username) {
+        if (!authUser?.username) {
           routerHistory.push('/auth/login')
           return
         }
@@ -105,23 +105,15 @@ const Settings: React.FC = () => {
         const subPath = pathname.replace(url, '').replace(/\/$/, '')
         const matchingTabValue = subPathTabValueMap.get(subPath) ?? 'profile'
         setTabValue(matchingTabValue)
-        setInstantBio(authUser.bio ?? '')
-        setLastSavedBio(authUser.bio ?? '')
+        setInstantBio(authUser?.bio ?? '')
+        setLastSavedBio(authUser?.bio ?? '')
       } catch (err) {
         enqueueSnackbar(err.message ?? err, {
           variant: 'error'
         })
       }
     })()
-  }, [
-    authUser.bio,
-    authUser.contextMeta.isReady,
-    authUser.username,
-    enqueueSnackbar,
-    routeLocation.pathname,
-    routerHistory,
-    url
-  ])
+  }, [authUser, enqueueSnackbar, routeLocation.pathname, routerHistory, url])
 
   // Functions
   const onBioBlur = async () => {
@@ -129,7 +121,7 @@ const Settings: React.FC = () => {
     try {
       await API.graphql(
         graphqlOperation(UpdateUserBio, {
-          userId: authUser.id,
+          userId: authUser?.id,
           bio: instantBio
         })
       )
@@ -187,7 +179,7 @@ const Settings: React.FC = () => {
               title={t('settings.tabs.account.basicInfo.changeEmail.title')}
               subheader={
                 <Trans i18nKey="settings.tabs.account.basicInfo.changeEmail.subheader">
-                  Current: {{ authUserEmail: authUser.email }}
+                  Current: {{ authUserEmail: authUser?.email }}
                 </Trans>
               }
               action={

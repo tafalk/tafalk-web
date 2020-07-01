@@ -526,7 +526,49 @@ const englishTranslation = {
       }
     },
     comments: {
-      label: 'Comments {{commentCount}}'
+      label: 'Comments ({{commentCount}})'
+    }
+  },
+  pour: {
+    stream: {
+      windowTitle: 'Your New Stream',
+      input: {
+        label: 'Body',
+        placeholder: 'Your words go here...'
+      },
+      buttons: {
+        showUncloggerPrompt: 'Unclogger Prompt',
+        secretaryMode: 'Secretary Mode'
+      }
+    },
+    canto: {
+      windowTitle: 'Your Canto',
+      input: {
+        label: 'Body',
+        placeholder: 'Your words go here...'
+      },
+      buttons: {
+        secretaryMode: 'Secretary Mode'
+      }
+    },
+    messages: {
+      processState: {
+        saved: 'Saved',
+        saving: 'Saving',
+        error: 'Error'
+      }
+    },
+    dialogs: {
+      firstStream: {
+        title: 'Your first stream',
+        body:
+          'Streams are the main content Tafalk! has. Just go along and pour your head here.'
+      },
+      firstCanto: {
+        title: 'Your canto is to get underway',
+        body:
+          'This concept is inspired by The Cantos of Ezra Pound. So, it never ends and lives along yourself (or your Tafalk! account, at least). Ah yes, your canto is not meant to be backspaced just like the streams here. Enjoy!'
+      }
     }
   }
 }

@@ -9,6 +9,8 @@ import TafalkUserProfileView from 'views/user/Profile'
 import TafalkUserSettingsView from 'views/user/Settings'
 import TafalkStreamView from 'views/content/Stream'
 import TafalkCantoView from 'views/content/Canto'
+import TafalkPourStreamView from 'views/pour/Stream'
+import TafalkPourCantoView from 'views/pour/Canto'
 import TafalkAboutView from 'views/meta/About'
 import TafalkNotFoundView from 'views/meta/NotFound'
 import TafalkWelcomeView from 'views/Welcome'
@@ -61,11 +63,11 @@ const router = [
   // Pours
   {
     path: '/pour/stream',
-    component: TafalkRegisterView
+    component: TafalkPourStreamView
   },
   {
     path: '/pour/canto',
-    component: TafalkRegisterView
+    component: TafalkPourCantoView
   },
   // Singular Content
   {

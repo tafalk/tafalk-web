@@ -171,12 +171,12 @@ const Canto: React.FC = () => {
         ) as PromiseLike<{ data: GetCantoQuery }>
         const cantoAuthUserBookmarkGraphqlQuery = API.graphql(
           graphqlOperation(GetContentBookmarkIdByUser, {
-            userId: authUser.id
+            userId: authUser?.id ?? ''
           })
         ) as PromiseLike<{ data: GetContentBookmarkByUserQuery }>
         const cantoAuthUserFlagGraphqlQuery = API.graphql(
           graphqlOperation(GetFlagIdByUser, {
-            flaggerUserId: authUser.id
+            flaggerUserId: authUser?.id ?? ''
           })
         ) as PromiseLike<{ data: GetFlagByUserQuery }>
 
@@ -262,14 +262,14 @@ const Canto: React.FC = () => {
         // Cleanup
         return unsubscribe
       } catch (err) {
-        enqueueSnackbar(err.message ?? err, {
+        enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
       } finally {
         setInfoLoaded(true)
       }
     })()
-  }, [authUser.id, enqueueSnackbar, routeCantoId, routerHistory])
+  }, [authUser, enqueueSnackbar, routeCantoId, routerHistory])
 
   // Side effects: Event listener for text selection (or highlight)
   useEffect(() => {
@@ -329,7 +329,7 @@ const Canto: React.FC = () => {
         })
       }
     }
-    if (authUser.contextMeta.isReady && !authUser.id) {
+    if (authUser?.contextMeta.isReady && !authUser?.id) {
       return
     }
     // Debounce the event handler function
@@ -343,7 +343,7 @@ const Canto: React.FC = () => {
     return () => {
       document?.removeEventListener('selectionchange', debOnSelectionChange)
     }
-  }, [authUser.contextMeta.isReady, authUser.id, authUserBookmarkId])
+  }, [authUser, authUserBookmarkId])
 
   // Side effects: Add/change bookmark when selection changes
   useEffect(() => {
@@ -379,11 +379,9 @@ const Canto: React.FC = () => {
       }
     })()
   }, [
-    authUser.id,
     authUserBookmarkId,
     bodySelectionRange.endOffset,
     bodySelectionRange.startOffset,
-    canto,
     enqueueSnackbar,
     t
   ])
@@ -391,7 +389,7 @@ const Canto: React.FC = () => {
   // Functions
   const onCreateBookmarkClick = async () => {
     try {
-      if (!authUser.id) {
+      if (!authUser?.id) {
         // Guest User, ask if wants to login or register
         setLoginRequiredDialogOpen(true)
         return
@@ -400,7 +398,7 @@ const Canto: React.FC = () => {
       // Create new bookmark
       const createBookmarkGraphqlResponse = (await API.graphql(
         graphqlOperation(CreateCantoBookmark, {
-          userId: authUser.id,
+          userId: authUser?.id,
           contentId: canto?.id,
           indices: `${0}${bookmarkStartEndIndexSeparator}${firstWordLength}`
         })
@@ -537,14 +535,14 @@ const Canto: React.FC = () => {
                 {/** Created */}
                 <BalloonIcon fontSize="small" />
                 {formatDistanceToNow(new Date(canto?.startTime ?? 0), {
-                  locale: getUserLocale(authUser.language ?? Language.en),
+                  locale: getUserLocale(authUser?.language ?? Language.en),
                   addSuffix: true
                 })}
                 {','}&ensp;
                 {/** Last Update */}
                 <SleepIcon fontSize="small" />
                 {formatDistanceToNow(new Date(canto?.lastUpdateTime ?? 0), {
-                  locale: getUserLocale(authUser.language ?? Language.en),
+                  locale: getUserLocale(authUser?.language ?? Language.en),
                   addSuffix: true
                 })}
                 {')'}
@@ -602,8 +600,8 @@ const Canto: React.FC = () => {
               setAnchorEl(null)
             }}
           >
-            {authUser.contextMeta.isReady &&
-              authUser.id && [
+            {authUser?.contextMeta.isReady &&
+              authUser?.id && [
                 authUserFlagId ? (
                   [
                     // Retract Flag
@@ -720,7 +718,7 @@ const Canto: React.FC = () => {
         onClose={() => setFlagDialogOpen(false)}
         contentType={ContentType.canto}
         contentId={canto?.id ?? ''}
-        flaggerUserId={authUser.id}
+        flaggerUserId={authUser?.id ?? ''}
         flagId={authUserFlagId ? authUserFlagId : undefined}
       />
       {/** Remove Flag Confirmation Dialog */}

@@ -35,9 +35,9 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AuthUserContextProvider>
-        <BrowserRouter>
-          <SnackbarProvider maxSnack={maxNotistackSnacks} preventDuplicate>
+      <SnackbarProvider maxSnack={maxNotistackSnacks} preventDuplicate>
+        <AuthUserContextProvider>
+          <BrowserRouter>
             {/* Header */}
             <TafalkHeader />
             {/* Body */}
@@ -58,9 +58,9 @@ const App: React.FC = () => {
               cookieName="tafalkCookieConsent"
               message={t('cookieConsent.message')}
             />
-          </SnackbarProvider>
-        </BrowserRouter>
-      </AuthUserContextProvider>
+          </BrowserRouter>
+        </AuthUserContextProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   )
 }

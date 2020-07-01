@@ -257,6 +257,7 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
     <List aria-label="category">
       {categories.map((c) => (
         <ListItem
+          key={c.code}
           button
           selected={
             selectedCategoryIndex ===
@@ -280,6 +281,7 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
         .filter((el) => el.category === categories[selectedCategoryIndex].code)
         .map((t) => (
           <ListItem
+            key={t.code}
             button
             selected={
               selectedTypeIndex === types.findIndex((el) => el.code === t.code)

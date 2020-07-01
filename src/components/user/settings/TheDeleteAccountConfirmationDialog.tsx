@@ -47,7 +47,7 @@ const TheDeleteAccountConfirmationDialog: React.FC<DeleteAccountConfirmationDial
       )
       await API.graphql(
         graphqlOperation(DeleteUserById, {
-          userId: authUser.id
+          userId: authUser?.id
         })
       )
       await Auth.signOut()

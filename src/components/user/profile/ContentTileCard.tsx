@@ -35,7 +35,6 @@ import AdjustIcon from 'mdi-material-ui/Adjust'
 import { TFunction } from 'i18next'
 import { formatDistance, formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
-import { useSiteMessage } from 'hooks'
 import { useSnackbar } from 'notistack'
 
 interface CardData {

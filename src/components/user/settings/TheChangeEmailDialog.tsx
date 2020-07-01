@@ -52,7 +52,7 @@ const TheChangeEmailDialog: React.FC<ChangeEmailDialogProps> = (props) => {
       setTimeout(() => {
         routerHistory.push({
           pathname: '/auth/confirmRegistration',
-          search: `?${new URLSearchParams({ u: authUser.username })}`
+          search: `?${new URLSearchParams({ u: authUser?.username ?? '' })}`
         })
       }, redirectMilliseconds)
     } catch (err) {

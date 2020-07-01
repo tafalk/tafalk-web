@@ -100,7 +100,7 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
       // TODO: Compress image on the fly
       const profilePictureKey = generateProfilePictureFileName(
         uploadedFile,
-        authUser.id
+        authUser?.id ?? ''
       )
       await Promise.all([
         // Upload to S3 storage
@@ -111,7 +111,7 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
         // Update User DB Table
         API.graphql(
           graphqlOperation(UpdateUserProfilePictureKey, {
-            userId: authUser.id,
+            userId: authUser?.id,
             profilePictureKey
           })
         )
