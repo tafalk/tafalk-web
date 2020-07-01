@@ -86,7 +86,6 @@ export const updateUser = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -257,7 +256,6 @@ export const updateUser = /* GraphQL */ `
         location
         mood
         position
-        privacy
         startTime
         sealTime
         track
@@ -461,7 +459,6 @@ export const deleteUser = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -632,7 +629,6 @@ export const deleteUser = /* GraphQL */ `
         location
         mood
         position
-        privacy
         startTime
         sealTime
         track
@@ -823,7 +819,6 @@ export const createStream = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -844,7 +839,6 @@ export const createStream = /* GraphQL */ `
       location
       mood
       position
-      privacy
       startTime
       sealTime
       track
@@ -1102,7 +1096,6 @@ export const updateStream = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1123,7 +1116,6 @@ export const updateStream = /* GraphQL */ `
       location
       mood
       position
-      privacy
       startTime
       sealTime
       track
@@ -1379,7 +1371,6 @@ export const createCanto = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1555,7 +1546,6 @@ export const updateCanto = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1731,7 +1721,6 @@ export const createUserInteraction = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1813,7 +1802,6 @@ export const createUserInteraction = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1904,7 +1892,6 @@ export const deleteUserInteraction = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1986,7 +1973,6 @@ export const deleteUserInteraction = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2077,7 +2063,6 @@ export const createContentInteraction = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2171,7 +2156,6 @@ export const updateContentInteraction = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2265,7 +2249,6 @@ export const deleteContentInteraction = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2359,7 +2342,6 @@ export const createComment = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2508,7 +2490,6 @@ export const createFlag = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2593,7 +2574,6 @@ export const createFlag = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2689,7 +2669,6 @@ export const updateFlagContent = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2774,7 +2753,6 @@ export const updateFlagContent = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2870,7 +2848,6 @@ export const updateFlagReview = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2955,7 +2932,6 @@ export const updateFlagReview = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3051,7 +3027,6 @@ export const deleteFlag = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3136,7 +3111,6 @@ export const deleteFlag = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3234,7 +3208,6 @@ export const createUncloggerPrompt = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3317,7 +3290,6 @@ export const createUncloggerPrompt = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3414,7 +3386,6 @@ export const updateUncloggerPromptContent = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3497,7 +3468,6 @@ export const updateUncloggerPromptContent = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3594,7 +3564,6 @@ export const updateUncloggerPromptReview = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3677,7 +3646,6 @@ export const updateUncloggerPromptReview = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3772,7 +3740,6 @@ export const deleteUncloggerPrompt = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3855,7 +3822,6 @@ export const deleteUncloggerPrompt = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track

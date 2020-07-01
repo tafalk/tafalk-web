@@ -73,7 +73,6 @@ export const onUpdateStream = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -94,7 +93,6 @@ export const onUpdateStream = /* GraphQL */ `
       location
       mood
       position
-      privacy
       startTime
       sealTime
       track
@@ -350,7 +348,6 @@ export const onUpdateCanto = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -526,7 +523,6 @@ export const onCreateOrDeleteContentInteraction = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -622,7 +618,6 @@ export const onCreateOrDeleteFlag = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -707,7 +702,6 @@ export const onCreateOrDeleteFlag = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track

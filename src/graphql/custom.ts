@@ -132,7 +132,6 @@ export const GetStreamById = gql`
       }
       title
       body
-      privacy
       mood
       position
       uncloggerPromptId

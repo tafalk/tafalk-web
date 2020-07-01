@@ -86,7 +86,6 @@ export const getUserByUsername = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -257,7 +256,6 @@ export const getUserByUsername = /* GraphQL */ `
         location
         mood
         position
-        privacy
         startTime
         sealTime
         track
@@ -448,7 +446,6 @@ export const getStream = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -469,7 +466,6 @@ export const getStream = /* GraphQL */ `
       location
       mood
       position
-      privacy
       startTime
       sealTime
       track
@@ -686,7 +682,6 @@ export const listStreamsByUser = /* GraphQL */ `
         location
         mood
         position
-        privacy
         startTime
         sealTime
         track
@@ -779,7 +774,6 @@ export const listSealedStreams = /* GraphQL */ `
         location
         mood
         position
-        privacy
         startTime
         sealTime
         track
@@ -872,7 +866,6 @@ export const listLiveStreams = /* GraphQL */ `
         location
         mood
         position
-        privacy
         startTime
         sealTime
         track
@@ -1004,7 +997,6 @@ export const getCanto = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1312,7 +1304,6 @@ export const getUserInteractions = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1394,7 +1385,6 @@ export const getUserInteractions = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1495,7 +1485,6 @@ export const listUserInteractionsByActorUserId = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1577,7 +1566,6 @@ export const listUserInteractionsByActorUserId = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1668,7 +1656,6 @@ export const getContentBookmark = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1786,7 +1773,6 @@ export const listContentBookmarks = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1890,7 +1876,6 @@ export const listContentBookmarksByUser = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -1984,7 +1969,6 @@ export const getContentBookmarkByUser = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2095,7 +2079,6 @@ export const listContentComments = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2252,7 +2235,6 @@ export const listContentCommentsByUser = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2401,7 +2383,6 @@ export const getFlag = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2486,7 +2467,6 @@ export const getFlag = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2599,7 +2579,6 @@ export const listFlags = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2684,7 +2663,6 @@ export const listFlags = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2780,7 +2758,6 @@ export const getFlagByUser = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2865,7 +2842,6 @@ export const getFlagByUser = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -2973,7 +2949,6 @@ export const listUncloggerPrompts = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3056,7 +3031,6 @@ export const listUncloggerPrompts = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3164,7 +3138,6 @@ export const getRandomUncloggerPrompt = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3247,7 +3220,6 @@ export const getRandomUncloggerPrompt = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
@@ -3341,7 +3313,6 @@ export const search = /* GraphQL */ `
             location
             mood
             position
-            privacy
             startTime
             sealTime
             track
@@ -3362,7 +3333,6 @@ export const search = /* GraphQL */ `
         location
         mood
         position
-        privacy
         startTime
         sealTime
         track
@@ -3614,7 +3584,6 @@ export const search = /* GraphQL */ `
             location
             mood
             position
-            privacy
             startTime
             sealTime
             track
@@ -3801,7 +3770,6 @@ export const search = /* GraphQL */ `
             location
             mood
             position
-            privacy
             startTime
             sealTime
             track
@@ -3972,7 +3940,6 @@ export const search = /* GraphQL */ `
           location
           mood
           position
-          privacy
           startTime
           sealTime
           track
