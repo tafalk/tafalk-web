@@ -370,7 +370,6 @@ export type GetStreamByIdQuery = {
     } | null
     title: string | null
     body: string
-    privacy: StreamPrivacy
     mood: Array<Mood | null> | null
     position: Array<Position | null> | null
     uncloggerPromptId: string | null
@@ -1118,7 +1117,6 @@ export type UpdateUserMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -1303,7 +1301,6 @@ export type UpdateUserMutation = {
       location: string | null
       mood: Array<Mood | null> | null
       position: Array<Position | null> | null
-      privacy: StreamPrivacy
       startTime: string
       sealTime: string | null
       track: string | null
@@ -1533,7 +1530,6 @@ export type DeleteUserMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -1718,7 +1714,6 @@ export type DeleteUserMutation = {
       location: string | null
       mood: Array<Mood | null> | null
       position: Array<Position | null> | null
-      privacy: StreamPrivacy
       startTime: string
       sealTime: string | null
       track: string | null
@@ -1937,7 +1932,6 @@ export type CreateStreamMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -1960,7 +1954,6 @@ export type CreateStreamMutation = {
     location: string | null
     mood: Array<Mood | null> | null
     position: Array<Position | null> | null
-    privacy: StreamPrivacy
     startTime: string
     sealTime: string | null
     track: string | null
@@ -2246,7 +2239,6 @@ export type UpdateStreamMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -2269,7 +2261,6 @@ export type UpdateStreamMutation = {
     location: string | null
     mood: Array<Mood | null> | null
     position: Array<Position | null> | null
-    privacy: StreamPrivacy
     startTime: string
     sealTime: string | null
     track: string | null
@@ -2554,7 +2545,6 @@ export type CreateCantoMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -2752,7 +2742,6 @@ export type UpdateCantoMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -2951,7 +2940,6 @@ export type CreateUserInteractionMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -3044,7 +3032,6 @@ export type CreateUserInteractionMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -3150,7 +3137,6 @@ export type DeleteUserInteractionMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -3243,7 +3229,6 @@ export type DeleteUserInteractionMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -3350,7 +3335,6 @@ export type CreateContentInteractionMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -3459,7 +3443,6 @@ export type UpdateContentInteractionMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -3568,7 +3551,6 @@ export type DeleteContentInteractionMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -3678,7 +3660,6 @@ export type CreateCommentMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -3847,7 +3828,6 @@ export type CreateFlagMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -3943,7 +3923,6 @@ export type CreateFlagMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4054,7 +4033,6 @@ export type UpdateFlagContentMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4150,7 +4128,6 @@ export type UpdateFlagContentMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4261,7 +4238,6 @@ export type UpdateFlagReviewMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4357,7 +4333,6 @@ export type UpdateFlagReviewMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4468,7 +4443,6 @@ export type DeleteFlagMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4564,7 +4538,6 @@ export type DeleteFlagMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4678,7 +4651,6 @@ export type CreateUncloggerPromptMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4772,7 +4744,6 @@ export type CreateUncloggerPromptMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4882,7 +4853,6 @@ export type UpdateUncloggerPromptContentMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -4976,7 +4946,6 @@ export type UpdateUncloggerPromptContentMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -5086,7 +5055,6 @@ export type UpdateUncloggerPromptReviewMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -5180,7 +5148,6 @@ export type UpdateUncloggerPromptReviewMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -5290,7 +5257,6 @@ export type DeleteUncloggerPromptMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -5384,7 +5350,6 @@ export type DeleteUncloggerPromptMutation = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -5505,7 +5470,6 @@ export type GetUserByUsernameQuery = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -5690,7 +5654,6 @@ export type GetUserByUsernameQuery = {
       location: string | null
       mood: Array<Mood | null> | null
       position: Array<Position | null> | null
-      privacy: StreamPrivacy
       startTime: string
       sealTime: string | null
       track: string | null
@@ -5909,7 +5872,6 @@ export type GetStreamQuery = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -5932,7 +5894,6 @@ export type GetStreamQuery = {
     location: string | null
     mood: Array<Mood | null> | null
     position: Array<Position | null> | null
-    privacy: StreamPrivacy
     startTime: string
     sealTime: string | null
     track: string | null
@@ -6172,7 +6133,6 @@ export type ListStreamsByUserQuery = {
       location: string | null
       mood: Array<Mood | null> | null
       position: Array<Position | null> | null
-      privacy: StreamPrivacy
       startTime: string
       sealTime: string | null
       track: string | null
@@ -6279,7 +6239,6 @@ export type ListSealedStreamsQuery = {
       location: string | null
       mood: Array<Mood | null> | null
       position: Array<Position | null> | null
-      privacy: StreamPrivacy
       startTime: string
       sealTime: string | null
       track: string | null
@@ -6386,7 +6345,6 @@ export type ListLiveStreamsQuery = {
       location: string | null
       mood: Array<Mood | null> | null
       position: Array<Position | null> | null
-      privacy: StreamPrivacy
       startTime: string
       sealTime: string | null
       track: string | null
@@ -10687,7 +10645,6 @@ export type OnCreateOrDeleteFlagSubscription = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
@@ -10783,7 +10740,6 @@ export type OnCreateOrDeleteFlagSubscription = {
         location: string | null
         mood: Array<Mood | null> | null
         position: Array<Position | null> | null
-        privacy: StreamPrivacy
         startTime: string
         sealTime: string | null
         track: string | null
