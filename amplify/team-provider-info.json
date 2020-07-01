@@ -1,15 +1,15 @@
 {
     "prod": {
         "awscloudformation": {
-            "AuthRoleName": "amplify-tafalkweb-prod-225348-authRole",
-            "UnauthRoleArn": "arn:aws:iam::837986049821:role/amplify-tafalkweb-prod-225348-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::837986049821:role/amplify-tafalkweb-prod-225348-authRole",
+            "AuthRoleName": "amplify-tafalkweb-prod-173442-authRole",
+            "UnauthRoleArn": "arn:aws:iam::837986049821:role/amplify-tafalkweb-prod-173442-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::837986049821:role/amplify-tafalkweb-prod-173442-authRole",
             "Region": "eu-west-1",
-            "DeploymentBucketName": "amplify-tafalkweb-prod-225348-deployment",
-            "UnauthRoleName": "amplify-tafalkweb-prod-225348-unauthRole",
-            "StackName": "amplify-tafalkweb-prod-225348",
-            "StackId": "arn:aws:cloudformation:eu-west-1:837986049821:stack/amplify-tafalkweb-prod-225348/a2a2e320-b71d-11ea-83ab-0265d6cdeea8",
-            "AmplifyAppId": "d3esou63i3rzwy"
+            "DeploymentBucketName": "amplify-tafalkweb-prod-173442-deployment",
+            "UnauthRoleName": "amplify-tafalkweb-prod-173442-unauthRole",
+            "StackName": "amplify-tafalkweb-prod-173442",
+            "StackId": "arn:aws:cloudformation:eu-west-1:837986049821:stack/amplify-tafalkweb-prod-173442/025b7730-bba8-11ea-add2-0a9b71aae734",
+            "AmplifyAppId": "d21a5wua5mxize"
         }
     }
 }

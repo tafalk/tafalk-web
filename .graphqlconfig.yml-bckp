@@ -1,0 +1,18 @@
+projects:
+  tafalk-prod-appsync-api:
+    schemaPath: src/graphql/schema.json
+    includes:
+      - src/graphql/**/*.ts
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        codeGenTarget: typescript
+        generatedFileName: src/types/appsync/API.ts
+        docsFilePath: src/graphql
+        region: eu-west-1
+        apiId: 7cl2zzrsynejraikhscaok4ofq
+        maxDepth: 3
+extensions:
+  amplify:
+    version: 3

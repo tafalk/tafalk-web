@@ -689,7 +689,6 @@ export const CreateStreamComment = gql`
     }
   }
 `
-
 export const CreateNewStream = gql`
   mutation CreateNewStream(
     $id: ID!
@@ -714,14 +713,8 @@ export const CreateNewStream = gql`
 `
 
 export const UpdateStreamBody = gql`
-mutation UpdateStreamBody(
-  id: ID!
-  body: String
-	) {
-    updateStream(input: {
-      id: $id
-      body: $body
-    }) {
+  mutation UpdateStreamBody($id: ID!, $body: String) {
+    updateStream(input: { id: $id, body: $body }) {
       id
     }
   }
