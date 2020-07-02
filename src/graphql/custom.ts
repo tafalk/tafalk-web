@@ -502,6 +502,23 @@ export const ListStreamComments = gql`
   }
 `
 
+export const GetRandomUncloggerPromptForStream = gql`
+  query GetRandomUncloggerPromptForStream(
+    $category: UncloggerPromptCategory
+    $language: Language
+  ) {
+    getRandomUncloggerPrompt(category: $category, language: $language) {
+      id
+      category
+      body
+      language
+      creatorUser {
+        username
+      }
+      createTime
+    }
+  }
+`
 // Mutate
 export const UpdateUserTheme = gql`
   mutation UpdateUserTheme($userId: ID!, $theme: String) {

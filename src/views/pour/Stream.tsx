@@ -22,9 +22,15 @@ import API, { graphqlOperation } from '@aws-amplify/api'
 import {
   ListUserStreamsForProfile,
   CreateNewStream,
-  UpdateStreamBody
+  UpdateStreamBody,
+  GetRandomUncloggerPromptForStream
 } from 'graphql/custom'
-import { ListUserStreamsForProfileQuery } from 'types/appsync/API'
+import {
+  Language,
+  ListUserStreamsForProfileQuery,
+  GetRandomUncloggerPromptForStreamQuery
+  // UncloggerPromptCategory
+} from 'types/appsync/API'
 import TafalkFirstStreamInfoDialog from 'components/pour/dialogs/TheFirstStreamInfoDialog'
 import MicrophoneIcon from 'mdi-material-ui/Microphone'
 import CheckCircleOutlineIcon from 'mdi-material-ui/CheckCircleOutline'
@@ -90,18 +96,35 @@ const Stream: React.FC = () => {
           return
         }
         // Check if first time streaming of user (if so, show dialog)
-        const authUserStreamsGraphqlResponse = (await API.graphql(
+        // ... and get a random prompt
+        const authUserStreamsGraphqlQuery = API.graphql(
           graphqlOperation(ListUserStreamsForProfile, {
             userId: authUser?.id,
             limit: 1,
             nextToken: null
           })
-        )) as {
-          data: ListUserStreamsForProfileQuery
-        }
+        ) as PromiseLike<{ data: ListUserStreamsForProfileQuery }>
+        const randomUncloggerPromptGraphqlQuery = API.graphql(
+          graphqlOperation(GetRandomUncloggerPromptForStream, {
+            // category: UncloggerPromptCategory.Trivia,
+            language: authUser?.language ?? Language.en
+          })
+        ) as PromiseLike<{ data: GetRandomUncloggerPromptForStreamQuery }>
+
+        const [
+          authUserStreamsGraphqlResponse,
+          randomUncloggerPromptGraphqlResponse
+        ] = (await Promise.all([
+          authUserStreamsGraphqlQuery,
+          randomUncloggerPromptGraphqlQuery
+        ])) as [
+          { data: ListUserStreamsForProfileQuery },
+          { data: GetRandomUncloggerPromptForStreamQuery }
+        ]
         const authUserStreamsResult =
           authUserStreamsGraphqlResponse.data.listStreamsByUser
-
+        const randomUncloggerPromptGraphqlResult =
+          randomUncloggerPromptGraphqlResponse.data.getRandomUncloggerPrompt
         setFirstStreamDialogOpen(
           !authUserStreamsResult?.items ||
             authUserStreamsResult.items.length === 0
@@ -285,16 +308,13 @@ const Stream: React.FC = () => {
         ></CardHeader>
         <CardContent>
           <TextField
-            label={t('pour.stream.input.label')}
             placeholder={t('pour.stream.input.placeholder')}
             multiline
             rowsMax={6}
             fullWidth
             inputRef={bodyRef}
-            InputLabelProps={{
-              shrink: true
-            }}
             inputProps={{
+              'aria-label': t('pour.stream.input.label'),
               onKeyDown: (event) => onBodyKeyDown(event),
               onKeyUp: (event) => onBodyKeyUp(event),
               onMouseUp: (event) => event.preventDefault(),
