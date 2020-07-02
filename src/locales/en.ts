@@ -536,6 +536,15 @@ const englishTranslation = {
         label: 'Body',
         placeholder: 'Your words go here...'
       },
+      title: {
+        label: 'Title (Optional)'
+      },
+      mood: {
+        label: 'Mood (Optional)'
+      },
+      position: {
+        label: 'Position (Optional)'
+      },
       buttons: {
         showUncloggerPrompt: 'Unclogger Prompt',
         secretaryMode: 'Secretary Mode',

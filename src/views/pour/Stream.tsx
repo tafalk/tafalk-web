@@ -20,11 +20,13 @@ import {
   useMediaQuery,
   useTheme,
   TextField,
-  debounce,
   Collapse,
   Typography,
   CardActions,
-  CircularProgress
+  CircularProgress,
+  Grid,
+  InputLabel,
+  NativeSelect
 } from '@material-ui/core'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import {
@@ -33,12 +35,16 @@ import {
   UpdateStreamBody,
   GetRandomUncloggerPromptForStream,
   UpdateStreamAllFields,
-  SealAndUpdateStreamAllFields
+  SealAndUpdateStreamAllFields,
+  UpdateStreamUncloggerPromptId,
+  UpdateStreamTitle
 } from 'graphql/custom'
 import {
   Language,
   ListUserStreamsForProfileQuery,
-  GetRandomUncloggerPromptForStreamQuery
+  GetRandomUncloggerPromptForStreamQuery,
+  Mood as StreamMood,
+  Position as StreamPosition
   // UncloggerPromptCategory
 } from 'types/appsync/API'
 import TafalkFirstStreamInfoDialog from 'components/pour/dialogs/TheFirstStreamInfoDialog'
@@ -54,12 +60,15 @@ import { getStrikethroughStr } from 'utils/derivations'
 import {
   deleteTimeToIdleDuration,
   persistDelayDuration,
-  naTimeValue
+  naTimeValue,
+  streamTitleMaxLength
 } from 'utils/constants'
 import { v4 as uuidv4 } from 'uuid'
 import { Alert, AlertTitle } from '@material-ui/lab'
+import { debounce } from 'debounce'
 
 type UncloggerPromptType = {
+  id: string
   body: string
   username: string
 }
@@ -75,6 +84,9 @@ const useStyles = makeStyles((theme: Theme) =>
     avatar: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.primary.main
+    },
+    secondaryFieldsGrid: {
+      marginTop: '15px'
     }
   })
 )
@@ -100,11 +112,15 @@ const Stream: React.FC = () => {
   const [uncloggerPromptAlertOpen, setUncloggerPromptAlertOpen] = useState(
     false
   )
+  const [uncloggerPromptHasSeen, setUncloggerPromptHasSeen] = useState(false)
   const [deleteTimeoutId, setDeleteTimeoutId] = useState<
     NodeJS.Timeout | undefined
   >(undefined)
   const [streamId, setStreamId] = useState('')
+  const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
+  const [mood, setMood] = useState<StreamMood | null>(null)
+  const [position, setPosition] = useState<StreamPosition | null>(null)
   const [listening, setListening] = useState(false)
   const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
   const [sealInProgress, setSealInProgress] = useState(false)
@@ -159,6 +175,7 @@ const Stream: React.FC = () => {
             authUserStreamsResult.items.length === 0
         )
         setUncloggerPrompt({
+          id: randomUncloggerPromptGraphqlResult?.id ?? '',
           body: randomUncloggerPromptGraphqlResult?.body ?? '',
           username:
             randomUncloggerPromptGraphqlResult?.creatorUser?.username ?? ''
@@ -255,6 +272,59 @@ const Stream: React.FC = () => {
     })()
   }, [authUser, body, enqueueSnackbar, pourState, streamCreated, streamId])
 
+  // Side effects: Persist UncloggerPrompt
+  useEffect(() => {
+    ;(async () => {
+      try {
+        if (uncloggerPromptAlertOpen && !uncloggerPromptHasSeen) {
+          await API.graphql(
+            graphqlOperation(UpdateStreamUncloggerPromptId, {
+              id: streamId,
+              uncloggerPromptId: uncloggerPrompt?.id ?? ''
+            })
+          )
+          setUncloggerPromptHasSeen(true)
+        }
+      } catch (err) {
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
+        })
+      }
+    })()
+  }, [
+    enqueueSnackbar,
+    streamId,
+    uncloggerPrompt,
+    uncloggerPromptAlertOpen,
+    uncloggerPromptHasSeen
+  ])
+
+  // Side effects: Persist Mood
+  useEffect(() => {
+    ;(async () => {
+      try {
+        //TODO: Implement
+      } catch (err) {
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
+        })
+      }
+    })()
+  }, [enqueueSnackbar])
+
+  // Side effects: Persist Position
+  useEffect(() => {
+    ;(async () => {
+      try {
+        //TODO: Implement
+      } catch (err) {
+        enqueueSnackbar(err.message ?? err, {
+          variant: 'error'
+        })
+      }
+    })()
+  }, [enqueueSnackbar])
+
   // Functions
   const onBodyKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -349,6 +419,25 @@ const Stream: React.FC = () => {
     recognition.current.onend = () => {}
     recognition.current.onerror = () => {}
     recognition.current.stop()
+  }
+
+  const onBlurTitleField = async () => {
+    // Persist Title
+    try {
+      setPourState('saving')
+      await API.graphql(
+        graphqlOperation(UpdateStreamTitle, {
+          id: streamId,
+          title
+        })
+      )
+      setPourState('saved')
+    } catch (err) {
+      setPourState('error')
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
+      })
+    }
   }
 
   const onSealClick = async () => {
@@ -507,6 +596,41 @@ const Stream: React.FC = () => {
             value={body}
             onChange={(e) => setBody(e.target.value)}
           />
+          <Grid
+            container
+            alignItems="center"
+            className={classes.secondaryFieldsGrid}
+          >
+            {/** Title */}
+            <Grid item xs={12} md={4}>
+              <TextField
+                label={t('pour.stream.title.label')}
+                fullWidth
+                inputProps={{ maxLength: streamTitleMaxLength }}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                onBlur={onBlurTitleField}
+              ></TextField>
+            </Grid>
+            {/** Mood */}
+            <Grid item xs={12} md={4}>
+              <InputLabel htmlFor="mood-select">
+                {t('pour.stream.mood.label')}
+              </InputLabel>
+              <NativeSelect
+                id="mood-select"
+                value={mood}
+                onChange={(e) => setMood(StreamMood[e.target.value] ?? null)}
+              >
+                <option aria-label="None" value="" />
+                {Object.keys(StreamMood).map((x) => (
+                  <option value={x}>Ten</option>
+                ))}
+              </NativeSelect>
+            </Grid>
+            {/** Position */}
+            <Grid item xs={12} md={4}></Grid>
+          </Grid>
         </CardContent>
         <CardActions>
           <div className={classes.grow} />

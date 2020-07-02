@@ -15,6 +15,8 @@ export const maxNumOfSearchResults = 3
 export const commentMinLength = 3
 export const commentMaxLength = 255
 
+export const streamTitleMaxLength = 64
+
 export const itemsPerFetch = 10
 export const avatarPictureSizeMinSize = 1_024 // bytes
 export const avatarPictureSizeMaxSize = 2_097_152 // bytes
