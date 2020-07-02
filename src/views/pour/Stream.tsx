@@ -22,7 +22,9 @@ import {
   TextField,
   debounce,
   Collapse,
-  Typography
+  Typography,
+  CardActions,
+  CircularProgress
 } from '@material-ui/core'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import {
@@ -30,7 +32,8 @@ import {
   CreateNewStream,
   UpdateStreamBody,
   GetRandomUncloggerPromptForStream,
-  UpdateStreamAllFields
+  UpdateStreamAllFields,
+  SealAndUpdateStreamAllFields
 } from 'graphql/custom'
 import {
   Language,
@@ -46,6 +49,7 @@ import CachedIcon from 'mdi-material-ui/Cached'
 import CloseCircleOutlineIcon from 'mdi-material-ui/CloseCircleOutline'
 import HeadFlashOutlineIcon from 'mdi-material-ui/HeadFlashOutline'
 import CloseIcon from 'mdi-material-ui/Close'
+import SeatFlatIcon from 'mdi-material-ui/SeatFlat'
 import { getStrikethroughStr } from 'utils/derivations'
 import {
   deleteTimeToIdleDuration,
@@ -62,7 +66,7 @@ type UncloggerPromptType = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    grow: {
       flexGrow: 1
     },
     card: {
@@ -103,6 +107,7 @@ const Stream: React.FC = () => {
   const [body, setBody] = useState('')
   const [listening, setListening] = useState(false)
   const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
+  const [sealInProgress, setSealInProgress] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
   const { enqueueSnackbar } = useSnackbar()
   const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
@@ -168,26 +173,32 @@ const Stream: React.FC = () => {
 
   // Side Effects: Safe unload
   useEffect(() => {
-    const onBeforeUnload = async (e: Event) => {
-      // An attempt to leave? Save last state immediately
-      e.preventDefault()
-      // Update once more before leave
-      // TODO: Get real values of position, title, etc
-      await API.graphql(
-        graphqlOperation(UpdateStreamAllFields, {
-          id: streamId,
-          body: bodyRef.current?.value,
-          mood: [],
-          position: [],
-          title: '',
-          track: ''
-        })
-      )
-      return ''
+    const onBeforeUnload = async (e: BeforeUnloadEvent) => {
+      // An attempt to leave
+      if (!routeLeaveSafe) {
+        // Cancel the event as stated by the standard.
+        e.preventDefault()
+        // Update once more before leave
+        // TODO: Get real values of position, title, etc
+        await API.graphql(
+          graphqlOperation(UpdateStreamAllFields, {
+            id: streamId,
+            body: bodyRef.current?.value,
+            mood: [],
+            position: [],
+            title: '',
+            track: ''
+          })
+        )
+        e.returnValue = ''
+      } else {
+        // the absence of a returnValue property on the event will guarantee the browser unload happens
+        delete e['returnValue']
+      }
     }
     document.addEventListener('beforeunload', onBeforeUnload)
     return () => document.removeEventListener('beforeunload', onBeforeUnload)
-  }, [streamId])
+  }, [routeLeaveSafe, streamId])
 
   // Side Effects: Check SpeechRecognitioin availability in browser
   useEffect(() => {
@@ -340,6 +351,32 @@ const Stream: React.FC = () => {
     recognition.current.stop()
   }
 
+  const onSealClick = async () => {
+    try {
+      setSealInProgress(true)
+      // TODO: Get real values of position, title, etc
+      await API.graphql(
+        graphqlOperation(SealAndUpdateStreamAllFields, {
+          id: streamId,
+          body: bodyRef.current?.value,
+          mood: [],
+          position: [],
+          title: '',
+          track: ''
+        })
+      )
+      // TODO: Implement
+      setRouteLeaveSafe(true)
+      routerHistory.push(`/s/${streamId}`)
+    } catch (err) {
+      enqueueSnackbar(err.message ?? err, {
+        variant: 'error'
+      })
+    } finally {
+      setSealInProgress(false)
+    }
+  }
+
   return (
     <React.Fragment>
       {/** HTML Document Header */}
@@ -471,6 +508,23 @@ const Stream: React.FC = () => {
             onChange={(e) => setBody(e.target.value)}
           />
         </CardContent>
+        <CardActions>
+          <div className={classes.grow} />
+          <Button
+            onClick={onSealClick}
+            variant="contained"
+            color="primary"
+            startIcon={<SeatFlatIcon />}
+            disableElevation
+            disabled={sealInProgress}
+          >
+            {!sealInProgress ? (
+              t('pour.stream.buttons.seal')
+            ) : (
+              <CircularProgress size={14} />
+            )}
+          </Button>
+        </CardActions>
       </Card>
       {/** Dialogs */}
       <TafalkFirstStreamInfoDialog

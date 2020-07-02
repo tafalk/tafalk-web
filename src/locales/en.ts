@@ -538,7 +538,8 @@ const englishTranslation = {
       },
       buttons: {
         showUncloggerPrompt: 'Unclogger Prompt',
-        secretaryMode: 'Secretary Mode'
+        secretaryMode: 'Secretary Mode',
+        seal: 'Seal'
       },
       messages: {
         beforeLeaveConfirmation: 'Are you sure? Your stream will be sealed!'
