@@ -1,5 +1,9 @@
 import React, { useEffect, useContext, useState, useRef } from 'react'
-import { Link as RouterLink, useHistory } from 'react-router-dom'
+import {
+  Link as RouterLink,
+  useHistory,
+  Prompt as RouterPrompt
+} from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
@@ -25,7 +29,8 @@ import {
   ListUserStreamsForProfile,
   CreateNewStream,
   UpdateStreamBody,
-  GetRandomUncloggerPromptForStream
+  GetRandomUncloggerPromptForStream,
+  UpdateStreamAllFields
 } from 'graphql/custom'
 import {
   Language,
@@ -97,6 +102,7 @@ const Stream: React.FC = () => {
   const [streamId, setStreamId] = useState('')
   const [body, setBody] = useState('')
   const [listening, setListening] = useState(false)
+  const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
   const { enqueueSnackbar } = useSnackbar()
   const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
@@ -160,7 +166,30 @@ const Stream: React.FC = () => {
     })()
   }, [authUser, enqueueSnackbar, routerHistory])
 
-  //Side Effects: Check SpeechRecognitioin availability in browser
+  // Side Effects: Safe unload
+  useEffect(() => {
+    const onBeforeUnload = async (e: Event) => {
+      // An attempt to leave? Save last state immediately
+      e.preventDefault()
+      // Update once more before leave
+      // TODO: Get real values of position, title, etc
+      await API.graphql(
+        graphqlOperation(UpdateStreamAllFields, {
+          id: streamId,
+          body: bodyRef.current?.value,
+          mood: [],
+          position: [],
+          title: '',
+          track: ''
+        })
+      )
+      return ''
+    }
+    document.addEventListener('beforeunload', onBeforeUnload)
+    return () => document.removeEventListener('beforeunload', onBeforeUnload)
+  }, [streamId])
+
+  // Side Effects: Check SpeechRecognitioin availability in browser
   useEffect(() => {
     if (typeof window === 'undefined') return
     const SpeechRecognition = window.SpeechRecognition // ?? window.webkitSpeechRecognition
@@ -448,6 +477,11 @@ const Stream: React.FC = () => {
         open={firstStreamDialogOpen}
         onClose={() => setFirstStreamDialogOpen(false)}
       ></TafalkFirstStreamInfoDialog>
+      {/** Router Prompt */}
+      <RouterPrompt
+        when={!routeLeaveSafe}
+        message={t('pour.stream.messages.beforeLeaveConfirmation')}
+      />
     </React.Fragment>
   )
 }

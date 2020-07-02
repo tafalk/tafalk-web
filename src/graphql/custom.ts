@@ -135,7 +135,7 @@ export const GetStreamById = gql`
       mood
       position
       uncloggerPromptId
-      track
+      trackId
       startTime
       isSealed
       sealTime
@@ -729,9 +729,102 @@ export const CreateNewStream = gql`
   }
 `
 
+export const UpdateStreamTitle = gql`
+  mutation UpdateStreamTitle($id: ID!, $title: String) {
+    updateStream(input: { id: $id, title: $title }) {
+      id
+    }
+  }
+`
+
 export const UpdateStreamBody = gql`
   mutation UpdateStreamBody($id: ID!, $body: String) {
     updateStream(input: { id: $id, body: $body }) {
+      id
+    }
+  }
+`
+
+export const UpdateStreamUncloggerPromptId = gql`
+  mutation UpdateStreamUncloggerPromptId($id: ID!, $uncloggerPromptId: String) {
+    updateStream(input: { id: $id, uncloggerPromptId: $uncloggerPromptId }) {
+      id
+    }
+  }
+`
+
+export const UpdateStreamTrackId = gql`
+  mutation UpdateStreamTrackId($id: ID!, $trackId: String) {
+    updateStream(input: { id: $id, trackId: $trackId }) {
+      id
+    }
+  }
+`
+
+export const UpdateStreamMood = gql`
+  mutation UpdateStreamMood($id: ID!, $mood: [Mood]) {
+    updateStream(input: { id: $id, mood: $mood }) {
+      id
+    }
+  }
+`
+
+export const UpdateStreamPosition = gql`
+  mutation UpdateStreamPosition($id: ID!, $position: [Position]) {
+    updateStream(input: { id: $id, position: $position }) {
+      id
+    }
+  }
+`
+
+export const UpdateStreamAllFields = gql`
+  mutation UpdateStreamAllFields(
+    $id: ID!
+    $title: String
+    $body: String
+    $uncloggerPromptId: String
+    $trackId: String
+    $mood: [Mood]
+    $position: [Position]
+  ) {
+    updateStream(
+      input: {
+        id: $id
+        title: $title
+        body: $body
+        uncloggerPromptId: $uncloggerPromptId
+        trackId: $trackId
+        mood: $mood
+        position: $position
+      }
+    ) {
+      id
+    }
+  }
+`
+
+export const SealAndUpdateStreamAllFields = gql`
+  mutation SealAndUpdateStreamAllFields(
+    $id: ID!
+    $title: String
+    $body: String
+    $uncloggerPromptId: String
+    $trackId: String
+    $mood: [Mood]
+    $position: [Position]
+  ) {
+    updateStream(
+      input: {
+        id: $id
+        isSealed: 1
+        title: $title
+        body: $body
+        uncloggerPromptId: $uncloggerPromptId
+        trackId: $trackId
+        mood: $mood
+        position: $position
+      }
+    ) {
       id
     }
   }

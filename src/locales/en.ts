@@ -539,6 +539,9 @@ const englishTranslation = {
       buttons: {
         showUncloggerPrompt: 'Unclogger Prompt',
         secretaryMode: 'Secretary Mode'
+      },
+      messages: {
+        beforeLeaveConfirmation: 'Are you sure? Your stream will be sealed!'
       }
     },
     canto: {

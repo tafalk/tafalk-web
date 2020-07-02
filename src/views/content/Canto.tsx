@@ -337,11 +337,11 @@ const Canto: React.FC = () => {
       onSelectionChange,
       selectionChangeDebounceDuration
     )
-    document?.addEventListener('selectionchange', debOnSelectionChange)
+    document.addEventListener('selectionchange', debOnSelectionChange)
 
     // Cleanup
     return () => {
-      document?.removeEventListener('selectionchange', debOnSelectionChange)
+      document.removeEventListener('selectionchange', debOnSelectionChange)
     }
   }, [authUser, authUserBookmarkId])
 
