@@ -2151,13 +2151,9 @@
           "description" : null,
           "args" : [ ],
           "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "ENUM",
-              "name" : "Mood",
-              "ofType" : null
-            }
+            "kind" : "ENUM",
+            "name" : "Mood",
+            "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
@@ -2166,13 +2162,9 @@
           "description" : null,
           "args" : [ ],
           "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "ENUM",
-              "name" : "Position",
-              "ofType" : null
-            }
+            "kind" : "ENUM",
+            "name" : "Position",
+            "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
@@ -3706,26 +3698,18 @@
           "name" : "mood",
           "description" : null,
           "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "ENUM",
-              "name" : "Mood",
-              "ofType" : null
-            }
+            "kind" : "ENUM",
+            "name" : "Mood",
+            "ofType" : null
           },
           "defaultValue" : null
         }, {
           "name" : "position",
           "description" : null,
           "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "ENUM",
-              "name" : "Position",
-              "ofType" : null
-            }
+            "kind" : "ENUM",
+            "name" : "Position",
+            "ofType" : null
           },
           "defaultValue" : null
         }, {
@@ -3834,26 +3818,18 @@
           "name" : "mood",
           "description" : null,
           "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "ENUM",
-              "name" : "Mood",
-              "ofType" : null
-            }
+            "kind" : "ENUM",
+            "name" : "Mood",
+            "ofType" : null
           },
           "defaultValue" : null
         }, {
           "name" : "position",
           "description" : null,
           "type" : {
-            "kind" : "LIST",
-            "name" : null,
-            "ofType" : {
-              "kind" : "ENUM",
-              "name" : "Position",
-              "ofType" : null
-            }
+            "kind" : "ENUM",
+            "name" : "Position",
+            "ofType" : null
           },
           "defaultValue" : null
         }, {
@@ -5573,14 +5549,6 @@
         "onFragment" : false,
         "onField" : false
       }, {
-        "name" : "aws_oidc",
-        "description" : "Tells the service this field/object has access authorized by an OIDC token.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
         "name" : "deprecated",
         "description" : null,
         "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
@@ -5594,6 +5562,14 @@
           },
           "defaultValue" : "\"No longer supported\""
         } ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_oidc",
+        "description" : "Tells the service this field/object has access authorized by an OIDC token.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ ],
         "onOperation" : false,
         "onFragment" : false,
         "onField" : false

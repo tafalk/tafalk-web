@@ -762,7 +762,7 @@ export const UpdateStreamTrackId = gql`
 `
 
 export const UpdateStreamMood = gql`
-  mutation UpdateStreamMood($id: ID!, $mood: [Mood]) {
+  mutation UpdateStreamMood($id: ID!, $mood: Mood) {
     updateStream(input: { id: $id, mood: $mood }) {
       id
     }
@@ -770,7 +770,7 @@ export const UpdateStreamMood = gql`
 `
 
 export const UpdateStreamPosition = gql`
-  mutation UpdateStreamPosition($id: ID!, $position: [Position]) {
+  mutation UpdateStreamPosition($id: ID!, $position: Position) {
     updateStream(input: { id: $id, position: $position }) {
       id
     }
@@ -784,8 +784,8 @@ export const UpdateStreamAllFields = gql`
     $body: String
     $uncloggerPromptId: String
     $trackId: String
-    $mood: [Mood]
-    $position: [Position]
+    $mood: Mood
+    $position: Position
   ) {
     updateStream(
       input: {
@@ -810,8 +810,8 @@ export const SealAndUpdateStreamAllFields = gql`
     $body: String
     $uncloggerPromptId: String
     $trackId: String
-    $mood: [Mood]
-    $position: [Position]
+    $mood: Mood
+    $position: Position
   ) {
     updateStream(
       input: {
