@@ -16,7 +16,9 @@ import {
   useMediaQuery,
   useTheme,
   TextField,
-  debounce
+  debounce,
+  Collapse,
+  Typography
 } from '@material-ui/core'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import {
@@ -33,10 +35,12 @@ import {
 } from 'types/appsync/API'
 import TafalkFirstStreamInfoDialog from 'components/pour/dialogs/TheFirstStreamInfoDialog'
 import MicrophoneIcon from 'mdi-material-ui/Microphone'
+import MicrophoneOffIcon from 'mdi-material-ui/MicrophoneOff'
 import CheckCircleOutlineIcon from 'mdi-material-ui/CheckCircleOutline'
 import CachedIcon from 'mdi-material-ui/Cached'
 import CloseCircleOutlineIcon from 'mdi-material-ui/CloseCircleOutline'
 import HeadFlashOutlineIcon from 'mdi-material-ui/HeadFlashOutline'
+import CloseIcon from 'mdi-material-ui/Close'
 import { getStrikethroughStr } from 'utils/derivations'
 import {
   deleteTimeToIdleDuration,
@@ -44,6 +48,12 @@ import {
   naTimeValue
 } from 'utils/constants'
 import { v4 as uuidv4 } from 'uuid'
+import { Alert, AlertTitle } from '@material-ui/lab'
+
+type UncloggerPromptType = {
+  body: string
+  username: string
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,20 +76,27 @@ const Stream: React.FC = () => {
   const classes = useStyles()
   let routerHistory = useHistory()
   const bodyRef = useRef<HTMLInputElement | HTMLTextAreaElement>()
+  const [speechRecognitionSupported, setSpeechRecognitionSupported] = useState(
+    false
+  )
+  const recognition = useRef<SpeechRecognition | null>(null)
   const [streamCreated, setStreamCreated] = useState(false)
   const [firstStreamDialogOpen, setFirstStreamDialogOpen] = useState(false)
   const [pourState, setPourState] = useState<
     'saved' | 'saving' | 'error' | undefined
   >(undefined)
-  const [
-    uncloggerPromptSnackbarOpen,
-    setUncloggerPromptSnackbarOpen
-  ] = useState(false)
+  const [uncloggerPrompt, setUncloggerPrompt] = useState<
+    UncloggerPromptType | undefined
+  >(undefined)
+  const [uncloggerPromptAlertOpen, setUncloggerPromptAlertOpen] = useState(
+    false
+  )
   const [deleteTimeoutId, setDeleteTimeoutId] = useState<
     NodeJS.Timeout | undefined
   >(undefined)
   const [streamId, setStreamId] = useState('')
   const [body, setBody] = useState('')
+  const [listening, setListening] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
   const { enqueueSnackbar } = useSnackbar()
   const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
@@ -95,6 +112,7 @@ const Stream: React.FC = () => {
           routerHistory.push('/auth/login')
           return
         }
+
         // Check if first time streaming of user (if so, show dialog)
         // ... and get a random prompt
         const authUserStreamsGraphqlQuery = API.graphql(
@@ -129,6 +147,11 @@ const Stream: React.FC = () => {
           !authUserStreamsResult?.items ||
             authUserStreamsResult.items.length === 0
         )
+        setUncloggerPrompt({
+          body: randomUncloggerPromptGraphqlResult?.body ?? '',
+          username:
+            randomUncloggerPromptGraphqlResult?.creatorUser?.username ?? ''
+        })
       } catch (err) {
         enqueueSnackbar(err.message ?? err, {
           variant: 'error'
@@ -136,6 +159,19 @@ const Stream: React.FC = () => {
       }
     })()
   }, [authUser, enqueueSnackbar, routerHistory])
+
+  //Side Effects: Check SpeechRecognitioin availability in browser
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const SpeechRecognition = window.SpeechRecognition // ?? window.webkitSpeechRecognition
+    if (SpeechRecognition) {
+      setSpeechRecognitionSupported(true)
+      recognition.current = new SpeechRecognition()
+
+      recognition.current.continuous = true
+      recognition.current.interimResults = true
+    }
+  }, [])
 
   // Side effects: On body change, save
   useEffect(() => {
@@ -241,6 +277,40 @@ const Stream: React.FC = () => {
     setDeleteTimeoutId(timeoutId)
   }
 
+  const startMic = () => {
+    if (!recognition?.current) return
+    setListening(true)
+    recognition.current.onresult = (event) => {
+      var transcript = event.results[0][0].transcript
+      console.log('You told: ' + transcript)
+    }
+    recognition.current.onerror = (event: any) => {
+      if (recognition?.current && event.error === 'not-allowed') {
+        recognition.current.onend = () => {}
+        setListening(false)
+      }
+      enqueueSnackbar(event.error, {
+        variant: 'error'
+      })
+    }
+    // SpeechRecognition stops automatically after inactivity
+    // We want it to keep going until we tell it to stop
+    recognition.current.onend = () => {
+      if (!recognition.current) return
+      recognition.current.start()
+    }
+    recognition.current.start()
+  }
+
+  const stopMic = () => {
+    setListening(false)
+    if (!recognition?.current) return
+    recognition.current.onresult = () => {}
+    recognition.current.onend = () => {}
+    recognition.current.onerror = () => {}
+    recognition.current.stop()
+  }
+
   return (
     <React.Fragment>
       {/** HTML Document Header */}
@@ -290,23 +360,63 @@ const Stream: React.FC = () => {
                 size={isSmallPlus ? 'medium' : 'small'}
                 color="primary"
                 startIcon={<HeadFlashOutlineIcon />}
-                onClick={() => setUncloggerPromptSnackbarOpen(true)}
-                disabled={uncloggerPromptSnackbarOpen}
+                onClick={() => setUncloggerPromptAlertOpen(true)}
+                disabled={uncloggerPromptAlertOpen}
               >
                 {t('pour.stream.buttons.showUncloggerPrompt')}
               </Button>
-              <Button
-                size={isSmallPlus ? 'medium' : 'small'}
-                color="primary"
-                startIcon={<MicrophoneIcon />}
-                onClick={() => {}}
-              >
-                {t('pour.stream.buttons.secretaryMode')}
-              </Button>
+              {!listening ? (
+                <Button
+                  size={isSmallPlus ? 'medium' : 'small'}
+                  color="primary"
+                  startIcon={<MicrophoneIcon />}
+                  disabled={!speechRecognitionSupported}
+                  onClick={startMic}
+                >
+                  {t('pour.stream.buttons.secretaryMode')}
+                </Button>
+              ) : (
+                <Button
+                  size={isSmallPlus ? 'medium' : 'small'}
+                  color="secondary"
+                  startIcon={<MicrophoneOffIcon />}
+                  onClick={stopMic}
+                >
+                  {t('pour.stream.buttons.secretaryMode')}
+                </Button>
+              )}
             </React.Fragment>
           }
         ></CardHeader>
         <CardContent>
+          {/** Unclogger Prompt Alert */}
+          <Collapse in={uncloggerPromptAlertOpen}>
+            <Alert
+              icon={<HeadFlashOutlineIcon fontSize="inherit" />}
+              severity="info"
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setUncloggerPromptAlertOpen(false)
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              {uncloggerPrompt?.body}
+              <AlertTitle>
+                <Typography variant="body2" color="textSecondary">
+                  {`/ ${uncloggerPrompt?.username}`}
+                </Typography>
+              </AlertTitle>
+            </Alert>
+          </Collapse>
+
+          {/** Input */}
           <TextField
             placeholder={t('pour.stream.input.placeholder')}
             multiline
