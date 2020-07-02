@@ -75,7 +75,7 @@ export const onUpdateStream = /* GraphQL */ `
           position
           startTime
           sealTime
-          track
+          trackId
           uncloggerPromptId
         }
         bookmarkedCantoCount {
@@ -95,7 +95,7 @@ export const onUpdateStream = /* GraphQL */ `
       position
       startTime
       sealTime
-      track
+      trackId
       uncloggerPromptId
       uncloggerPrompt {
         id
@@ -278,7 +278,7 @@ export const onUpdateStream = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const onUpdateCanto = /* GraphQL */ `
   subscription OnUpdateCanto($id: ID!) {
     onUpdateCanto(id: $id) {
@@ -350,7 +350,7 @@ export const onUpdateCanto = /* GraphQL */ `
           position
           startTime
           sealTime
-          track
+          trackId
           uncloggerPromptId
         }
         bookmarkedCantoCount {
@@ -453,7 +453,7 @@ export const onUpdateCanto = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const onCreateOrDeleteContentInteraction = /* GraphQL */ `
   subscription OnCreateOrDeleteContentInteraction($contentId: String) {
     onCreateOrDeleteContentInteraction(contentId: $contentId) {
@@ -525,7 +525,7 @@ export const onCreateOrDeleteContentInteraction = /* GraphQL */ `
           position
           startTime
           sealTime
-          track
+          trackId
           uncloggerPromptId
         }
         bookmarkedCantoCount {
@@ -546,7 +546,7 @@ export const onCreateOrDeleteContentInteraction = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const onCreateOrDeleteFlag = /* GraphQL */ `
   subscription OnCreateOrDeleteFlag($contentId: String) {
     onCreateOrDeleteFlag(contentId: $contentId) {
@@ -620,7 +620,7 @@ export const onCreateOrDeleteFlag = /* GraphQL */ `
           position
           startTime
           sealTime
-          track
+          trackId
           uncloggerPromptId
         }
         bookmarkedCantoCount {
@@ -704,7 +704,7 @@ export const onCreateOrDeleteFlag = /* GraphQL */ `
           position
           startTime
           sealTime
-          track
+          trackId
           uncloggerPromptId
         }
         bookmarkedCantoCount {
@@ -725,4 +725,4 @@ export const onCreateOrDeleteFlag = /* GraphQL */ `
       lastUpdateTime
     }
   }
-`
+`;
