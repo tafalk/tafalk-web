@@ -38,7 +38,7 @@ export const hasVisitedBeforeCookieName = 'hasVisitedTafalkBefore'
 // Durations
 export const defaultSnackbarAutoHideDuration = 6000
 export const deleteTimeToIdleDuration = 1000
-export const persistDelayDuration = 300
+export const persistDelayDuration = 1000
 
 // Char & String
 export const strikethroughChar = '\u0336'

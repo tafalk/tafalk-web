@@ -1,4 +1,10 @@
-import React, { useEffect, useContext, useState, useRef } from 'react'
+import React, {
+  useEffect,
+  useContext,
+  useState,
+  useRef,
+  useCallback
+} from 'react'
 import {
   Link as RouterLink,
   useHistory,
@@ -25,7 +31,7 @@ import {
   Grid,
   InputLabel
 } from '@material-ui/core'
-import API, { graphqlOperation } from '@aws-amplify/api'
+import API, { graphqlOperation, GraphQLResult } from '@aws-amplify/api'
 import {
   ListUserStreamsForProfile,
   CreateNewStream,
@@ -215,7 +221,7 @@ const Stream: React.FC = () => {
   useEffect(() => {
     const onBeforeUnload = async (e: BeforeUnloadEvent) => {
       // An attempt to leave
-      if (!routeLeaveSafe) {
+      if (!routeLeaveSafe && !!body) {
         // Cancel the event as stated by the standard.
         e.preventDefault()
         // Update once more before leave
@@ -237,7 +243,7 @@ const Stream: React.FC = () => {
     }
     document.addEventListener('beforeunload', onBeforeUnload)
     return () => document.removeEventListener('beforeunload', onBeforeUnload)
-  }, [mood, position, routeLeaveSafe, streamId, title])
+  }, [body, mood, position, routeLeaveSafe, streamId, title])
 
   // Side Effects: Check SpeechRecognitioin availability in browser
   useEffect(() => {
@@ -251,48 +257,6 @@ const Stream: React.FC = () => {
       recognition.current.interimResults = true
     }
   }, [])
-
-  // Side effects: On body change, save
-  useEffect(() => {
-    const delayedPersistBody = debounce(async (body: string) => {
-      await API.graphql(
-        graphqlOperation(UpdateStreamBody, {
-          id: streamId,
-          body: bodyRef.current?.value
-        })
-      )
-      return
-    }, persistDelayDuration)
-    ;(async () => {
-      // Do not run when save in progress
-      if (pourState === 'saving' || !authUser?.id) return
-      try {
-        setPourState('saving')
-        if (!streamCreated) {
-          const genId = uuidv4()
-          setStreamId(genId)
-          await API.graphql(
-            graphqlOperation(CreateNewStream, {
-              id: genId,
-              body: bodyRef.current?.value,
-              startTime: new Date().toISOString(),
-              sealTime: naTimeValue,
-              userId: authUser?.id ?? ''
-            })
-          )
-          setStreamCreated(true)
-        } else {
-          delayedPersistBody(body)
-        }
-        setPourState('saved')
-      } catch (err) {
-        setPourState('error')
-        enqueueSnackbar(JSON.stringify(err), {
-          variant: 'error'
-        })
-      }
-    })()
-  }, [authUser, body, enqueueSnackbar, pourState, streamCreated, streamId])
 
   // Side effects: Persist UncloggerPrompt
   useEffect(() => {
@@ -322,6 +286,20 @@ const Stream: React.FC = () => {
   ])
 
   // Functions
+  const delayedUpdateBody = useCallback(
+    debounce(async () => {
+      setPourState('saving')
+      await API.graphql(
+        graphqlOperation(UpdateStreamBody, {
+          id: streamId,
+          body: bodyRef.current?.value
+        })
+      )
+      setPourState('saved')
+    }, persistDelayDuration),
+    [streamId]
+  )
+
   const onBodyKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -364,14 +342,51 @@ const Stream: React.FC = () => {
     // TODO: Later, maybe add a logic for not a single cursor position, but rather a selection range?
   }
 
-  const onBodyKeyUp = (
+  const onBodyKeyUp = async (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const keyName = e.key
-    // Neither Backspace nor Delete? Do nothing special
-    if (!['Backspace', 'Delete'].includes(keyName)) return
     // No body? Do nothing
-    if (!bodyRef.current || !body) return
+    if (!bodyRef.current || !bodyRef.current?.value || !body) return
+
+    const keyName = e.key
+    // Neither Backspace nor Delete? Save or update
+    if (!['Backspace', 'Delete'].includes(keyName)) {
+      // Do not run when save in progress
+      if (pourState === 'saving' || !authUser?.id) {
+        return
+      }
+      try {
+        if (!streamCreated) {
+          setPourState('saving')
+          const genId = uuidv4()
+          setStreamId(genId)
+          await API.graphql(
+            graphqlOperation(CreateNewStream, {
+              id: genId,
+              body: bodyRef.current?.value,
+              startTime: new Date().toISOString(),
+              sealTime: naTimeValue,
+              userId: authUser?.id ?? ''
+            })
+          )
+          setPourState('saved')
+          setStreamCreated(true)
+          return
+        }
+        // console.log('ref: ' + bodyRef.current?.value)
+        // console.log('body: ' + body)
+        // Update with debounced function
+        delayedUpdateBody()
+      } catch (err) {
+        setPourState('error')
+        enqueueSnackbar(JSON.stringify(err), {
+          variant: 'error'
+        })
+      }
+      return
+    }
+
+    // Backspace or Delete?
     e.preventDefault()
     const bodyLength = body.length
     if (deleteTimeoutId) {
@@ -551,7 +566,6 @@ const Stream: React.FC = () => {
                 onClick={() =>
                   setUncloggerPromptAlertOpen((prevState) => !prevState)
                 }
-                disabled={uncloggerPromptAlertOpen}
               >
                 <HeadFlashOutlineIcon />
               </IconButton>
@@ -615,10 +629,13 @@ const Stream: React.FC = () => {
             inputRef={bodyRef}
             inputProps={{
               'aria-label': t('pour.stream.input.label'),
+              style: { fontFamily: 'Monospace' },
               onKeyDown: (event) => onBodyKeyDown(event),
               onKeyUp: (event) => onBodyKeyUp(event),
-              // onMouseUp: (event) => event.preventDefault(),
-              // onMouseDown: (event) => event.preventDefault(),
+              onContextMenu: (event) => {
+                event.preventDefault()
+                return false
+              },
               onPaste: (event) => event.preventDefault(),
               onCut: (event) => event.preventDefault(),
               onKeyPress: (event) => {
@@ -712,7 +729,7 @@ const Stream: React.FC = () => {
       ></TafalkFirstStreamInfoDialog>
       {/** Router Prompt */}
       <RouterPrompt
-        when={!routeLeaveSafe}
+        when={!routeLeaveSafe && !!body}
         message={t('pour.stream.messages.beforeLeaveConfirmation')}
       />
     </React.Fragment>
