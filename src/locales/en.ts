@@ -14,6 +14,7 @@ const englishTranslation = {
     delete: 'Delete',
     previous: 'Previous',
     next: 'Next',
+    none: 'None',
     validation: {
       required: 'Required',
       tooShort: 'Too short',
@@ -540,10 +541,28 @@ const englishTranslation = {
         label: 'Title (Optional)'
       },
       mood: {
-        label: 'Mood (Optional)'
+        label: 'Mood (Optional)',
+        options: {
+          aroused: 'Aroused',
+          asUsual: 'AsUsual',
+          drunk: 'Drunk',
+          hardToExplain: 'Hard To Explain',
+          high: 'High',
+          melancholic: 'Melancholic',
+          relieved: 'Relieved'
+        }
       },
       position: {
-        label: 'Position (Optional)'
+        label: 'Position (Optional)',
+        options: {
+          allFours: 'All Fours',
+          kneeling: 'Kneeling',
+          lying: 'Lying',
+          sitting: 'Sitting',
+          squatting: 'Squatting',
+          standing: 'Standing',
+          walking: 'Walking'
+        }
       },
       buttons: {
         showUncloggerPrompt: 'Unclogger Prompt',

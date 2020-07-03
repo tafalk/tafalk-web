@@ -25,8 +25,7 @@ import {
   CardActions,
   CircularProgress,
   Grid,
-  InputLabel,
-  NativeSelect
+  InputLabel
 } from '@material-ui/core'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import {
@@ -37,7 +36,9 @@ import {
   UpdateStreamAllFields,
   SealAndUpdateStreamAllFields,
   UpdateStreamUncloggerPromptId,
-  UpdateStreamTitle
+  UpdateStreamTitle,
+  UpdateStreamMood,
+  UpdateStreamPosition
 } from 'graphql/custom'
 import {
   Language,
@@ -85,8 +86,14 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.primary.main
     },
-    secondaryFieldsGrid: {
-      marginTop: '15px'
+    uncloggerPromptAlert: {
+      marginBottom: '25px'
+    },
+    bodyInput: {
+      marginBottom: '25px'
+    },
+    secondaryField: {
+      width: '95%'
     }
   })
 )
@@ -126,13 +133,32 @@ const Stream: React.FC = () => {
   const [sealInProgress, setSealInProgress] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
   const { enqueueSnackbar } = useSnackbar()
-  const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
+
+  const moodValueTextMap = new Map<StreamMood, string>([
+    [StreamMood.Aroused, t('pour.stream.mood.options.aroused')],
+    [StreamMood.AsUsual, t('pour.stream.mood.options.asUsual')],
+    [StreamMood.Drunk, t('pour.stream.mood.options.drunk')],
+    [StreamMood.HardToExplain, t('pour.stream.mood.options.hardToExplain')],
+    [StreamMood.High, t('pour.stream.mood.options.high')],
+    [StreamMood.Melancholic, t('pour.stream.mood.options.melancholic')],
+    [StreamMood.Relieved, t('pour.stream.mood.options.relieved')]
+  ])
+
+  const positionValueTextMap = new Map<StreamPosition, string>([
+    [StreamPosition.AllFours, t('pour.stream.position.options.allFours')],
+    [StreamPosition.Kneeling, t('pour.stream.position.options.kneeling')],
+    [StreamPosition.Lying, t('pour.stream.position.options.lying')],
+    [StreamPosition.Sitting, t('pour.stream.position.options.sitting')],
+    [StreamPosition.Squatting, t('pour.stream.position.options.squatting')],
+    [StreamPosition.Standing, t('pour.stream.position.options.standing')],
+    [StreamPosition.Walking, t('pour.stream.position.options.walking')]
+  ])
 
   // Side effects: Load initial profile data
   useEffect(() => {
     ;(async () => {
       // Check if auth user info ready
-      if (!authUser?.contextMeta.isReady) return
+      if (!authUser?.contextMeta.isReady || !authUser?.id) return
       try {
         // Redirect to login if not logged in
         if (!authUser?.username) {
@@ -144,7 +170,7 @@ const Stream: React.FC = () => {
         // ... and get a random prompt
         const authUserStreamsGraphqlQuery = API.graphql(
           graphqlOperation(ListUserStreamsForProfile, {
-            userId: authUser?.id,
+            userId: authUser?.id ?? '',
             limit: 1,
             nextToken: null
           })
@@ -181,7 +207,7 @@ const Stream: React.FC = () => {
             randomUncloggerPromptGraphqlResult?.creatorUser?.username ?? ''
         })
       } catch (err) {
-        enqueueSnackbar(err.message ?? err, {
+        enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
       }
@@ -196,14 +222,13 @@ const Stream: React.FC = () => {
         // Cancel the event as stated by the standard.
         e.preventDefault()
         // Update once more before leave
-        // TODO: Get real values of position, title, etc
         await API.graphql(
           graphqlOperation(UpdateStreamAllFields, {
             id: streamId,
             body: bodyRef.current?.value,
-            mood: [],
-            position: [],
-            title: '',
+            mood,
+            position,
+            title,
             track: ''
           })
         )
@@ -215,7 +240,7 @@ const Stream: React.FC = () => {
     }
     document.addEventListener('beforeunload', onBeforeUnload)
     return () => document.removeEventListener('beforeunload', onBeforeUnload)
-  }, [routeLeaveSafe, streamId])
+  }, [mood, position, routeLeaveSafe, streamId, title])
 
   // Side Effects: Check SpeechRecognitioin availability in browser
   useEffect(() => {
@@ -243,7 +268,7 @@ const Stream: React.FC = () => {
     }, persistDelayDuration)
     ;(async () => {
       // Do not run when save in progress
-      if (pourState === 'saving') return
+      if (pourState === 'saving' || !authUser?.id) return
       try {
         setPourState('saving')
         if (!streamCreated) {
@@ -255,7 +280,7 @@ const Stream: React.FC = () => {
               body: bodyRef.current?.value,
               startTime: new Date().toISOString(),
               sealTime: naTimeValue,
-              userId: authUser?.id
+              userId: authUser?.id ?? ''
             })
           )
           setStreamCreated(true)
@@ -265,7 +290,7 @@ const Stream: React.FC = () => {
         setPourState('saved')
       } catch (err) {
         setPourState('error')
-        enqueueSnackbar(err.message ?? err, {
+        enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
       }
@@ -286,7 +311,7 @@ const Stream: React.FC = () => {
           setUncloggerPromptHasSeen(true)
         }
       } catch (err) {
-        enqueueSnackbar(err.message ?? err, {
+        enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
       }
@@ -298,32 +323,6 @@ const Stream: React.FC = () => {
     uncloggerPromptAlertOpen,
     uncloggerPromptHasSeen
   ])
-
-  // Side effects: Persist Mood
-  useEffect(() => {
-    ;(async () => {
-      try {
-        //TODO: Implement
-      } catch (err) {
-        enqueueSnackbar(err.message ?? err, {
-          variant: 'error'
-        })
-      }
-    })()
-  }, [enqueueSnackbar])
-
-  // Side effects: Persist Position
-  useEffect(() => {
-    ;(async () => {
-      try {
-        //TODO: Implement
-      } catch (err) {
-        enqueueSnackbar(err.message ?? err, {
-          variant: 'error'
-        })
-      }
-    })()
-  }, [enqueueSnackbar])
 
   // Functions
   const onBodyKeyDown = (
@@ -365,7 +364,7 @@ const Stream: React.FC = () => {
       )
       return
     }
-    // TODO: Maybe a logic for not a singlr cursor position, but rather a selection range?
+    // TODO: Later, maybe add a logic for not a single cursor position, but rather a selection range?
   }
 
   const onBodyKeyUp = (
@@ -434,7 +433,47 @@ const Stream: React.FC = () => {
       setPourState('saved')
     } catch (err) {
       setPourState('error')
-      enqueueSnackbar(err.message ?? err, {
+      enqueueSnackbar(JSON.stringify(err), {
+        variant: 'error'
+      })
+    }
+  }
+
+  const onChangeMood = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMood(e.target.value as StreamMood)
+    // Persist Mood
+    try {
+      setPourState('saving')
+      await API.graphql(
+        graphqlOperation(UpdateStreamMood, {
+          id: streamId,
+          mood
+        })
+      )
+      setPourState('saved')
+    } catch (err) {
+      setPourState('error')
+      enqueueSnackbar(JSON.stringify(err), {
+        variant: 'error'
+      })
+    }
+  }
+
+  const onChangePosition = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPosition(e.target.value as StreamPosition)
+    // Persist Position
+    try {
+      setPourState('saving')
+      await API.graphql(
+        graphqlOperation(UpdateStreamPosition, {
+          id: streamId,
+          position
+        })
+      )
+      setPourState('saved')
+    } catch (err) {
+      setPourState('error')
+      enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
       })
     }
@@ -443,22 +482,20 @@ const Stream: React.FC = () => {
   const onSealClick = async () => {
     try {
       setSealInProgress(true)
-      // TODO: Get real values of position, title, etc
       await API.graphql(
         graphqlOperation(SealAndUpdateStreamAllFields, {
           id: streamId,
           body: bodyRef.current?.value,
-          mood: [],
-          position: [],
-          title: '',
+          mood,
+          position,
+          title,
           track: ''
         })
       )
-      // TODO: Implement
       setRouteLeaveSafe(true)
       routerHistory.push(`/s/${streamId}`)
     } catch (err) {
-      enqueueSnackbar(err.message ?? err, {
+      enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
       })
     } finally {
@@ -493,17 +530,17 @@ const Stream: React.FC = () => {
             pourState ? (
               pourState === 'saved' ? (
                 <span>
-                  <CheckCircleOutlineIcon color="inherit" />{' '}
+                  <CheckCircleOutlineIcon color="inherit" fontSize="small" />{' '}
                   {t('pour.messages.processState.saved')}
                 </span>
               ) : pourState === 'saving' ? (
                 <span>
-                  <CachedIcon color="inherit" />{' '}
+                  <CachedIcon color="inherit" fontSize="small" />{' '}
                   {t('pour.messages.processState.saving')}
                 </span>
               ) : (
                 <span>
-                  <CloseCircleOutlineIcon color="inherit" />{' '}
+                  <CloseCircleOutlineIcon color="inherit" fontSize="small" />{' '}
                   {t('pour.messages.processState.error')}
                 </span>
               )
@@ -511,34 +548,33 @@ const Stream: React.FC = () => {
           }
           action={
             <React.Fragment>
-              <Button
-                size={isSmallPlus ? 'medium' : 'small'}
+              <IconButton
+                aria-label={t('pour.stream.buttons.showUncloggerPrompt')}
                 color="primary"
-                startIcon={<HeadFlashOutlineIcon />}
-                onClick={() => setUncloggerPromptAlertOpen(true)}
+                onClick={() =>
+                  setUncloggerPromptAlertOpen((prevState) => !prevState)
+                }
                 disabled={uncloggerPromptAlertOpen}
               >
-                {t('pour.stream.buttons.showUncloggerPrompt')}
-              </Button>
+                <HeadFlashOutlineIcon />
+              </IconButton>
               {!listening ? (
-                <Button
-                  size={isSmallPlus ? 'medium' : 'small'}
+                <IconButton
+                  aria-label={t('pour.stream.buttons.secretaryMode')}
                   color="primary"
-                  startIcon={<MicrophoneIcon />}
                   disabled={!speechRecognitionSupported}
                   onClick={startMic}
                 >
-                  {t('pour.stream.buttons.secretaryMode')}
-                </Button>
+                  <MicrophoneIcon />
+                </IconButton>
               ) : (
-                <Button
-                  size={isSmallPlus ? 'medium' : 'small'}
+                <IconButton
+                  aria-label={t('pour.stream.buttons.secretaryMode')}
                   color="secondary"
-                  startIcon={<MicrophoneOffIcon />}
                   onClick={stopMic}
                 >
-                  {t('pour.stream.buttons.secretaryMode')}
-                </Button>
+                  <MicrophoneOffIcon />
+                </IconButton>
               )}
             </React.Fragment>
           }
@@ -549,6 +585,7 @@ const Stream: React.FC = () => {
             <Alert
               icon={<HeadFlashOutlineIcon fontSize="inherit" />}
               severity="info"
+              className={classes.uncloggerPromptAlert}
               action={
                 <IconButton
                   aria-label="close"
@@ -575,15 +612,16 @@ const Stream: React.FC = () => {
           <TextField
             placeholder={t('pour.stream.input.placeholder')}
             multiline
-            rowsMax={6}
+            className={classes.bodyInput}
+            rows={5}
             fullWidth
             inputRef={bodyRef}
             inputProps={{
               'aria-label': t('pour.stream.input.label'),
               onKeyDown: (event) => onBodyKeyDown(event),
               onKeyUp: (event) => onBodyKeyUp(event),
-              onMouseUp: (event) => event.preventDefault(),
-              onMouseDown: (event) => event.preventDefault(),
+              // onMouseUp: (event) => event.preventDefault(),
+              // onMouseDown: (event) => event.preventDefault(),
               onPaste: (event) => event.preventDefault(),
               onCut: (event) => event.preventDefault(),
               onKeyPress: (event) => {
@@ -596,16 +634,12 @@ const Stream: React.FC = () => {
             value={body}
             onChange={(e) => setBody(e.target.value)}
           />
-          <Grid
-            container
-            alignItems="center"
-            className={classes.secondaryFieldsGrid}
-          >
+          <Grid container alignItems="center" justify="space-between">
             {/** Title */}
             <Grid item xs={12} md={4}>
               <TextField
                 label={t('pour.stream.title.label')}
-                fullWidth
+                className={classes.secondaryField}
                 inputProps={{ maxLength: streamTitleMaxLength }}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -617,19 +651,43 @@ const Stream: React.FC = () => {
               <InputLabel htmlFor="mood-select">
                 {t('pour.stream.mood.label')}
               </InputLabel>
-              <NativeSelect
-                id="mood-select"
+              <TextField
+                select
+                label={t('pour.stream.mood.label')}
+                className={classes.secondaryField}
                 value={mood}
-                onChange={(e) => setMood(StreamMood[e.target.value] ?? null)}
+                onChange={onChangeMood}
+                SelectProps={{
+                  native: true
+                }}
               >
-                <option aria-label="None" value="" />
                 {Object.keys(StreamMood).map((x) => (
-                  <option value={x}>Ten</option>
+                  <option value={x}>
+                    {moodValueTextMap.get(x as StreamMood)}
+                  </option>
                 ))}
-              </NativeSelect>
+              </TextField>
             </Grid>
             {/** Position */}
-            <Grid item xs={12} md={4}></Grid>
+            <Grid item xs={12} md={4}>
+              <TextField
+                select
+                label={t('pour.stream.mood.label')}
+                className={classes.secondaryField}
+                value={position}
+                onChange={onChangePosition}
+                SelectProps={{
+                  native: true
+                }}
+              >
+                <option aria-label={t('common.none')} value="" />
+                {Object.keys(StreamPosition).map((x) => (
+                  <option value={x}>
+                    {positionValueTextMap.get(x as StreamPosition)}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
           </Grid>
         </CardContent>
         <CardActions>
