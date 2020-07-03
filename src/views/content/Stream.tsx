@@ -606,7 +606,7 @@ const Stream: React.FC = () => {
 
             {/** Body */}
             <Grid container className={classes.grow}>
-              <Box fontFamily="Monospace">
+              <Box fontFamily="Monospace" fontSize={16}>
                 {stream?.title && (
                   <Typography variant="h6" gutterBottom>
                     {stream.title}

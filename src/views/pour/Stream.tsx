@@ -31,7 +31,7 @@ import {
   Grid,
   InputLabel
 } from '@material-ui/core'
-import API, { graphqlOperation, GraphQLResult } from '@aws-amplify/api'
+import API, { graphqlOperation } from '@aws-amplify/api'
 import {
   ListUserStreamsForProfile,
   CreateNewStream,

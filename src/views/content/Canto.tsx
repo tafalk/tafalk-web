@@ -678,6 +678,7 @@ const Canto: React.FC = () => {
           {/** Body */}
           <Box
             fontFamily="Monospace"
+            fontSize={16}
             className={selectApplicableClass}
             id={cantoBodyBoxId}
           >
