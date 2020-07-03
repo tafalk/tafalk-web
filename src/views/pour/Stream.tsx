@@ -17,8 +17,6 @@ import {
   Theme,
   IconButton,
   Button,
-  useMediaQuery,
-  useTheme,
   TextField,
   Collapse,
   Typography,
@@ -100,7 +98,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Stream: React.FC = () => {
   const { t } = useTranslation()
-  const theme = useTheme()
   const classes = useStyles()
   let routerHistory = useHistory()
   const bodyRef = useRef<HTMLInputElement | HTMLTextAreaElement>()
