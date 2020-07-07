@@ -812,6 +812,7 @@ export const SealAndUpdateStreamAllFields = gql`
     $trackId: String
     $mood: Mood
     $position: Position
+    $sealTime: String
   ) {
     updateStream(
       input: {
@@ -823,6 +824,7 @@ export const SealAndUpdateStreamAllFields = gql`
         trackId: $trackId
         mood: $mood
         position: $position
+        sealTime: $sealTime
       }
     ) {
       id
@@ -852,16 +854,43 @@ export const CreateNewCanto = gql`
 `
 
 export const UpdateCantoAllFields = gql`
-  mutation UpdateCantoAllFields($id: ID!, $body: String) {
-    updateCanto(input: { id: $id, body: $body }) {
+  mutation UpdateCantoAllFields(
+    $id: ID!
+    $body: String
+    $lastUpdateTime: String!
+  ) {
+    updateCanto(
+      input: { id: $id, body: $body, lastUpdateTime: $lastUpdateTime }
+    ) {
       id
     }
   }
 `
 
 export const UpdateCantoBody = gql`
-  mutation UpdateCantoBody($id: ID!, $body: String) {
-    updateCanto(input: { id: $id, body: $body }) {
+  mutation UpdateCantoBody($id: ID!, $body: String, $lastUpdateTime: String!) {
+    updateCanto(
+      input: { id: $id, body: $body, lastUpdateTime: $lastUpdateTime }
+    ) {
+      id
+    }
+  }
+`
+
+export const PauseAndUpdateCantoAllFields = gql`
+  mutation PauseAndUpdateCantoAllFields(
+    $id: ID!
+    $body: String
+    $lastUpdateTime: String!
+  ) {
+    updateCanto(
+      input: {
+        id: $id
+        body: $body
+        isPaused: 0
+        lastUpdateTime: $lastUpdateTime
+      }
+    ) {
       id
     }
   }

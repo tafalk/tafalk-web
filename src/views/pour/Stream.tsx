@@ -502,7 +502,8 @@ const Stream: React.FC = () => {
           mood,
           position,
           title,
-          track: ''
+          track: '',
+          sealTime: new Date().toISOString()
         })
       )
       setRouteLeaveSafe(true)

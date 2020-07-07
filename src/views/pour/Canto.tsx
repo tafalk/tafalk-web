@@ -5,8 +5,24 @@ import React, {
   useState,
   useCallback
 } from 'react'
-import { useHistory } from 'react-router-dom'
+import {
+  Link as RouterLink,
+  useHistory,
+  Prompt as RouterPrompt
+} from 'react-router-dom'
 import { Helmet } from 'react-helmet'
+import {
+  TextField,
+  Card,
+  CardHeader,
+  IconButton,
+  Avatar,
+  CardContent,
+  Theme,
+  CardActions,
+  Button,
+  CircularProgress
+} from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { useTranslation } from 'react-i18next'
@@ -17,16 +33,35 @@ import {
   GetCantoById,
   UpdateCantoAllFields,
   UpdateCantoBody,
-  CreateNewCanto
+  CreateNewCanto,
+  PauseAndUpdateCantoAllFields
 } from 'graphql/custom'
 import { debounce } from 'debounce'
 import { deleteTimeToIdleDuration, persistDelayDuration } from 'utils/constants'
 import { getStrikethroughStr } from 'utils/derivations'
 
-const useStyles = makeStyles(() =>
+import TafalkFirstCantoInfoDialog from 'components/pour/dialogs/TheFirstCantoInfoDialog'
+import MicrophoneIcon from 'mdi-material-ui/Microphone'
+import MicrophoneOffIcon from 'mdi-material-ui/MicrophoneOff'
+import CheckCircleOutlineIcon from 'mdi-material-ui/CheckCircleOutline'
+import CachedIcon from 'mdi-material-ui/Cached'
+import CloseCircleOutlineIcon from 'mdi-material-ui/CloseCircleOutline'
+import MusicRestQuarterIcon from 'mdi-material-ui/MusicRestQuarter'
+
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    grow: {
       flexGrow: 1
+    },
+    card: {
+      flexGrow: 1
+    },
+    avatar: {
+      color: theme.palette.primary.contrastText,
+      backgroundColor: theme.palette.primary.main
+    },
+    bodyInput: {
+      marginBottom: '25px'
     }
   })
 )
@@ -51,6 +86,7 @@ const Canto: React.FC = () => {
   const [body, setBody] = useState('')
   const [listening, setListening] = useState(false)
   const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
+  const [pauseInProgress, setPauseInProgress] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
   const { enqueueSnackbar } = useSnackbar()
 
@@ -96,7 +132,8 @@ const Canto: React.FC = () => {
         await API.graphql(
           graphqlOperation(UpdateCantoAllFields, {
             id: cantoId,
-            body: bodyRef.current?.value
+            body: bodyRef.current?.value,
+            lastUpdateTime: new Date().toISOString()
           })
         )
         e.returnValue = ''
@@ -129,7 +166,8 @@ const Canto: React.FC = () => {
       await API.graphql(
         graphqlOperation(UpdateCantoBody, {
           id: cantoId,
-          body: bodyRef.current?.value
+          body: bodyRef.current?.value,
+          lastUpdateTime: new Date().toISOString()
         })
       )
       setPourState('saved')
@@ -267,13 +305,152 @@ const Canto: React.FC = () => {
     recognition.current.stop()
   }
 
-  // TODO: Implement Functional React Component below
+  const onPauseClick = async () => {
+    try {
+      setPauseInProgress(true)
+      await API.graphql(
+        graphqlOperation(PauseAndUpdateCantoAllFields, {
+          id: cantoId,
+          body: bodyRef.current?.value,
+          lastUpdateTime: new Date().toISOString()
+        })
+      )
+      setRouteLeaveSafe(true)
+      routerHistory.push(`/c/${cantoId}`)
+    } catch (err) {
+      enqueueSnackbar(JSON.stringify(err), {
+        variant: 'error'
+      })
+    } finally {
+      setPauseInProgress(false)
+    }
+  }
+
   return (
     <React.Fragment>
       {/** HTML Document Header */}
       <Helmet>
         <title>{`🎤 ${t('pour.canto.windowTitle')}`}</title>
       </Helmet>
+      {/** main card */}
+      <Card className={classes.card}>
+        <CardHeader
+          avatar={
+            <IconButton
+              disableRipple
+              component={RouterLink}
+              to={`/u/${authUser?.username ?? ''}`}
+            >
+              <Avatar
+                alt={authUser?.username}
+                className={classes.avatar}
+                src={authUser?.profilePictureObjectUrl}
+              />
+            </IconButton>
+          }
+          title={authUser?.username}
+          subheader={
+            pourState ? (
+              pourState === 'saved' ? (
+                <span>
+                  <CheckCircleOutlineIcon color="inherit" fontSize="small" />{' '}
+                  {t('pour.messages.processState.saved')}
+                </span>
+              ) : pourState === 'saving' ? (
+                <span>
+                  <CachedIcon color="inherit" fontSize="small" />{' '}
+                  {t('pour.messages.processState.saving')}
+                </span>
+              ) : (
+                <span>
+                  <CloseCircleOutlineIcon color="inherit" fontSize="small" />{' '}
+                  {t('pour.messages.processState.error')}
+                </span>
+              )
+            ) : undefined
+          }
+          action={
+            <React.Fragment>
+              {!listening ? (
+                <IconButton
+                  aria-label={t('pour.canto.buttons.secretaryMode')}
+                  color="primary"
+                  disabled={!speechRecognitionSupported}
+                  onClick={startMic}
+                >
+                  <MicrophoneIcon />
+                </IconButton>
+              ) : (
+                <IconButton
+                  aria-label={t('pour.canto.buttons.secretaryMode')}
+                  color="secondary"
+                  onClick={stopMic}
+                >
+                  <MicrophoneOffIcon />
+                </IconButton>
+              )}
+            </React.Fragment>
+          }
+        ></CardHeader>
+        <CardContent>
+          {/** Input */}
+          <TextField
+            placeholder={t('pour.canto.input.placeholder')}
+            multiline
+            className={classes.bodyInput}
+            rows={5}
+            fullWidth
+            inputRef={bodyRef}
+            inputProps={{
+              'aria-label': t('pour.canto.input.label'),
+              style: { fontFamily: 'Monospace' },
+              onKeyDown: (event) => onBodyKeyDown(event),
+              onKeyUp: (event) => onBodyKeyUp(event),
+              onContextMenu: (event) => {
+                event.preventDefault()
+                return false
+              },
+              onPaste: (event) => event.preventDefault(),
+              onCut: (event) => event.preventDefault(),
+              onKeyPress: (event) => {
+                if (event.ctrlKey) {
+                  // Disable any action featuring ctrl key press
+                  event.preventDefault()
+                }
+              }
+            }}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+          />
+        </CardContent>
+        <CardActions>
+          <div className={classes.grow} />
+          <Button
+            onClick={onPauseClick}
+            variant="contained"
+            color="primary"
+            startIcon={<MusicRestQuarterIcon />}
+            disableElevation
+            disabled={pauseInProgress}
+          >
+            {!pauseInProgress ? (
+              t('pour.canto.buttons.pause')
+            ) : (
+              <CircularProgress size={14} />
+            )}
+          </Button>
+        </CardActions>
+      </Card>
+      {/** Dialogs */}
+      <TafalkFirstCantoInfoDialog
+        open={firstCantoDialogOpen}
+        onClose={() => setFirstCantoDialogOpen(false)}
+      ></TafalkFirstCantoInfoDialog>
+      {/** Router Prompt */}
+      <RouterPrompt
+        when={!routeLeaveSafe && !!body}
+        message={t('pour.canto.messages.beforeLeaveConfirmation')}
+      />
     </React.Fragment>
   )
 }

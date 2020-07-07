@@ -580,7 +580,11 @@ const englishTranslation = {
         placeholder: 'Your words go here...'
       },
       buttons: {
-        secretaryMode: 'Secretary Mode'
+        secretaryMode: 'Secretary Mode',
+        pause: 'Pause'
+      },
+      messages: {
+        beforeLeaveConfirmation: 'Are you sure? Your stream will be sealed!'
       }
     },
     messages: {
