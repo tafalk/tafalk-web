@@ -197,7 +197,7 @@ const Stream: React.FC = () => {
         ]
         const authUserStreamsResult =
           authUserStreamsGraphqlResponse.data.listStreamsByUser
-        // TODO: Returns null, check
+        // TODO: Unclogger prompt result is null, check
         const randomUncloggerPromptGraphqlResult =
           randomUncloggerPromptGraphqlResponse.data.getRandomUncloggerPrompt
         setFirstStreamDialogOpen(

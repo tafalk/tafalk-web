@@ -830,6 +830,14 @@ export const SealAndUpdateStreamAllFields = gql`
   }
 `
 
+export const UpdateCantoAllFields = gql`
+  mutation UpdateCantoAllFields($id: ID!, $body: String) {
+    updateCanto(input: { id: $id, body: $body }) {
+      id
+    }
+  }
+`
+
 // Subscribe
 export const OnUpdateCantoById = gql`
   subscription OnUpdateCantoById($id: ID!) {
