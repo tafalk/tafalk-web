@@ -830,8 +830,37 @@ export const SealAndUpdateStreamAllFields = gql`
   }
 `
 
+export const CreateNewCanto = gql`
+  mutation CreateNewCanto(
+    $id: ID!
+    $body: String
+    $startTime: String!
+    $lastUpdateTime: String
+  ) {
+    createCanto(
+      input: {
+        id: $id
+        body: $body
+        isPaused: 0
+        startTime: $startTime
+        lastUpdateTime: $lastUpdateTime
+      }
+    ) {
+      id
+    }
+  }
+`
+
 export const UpdateCantoAllFields = gql`
   mutation UpdateCantoAllFields($id: ID!, $body: String) {
+    updateCanto(input: { id: $id, body: $body }) {
+      id
+    }
+  }
+`
+
+export const UpdateCantoBody = gql`
+  mutation UpdateCantoBody($id: ID!, $body: String) {
     updateCanto(input: { id: $id, body: $body }) {
       id
     }

@@ -1,4 +1,10 @@
-import React, { useEffect, useContext, useRef, useState } from 'react'
+import React, {
+  useEffect,
+  useContext,
+  useRef,
+  useState,
+  useCallback
+} from 'react'
 import { useHistory } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
@@ -7,7 +13,15 @@ import { useTranslation } from 'react-i18next'
 import { AuthUserContext } from 'context/Auth'
 import { GetCantoQuery } from 'types/appsync/API'
 import { useSnackbar } from 'notistack'
-import { GetCantoById, UpdateCantoAllFields } from 'graphql/custom'
+import {
+  GetCantoById,
+  UpdateCantoAllFields,
+  UpdateCantoBody,
+  CreateNewCanto
+} from 'graphql/custom'
+import { debounce } from 'debounce'
+import { deleteTimeToIdleDuration, persistDelayDuration } from 'utils/constants'
+import { getStrikethroughStr } from 'utils/derivations'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -108,7 +122,150 @@ const Canto: React.FC = () => {
     }
   }, [])
 
-  // TODO: Functions
+  // Functions
+  const delayedUpdateBody = useCallback(
+    debounce(async () => {
+      setPourState('saving')
+      await API.graphql(
+        graphqlOperation(UpdateCantoBody, {
+          id: cantoId,
+          body: bodyRef.current?.value
+        })
+      )
+      setPourState('saved')
+    }, persistDelayDuration),
+    []
+  )
+
+  const onBodyKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const keyName = e.key
+    // Neither Backspace nor Delete? Do nothing special
+    if (!['Backspace', 'Delete'].includes(keyName)) return
+    // No body? Do nothing
+    if (!bodyRef.current || !body) return
+    e.preventDefault()
+
+    if (bodyRef.current.selectionStart === bodyRef.current.selectionEnd) {
+      // There is a cursor, but no selection indeed
+      let cursorPosition = bodyRef.current.selectionEnd ?? 0
+      if (keyName === 'Backspace' && cursorPosition > 0) {
+        setBody(
+          (prevBody) =>
+            prevBody.substring(0, cursorPosition - 1) +
+            getStrikethroughStr(prevBody.charAt(cursorPosition - 1)) +
+            prevBody.substring(cursorPosition)
+        )
+
+        // Set new cursor position
+        cursorPosition--
+      } else if (keyName === 'Delete' && cursorPosition < body.length) {
+        setBody(
+          (prevBody) =>
+            prevBody.substring(0, cursorPosition) +
+            getStrikethroughStr(prevBody.charAt(cursorPosition)) +
+            prevBody.substring(cursorPosition + 1)
+        )
+        // Set new cursor position
+        cursorPosition += 2
+      }
+      // Move cursor position programmatically
+      setTimeout(() =>
+        bodyRef.current?.setSelectionRange(cursorPosition, cursorPosition)
+      )
+      return
+    }
+    // TODO: Later, maybe add a logic for not a single cursor position, but rather a selection range?
+  }
+
+  const onBodyKeyUp = async (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    // No body? Do nothing
+    if (!bodyRef.current || !bodyRef.current?.value || !body) return
+
+    const keyName = e.key
+    // Neither Backspace nor Delete? Save or update
+    if (!['Backspace', 'Delete'].includes(keyName)) {
+      // Do not run when save in progress
+      if (pourState === 'saving' || !authUser?.id) {
+        return
+      }
+      try {
+        if (!cantoCreated) {
+          setPourState('saving')
+          // TODO: Update fields
+          await API.graphql(
+            graphqlOperation(CreateNewCanto, {
+              id: cantoId,
+              body: bodyRef.current?.value,
+              startTime: new Date().toISOString(),
+              lastUpdateTime: new Date().toISOString()
+            })
+          )
+          setPourState('saved')
+          setCantoCreated(true)
+          return
+        }
+        // console.log('ref: ' + bodyRef.current?.value)
+        // console.log('body: ' + body)
+        // Update with debounced function
+        delayedUpdateBody()
+      } catch (err) {
+        setPourState('error')
+        enqueueSnackbar(JSON.stringify(err), {
+          variant: 'error'
+        })
+      }
+      return
+    }
+
+    // Backspace or Delete?
+    e.preventDefault()
+    const bodyLength = body.length
+    if (deleteTimeoutId) {
+      clearTimeout(deleteTimeoutId)
+    }
+    const timeoutId = setTimeout(() => {
+      bodyRef.current?.setSelectionRange(bodyLength, bodyLength)
+    }, deleteTimeToIdleDuration)
+    setDeleteTimeoutId(timeoutId)
+  }
+
+  const startMic = () => {
+    if (!recognition?.current) return
+    setListening(true)
+    recognition.current.onresult = (event) => {
+      var transcript = event.results[0][0].transcript
+      console.log('You told: ' + transcript)
+    }
+    recognition.current.onerror = (event: any) => {
+      if (recognition?.current && event.error === 'not-allowed') {
+        recognition.current.onend = () => {}
+        setListening(false)
+      }
+      enqueueSnackbar(event.error, {
+        variant: 'error'
+      })
+    }
+    // SpeechRecognition stops automatically after inactivity
+    // We want it to keep going until we tell it to stop
+    recognition.current.onend = () => {
+      if (!recognition.current) return
+      recognition.current.start()
+    }
+    recognition.current.start()
+  }
+
+  const stopMic = () => {
+    setListening(false)
+    if (!recognition?.current) return
+    recognition.current.onresult = () => {}
+    recognition.current.onend = () => {}
+    recognition.current.onerror = () => {}
+    recognition.current.stop()
+  }
 
   // TODO: Implement Functional React Component below
   return (
