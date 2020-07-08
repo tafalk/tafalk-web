@@ -29,8 +29,7 @@ import {
   Typography,
   CardActions,
   CircularProgress,
-  Grid,
-  InputLabel
+  Grid
 } from '@material-ui/core'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import {
