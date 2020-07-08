@@ -11,6 +11,7 @@ import {
   Prompt as RouterPrompt
 } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
+import { green } from '@material-ui/core/colors'
 import {
   TextField,
   Card,
@@ -38,14 +39,15 @@ import {
 } from 'graphql/custom'
 import { debounce } from 'debounce'
 import { deleteTimeToIdleDuration, persistDelayDuration } from 'utils/constants'
-import { getStrikethroughStr } from 'utils/derivations'
-
+import { getStrikethroughStr, getContentRoute } from 'utils/derivations'
 import TafalkFirstCantoInfoDialog from 'components/pour/dialogs/TheFirstCantoInfoDialog'
+import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
 import MicrophoneIcon from 'mdi-material-ui/Microphone'
 import MicrophoneOffIcon from 'mdi-material-ui/MicrophoneOff'
 import CheckCircleOutlineIcon from 'mdi-material-ui/CheckCircleOutline'
 import CachedIcon from 'mdi-material-ui/Cached'
 import CloseCircleOutlineIcon from 'mdi-material-ui/CloseCircleOutline'
+import ShareVariantIcon from 'mdi-material-ui/ShareVariant'
 import MusicRestQuarterIcon from 'mdi-material-ui/MusicRestQuarter'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -62,6 +64,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     bodyInput: {
       marginBottom: '25px'
+    },
+    shareButton: {
+      color: green['700']
     }
   })
 )
@@ -84,6 +89,7 @@ const Canto: React.FC = () => {
     NodeJS.Timeout | undefined
   >(undefined)
   const [body, setBody] = useState('')
+  const [shareContentDialogOpen, setShareContentDialogOpen] = useState(false)
   const [listening, setListening] = useState(false)
   const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
   const [pauseInProgress, setPauseInProgress] = useState(false)
@@ -371,6 +377,13 @@ const Canto: React.FC = () => {
           }
           action={
             <React.Fragment>
+              <IconButton
+                className={classes.shareButton}
+                aria-label={t('pour.canto.buttons.share')}
+                onClick={() => setShareContentDialogOpen(true)}
+              >
+                <ShareVariantIcon />
+              </IconButton>
               {!listening ? (
                 <IconButton
                   aria-label={t('pour.canto.buttons.secretaryMode')}
@@ -442,6 +455,14 @@ const Canto: React.FC = () => {
         </CardActions>
       </Card>
       {/** Dialogs */}
+      <TafalkShareContentDialog
+        open={shareContentDialogOpen}
+        onClose={() => setShareContentDialogOpen(false)}
+        contentLink={`https://tafalk.com${getContentRoute({
+          __typename: 'Canto',
+          id: cantoId
+        })}`}
+      />
       <TafalkFirstCantoInfoDialog
         open={firstCantoDialogOpen}
         onClose={() => setFirstCantoDialogOpen(false)}

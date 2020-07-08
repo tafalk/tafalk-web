@@ -45,7 +45,7 @@ import {
   DeleteBookmark,
   DeleteFlagById
 } from 'graphql/custom'
-import TafalkShareContentDialog from 'components/common/dialogs/GenericShareContentDialog'
+import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
 import TafalkConfirmationDialog from 'components/common/dialogs/GenericConfirmationDialog'
 import TafalkLoginRequiredDialog from 'components/common/dialogs/TheLoginRequiredDialog'
 import TafalkFlagContentDialog from 'components/content/dialogs/FlagContentDialog'

@@ -11,6 +11,7 @@ import {
   Prompt as RouterPrompt
 } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
+import { green } from '@material-ui/core/colors'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { AuthUserContext } from 'context/Auth'
@@ -53,15 +54,17 @@ import {
   // UncloggerPromptCategory
 } from 'types/appsync/API'
 import TafalkFirstStreamInfoDialog from 'components/pour/dialogs/TheFirstStreamInfoDialog'
+import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
 import MicrophoneIcon from 'mdi-material-ui/Microphone'
 import MicrophoneOffIcon from 'mdi-material-ui/MicrophoneOff'
 import CheckCircleOutlineIcon from 'mdi-material-ui/CheckCircleOutline'
 import CachedIcon from 'mdi-material-ui/Cached'
 import CloseCircleOutlineIcon from 'mdi-material-ui/CloseCircleOutline'
 import HeadFlashOutlineIcon from 'mdi-material-ui/HeadFlashOutline'
+import ShareVariantIcon from 'mdi-material-ui/ShareVariant'
 import CloseIcon from 'mdi-material-ui/Close'
 import SeatFlatIcon from 'mdi-material-ui/SeatFlat'
-import { getStrikethroughStr } from 'utils/derivations'
+import { getStrikethroughStr, getContentRoute } from 'utils/derivations'
 import {
   deleteTimeToIdleDuration,
   persistDelayDuration,
@@ -98,6 +101,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     secondaryField: {
       width: '95%'
+    },
+    shareButton: {
+      color: green['700']
     }
   })
 )
@@ -131,6 +137,7 @@ const Stream: React.FC = () => {
   const [body, setBody] = useState('')
   const [mood, setMood] = useState<StreamMood | null>(null)
   const [position, setPosition] = useState<StreamPosition | null>(null)
+  const [shareContentDialogOpen, setShareContentDialogOpen] = useState(false)
   const [listening, setListening] = useState(false)
   const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
   const [sealInProgress, setSealInProgress] = useState(false)
@@ -563,6 +570,13 @@ const Stream: React.FC = () => {
           action={
             <React.Fragment>
               <IconButton
+                className={classes.shareButton}
+                aria-label={t('pour.stream.buttons.share')}
+                onClick={() => setShareContentDialogOpen(true)}
+              >
+                <ShareVariantIcon />
+              </IconButton>
+              <IconButton
                 aria-label={t('pour.stream.buttons.showUncloggerPrompt')}
                 color="primary"
                 onClick={() =>
@@ -664,9 +678,6 @@ const Stream: React.FC = () => {
             </Grid>
             {/** Mood */}
             <Grid item xs={12} md={4}>
-              <InputLabel htmlFor="mood-select">
-                {t('pour.stream.mood.label')}
-              </InputLabel>
               <TextField
                 select
                 label={t('pour.stream.mood.label')}
@@ -677,6 +688,7 @@ const Stream: React.FC = () => {
                   native: true
                 }}
               >
+                <option aria-label={t('common.none')} value="" />
                 {Object.keys(StreamMood).map((x) => (
                   <option value={x}>
                     {moodValueTextMap.get(x as StreamMood)}
@@ -725,6 +737,14 @@ const Stream: React.FC = () => {
         </CardActions>
       </Card>
       {/** Dialogs */}
+      <TafalkShareContentDialog
+        open={shareContentDialogOpen}
+        onClose={() => setShareContentDialogOpen(false)}
+        contentLink={`https://tafalk.com${getContentRoute({
+          __typename: 'Stream',
+          id: streamId
+        })}`}
+      />
       <TafalkFirstStreamInfoDialog
         open={firstStreamDialogOpen}
         onClose={() => setFirstStreamDialogOpen(false)}

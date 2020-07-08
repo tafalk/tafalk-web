@@ -565,6 +565,7 @@ const englishTranslation = {
         }
       },
       buttons: {
+        share: 'Share',
         showUncloggerPrompt: 'Unclogger Prompt',
         secretaryMode: 'Secretary Mode',
         seal: 'Seal'
@@ -580,6 +581,7 @@ const englishTranslation = {
         placeholder: 'Your words go here...'
       },
       buttons: {
+        share: 'Share',
         secretaryMode: 'Secretary Mode',
         pause: 'Pause'
       },
