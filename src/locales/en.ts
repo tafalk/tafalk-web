@@ -32,7 +32,7 @@ const englishTranslation = {
   intro: {
     paragraph: {
       basic:
-        'Welcome, this site utilizes only forward-typing. It is indifferent to errors, typos or finger thickness: Like a typewriter.',
+        'Alea iacta est!, and welcome to the one-way-forward creation. It is indiffr̶era̶ent to errors, typos or finger thickness: right. a typewriter feeling',
       streams:
         'The main option is the streams, texts are saved as you type. No deleting but striking through the input.',
       cantos:
