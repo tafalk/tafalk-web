@@ -116,7 +116,6 @@ const Stream: React.FC = () => {
     false
   )
   const recognition = useRef<SpeechRecognition | null>(null)
-  const [streamCreated, setStreamCreated] = useState(false)
   const [firstStreamDialogOpen, setFirstStreamDialogOpen] = useState(false)
   const [pourState, setPourState] = useState<
     'saved' | 'saving' | 'error' | undefined
@@ -216,6 +215,18 @@ const Stream: React.FC = () => {
           username:
             randomUncloggerPromptGraphqlResult?.creatorUser?.username ?? ''
         })
+        if (authUser.id) {
+          const genId = uuidv4()
+          setStreamId(genId)
+          await API.graphql(
+            graphqlOperation(CreateNewStream, {
+              id: genId,
+              startTime: new Date().toISOString(),
+              sealTime: naTimeValue,
+              userId: authUser.id
+            })
+          )
+        }
       } catch (err) {
         enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
@@ -353,7 +364,7 @@ const Stream: React.FC = () => {
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     // No body? Do nothing
-    if (!bodyRef.current || !bodyRef.current?.value || !body) return
+    if (!bodyRef.current?.value || !body) return
 
     const keyName = e.key
     // Neither Backspace nor Delete? Save or update
@@ -363,26 +374,6 @@ const Stream: React.FC = () => {
         return
       }
       try {
-        if (!streamCreated) {
-          setPourState('saving')
-          const genId = uuidv4()
-          setStreamId(genId)
-          await API.graphql(
-            graphqlOperation(CreateNewStream, {
-              id: genId,
-              body: bodyRef.current?.value,
-              startTime: new Date().toISOString(),
-              sealTime: naTimeValue,
-              userId: authUser?.id ?? ''
-            })
-          )
-          setPourState('saved')
-          setStreamCreated(true)
-          return
-        }
-        // console.log('ref: ' + bodyRef.current?.value)
-        // console.log('body: ' + body)
-        // Update with debounced function
         delayedUpdateBody()
       } catch (err) {
         setPourState('error')

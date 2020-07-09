@@ -709,7 +709,7 @@ export const CreateStreamComment = gql`
 export const CreateNewStream = gql`
   mutation CreateNewStream(
     $id: ID!
-    $body: String!
+    $body: String
     $startTime: String!
     $sealTime: String
     $userId: String!
@@ -856,7 +856,7 @@ export const CreateNewCanto = gql`
 export const UpdateCantoAllFields = gql`
   mutation UpdateCantoAllFields(
     $id: ID!
-    $body: String!
+    $body: String
     $lastUpdateTime: String!
   ) {
     updateCanto(
@@ -868,7 +868,7 @@ export const UpdateCantoAllFields = gql`
 `
 
 export const UpdateCantoBody = gql`
-  mutation UpdateCantoBody($id: ID!, $body: String!, $lastUpdateTime: String!) {
+  mutation UpdateCantoBody($id: ID!, $body: String, $lastUpdateTime: String!) {
     updateCanto(
       input: { id: $id, body: $body, lastUpdateTime: $lastUpdateTime }
     ) {
@@ -880,7 +880,7 @@ export const UpdateCantoBody = gql`
 export const PauseAndUpdateCantoAllFields = gql`
   mutation PauseAndUpdateCantoAllFields(
     $id: ID!
-    $body: String!
+    $body: String
     $lastUpdateTime: String!
   ) {
     updateCanto(

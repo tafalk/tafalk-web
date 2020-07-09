@@ -80,7 +80,6 @@ const Canto: React.FC = () => {
     false
   )
   const recognition = useRef<SpeechRecognition | null>(null)
-  const [cantoCreated, setCantoCreated] = useState(false)
   const [firstCantoDialogOpen, setFirstCantoDialogOpen] = useState(false)
   const [pourState, setPourState] = useState<
     'saved' | 'saving' | 'error' | undefined
@@ -88,6 +87,7 @@ const Canto: React.FC = () => {
   const [deleteTimeoutId, setDeleteTimeoutId] = useState<
     NodeJS.Timeout | undefined
   >(undefined)
+  const [cantoId, setCantoId] = useState('')
   const [body, setBody] = useState('')
   const [shareContentDialogOpen, setShareContentDialogOpen] = useState(false)
   const [listening, setListening] = useState(false)
@@ -95,8 +95,6 @@ const Canto: React.FC = () => {
   const [pauseInProgress, setPauseInProgress] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
   const { enqueueSnackbar } = useSnackbar()
-
-  const cantoId = authUser?.id ?? ''
 
   // Side effects: Load initial profile data
   useEffect(() => {
@@ -109,6 +107,7 @@ const Canto: React.FC = () => {
           routerHistory.push('/auth/login')
           return
         }
+        setCantoId(authUser?.id ?? '')
         const cantoGraphqlResponse = (await API.graphql(
           graphqlOperation(GetCantoById, {
             id: cantoId
@@ -116,9 +115,20 @@ const Canto: React.FC = () => {
         )) as { data: GetCantoQuery }
         const authUserCantoResult = cantoGraphqlResponse.data.getCanto
 
-        setFirstCantoDialogOpen(
-          !authUserCantoResult || authUserCantoResult.body.length === 0
-        )
+        if (!authUserCantoResult?.id) {
+          // Canto has not been created before
+          const nowTimeStr = new Date().toISOString()
+          // Create the canto
+          await API.graphql(
+            graphqlOperation(CreateNewCanto, {
+              id: cantoId,
+              startTime: nowTimeStr,
+              lastUpdateTime: nowTimeStr
+            })
+          )
+          // Dialog
+          setFirstCantoDialogOpen(!authUserCantoResult?.id)
+        }
       } catch (err) {
         enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
@@ -237,23 +247,6 @@ const Canto: React.FC = () => {
         return
       }
       try {
-        if (!cantoCreated) {
-          setPourState('saving')
-          // TODO: Update fields
-          await API.graphql(
-            graphqlOperation(CreateNewCanto, {
-              id: cantoId,
-              body: bodyRef.current?.value,
-              startTime: new Date().toISOString(),
-              lastUpdateTime: new Date().toISOString()
-            })
-          )
-          setPourState('saved')
-          setCantoCreated(true)
-          return
-        }
-        // console.log('ref: ' + bodyRef.current?.value)
-        // console.log('body: ' + body)
         // Update with debounced function
         delayedUpdateBody()
       } catch (err) {

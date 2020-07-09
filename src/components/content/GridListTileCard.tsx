@@ -349,13 +349,13 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
   ) : (
     // Regular Content
     <Card className={classes.card}>
+      <CardHeader
+        avatar={cardData?.header.avatar}
+        title={cardData?.header.title}
+        subheader={cardData?.header.subheader}
+      ></CardHeader>
       <CardActionArea component={RouterLink} to={cardData?.clickRoute ?? ''}>
         <CardContent>{cardData?.content}</CardContent>
-        <CardHeader
-          avatar={cardData?.header.avatar}
-          title={cardData?.header.title}
-          subheader={cardData?.header.subheader}
-        ></CardHeader>
       </CardActionArea>
     </Card>
   )

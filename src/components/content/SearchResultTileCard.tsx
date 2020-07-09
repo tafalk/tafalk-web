@@ -8,14 +8,15 @@ import {
   CardContent,
   Avatar,
   Link,
-  CardActionArea,
   Box,
   CardActions,
-  Button
+  Button,
+  IconButton
 } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
 import AllInclusiveIcon from 'mdi-material-ui/AllInclusive'
 import FeatherIcon from 'mdi-material-ui/Feather'
+import ArrowRightCircleIcon from 'mdi-material-ui/ArrowRightCircle'
 import { Skeleton } from '@material-ui/lab'
 import { AuthUserContext } from 'context/Auth'
 import { getContentRoute } from 'utils/derivations'
@@ -27,6 +28,7 @@ interface CardData {
     avatar?: ReactNode
     title?: ReactNode
     subheader?: ReactNode
+    action?: ReactNode
   }
   clickRoute: string
 }
@@ -131,6 +133,18 @@ const getSubheader = (item: SearchResultTileCardProps['item']) => {
   return
 }
 
+const getAction = (item: SearchResultTileCardProps['item']) => {
+  return (
+    <IconButton
+      aria-label="navigate"
+      component={RouterLink}
+      to={getContentRoute(item) ?? ''}
+    >
+      <ArrowRightCircleIcon />
+    </IconButton>
+  )
+}
+
 const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
   const { item } = props
   const classes = useStyles()
@@ -161,6 +175,7 @@ const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
         )
         const headerTitle = getTitle(item)
         const headerSubheader = getSubheader(item)
+        const headerAction = getAction(item)
         // Blocked?
         const cardUserId = item.__typename === 'User' ? item.id : item.user.id
         const isContentBlocked =
@@ -172,7 +187,8 @@ const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
           header: {
             avatar: headerAvatar,
             title: headerTitle,
-            subheader: headerSubheader
+            subheader: headerSubheader,
+            action: headerAction
           },
           clickRoute: getContentRoute(item) ?? ''
         })
@@ -214,13 +230,12 @@ const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
   ) : (
     // Regular Content
     <Card className={classes.card}>
-      <CardActionArea component={RouterLink} to={cardData?.clickRoute ?? ''}>
-        <CardHeader
-          avatar={cardData?.header.avatar}
-          title={cardData?.header.title}
-          subheader={cardData?.header.subheader}
-        ></CardHeader>
-      </CardActionArea>
+      <CardHeader
+        avatar={cardData?.header.avatar}
+        title={cardData?.header.title}
+        subheader={cardData?.header.subheader}
+        action={cardData?.header.action}
+      ></CardHeader>
     </Card>
   )
 }
