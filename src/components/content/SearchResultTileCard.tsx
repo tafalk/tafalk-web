@@ -55,14 +55,12 @@ const getAvatar = (
   classes: Record<any, string>
 ) => {
   if (item.__typename === 'User') {
-    return userProfilePictureObjectUrl ? (
+    return (
       <Avatar
         alt={item.username}
         className={classes.avatar}
         src={userProfilePictureObjectUrl}
       ></Avatar>
-    ) : (
-      <Skeleton variant="circle" width={40} height={40}></Skeleton>
     )
   }
   if (item.__typename === 'Canto') {
@@ -211,7 +209,7 @@ const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
   return contentBlocked && !showBlocked ? (
     // Blocked Content
     <Card className={classes.card}>
-      <CardContent>
+      <CardContent component="p">
         <Box fontStyle="italic">
           {t('searchResultTileCard.message.blocked')}
         </Box>

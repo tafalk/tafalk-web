@@ -92,15 +92,11 @@ const getHeaderAvatar = async (
       component={RouterLink}
       to={`/u/${item.user.username}`}
     >
-      {userProfilePictureObjectUrl ? (
-        <Avatar
-          alt={item.user.username}
-          className={classes.avatar}
-          src={userProfilePictureObjectUrl}
-        ></Avatar>
-      ) : (
-        <Skeleton variant="circle" width={40} height={40}></Skeleton>
-      )}
+      <Avatar
+        alt={item.user.username}
+        className={classes.avatar}
+        src={userProfilePictureObjectUrl}
+      ></Avatar>
     </IconButton>
   )
 }
@@ -138,7 +134,7 @@ const getHeaderSubheader = (
           expression: formatDistance(sealTime, startTime, {
             locale: getUserLocale(item.user.language)
           }),
-          icon: <TimerIcon color="disabled" />
+          icon: <TimerIcon color="disabled" fontSize="small" />
         },
         // Time from seal
         {
@@ -146,7 +142,7 @@ const getHeaderSubheader = (
             locale: getUserLocale(item.user.language),
             addSuffix: true
           }),
-          icon: <SeatFlatIcon color="disabled" />
+          icon: <SeatFlatIcon color="disabled" fontSize="small" />
         }
       )
     } else {
@@ -157,7 +153,7 @@ const getHeaderSubheader = (
             locale: getUserLocale(item.user.language),
             addSuffix: true
           }),
-          icon: <TimerIcon color="disabled" />
+          icon: <TimerIcon color="disabled" fontSize="small" />
         }
       )
 
@@ -166,7 +162,7 @@ const getHeaderSubheader = (
           // On fire!
           {
             expression: t('gridListTileCard.text.live'),
-            icon: <PlayIcon htmlColor="red" />
+            icon: <PlayIcon htmlColor="red" fontSize="small" />
           }
         )
       }
@@ -331,7 +327,7 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
   return contentBlocked && !showBlocked ? (
     // Blocked Content
     <Card className={classes.card}>
-      <CardContent>
+      <CardContent component="p">
         <Box fontStyle="italic">{t('gridListTileCard.message.blocked')}</Box>
       </CardContent>
       <CardActions>
@@ -354,7 +350,7 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
         subheader={cardData?.header.subheader}
       ></CardHeader>
       <CardActionArea component={RouterLink} to={cardData?.clickRoute ?? ''}>
-        <CardContent>{cardData?.content}</CardContent>
+        <CardContent component="p">{cardData?.content}</CardContent>
       </CardActionArea>
     </Card>
   )

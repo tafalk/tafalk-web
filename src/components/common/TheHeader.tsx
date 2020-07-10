@@ -272,15 +272,11 @@ const TheHeader: React.FC = () => {
           setAnchorEl(event.currentTarget)
         }}
       >
-        {authUser?.profilePictureObjectUrl ? (
-          <Avatar
-            alt="Woolfie"
-            src={authUser?.profilePictureObjectUrl}
-            style={{ color: '#fff', backgroundColor: authUser?.color }}
-          />
-        ) : (
-          <Skeleton variant="circle" width={40} height={40}></Skeleton>
-        )}
+        <Avatar
+          alt="Woolfie"
+          src={authUser?.profilePictureObjectUrl}
+          style={{ color: '#fff', backgroundColor: authUser?.color }}
+        />
       </IconButton>
     </React.Fragment>
   )

@@ -24,10 +24,10 @@ import {
   GridListTile
 } from '@material-ui/core'
 import API, { graphqlOperation } from '@aws-amplify/api'
-import GhostOffIcon from 'mdi-material-ui/GhostOff'
+import StopIcon from 'mdi-material-ui/Stop'
 import MusicIcon from 'mdi-material-ui/Music'
 import MusicRestQuarterIcon from 'mdi-material-ui/MusicRestQuarter'
-import PlayCircleOutlineIcon from 'mdi-material-ui/PlayCircleOutline'
+import AccessPointIcon from 'mdi-material-ui/AccessPoint'
 import AllInclusiveIcon from 'mdi-material-ui/AllInclusive'
 import FeatherIcon from 'mdi-material-ui/Feather'
 import { AuthUserContext } from 'context/Auth'
@@ -107,7 +107,9 @@ const Home: React.FC = () => {
   // Side effects
   useEffect(() => {
     ;(async () => {
+      if (!cookies) return
       if (!cookies[hasVisitedBeforeCookieName]) {
+        console.log('cookie: ' + JSON.stringify(cookies))
         // if first visit, redirect to welcome page
         routerHistory.push('/welcome')
       }
@@ -373,7 +375,7 @@ const Home: React.FC = () => {
             to={`/content/streams/sealed`}
             label={t('home.labels.bottomNav.streams.sealed')}
             value="sealedStream"
-            icon={<GhostOffIcon />}
+            icon={<StopIcon />}
           />
           {authUser?.id && (
             <BottomNavigationAction
@@ -381,7 +383,7 @@ const Home: React.FC = () => {
               to={`/content/streams/live`}
               label={t('home.labels.bottomNav.streams.live')}
               value="liveStream"
-              icon={<PlayCircleOutlineIcon />}
+              icon={<AccessPointIcon />}
             />
           )}
           <BottomNavigationAction

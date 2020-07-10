@@ -108,15 +108,11 @@ const getHeaderAvatar = async (
       component={RouterLink}
       to={`/u/${item.user.username}`}
     >
-      {userProfilePictureObjectUrl ? (
-        <Avatar
-          alt={item.user.username}
-          className={classes.avatar}
-          src={userProfilePictureObjectUrl}
-        ></Avatar>
-      ) : (
-        <Skeleton variant="circle" width={40} height={40}></Skeleton>
-      )}
+      <Avatar
+        alt={item.user.username}
+        className={classes.avatar}
+        src={userProfilePictureObjectUrl}
+      ></Avatar>
     </IconButton>
   ) : undefined
 }
@@ -412,7 +408,7 @@ const ContentTileCard: React.FC<TileCardProps> = React.memo((props) => {
     <Card className={classes.card}>
       <CardActionArea component={RouterLink} to={cardData?.clickRoute ?? ''}>
         {cardData?.content ? (
-          <CardContent>{cardData.content}</CardContent>
+          <CardContent component="p">{cardData.content}</CardContent>
         ) : undefined}
         <CardHeader
           avatar={cardData?.header.avatar}
