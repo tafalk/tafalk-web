@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { BasicDialogProps } from 'types/props'
 import {
   DialogContentText,
@@ -7,28 +7,38 @@ import {
   DialogActions,
   Button,
   DialogContent,
-  InputLabel,
-  Select
+  TextField
 } from '@material-ui/core'
+import API, { graphqlOperation } from '@aws-amplify/api'
 import { useTranslation } from 'react-i18next'
-import { supportedLanguages } from 'utils/constants'
+import { UpdateUserLanguage } from 'graphql/custom'
+import { AuthUserContext } from 'context/Auth'
+import { Language } from 'types/appsync/API'
 
-interface LanguageSelectionDialogProps extends BasicDialogProps {
-  onConfirm: () => Promise<void>
-}
+const supportedLanguages = [{ text: 'English [en]', value: Language.en }]
+
+interface LanguageSelectionDialogProps extends BasicDialogProps {}
 
 const TheLanguageSelectionDialog: React.FC<LanguageSelectionDialogProps> = (
   props
 ) => {
-  const { onClose, open, onConfirm } = props
+  const { onClose, open } = props
   const { t } = useTranslation()
-  const [language, setLanguage] = useState('')
+  const [language, setLanguage] = useState<Language | null>(null)
+  const { user: authUser, setUser: setAuthUser } = useContext(AuthUserContext)
 
   // Functions
-  const onLanguageChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>
-  ) => {
-    setLanguage(event.target.value as string)
+  const onConfirm = async (): Promise<void> => {
+    // TODO: Test Language Change
+    const languageOrDefault = language ?? Language.en
+    await API.graphql(
+      graphqlOperation(UpdateUserLanguage, {
+        userId: authUser?.id,
+        language: languageOrDefault
+      })
+    )
+    setAuthUser({ ...authUser, language: languageOrDefault })
+    onClose()
   }
 
   return (
@@ -36,16 +46,15 @@ const TheLanguageSelectionDialog: React.FC<LanguageSelectionDialogProps> = (
       <DialogTitle>{t('languageDialog.title')}</DialogTitle>
       <DialogContent>
         <DialogContentText>{t('languageDialog.body')}</DialogContentText>
-        <InputLabel htmlFor="language-select">
-          {t('languageDialog.input.label')}
-        </InputLabel>
-        <Select
-          native
+        <TextField
+          select
+          label={t('languageDialog.input.label')}
           value={language}
-          onChange={onLanguageChange}
-          inputProps={{
-            name: 'language',
-            id: 'language-select'
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setLanguage(e.target.value as Language)
+          }
+          SelectProps={{
+            native: true
           }}
         >
           {supportedLanguages.map((l) => (
@@ -53,7 +62,7 @@ const TheLanguageSelectionDialog: React.FC<LanguageSelectionDialogProps> = (
               {l.text}
             </option>
           ))}
-        </Select>
+        </TextField>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="default">

@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useContext,
-  useCallback,
-  useEffect,
-  useRef
-} from 'react'
+import React, { useState, useContext, useEffect, useRef } from 'react'
 import { Link as RouterLink, useLocation, useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Auth from '@aws-amplify/auth'
@@ -207,25 +201,21 @@ const TheHeader: React.FC = () => {
     await Auth.signOut()
     setLogoutDialogOpen(false)
   }
-  const onConfirmLanguage = async (): Promise<void> => {
-    // TODO: Persist Language Change
-    setLanguageDialogOpen(false)
+
+  const onThemeToggle = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
+    // TODO: Test Theme Change
+    const isDarkModeEnabled = event.target.checked
+    await API.graphql(
+      graphqlOperation(UpdateUserTheme, {
+        userId: authUser?.id,
+        theme: !isDarkModeEnabled ? 'light' : 'dark'
+      })
+    )
+    setAuthUser({ ...authUser, theme: isDarkModeEnabled })
+    setDarkModeSwitchChecked(isDarkModeEnabled)
   }
-  const onThemeToggle = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
-      // TODO: Test Theme Change
-      const isDarkModeEnabled = event.target.checked
-      await API.graphql(
-        graphqlOperation(UpdateUserTheme, {
-          userId: authUser?.id,
-          theme: !isDarkModeEnabled ? 'light' : 'dark'
-        })
-      )
-      setAuthUser({ ...authUser, theme: isDarkModeEnabled })
-      setDarkModeSwitchChecked(isDarkModeEnabled)
-    },
-    [authUser, setAuthUser]
-  )
 
   const onSearchClick = () => {
     setSearchOptionsOpen(false)
@@ -538,7 +528,6 @@ const TheHeader: React.FC = () => {
       {/* Language Selection Dialog */}
       <TafalkLanguageSelectionDialog
         open={languageDialogOpen}
-        onConfirm={onConfirmLanguage}
         onClose={() => setLanguageDialogOpen(false)}
       />
 

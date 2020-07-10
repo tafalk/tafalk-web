@@ -680,7 +680,7 @@ const Stream: React.FC = () => {
               >
                 <option aria-label={t('common.none')} value="" />
                 {Object.keys(StreamMood).map((x) => (
-                  <option value={x}>
+                  <option key={x} value={x}>
                     {moodValueTextMap.get(x as StreamMood)}
                   </option>
                 ))}
@@ -700,7 +700,7 @@ const Stream: React.FC = () => {
               >
                 <option aria-label={t('common.none')} value="" />
                 {Object.keys(StreamPosition).map((x) => (
-                  <option value={x}>
+                  <option key={x} value={x}>
                     {positionValueTextMap.get(x as StreamPosition)}
                   </option>
                 ))}

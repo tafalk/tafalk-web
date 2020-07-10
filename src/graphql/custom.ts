@@ -519,12 +519,20 @@ export const GetRandomUncloggerPromptForStream = gql`
     }
   }
 `
+
 // Mutate
+export const UpdateUserLanguage = gql`
+  mutation UpdateUserLanguage($userId: ID!, $language: Language) {
+    updateUser(input: { id: $userId, language: $language }) {
+      id
+    }
+  }
+`
+
 export const UpdateUserTheme = gql`
   mutation UpdateUserTheme($userId: ID!, $theme: String) {
     updateUser(input: { id: $userId, theme: $theme }) {
       id
-      theme
     }
   }
 `
@@ -547,7 +555,6 @@ export const UpdateUserProfilePictureKey = gql`
   ) {
     updateUser(input: { id: $userId, profilePictureKey: $profilePictureKey }) {
       id
-      profilePictureKey
     }
   }
 `

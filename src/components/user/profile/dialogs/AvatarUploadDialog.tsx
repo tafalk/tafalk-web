@@ -70,7 +70,6 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
     maxSize: avatarPictureSizeMaxSize,
     multiple: false,
     onDrop: (acceptedFiles, fileRejections) => {
-      // TODO: Do something with the files
       console.log(JSON.stringify(acceptedFiles))
       const acceptedFile = acceptedFiles[0]
       setUploadedFile({
@@ -97,7 +96,7 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
     if (!uploadedFile) return
     setUploadInProgress(true)
     try {
-      // TODO: Compress image on the fly
+      // TODO: Compress image on the fly  maybe
       const profilePictureKey = generateProfilePictureFileName(
         uploadedFile,
         authUser?.id ?? ''

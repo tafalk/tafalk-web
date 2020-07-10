@@ -217,7 +217,6 @@ const getHeaderSubheader = (
         </Grid>
         <Grid item>
           {/* Watching Live */}
-          {/* TODO: Canto's live should be inferred from some other field, if it can */}
           {!item.isPaused && (
             <Grid container direction="row" alignItems="center">
               <Grid item>&nbsp;</Grid>
