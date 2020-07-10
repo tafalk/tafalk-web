@@ -25,7 +25,6 @@ import PlayIcon from 'mdi-material-ui/Play'
 import BookmarkIcon from 'mdi-material-ui/Bookmark'
 import CommentIcon from 'mdi-material-ui/Comment'
 import { TFunction } from 'i18next'
-import { Skeleton } from '@material-ui/lab'
 import { AuthUserContext } from 'context/Auth'
 import { GridListTileCardProps } from 'types/props'
 import { getContentRoute } from 'utils/derivations'
@@ -50,6 +49,9 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       height: '100%'
     },
+    cardHeader: {
+      paddingBottom: theme.spacing(0.5)
+    },
     title: {
       fontWeight: 'bold'
     }
@@ -62,12 +64,12 @@ const getContent = (
 ) => {
   if (['Stream', 'Canto'].includes(item.__typename)) {
     return (
-      <div>
+      <span>
         {item.title && item.title.trim() ? (
           <span className={classes.title}>{item.title}&mdash;&nbsp;</span>
         ) : undefined}
         {item.body}
-      </div>
+      </span>
     )
   }
   return undefined
@@ -77,7 +79,7 @@ const getHeaderAvatar = async (
   item: GridListTileCardProps['item'],
   classes: Record<any, string>
 ) => {
-  if (!item.user.profilePictureKey) return undefined
+  if (!item.user?.profilePictureKey) return undefined
   const userProfilePictureObjectUrl = (await Storage.get(
     item.user.profilePictureKey,
     {
@@ -195,7 +197,7 @@ const getHeaderSubheader = (
           {/* Bookmarks */}
           <Grid container direction="row" alignItems="center">
             <Grid item>
-              <BookmarkIcon color="disabled" />
+              <BookmarkIcon color="disabled" fontSize="small" />
               &nbsp;
             </Grid>
             <Grid item>{item.bookmarkCount?.count ?? 0}</Grid>
@@ -205,7 +207,7 @@ const getHeaderSubheader = (
           {/* Comments */}
           <Grid container direction="row" alignItems="center">
             <Grid item>
-              <CommentIcon color="disabled" />
+              <CommentIcon color="disabled" fontSize="small" />
               &nbsp;
             </Grid>
             <Grid item>{item.commentCount?.count ?? 0}</Grid>
@@ -240,7 +242,7 @@ const getHeaderSubheader = (
           {/* Bookmarks */}
           <Grid container direction="row" alignItems="center">
             <Grid item>
-              <BookmarkIcon color="disabled" />
+              <BookmarkIcon color="disabled" fontSize="small" />
               &nbsp;
             </Grid>
             <Grid item>{item.bookmarkCount?.count ?? 0}</Grid>
@@ -251,7 +253,7 @@ const getHeaderSubheader = (
           {item.isSealed === 1 && (
             <Grid container direction="row" alignItems="center">
               <Grid item>
-                <CommentIcon color="disabled" />
+                <CommentIcon color="disabled" fontSize="small" />
                 &nbsp;
               </Grid>
               <Grid item>{item.commentCount?.count ?? 0}</Grid>
@@ -344,12 +346,13 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
   ) : (
     // Regular Content
     <Card className={classes.card}>
-      <CardHeader
-        avatar={cardData?.header.avatar}
-        title={cardData?.header.title}
-        subheader={cardData?.header.subheader}
-      ></CardHeader>
       <CardActionArea component={RouterLink} to={cardData?.clickRoute ?? ''}>
+        <CardHeader
+          avatar={cardData?.header.avatar}
+          title={cardData?.header.title}
+          subheader={cardData?.header.subheader}
+          className={classes.cardHeader}
+        ></CardHeader>
         <CardContent component="p">{cardData?.content}</CardContent>
       </CardActionArea>
     </Card>

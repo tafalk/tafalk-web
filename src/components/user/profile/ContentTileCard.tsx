@@ -22,7 +22,6 @@ import {
 } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
 import { TileCardProps } from 'types/props'
-import { Skeleton } from '@material-ui/lab'
 import { getContentRoute } from 'utils/derivations'
 import TimerIcon from 'mdi-material-ui/Timer'
 import SeatFlatIcon from 'mdi-material-ui/SeatFlat'

@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next'
 import AllInclusiveIcon from 'mdi-material-ui/AllInclusive'
 import FeatherIcon from 'mdi-material-ui/Feather'
 import ArrowRightCircleIcon from 'mdi-material-ui/ArrowRightCircle'
-import { Skeleton } from '@material-ui/lab'
 import { AuthUserContext } from 'context/Auth'
 import { getContentRoute } from 'utils/derivations'
 import { SearchResultTileCardProps } from 'types/props'
@@ -159,7 +158,7 @@ const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
       try {
         // Profile Pic (for User)
         const userProfilePictureObjectUrl =
-          item.__typename === 'User' && item.profilePictureKey
+          item.__typename === 'User' && item?.profilePictureKey
             ? ((await Storage.get(item.user.profilePictureKey, {
                 level: 'protected',
                 identityId: item.user.cognitoIdentityId

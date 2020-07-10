@@ -4,7 +4,8 @@ import {
   Link as RouterLink,
   useHistory,
   useLocation,
-  Switch
+  Switch,
+  Redirect
 } from 'react-router-dom'
 import InfiniteScroll from 'react-infinite-scroller'
 import { useCookies } from 'react-cookie'
@@ -322,10 +323,14 @@ const Home: React.FC = () => {
           <Route exact path="/">
             {sealedStreamsGridList}
           </Route>
-          <Route path="/content/streams">{sealedStreamsGridList}</Route>
+          <Route path="/content/streams">
+            <Redirect to="/content/streams/sealed" />
+          </Route>
           <Route path="/content/streams/sealed">{sealedStreamsGridList}</Route>
           <Route path="/content/streams/live">{liveStreamsGridList}</Route>
-          <Route path="/content/cantos">{pausedCantosGridList}</Route>
+          <Route path="/content/cantos">
+            <Redirect to="/content/cantos/paused" />
+          </Route>
           <Route path="/content/cantos/paused">{pausedCantosGridList}</Route>
           <Route path="/content/cantos/live">{liveCantosGridList}</Route>
         </Switch>
@@ -344,14 +349,12 @@ const Home: React.FC = () => {
           direction="up"
         >
           <SpeedDialAction
-            // FabProps={{ color: 'secondary' }}
             icon={<FeatherIcon />}
             tooltipTitle={t('home.tooltips.addContentFabAction.stream')}
             tooltipOpen
             onClick={() => routerHistory.push('/pour/stream')}
           />
           <SpeedDialAction
-            // FabProps={{ color: 'secondary' }}
             icon={<AllInclusiveIcon />}
             tooltipTitle={t('home.tooltips.addContentFabAction.canto')}
             tooltipOpen
