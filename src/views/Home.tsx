@@ -45,7 +45,7 @@ import {
   ListPausedCantosForInfoCard,
   ListLiveCantosForInfoCard
 } from 'graphql/custom'
-import TafalkGridListTileCard from 'components/content/GridListTileCard'
+import TafalkGridListTileCard from 'components/home/GridListTileCard'
 import { itemsPerFetch, hasVisitedBeforeCookieName } from 'utils/constants'
 import {
   ListSealedStreamsForInfoCardQuery,
@@ -53,12 +53,7 @@ import {
   ListLiveCantosForInfoCardQuery,
   ListPausedCantosForInfoCardQuery
 } from 'types/appsync/API'
-
-type BottomNavigationType =
-  | 'sealedStream'
-  | 'liveStream'
-  | 'pausedCanto'
-  | 'liveCanto'
+import { BottomNavigationType } from 'types/props'
 
 const routePathBottomNavigationMap = new Map<string, BottomNavigationType>([
   ['/', 'sealedStream'],
@@ -109,23 +104,23 @@ const Home: React.FC = () => {
   useEffect(() => {
     ;(async () => {
       if (!cookies) return
+      // if first visit, redirect to welcome page
       if (!cookies[hasVisitedBeforeCookieName]) {
-        console.log('cookie: ' + JSON.stringify(cookies))
-        // if first visit, redirect to welcome page
         routerHistory.push('/welcome')
       }
-      // Whenever query params change load relevant content
+      // Whenever subpath changes, set navigation
       const pathname = routeLocation.pathname
       const type = routePathBottomNavigationMap.get(pathname) ?? 'sealedStream'
       setBottomNavigationValue(type)
+      setFetchNextToken('')
 
+      // Set initial items depending on the subpath
       switch (type) {
         case 'sealedStream':
           // Initial sealed items
           const sealedStreamsGraphqlResponse = (await API.graphql(
             graphqlOperation(ListSealedStreamsForInfoCard, {
-              limit: itemsPerFetch,
-              nextToken: fetchNextToken
+              limit: itemsPerFetch
             })
           )) as {
             data: ListSealedStreamsForInfoCardQuery
@@ -139,8 +134,7 @@ const Home: React.FC = () => {
           // Initial live items
           const liveStreamsGraphqlResponse = (await API.graphql(
             graphqlOperation(ListLiveStreamsForInfoCard, {
-              limit: itemsPerFetch,
-              nextToken: fetchNextToken
+              limit: itemsPerFetch
             })
           )) as {
             data: ListLiveStreamsForInfoCardQuery
@@ -154,8 +148,7 @@ const Home: React.FC = () => {
           // Initial paused canto items
           const pausedCantosGraphqlResponse = (await API.graphql(
             graphqlOperation(ListPausedCantosForInfoCard, {
-              limit: itemsPerFetch,
-              nextToken: fetchNextToken
+              limit: itemsPerFetch
             })
           )) as {
             data: ListPausedCantosForInfoCardQuery
@@ -169,8 +162,7 @@ const Home: React.FC = () => {
           // Initial live canto items
           const liveCantosGraphqlResponse = (await API.graphql(
             graphqlOperation(ListLiveCantosForInfoCard, {
-              limit: itemsPerFetch,
-              nextToken: fetchNextToken
+              limit: itemsPerFetch
             })
           )) as {
             data: ListLiveCantosForInfoCardQuery
@@ -183,7 +175,7 @@ const Home: React.FC = () => {
           return
       }
     })()
-  }, [cookies, fetchNextToken, routeLocation.pathname, routerHistory])
+  }, [cookies, routeLocation.pathname, routerHistory])
 
   // Functions
   const loadMore = async () => {
@@ -253,54 +245,12 @@ const Home: React.FC = () => {
   }
 
   // Subroutes
-  const sealedStreamsGridList = items ? (
+  const itemsGridList = items ? (
     <GridList cellHeight="auto" cols={1} className={classes.gridList}>
       {items?.map((i) => (
         <GridListTile key={`${bottomNavigationValue}-${i.id}`} cols={1}>
           <TafalkGridListTileCard
-            status="sealed"
-            item={i}
-          ></TafalkGridListTileCard>
-        </GridListTile>
-      ))}
-    </GridList>
-  ) : (
-    <div></div>
-  )
-  const liveStreamsGridList = items ? (
-    <GridList cellHeight="auto" cols={1} className={classes.gridList}>
-      {items?.map((i) => (
-        <GridListTile key={`${bottomNavigationValue}-${i.id}`} cols={1}>
-          <TafalkGridListTileCard
-            status="live"
-            item={i}
-          ></TafalkGridListTileCard>
-        </GridListTile>
-      ))}
-    </GridList>
-  ) : (
-    <div></div>
-  )
-  const pausedCantosGridList = items ? (
-    <GridList cellHeight="auto" cols={1} className={classes.gridList}>
-      {items?.map((i) => (
-        <GridListTile key={`${bottomNavigationValue}-${i.id}`} cols={1}>
-          <TafalkGridListTileCard
-            status="paused"
-            item={i}
-          ></TafalkGridListTileCard>
-        </GridListTile>
-      ))}
-    </GridList>
-  ) : (
-    <div></div>
-  )
-  const liveCantosGridList = items ? (
-    <GridList cellHeight="auto" cols={1} className={classes.gridList}>
-      {items?.map((i) => (
-        <GridListTile key={`${bottomNavigationValue}-${i.id}`} cols={1}>
-          <TafalkGridListTileCard
-            status="live"
+            type={bottomNavigationValue}
             item={i}
           ></TafalkGridListTileCard>
         </GridListTile>
@@ -321,18 +271,18 @@ const Home: React.FC = () => {
       >
         <Switch>
           <Route exact path="/">
-            {sealedStreamsGridList}
+            {itemsGridList}
           </Route>
           <Route path="/content/streams">
             <Redirect to="/content/streams/sealed" />
           </Route>
-          <Route path="/content/streams/sealed">{sealedStreamsGridList}</Route>
-          <Route path="/content/streams/live">{liveStreamsGridList}</Route>
+          <Route path="/content/streams/sealed">{itemsGridList}</Route>
+          <Route path="/content/streams/live">{itemsGridList}</Route>
           <Route path="/content/cantos">
             <Redirect to="/content/cantos/paused" />
           </Route>
-          <Route path="/content/cantos/paused">{pausedCantosGridList}</Route>
-          <Route path="/content/cantos/live">{liveCantosGridList}</Route>
+          <Route path="/content/cantos/paused">{itemsGridList}</Route>
+          <Route path="/content/cantos/live">{itemsGridList}</Route>
         </Switch>
       </InfiniteScroll>
 

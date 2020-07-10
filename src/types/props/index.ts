@@ -14,9 +14,15 @@ export interface BasicDialogProps {
   onClose: () => void
 }
 
+export type BottomNavigationType =
+  | 'sealedStream'
+  | 'liveStream'
+  | 'pausedCanto'
+  | 'liveCanto'
+
 export interface GridListTileCardProps {
   item: any
-  status: 'live' | 'sealed' | 'paused' | undefined
+  type: BottomNavigationType
 }
 
 export interface SearchResultTileCardProps {

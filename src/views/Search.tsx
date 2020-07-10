@@ -6,8 +6,7 @@ import { SearchQuery } from 'types/appsync/API'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { GridList, GridListTile, Typography, Grid } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
-
-import TafalkSearchResultTileCard from 'components/content/SearchResultTileCard'
+import TafalkSearchResultTileCard from 'components/search/SearchResultTileCard'
 import { Skeleton } from '@material-ui/lab'
 import { useSnackbar } from 'notistack'
 

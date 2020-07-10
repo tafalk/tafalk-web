@@ -119,7 +119,7 @@ const getHeaderTitle = (item: GridListTileCardProps['item']) => {
 
 const getHeaderSubheader = (
   item: GridListTileCardProps['item'],
-  status: GridListTileCardProps['status'],
+  type: GridListTileCardProps['type'],
   t: TFunction
 ) => {
   // Closures
@@ -128,7 +128,7 @@ const getHeaderSubheader = (
 
     const startTime = new Date(item.startTime)
 
-    if (status === 'sealed') {
+    if (type === 'sealedStream') {
       const sealTime = new Date(item.sealTime)
       results.push(
         // Time elapsed
@@ -159,7 +159,7 @@ const getHeaderSubheader = (
         }
       )
 
-      if (status === 'live') {
+      if (['liveStream', 'liveCanto'].includes(type)) {
         results.push(
           // On fire!
           {
@@ -277,7 +277,7 @@ const getHeaderSubheader = (
 }
 
 const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
-  const { item, status } = props
+  const { item, type } = props
   const classes = useStyles()
   const { t } = useTranslation()
   const { user: authUser } = useContext(AuthUserContext)
@@ -292,7 +292,7 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
         const content = getContent(item, classes)
         const headerAvatar = await getHeaderAvatar(item, classes)
         const headerTitle = getHeaderTitle(item)
-        const headerSubheader = getHeaderSubheader(item, status, t)
+        const headerSubheader = getHeaderSubheader(item, type, t)
         // Blocked?
         const isContentBlocked =
           authUser?.userBlockInteractions?.some(
@@ -324,7 +324,7 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
         })
       }
     })()
-  }, [authUser, classes, enqueueSnackbar, item, status, t])
+  }, [authUser, classes, enqueueSnackbar, item, t, type])
 
   return contentBlocked && !showBlocked ? (
     // Blocked Content
