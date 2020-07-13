@@ -28,7 +28,7 @@
     "formik": "^2.1.4",
     "formik-material-ui": "^2.0.1",
     "formik-material-ui-pickers": "0.0.8",
-    "graphql-tag": "^2.10.3",
+    "graphql-tag": "^2.10.4",
     "i18next": "^19.5.4",
     "i18next-browser-languagedetector": "^4.3.1",
     "material-ui-cookie-consent": "^0.1.0",
@@ -93,7 +93,7 @@
   "devDependencies": {
     "@types/debounce": "^1.2.0",
     "@types/i18next-xhr-backend": "^1.4.2",
-    "@types/react": "^16.9.41",
+    "@types/react": "^16.9.43",
     "@types/react-helmet": "^6.0.0",
     "@types/react-infinite-scroller": "^1.2.1",
     "@types/yup": "^0.26.37",
