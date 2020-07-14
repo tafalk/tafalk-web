@@ -383,7 +383,6 @@ const ContentTileCard: React.FC<TileCardProps> = React.memo((props) => {
           clickRoute: getContentRoute(item) ?? ''
         })
       } catch (err) {
-        console.log(err)
         setCardData({
           content: undefined,
           header: {

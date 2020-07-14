@@ -70,7 +70,7 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
     maxSize: avatarPictureSizeMaxSize,
     multiple: false,
     onDrop: (acceptedFiles, fileRejections) => {
-      console.log(JSON.stringify(acceptedFiles))
+      // console.log(JSON.stringify(acceptedFiles))
       const acceptedFile = acceptedFiles[0]
       setUploadedFile({
         ...acceptedFile,

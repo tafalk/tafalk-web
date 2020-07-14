@@ -31,7 +31,6 @@ const GenericShareContentDialog: React.FC<ShareContentDialogProps> = (
 
   // Functions
   const onCopyLink = () => {
-    console.log(copyLinkTextFieldRef.current?.value)
     copyLinkTextFieldRef.current?.select()
     document.execCommand('copy')
     setTooltipOpen(true)

@@ -111,7 +111,6 @@ const Home: React.FC = () => {
       if (!cookies) return
       // if first visit, redirect to welcome page
       if (!cookies.hasOwnProperty(hasVisitedBeforeCookieName)) {
-        console.log(JSON.stringify(cookies))
         routerHistory.push('/welcome')
       }
       // Whenever subpath changes, set navigation

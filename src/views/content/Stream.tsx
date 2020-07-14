@@ -287,7 +287,6 @@ const Stream: React.FC = () => {
         // Cleanup
         return unsubscribe
       } catch (err) {
-        console.log(err)
         enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
@@ -389,7 +388,6 @@ const Stream: React.FC = () => {
         })
       )
     } catch (err) {
-      console.log(err)
       enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
       })

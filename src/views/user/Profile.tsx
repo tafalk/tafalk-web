@@ -207,8 +207,7 @@ const Profile: React.FC = () => {
           profilePictureObjectUrl: profilePictureObjectUrl
         })
       } catch (err) {
-        console.log(err.message ?? err)
-        enqueueSnackbar(err.message ?? err, {
+        enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
       } finally {
@@ -268,8 +267,7 @@ const Profile: React.FC = () => {
             return
         }
       } catch (err) {
-        console.log(err.message ?? err)
-        enqueueSnackbar(err.message ?? err, {
+        enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
       }
