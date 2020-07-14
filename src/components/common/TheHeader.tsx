@@ -505,7 +505,7 @@ const TheHeader: React.FC = () => {
               renderUnauthButtons
             )
           ) : (
-            <Skeleton variant="rect" width={150} height={28} />
+            <Skeleton variant="rect" width={150} height={theme.spacing(6)} />
           )}
         </Toolbar>
       </AppBar>

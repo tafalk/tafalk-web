@@ -409,7 +409,7 @@ const Stream: React.FC = () => {
         pageStart={0}
         loadMore={loadMoreComments}
         hasMore={fetchNextOffset < (stream?.commentCount ?? 0)}
-        loader={<Skeleton variant="rect" width="100%" height={100} />}
+        loader={<Skeleton width="100%" height={theme.spacing(36)} />}
       >
         {!infoLoaded ? (
           <Grid container>
