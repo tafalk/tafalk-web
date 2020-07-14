@@ -89,7 +89,9 @@ const Home: React.FC = () => {
   const { t } = useTranslation()
   const routeLocation = useLocation()
   const [items, setItems] = useState<Array<any> | null>(null)
-  const [fetchNextToken, setFetchNextToken] = useState<string | null>(null)
+  const [fetchNextToken, setFetchNextToken] = useState<string | undefined>(
+    undefined
+  )
   const [bottomNavigationValue, setBottomNavigationValue] = useState<
     BottomNavigationType
   >('sealedStream')
@@ -112,7 +114,10 @@ const Home: React.FC = () => {
       const pathname = routeLocation.pathname
       const type = routePathBottomNavigationMap.get(pathname) ?? 'sealedStream'
       setBottomNavigationValue(type)
-      setFetchNextToken('')
+      // Scroll to top-left
+      window.scrollTo(0, 0)
+      // Reset nextToken
+      setFetchNextToken(undefined)
 
       // Set initial items depending on the subpath
       switch (type) {
@@ -127,7 +132,7 @@ const Home: React.FC = () => {
           }
           const sealedStreamsResult =
             sealedStreamsGraphqlResponse.data.listSealedStreams
-          setFetchNextToken(sealedStreamsResult?.nextToken ?? null)
+          setFetchNextToken(sealedStreamsResult?.nextToken ?? undefined)
           setItems(sealedStreamsResult?.items ?? [])
           return
         case 'liveStream':
@@ -141,7 +146,7 @@ const Home: React.FC = () => {
           }
           const liveStreamsResult =
             liveStreamsGraphqlResponse.data.listLiveStreams
-          setFetchNextToken(liveStreamsResult?.nextToken ?? null)
+          setFetchNextToken(liveStreamsResult?.nextToken ?? undefined)
           setItems(liveStreamsResult?.items ?? [])
           return
         case 'pausedCanto':
@@ -155,7 +160,7 @@ const Home: React.FC = () => {
           }
           const pausedCantosResult =
             pausedCantosGraphqlResponse.data.listPausedCantos
-          setFetchNextToken(pausedCantosResult?.nextToken ?? null)
+          setFetchNextToken(pausedCantosResult?.nextToken ?? undefined)
           setItems(pausedCantosResult?.items ?? [])
           return
         case 'liveCanto':
@@ -168,7 +173,7 @@ const Home: React.FC = () => {
             data: ListLiveCantosForInfoCardQuery
           }
           const liveCantosResult = liveCantosGraphqlResponse.data.listLiveCantos
-          setFetchNextToken(liveCantosResult?.nextToken ?? null)
+          setFetchNextToken(liveCantosResult?.nextToken ?? undefined)
           setItems(liveCantosResult?.items ?? [])
           return
         default:
@@ -192,7 +197,7 @@ const Home: React.FC = () => {
         }
         const sealedStreamsResult =
           sealedStreamsGraphqlResponse.data.listSealedStreams
-        setFetchNextToken(sealedStreamsResult?.nextToken ?? null)
+        setFetchNextToken(sealedStreamsResult?.nextToken ?? undefined)
         setItems([...(items ?? []), ...(sealedStreamsResult?.items ?? [])])
         return
       case 'liveStream':
@@ -207,7 +212,7 @@ const Home: React.FC = () => {
         }
         const liveStreamsResult =
           liveStreamsGraphqlResponse.data.listLiveStreams
-        setFetchNextToken(liveStreamsResult?.nextToken ?? null)
+        setFetchNextToken(liveStreamsResult?.nextToken ?? undefined)
         setItems([...(items ?? []), ...(liveStreamsResult?.items ?? [])])
         return
       case 'pausedCanto':
@@ -222,7 +227,7 @@ const Home: React.FC = () => {
         }
         const pausedCantosResult =
           pausedCantosGraphqlResponse.data.listPausedCantos
-        setFetchNextToken(pausedCantosResult?.nextToken ?? null)
+        setFetchNextToken(pausedCantosResult?.nextToken ?? undefined)
         setItems([...(items ?? []), ...(pausedCantosResult?.items ?? [])])
         return
       case 'liveCanto':
@@ -236,7 +241,7 @@ const Home: React.FC = () => {
           data: ListLiveCantosForInfoCardQuery
         }
         const liveCantosResult = liveCantosGraphqlResponse.data.listLiveCantos
-        setFetchNextToken(liveCantosResult?.nextToken ?? null)
+        setFetchNextToken(liveCantosResult?.nextToken ?? undefined)
         setItems([...(items ?? []), ...(liveCantosResult?.items ?? [])])
         return
       default:
@@ -273,14 +278,14 @@ const Home: React.FC = () => {
           <Route exact path="/">
             {itemsGridList}
           </Route>
-          <Route path="/content/streams">
+          <Route exact path="/content/streams">
             <Redirect to="/content/streams/sealed" />
+          </Route>
+          <Route exact path="/content/cantos">
+            <Redirect to="/content/cantos/paused" />
           </Route>
           <Route path="/content/streams/sealed">{itemsGridList}</Route>
           <Route path="/content/streams/live">{itemsGridList}</Route>
-          <Route path="/content/cantos">
-            <Redirect to="/content/cantos/paused" />
-          </Route>
           <Route path="/content/cantos/paused">{itemsGridList}</Route>
           <Route path="/content/cantos/live">{itemsGridList}</Route>
         </Switch>
