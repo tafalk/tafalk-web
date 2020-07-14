@@ -60,7 +60,13 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%'
     },
     title: {
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      fontFamily: 'Monospace',
+      fontSize: 16
+    },
+    content: {
+      fontFamily: 'Monospace',
+      fontSize: 16
     }
   })
 )
@@ -406,15 +412,17 @@ const ContentTileCard: React.FC<TileCardProps> = React.memo((props) => {
   return (
     <Card className={classes.card}>
       <CardActionArea component={RouterLink} to={cardData?.clickRoute ?? ''}>
-        {cardData?.content ? (
-          <CardContent component="p">{cardData.content}</CardContent>
-        ) : undefined}
         <CardHeader
           avatar={cardData?.header.avatar}
           title={cardData?.header.title}
           subheader={cardData?.header.subheader}
           action={cardData?.header.action}
         ></CardHeader>
+        {cardData?.content ? (
+          <CardContent component="p" className={classes.content}>
+            {cardData.content}
+          </CardContent>
+        ) : undefined}
       </CardActionArea>
     </Card>
   )

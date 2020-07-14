@@ -54,6 +54,7 @@ import {
   ListPausedCantosForInfoCardQuery
 } from 'types/appsync/API'
 import { BottomNavigationType } from 'types/props'
+import { useSnackbar } from 'notistack'
 
 const routePathBottomNavigationMap = new Map<string, BottomNavigationType>([
   ['/', 'sealedStream'],
@@ -100,7 +101,9 @@ const Home: React.FC = () => {
   let routerHistory = useHistory()
   const scrollTrigger = useScrollTrigger()
   const [addContentFabOpen, setAddContentFabOpen] = useState(false)
+  const [contentLoading, setContentLoading] = useState(false)
   const [cookies] = useCookies([hasVisitedBeforeCookieName])
+  const { enqueueSnackbar } = useSnackbar()
 
   // Side effects
   useEffect(() => {
@@ -114,73 +117,84 @@ const Home: React.FC = () => {
       const pathname = routeLocation.pathname
       const type = routePathBottomNavigationMap.get(pathname) ?? 'sealedStream'
       setBottomNavigationValue(type)
+      // Set loading true
+      setContentLoading(true)
       // Scroll to top-left
       window.scrollTo(0, 0)
       // Reset nextToken
       setFetchNextToken(undefined)
 
       // Set initial items depending on the subpath
-      switch (type) {
-        case 'sealedStream':
-          // Initial sealed items
-          const sealedStreamsGraphqlResponse = (await API.graphql(
-            graphqlOperation(ListSealedStreamsForInfoCard, {
-              limit: itemsPerFetch
-            })
-          )) as {
-            data: ListSealedStreamsForInfoCardQuery
-          }
-          const sealedStreamsResult =
-            sealedStreamsGraphqlResponse.data.listSealedStreams
-          setFetchNextToken(sealedStreamsResult?.nextToken ?? undefined)
-          setItems(sealedStreamsResult?.items ?? [])
-          return
-        case 'liveStream':
-          // Initial live items
-          const liveStreamsGraphqlResponse = (await API.graphql(
-            graphqlOperation(ListLiveStreamsForInfoCard, {
-              limit: itemsPerFetch
-            })
-          )) as {
-            data: ListLiveStreamsForInfoCardQuery
-          }
-          const liveStreamsResult =
-            liveStreamsGraphqlResponse.data.listLiveStreams
-          setFetchNextToken(liveStreamsResult?.nextToken ?? undefined)
-          setItems(liveStreamsResult?.items ?? [])
-          return
-        case 'pausedCanto':
-          // Initial paused canto items
-          const pausedCantosGraphqlResponse = (await API.graphql(
-            graphqlOperation(ListPausedCantosForInfoCard, {
-              limit: itemsPerFetch
-            })
-          )) as {
-            data: ListPausedCantosForInfoCardQuery
-          }
-          const pausedCantosResult =
-            pausedCantosGraphqlResponse.data.listPausedCantos
-          setFetchNextToken(pausedCantosResult?.nextToken ?? undefined)
-          setItems(pausedCantosResult?.items ?? [])
-          return
-        case 'liveCanto':
-          // Initial live canto items
-          const liveCantosGraphqlResponse = (await API.graphql(
-            graphqlOperation(ListLiveCantosForInfoCard, {
-              limit: itemsPerFetch
-            })
-          )) as {
-            data: ListLiveCantosForInfoCardQuery
-          }
-          const liveCantosResult = liveCantosGraphqlResponse.data.listLiveCantos
-          setFetchNextToken(liveCantosResult?.nextToken ?? undefined)
-          setItems(liveCantosResult?.items ?? [])
-          return
-        default:
-          return
+      try {
+        switch (type) {
+          case 'sealedStream':
+            // Initial sealed items
+            const sealedStreamsGraphqlResponse = (await API.graphql(
+              graphqlOperation(ListSealedStreamsForInfoCard, {
+                limit: itemsPerFetch
+              })
+            )) as {
+              data: ListSealedStreamsForInfoCardQuery
+            }
+            const sealedStreamsResult =
+              sealedStreamsGraphqlResponse.data.listSealedStreams
+            setFetchNextToken(sealedStreamsResult?.nextToken ?? undefined)
+            setItems(sealedStreamsResult?.items ?? [])
+            return
+          case 'liveStream':
+            // Initial live items
+            const liveStreamsGraphqlResponse = (await API.graphql(
+              graphqlOperation(ListLiveStreamsForInfoCard, {
+                limit: itemsPerFetch
+              })
+            )) as {
+              data: ListLiveStreamsForInfoCardQuery
+            }
+            const liveStreamsResult =
+              liveStreamsGraphqlResponse.data.listLiveStreams
+            setFetchNextToken(liveStreamsResult?.nextToken ?? undefined)
+            setItems(liveStreamsResult?.items ?? [])
+            return
+          case 'pausedCanto':
+            // Initial paused canto items
+            const pausedCantosGraphqlResponse = (await API.graphql(
+              graphqlOperation(ListPausedCantosForInfoCard, {
+                limit: itemsPerFetch
+              })
+            )) as {
+              data: ListPausedCantosForInfoCardQuery
+            }
+            const pausedCantosResult =
+              pausedCantosGraphqlResponse.data.listPausedCantos
+            setFetchNextToken(pausedCantosResult?.nextToken ?? undefined)
+            setItems(pausedCantosResult?.items ?? [])
+            return
+          case 'liveCanto':
+            // Initial live canto items
+            const liveCantosGraphqlResponse = (await API.graphql(
+              graphqlOperation(ListLiveCantosForInfoCard, {
+                limit: itemsPerFetch
+              })
+            )) as {
+              data: ListLiveCantosForInfoCardQuery
+            }
+            const liveCantosResult =
+              liveCantosGraphqlResponse.data.listLiveCantos
+            setFetchNextToken(liveCantosResult?.nextToken ?? undefined)
+            setItems(liveCantosResult?.items ?? [])
+            return
+          default:
+            return
+        }
+      } catch (err) {
+        enqueueSnackbar(JSON.stringify(err), {
+          variant: 'error'
+        })
+      } finally {
+        setContentLoading(false)
       }
     })()
-  }, [cookies, routeLocation.pathname, routerHistory])
+  }, [cookies, enqueueSnackbar, routeLocation.pathname, routerHistory])
 
   // Functions
   const loadMore = async () => {
@@ -268,28 +282,35 @@ const Home: React.FC = () => {
   return (
     <React.Fragment>
       {/* Content */}
-      <InfiniteScroll
-        pageStart={0}
-        loadMore={loadMore}
-        hasMore={!!fetchNextToken}
-        loader={<Skeleton variant="rect" width="100%" height={100} />}
-      >
-        <Switch>
-          <Route exact path="/">
-            {itemsGridList}
-          </Route>
-          <Route exact path="/content/streams">
-            <Redirect to="/content/streams/sealed" />
-          </Route>
-          <Route exact path="/content/cantos">
-            <Redirect to="/content/cantos/paused" />
-          </Route>
-          <Route path="/content/streams/sealed">{itemsGridList}</Route>
-          <Route path="/content/streams/live">{itemsGridList}</Route>
-          <Route path="/content/cantos/paused">{itemsGridList}</Route>
-          <Route path="/content/cantos/live">{itemsGridList}</Route>
-        </Switch>
-      </InfiniteScroll>
+      {contentLoading ? (
+        [...Array(6).keys()].map((i) => (
+          <React.Fragment>
+            <Skeleton height={theme.spacing(12)} />
+          </React.Fragment>
+        ))
+      ) : (
+        <InfiniteScroll
+          loadMore={loadMore}
+          hasMore={!!fetchNextToken}
+          loader={<Skeleton width="100%" height={theme.spacing(12)} />}
+        >
+          <Switch>
+            <Route exact path="/">
+              {itemsGridList}
+            </Route>
+            <Route exact path="/content/streams">
+              <Redirect to="/content/streams/sealed" />
+            </Route>
+            <Route exact path="/content/cantos">
+              <Redirect to="/content/cantos/paused" />
+            </Route>
+            <Route path="/content/streams/sealed">{itemsGridList}</Route>
+            <Route path="/content/streams/live">{itemsGridList}</Route>
+            <Route path="/content/cantos/paused">{itemsGridList}</Route>
+            <Route path="/content/cantos/live">{itemsGridList}</Route>
+          </Switch>
+        </InfiniteScroll>
+      )}
 
       {/* Speed Dial */}
       {authUser?.id && (
