@@ -31,14 +31,6 @@ import TafalkChangePasswordDialog from 'components/user/settings/TheChangePasswo
 import TafalkDeleteAccountConfirmationDialog from 'components/user/settings/TheDeleteAccountConfirmationDialog'
 import { useSnackbar } from 'notistack'
 
-const subPathTabValueMap = new Map([
-  ['/profile', 'profile'],
-  ['/account', 'account'],
-  ['/privacy', 'privacy'],
-  ['/notifications', 'notifications'],
-  ['/messaging', 'messaging']
-])
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -69,6 +61,21 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 )
+
+type TabValueType =
+  | 'profile'
+  | 'account'
+  | 'privacy'
+  | 'notifications'
+  | 'messaging'
+
+const subPathTabValueMap = new Map<string, TabValueType>([
+  ['/profile', 'profile'],
+  ['/account', 'account'],
+  ['/privacy', 'privacy'],
+  ['/notifications', 'notifications'],
+  ['/messaging', 'messaging']
+])
 
 const Settings: React.FC = () => {
   const { t } = useTranslation()
@@ -251,6 +258,7 @@ const Settings: React.FC = () => {
       </Box>
     </React.Fragment>
   )
+
   const notificationsTabPanelContext = tabValue === 'notifications' && (
     <React.Fragment>
       {/** Title */}
@@ -337,8 +345,10 @@ const Settings: React.FC = () => {
             </React.Fragment>
           </TabPanel>
           <TabPanel value="privacy">{privacyTabPanelContext}</TabPanel>
-          <TabPanel value="privacy">{notificationsTabPanelContext}</TabPanel>
-          <TabPanel value="privacy">{messagingTabPanelContext}</TabPanel>
+          <TabPanel value="notifications">
+            {notificationsTabPanelContext}
+          </TabPanel>
+          <TabPanel value="messaging">{messagingTabPanelContext}</TabPanel>
         </TabContext>
       </Grid>
     </React.Fragment>

@@ -70,15 +70,6 @@ import { useSnackbar } from 'notistack'
 
 const avatarThemeSpacing = 28
 
-const subPathTabValueMap = new Map([
-  ['/streams', 'streams'],
-  ['/canto', 'canto'],
-  ['/bookmarks', 'bookmarks'],
-  ['/others/fave', 'faveothers'],
-  ['/others/blocked', 'blockedothers'],
-  ['/comments', 'comments']
-])
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
@@ -124,6 +115,23 @@ const useStyles = makeStyles((theme: Theme) =>
 interface ProfileRouteParams {
   username: string
 }
+
+type TabValueType =
+  | 'streams'
+  | 'canto'
+  | 'bookmarks'
+  | 'faveothers'
+  | 'blockedothers'
+  | 'comments'
+
+const subPathTabValueMap = new Map<string, TabValueType>([
+  ['/streams', 'streams'],
+  ['/canto', 'canto'],
+  ['/bookmarks', 'bookmarks'],
+  ['/others/fave', 'faveothers'],
+  ['/others/blocked', 'blockedothers'],
+  ['/comments', 'comments']
+])
 
 const Profile: React.FC = () => {
   let routerHistory = useHistory()

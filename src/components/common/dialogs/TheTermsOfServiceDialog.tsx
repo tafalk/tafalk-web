@@ -24,7 +24,9 @@ const TheTermsOfServiceDialog: React.FC<BasicDialogProps> = (props) => {
 
   useEffect(() => {
     httpSitePoliciesStorage
-      .get(`${s3TermsOfUseFolder}/${i18n.language || 'en'}.html`)
+      .get(
+        `${s3TermsOfUseFolder}/${i18n.language?.substring(0, 2) ?? 'en'}.html`
+      )
       .then((resp) => {
         setBody(resp.data)
       })

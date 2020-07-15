@@ -48,14 +48,16 @@ import InformationIcon from 'mdi-material-ui/Information'
 import RegisterIcon from 'mdi-material-ui/AccountPlus'
 import LoginIcon from 'mdi-material-ui/Login'
 import LogoutIcon from 'mdi-material-ui/Logout'
+import ViewDashboardIcon from 'mdi-material-ui/ViewDashboard'
 
 import logo from 'assets/logo.svg'
 import smlogo from 'assets/smlogo.svg'
 
 import { AuthUserContext } from 'context/Auth'
-import { maxNumOfSearchResults } from 'utils/constants'
+import { maxNumOfSearchResults, cognitoAdminUserGroup } from 'utils/constants'
 import { UpdateUserTheme, SearchSiteContent } from 'graphql/custom'
 import { SearchQuery } from 'types/appsync/API'
+import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -136,6 +138,7 @@ const TheHeader: React.FC = () => {
   const classes = useStyles()
   const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
   const { user: authUser, setUser: setAuthUser } = useContext(AuthUserContext)
+  const [isUserAdmin, setIsUserAdmin] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [darkModeSwitchChecked, setDarkModeSwitchChecked] = useState(false)
   const [languageDialogOpen, setLanguageDialogOpen] = useState(false)
@@ -146,12 +149,24 @@ const TheHeader: React.FC = () => {
   const [searchAutocompleteOptions, setSearchAutocompleteOptions] = useState<
     Array<any>
   >([])
+  const { enqueueSnackbar } = useSnackbar()
 
   // Constants
   const isMenuOpen = Boolean(anchorEl)
   const topBarMenuId = isSmallPlus ? 'top-bar-menu-large' : 'top-bar-menu-small'
 
-  // Side Effects
+  // Side Effects: Is admin
+  useEffect(() => {
+    try {
+      setIsUserAdmin((authUser?.groups ?? []).includes(cognitoAdminUserGroup))
+    } catch (err) {
+      enqueueSnackbar(JSON.stringify(err), {
+        variant: 'error'
+      })
+    }
+  }, [authUser?.groups])
+
+  // Side Effects: search input change
   useEffect(() => {
     const timer = setTimeout(() => {
       const currSearchInput = searchInputRef.current?.value ?? ''
@@ -232,12 +247,24 @@ const TheHeader: React.FC = () => {
     <React.Fragment>
       {isSmallPlus && (
         <React.Fragment>
-          {/* Large Screen Fields */}
+          {isUserAdmin && (
+            // Admin Panel Button
+            <Tooltip title={t('topMenu.tooltips.adminDashboard') ?? ''}>
+              <IconButton
+                color="primary"
+                aria-label={t('topMenu.tooltips.adminDashboard') ?? ''}
+                component={RouterLink}
+                to="/admin"
+              >
+                <ViewDashboardIcon />
+              </IconButton>
+            </Tooltip>
+          )}
           {/* Pour Stream Button */}
           <Tooltip title={t('topMenu.tooltips.newStream') ?? ''}>
             <IconButton
               color="primary"
-              aria-label="create stream"
+              aria-label={t('topMenu.tooltips.newStream') ?? ''}
               component={RouterLink}
               to="/pour/stream"
             >
@@ -249,7 +276,7 @@ const TheHeader: React.FC = () => {
           <Tooltip title={t('topMenu.tooltips.continueCanto') ?? ''}>
             <IconButton
               color="primary"
-              aria-label="continue canto"
+              aria-label={t('topMenu.tooltips.continueCanto') ?? ''}
               component={RouterLink}
               to="/pour/canto"
             >

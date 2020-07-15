@@ -29,6 +29,20 @@ const englishTranslation = {
         'Bad of us.. Somehow, this is not redirecting to a valid content.'
     }
   },
+  admin: {
+    windowTitle: 'Admin',
+    text: {
+      title: 'Admin Dashboard'
+    },
+    tabs: {
+      flags: {
+        title: 'Flags'
+      },
+      uncloggerPrompts: {
+        title: 'Unclogger Prompts'
+      }
+    }
+  },
   intro: {
     paragraph: {
       basic:
@@ -72,7 +86,8 @@ const englishTranslation = {
       notifications: 'Notifications',
       messages: 'Messages',
       newStream: 'New Stream',
-      continueCanto: 'Continue Canto'
+      continueCanto: 'Continue Canto',
+      adminDashboard: 'Admin Dashboard'
     }
   },
   home: {
