@@ -92,18 +92,14 @@ const Search: React.FC = () => {
       {!itemsLoaded ? (
         <React.Fragment>
           {/* Skeleton Loader */}
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <br />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <br />
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-          <br />
+          {[...Array(3).keys()].map((i) => (
+            <React.Fragment>
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+              <br />
+            </React.Fragment>
+          ))}
         </React.Fragment>
       ) : !userItems && !streamItems && !cantoItems ? (
         <React.Fragment>

@@ -287,7 +287,6 @@ const Stream: React.FC = () => {
         // Cleanup
         return unsubscribe
       } catch (err) {
-        console.log(err)
         enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
@@ -389,7 +388,6 @@ const Stream: React.FC = () => {
         })
       )
     } catch (err) {
-      console.log(err)
       enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
       })
@@ -409,7 +407,7 @@ const Stream: React.FC = () => {
         pageStart={0}
         loadMore={loadMoreComments}
         hasMore={fetchNextOffset < (stream?.commentCount ?? 0)}
-        loader={<Skeleton variant="rect" width="100%" height={100} />}
+        loader={<Skeleton width="100%" height={theme.spacing(36)} />}
       >
         {!infoLoaded ? (
           <Grid container>

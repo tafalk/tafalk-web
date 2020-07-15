@@ -61,7 +61,10 @@ const Welcome: React.FC = () => {
   // Side Effects
   useEffect(() => {
     ;(async () => {
-      setCookie(hasVisitedBeforeCookieName, 'true', { path: '/' })
+      setCookie(hasVisitedBeforeCookieName, '', {
+        path: '/',
+        expires: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+      })
     })()
   }, [setCookie])
 

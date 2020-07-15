@@ -49,11 +49,17 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       height: '100%'
     },
-    cardHeader: {
+    header: {
       paddingBottom: theme.spacing(0.5)
     },
+    content: {
+      fontFamily: 'Monospace',
+      fontSize: 16
+    },
     title: {
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      fontFamily: 'Monospace',
+      fontSize: 16
     }
   })
 )
@@ -351,9 +357,11 @@ const GridListTileCard: React.FC<GridListTileCardProps> = (props) => {
           avatar={cardData?.header.avatar}
           title={cardData?.header.title}
           subheader={cardData?.header.subheader}
-          className={classes.cardHeader}
+          className={classes.header}
         ></CardHeader>
-        <CardContent component="p">{cardData?.content}</CardContent>
+        <CardContent component="p" className={classes.content}>
+          {cardData?.content}
+        </CardContent>
       </CardActionArea>
     </Card>
   )
