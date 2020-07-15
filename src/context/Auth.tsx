@@ -25,6 +25,7 @@ interface AuthUserContextDataType
   > {
   color: string
   profilePictureObjectUrl: string
+  groups: Array<string>
   contextMeta: {
     isReady: boolean
   }
@@ -55,6 +56,11 @@ export default ({ children }: any) => {
           setUser(null)
           return
         }
+        // Extract Cognito Group from token
+        const cognitoGroups = authUser.signInUserSession.accessToken.payload[
+          'cognito:groups'
+        ] as Array<string>
+        console.log('User groups: ' + cognitoGroups)
         // DB data
         const userGraphqlResponse = (await API.graphql(
           graphqlOperation(GetUser, { username: authUser.username })
@@ -89,18 +95,19 @@ export default ({ children }: any) => {
           : ''
 
         setUser({
-          // ...user,
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          bio: user.bio,
-          theme: user.theme,
-          language: user.language,
-          cognitoIdentityId: user.cognitoIdentityId,
-          userWatchInteractions: user.userWatchInteractions,
-          userBlockInteractions: user.userBlockInteractions,
+          ...user,
+          // id: user.id,
+          // username: user.username,
+          // email: user.email,
+          // bio: user.bio,
+          // theme: user.theme,
+          // language: user.language,
+          // cognitoIdentityId: user.cognitoIdentityId,
+          // userWatchInteractions: user.userWatchInteractions,
+          // userBlockInteractions: user.userBlockInteractions,
           color: GetColor(user.username, 'dark'),
           profilePictureObjectUrl: profilePictureObjectUrl,
+          groups: cognitoGroups,
           contextMeta: {
             isReady: true
           }
@@ -116,6 +123,7 @@ export default ({ children }: any) => {
           language: Language.en,
           cognitoIdentityId: '',
           profilePictureObjectUrl: '',
+          groups: [],
           userWatchInteractions: [],
           userBlockInteractions: [],
           contextMeta: {
