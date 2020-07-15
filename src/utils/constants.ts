@@ -41,5 +41,11 @@ export const persistDelayDuration = 1000
 // Char & String
 export const strikethroughChar = '\u0336'
 
+// User groups
+export const cognitoDefaultUserGroup = 'tafalk-default-ug'
+export const cognitoAdminUserGroup = 'tafalk-admin-ug'
+
 // Misc
 export const naTimeValue = 'NA'
+export const cognitoNotAuthenticatedMessage = 'not authenticated'
+export const cognitoNoCurrentUserMessage = 'No current user'

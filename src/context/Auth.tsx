@@ -6,6 +6,7 @@ import { GetColor } from '@tafalk/material-color-generator'
 import { GetUser, UpdateUserCognitoIdentityId } from 'graphql/custom'
 import { GetUserByUsernameQuery, Language } from 'types/appsync/API'
 import { useSnackbar } from 'notistack'
+import { cognitoNotAuthenticatedMessage } from 'utils/constants'
 
 interface AuthUserContextDataType
   extends Pick<
@@ -56,11 +57,11 @@ export default ({ children }: any) => {
           setUser(null)
           return
         }
+
         // Extract Cognito Group from token
         const cognitoGroups = authUser.signInUserSession.accessToken.payload[
           'cognito:groups'
         ] as Array<string>
-        console.log('User groups: ' + cognitoGroups)
         // DB data
         const userGraphqlResponse = (await API.graphql(
           graphqlOperation(GetUser, { username: authUser.username })
@@ -95,16 +96,16 @@ export default ({ children }: any) => {
           : ''
 
         setUser({
-          ...user,
-          // id: user.id,
-          // username: user.username,
-          // email: user.email,
-          // bio: user.bio,
-          // theme: user.theme,
-          // language: user.language,
-          // cognitoIdentityId: user.cognitoIdentityId,
-          // userWatchInteractions: user.userWatchInteractions,
-          // userBlockInteractions: user.userBlockInteractions,
+          // ...user,
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          bio: user.bio,
+          theme: user.theme,
+          language: user.language,
+          cognitoIdentityId: user.cognitoIdentityId,
+          userWatchInteractions: user.userWatchInteractions,
+          userBlockInteractions: user.userBlockInteractions,
           color: GetColor(user.username, 'dark'),
           profilePictureObjectUrl: profilePictureObjectUrl,
           groups: cognitoGroups,
@@ -130,11 +131,9 @@ export default ({ children }: any) => {
             isReady: true
           }
         })
-        if (err.toString() === 'not authenticated') {
-          // Guest User, do nothing
-        } else {
-          // console.log(err.message || err)
-          enqueueSnackbar(err.message ?? err, {
+
+        if (![cognitoNotAuthenticatedMessage].includes(err.toString())) {
+          enqueueSnackbar(JSON.stringify(err), {
             variant: 'error'
           })
         }
