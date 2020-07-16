@@ -520,6 +520,77 @@ export const GetRandomUncloggerPromptForStream = gql`
   }
 `
 
+export const ListFlagsForAdmin = gql`
+  query ListFlagsForAdmin(
+    $limit: Int
+    $offset: Int
+    $searchText: String
+    $status: FlagApprovalStatus
+  ) {
+    listFlags(
+      limit: $limit
+      offset: $offset
+      searchText: $searchText
+      status: $status
+    ) {
+      id
+      contentType
+      contentId
+      category
+      type
+      detail
+      flaggerUserId
+      createTime
+      status
+      reviewTime
+    }
+  }
+`
+
+export const CountFlagsForAdmin = gql`
+  query CountFlagsForAdmin($searchText: String, $status: FlagApprovalStatus) {
+    countFlags(searchText: $searchText, status: $status) {
+      count
+    }
+  }
+`
+
+export const ListUncloggerPromptsForAdmin = gql`
+  query ListUncloggerPromptsForAdmin(
+    $limit: Int
+    $offset: Int
+    $searchText: String
+    $status: UncloggerPromptApprovalStatus
+  ) {
+    listUncloggerPrompts(
+      limit: $limit
+      offset: $offset
+      searchText: $searchText
+      status: $status
+    ) {
+      id
+      category
+      body
+      language
+      creatorUserId
+      createTime
+      status
+      reviewTime
+    }
+  }
+`
+
+export const CountUncloggerPromptsForAdmin = gql`
+  query CountUncloggerPromptsForAdmin(
+    $searchText: String
+    $status: UncloggerPromptApprovalStatus
+  ) {
+    countUncloggerPrompts(searchText: $searchText, status: $status) {
+      count
+    }
+  }
+`
+
 // Mutate
 export const UpdateUserLanguage = gql`
   mutation UpdateUserLanguage($userId: ID!, $language: Language) {
@@ -713,6 +784,7 @@ export const CreateStreamComment = gql`
     }
   }
 `
+
 export const CreateNewStream = gql`
   mutation CreateNewStream(
     $id: ID!
@@ -897,6 +969,76 @@ export const PauseAndUpdateCantoAllFields = gql`
         isPaused: 0
         lastUpdateTime: $lastUpdateTime
       }
+    ) {
+      id
+    }
+  }
+`
+
+export const UpdateFlagReviewForAdmin = gql`
+  mutation UpdateFlagReviewForAdmin(
+    $id: ID!
+    $reviewerUserId: String
+    $status: FlagApprovalStatus
+    $reviewNote: String
+  ) {
+    updateFlagReview(
+      input: {
+        id: $id
+        reviewerUserId: $reviewerUserId
+        status: $status
+        reviewNote: $reviewNote
+      }
+    ) {
+      id
+    }
+  }
+`
+
+export const UpdateFlagContentForAdmin = gql`
+  mutation UpdateFlagContentForAdmin(
+    $id: ID!
+    $category: String
+    $type: String
+    $detail: String
+  ) {
+    updateFlagContent(
+      input: { id: $id, category: $category, type: $type, detail: $detail }
+    ) {
+      id
+    }
+  }
+`
+
+export const UpdateUncloggerPromptReviewForAdmin = gql`
+  mutation UpdateUncloggerPromptReviewForAdmin(
+    $id: ID!
+    $reviewerUserId: String
+    $status: UncloggerPromptApprovalStatus
+    $reviewNote: String
+  ) {
+    updateUncloggerPromptReview(
+      input: {
+        id: $id
+        reviewerUserId: $reviewerUserId
+        status: $status
+        reviewNote: $reviewNote
+      }
+    ) {
+      id
+    }
+  }
+`
+
+export const UpdateUncloggerPromptContentForAdmin = gql`
+  mutation UpdateUncloggerPromptContentForAdmin(
+    $id: ID!
+    $category: UncloggerPromptCategory
+    $body: String
+    $language: Language
+  ) {
+    updateUncloggerPromptContent(
+      input: { id: $id, category: $category, body: $body, language: $language }
     ) {
       id
     }

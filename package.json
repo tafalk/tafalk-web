@@ -31,6 +31,7 @@
     "graphql-tag": "^2.10.4",
     "i18next": "^19.6.1",
     "i18next-browser-languagedetector": "^4.3.1",
+    "material-table": "^1.65.0",
     "material-ui-cookie-consent": "^0.1.0",
     "mdi-material-ui": "^6.16.0",
     "notistack": "^0.9.17",

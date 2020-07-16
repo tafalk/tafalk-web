@@ -12,12 +12,15 @@ import {
   createStyles
 } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import API, { graphqlOperation, GraphQLResult } from '@aws-amplify/api'
 import { AuthUserContext } from 'context/Auth'
 import { Helmet } from 'react-helmet'
 import { useSnackbar } from 'notistack'
 import { cognitoAdminUserGroup } from 'utils/constants'
 import { Box, Typography, Grid, AppBar, Tab } from '@material-ui/core'
 import { TabContext, TabList, TabPanel } from '@material-ui/lab'
+import MaterialTable, { Column, Query, QueryResult } from 'material-table'
+import { ListFlagsForAdmin, ListUncloggerPromptsForAdmin } from 'graphql/custom'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,6 +34,26 @@ const useStyles = makeStyles((theme: Theme) =>
     }
   })
 )
+
+interface FlagRow {
+  id: string
+  status: string
+  category: string
+  type: string
+  detail: string
+  contentType: string
+  contentId: string
+  flaggerUserId: string
+}
+
+interface UncloggerPromptRow {
+  id: string
+  status: string
+  category: string
+  body: string
+  language: string
+  reviewNote: string
+}
 
 type TabValueType = 'flags' | 'uncloggerPrompts'
 
@@ -46,8 +69,12 @@ const AdminPanel: React.FC = () => {
   let routerHistory = useHistory()
   let { url } = useRouteMatch()
   const routeLocation = useLocation()
-  const { user: authUser, setUser: setAuthUser } = useContext(AuthUserContext)
+  const { user: authUser } = useContext(AuthUserContext)
   const [tabValue, setTabValue] = useState<TabValueType>('flags')
+  const [flagTableColumns] = useState<Array<Column<FlagRow>>>([])
+  const [uncloggerPromptTableColumns] = useState<
+    Array<Column<UncloggerPromptRow>>
+  >([])
   const { enqueueSnackbar } = useSnackbar()
 
   // Side effects: Redirect if not admin
@@ -66,40 +93,96 @@ const AdminPanel: React.FC = () => {
           routerHistory.push('/notfound')
           return
         }
-        const pathname = routeLocation.pathname
-        const subPath = pathname.replace(url, '').replace(/\/$/, '')
-        const matchingTabValue = subPathTabValueMap.get(subPath) ?? 'flags'
-        setTabValue(matchingTabValue)
       } catch (err) {
         enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
       }
     })()
-  }, [authUser, enqueueSnackbar, routerHistory])
+  }, [authUser, enqueueSnackbar, routerHistory, url])
+
+  // Side Effects: Tabs, routes and initial data
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const pathname = routeLocation.pathname
+        const subPath = pathname.replace(url, '').replace(/\/$/, '')
+        const matchingTabValue = subPathTabValueMap.get(subPath) ?? 'flags'
+        setTabValue(matchingTabValue)
+
+        switch (matchingTabValue) {
+          case 'flags':
+            return
+          case 'uncloggerPrompts':
+            return
+          default:
+            return
+        }
+      } catch (err) {
+        enqueueSnackbar(JSON.stringify(err), {
+          variant: 'error'
+        })
+      }
+    })()
+  }, [enqueueSnackbar, routeLocation.pathname, url])
+
+  // Functions
+  const fetchFlagTableData = (query: Query<FlagRow>) => {
+    return new Promise<QueryResult<FlagRow>>((resolve, reject) => {
+      ;(API.graphql(
+        graphqlOperation(ListFlagsForAdmin, {
+          limit: query.pageSize,
+          offset: query.page - 1,
+          searchText: query.search,
+          status: '' // TODO: Take it from state
+        })
+      ) as Promise<GraphQLResult<object>>).then((res) => {
+        // TODO: Promise<GraphQLResult<object>>: object -> Codegen Result type
+        resolve({
+          data: res.data
+        } as QueryResult<FlagRow>)
+      })
+    })
+  }
+
+  const fetchUncloggerPromptTableData = (query: Query<UncloggerPromptRow>) => {
+    return new Promise<QueryResult<UncloggerPromptRow>>((resolve, reject) => {
+      ;(API.graphql(
+        graphqlOperation(ListUncloggerPromptsForAdmin, {
+          limit: query.pageSize,
+          offset: query.page - 1,
+          searchText: query.search,
+          status: '' // TODO: Take it from state
+        })
+      ) as Promise<GraphQLResult<object>>).then((res) => {
+        // TODO: Promise<GraphQLResult<object>>: object -> Codegen Result type
+        resolve({
+          data: res.data
+        } as QueryResult<UncloggerPromptRow>)
+      })
+    })
+  }
 
   // DOM
   const flagsTabPanelContext = tabValue === 'flags' && (
     <React.Fragment>
-      {/** Title */}
-      <Box mb={2} pl={1}>
-        <Typography variant="h5" color="textSecondary">
-          {t('admin.tabs.flags.title')}
-        </Typography>
-      </Box>
       {/** TODO: Implement */}
+      <MaterialTable
+        title={t('admin.tabs.flags.title')}
+        columns={flagTableColumns}
+        data={fetchFlagTableData}
+      ></MaterialTable>
     </React.Fragment>
   )
 
   const uncloggerPromptsTabPanelContext = tabValue === 'uncloggerPrompts' && (
     <React.Fragment>
-      {/** Title */}
-      <Box mb={2} pl={1}>
-        <Typography variant="h5" color="textSecondary">
-          {t('admin.tabs.uncloggerPrompts.title')}
-        </Typography>
-      </Box>
       {/** TODO: Implement */}
+      <MaterialTable
+        title={t('admin.tabs.uncloggerPrompts.title')}
+        columns={uncloggerPromptTableColumns}
+        data={fetchUncloggerPromptTableData}
+      ></MaterialTable>
     </React.Fragment>
   )
 
@@ -139,6 +222,12 @@ const AdminPanel: React.FC = () => {
                 component={RouterLink}
                 to={`${url}/flags`}
                 label={t('admin.tabs.flags.title')}
+              />
+              <Tab
+                value="uncloggerPrompts"
+                component={RouterLink}
+                to={`${url}/uncloggerPrompts`}
+                label={t('admin.tabs.uncloggerPrompts.title')}
               />
             </TabList>
           </AppBar>
