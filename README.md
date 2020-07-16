@@ -1,6 +1,6 @@
 # tafalk-web
 
-![](https://github.com/tafalk/tafalk-web/workflows/.github/workflows/main.yml/badge.svg)
+![build](https://github.com/tafalk/tafalk-web/workflows/Deploy%20to%20AWS%20S3/badge.svg?branch=master)
 
 This is the frontend project for [tafalk.com](https://tafalk.com) featuring:
 
