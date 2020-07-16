@@ -36,10 +36,47 @@ const englishTranslation = {
     },
     tabs: {
       flags: {
-        title: 'Flags'
+        title: 'Flags',
+        table: {
+          columns: {
+            id: 'ID',
+            status: 'Review Status',
+            category: 'Category',
+            type: 'Type',
+            detail: 'Detail',
+            contentType: 'Content Type',
+            contentId: 'Content ID',
+            flaggerUserId: 'Flagger User ID'
+          },
+          filters: {
+            status: {
+              pending: 'Pending',
+              declined: 'Declined',
+              accepted: 'Accepted',
+              onHold: 'OnHold'
+            }
+          }
+        }
       },
       uncloggerPrompts: {
-        title: 'Unclogger Prompts'
+        title: 'Unclogger Prompts',
+        table: {
+          columns: {
+            id: 'ID',
+            status: 'Review Status',
+            category: 'Category',
+            body: 'Body',
+            creatorUserId: 'Creator User ID'
+          },
+          filters: {
+            status: {
+              pending: 'Pending',
+              declined: 'Declined',
+              accepted: 'Accepted',
+              onHold: 'OnHold'
+            }
+          }
+        }
       }
     }
   },

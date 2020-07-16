@@ -164,7 +164,7 @@ const TheHeader: React.FC = () => {
         variant: 'error'
       })
     }
-  }, [authUser?.groups])
+  }, [authUser, enqueueSnackbar])
 
   // Side Effects: search input change
   useEffect(() => {
