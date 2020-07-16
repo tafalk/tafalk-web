@@ -1,6 +1,9 @@
 # tafalk-web
 
 ![build](https://github.com/tafalk/tafalk-web/workflows/build/badge.svg?branch=master)
+![website-up](https://img.shields.io/website?label=tafalk.com&url=https%3A%2F%2Ftafalk.com%2F)
+![last-master-commit](https://img.shields.io/github/last-commit/tafalk/tafalk-web/master)
+![repo-size](https://img.shields.io/github/repo-size/tafalk/tafalk-web)
 
 This is the frontend project for [tafalk.com](https://tafalk.com) featuring:
 
@@ -55,7 +58,7 @@ So, the following should be added to the repo secrets beforehand:
 | -------------------------------------- | ------------------------------------------------------------- |
 | AWS_ACCESS_KEY_ID                      | `{YOUR_AWS_ACCESS_KEY_ID}`                                    |
 | AWS_SECRET_ACCESS_KEY                  | `{SECRET_KEY_FOR_THE_ACCESS_KEY}`                             |
-| REACT_APP_AWS_REGION                   | `eu-west-1` _or another region_                               |
+| REACT_APP_AWS_REGION                   | `eu-west-1` *or another region*                               |
 | REACT_APP_APPSYNC_GRAPHQL_ENDPOINT     | `https://{api_id}.appsync-api.{region}.amazonaws.com/graphql` |
 | REACT_APP_COGNITO_IDENTITY_POOL_ID     | `{region}:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`               |
 | REACT_APP_COGNITO_USER_POOL_CLIENT_ID  | `xxxxxxxxxxxxxxxxxxxxxxxxxx`                                  |
@@ -103,7 +106,3 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-```
-
-```
