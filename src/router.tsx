@@ -1,19 +1,23 @@
-import TafalkHomeView from 'views/Home'
-import TafalkSearchView from 'views/Search'
-import TafalkLoginView from 'views/auth/Login'
-import TafalkRegisterView from 'views/auth/Register'
-import TafalkConfirmRegistrationView from 'views/auth/ConfirmRegistration'
-import TafalkForgotPasswordView from 'views/auth/ForgotPassword'
-import TafalkFarewellView from 'views/auth/Farewell'
-import TafalkUserProfileView from 'views/user/Profile'
-import TafalkUserSettingsView from 'views/user/Settings'
-import TafalkStreamView from 'views/content/Stream'
-import TafalkCantoView from 'views/content/Canto'
-import TafalkPourStreamView from 'views/pour/Stream'
-import TafalkPourCantoView from 'views/pour/Canto'
-import TafalkAboutView from 'views/meta/About'
-import TafalkNotFoundView from 'views/meta/NotFound'
-import TafalkWelcomeView from 'views/Welcome'
+import { lazy } from 'react'
+
+const TafalkWelcomeView = lazy(() => import('views/Welcome'))
+const TafalkHomeView = lazy(() => import('views/Home'))
+const TafalkSearchView = lazy(() => import('views/Search'))
+const TafalkLoginView = lazy(() => import('views/auth/Login'))
+const TafalkRegisterView = lazy(() => import('views/auth/Register'))
+const TafalkConfirmRegistrationView = lazy(() =>
+  import('views/auth/ConfirmRegistration')
+)
+const TafalkForgotPasswordView = lazy(() => import('views/auth/ForgotPassword'))
+const TafalkFarewellView = lazy(() => import('views/auth/Farewell'))
+const TafalkUserProfileView = lazy(() => import('views/user/Profile'))
+const TafalkUserSettingsView = lazy(() => import('views/user/Settings'))
+const TafalkStreamView = lazy(() => import('views/content/Stream'))
+const TafalkCantoView = lazy(() => import('views/content/Canto'))
+const TafalkPourStreamView = lazy(() => import('views/pour/Stream'))
+const TafalkPourCantoView = lazy(() => import('views/pour/Canto'))
+const TafalkAboutView = lazy(() => import('views/meta/About'))
+const TafalkNotFoundView = lazy(() => import('views/meta/NotFound'))
 
 const router = [
   // Content

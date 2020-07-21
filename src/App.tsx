@@ -1,15 +1,15 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useMemo, Suspense } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import router from 'router'
 import { SnackbarProvider } from 'notistack'
 import TafalkHeader from 'components/common/TheHeader'
-
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Container from '@material-ui/core/Container'
 
 import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { Skeleton } from '@material-ui/lab'
 import MUICookieConsent from 'material-ui-cookie-consent'
 
 import AuthUserContextProvider, { AuthUserContext } from 'context/Auth'
@@ -42,16 +42,27 @@ const App: React.FC = () => {
             <TafalkHeader />
             {/* Body */}
             <Container maxWidth="md">
-              <Switch>
-                {router.map((route, index) => (
-                  <Route
-                    key={index}
-                    path={route.path}
-                    exact={route.exact}
-                    component={route.component}
-                  />
+              <Suspense
+                fallback={[...Array(3).keys()].map((i) => (
+                  <React.Fragment>
+                    <Skeleton />
+                    <Skeleton />
+                    <Skeleton />
+                    <br />
+                  </React.Fragment>
                 ))}
-              </Switch>
+              >
+                <Switch>
+                  {router.map((route, index) => (
+                    <Route
+                      key={index}
+                      path={route.path}
+                      exact={route.exact}
+                      component={route.component}
+                    />
+                  ))}
+                </Switch>
+              </Suspense>
             </Container>
             {/* EU Cookie Law Snackbar */}
             <MUICookieConsent
