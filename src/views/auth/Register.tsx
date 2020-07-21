@@ -16,13 +16,9 @@ import {
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import DateFnsUtils from '@date-io/date-fns'
-
 import TextField from 'components/common/wrappers/TheHelpedFormikTextField'
 import KeyboardDatePicker from 'components/common/wrappers/TheHelpedFormikKeyboardDatePicker'
 import Checkbox from 'components/common/wrappers/TheFormikCheckBox'
-import TafalkTermsOfServiceDialog from 'components/common/dialogs/TheTermsOfServiceDialog'
-import TafalkPrivacyPolicyDialog from 'components/common/dialogs/ThePrivacyPolicyDialog'
-
 import {
   nameMinLength,
   nameMaxLength,
@@ -37,6 +33,13 @@ import {
 } from 'utils/constants'
 import { getMaxDateFor18OrMoreYearsOld } from 'utils/validations'
 import { useSnackbar } from 'notistack'
+
+const TafalkTermsOfServiceDialog = React.lazy(() =>
+  import('components/common/dialogs/TheTermsOfServiceDialog')
+)
+const TafalkPrivacyPolicyDialog = React.lazy(() =>
+  import('components/common/dialogs/ThePrivacyPolicyDialog')
+)
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
