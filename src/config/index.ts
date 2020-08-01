@@ -3,7 +3,7 @@ export const GoogleRecaptchaV3Config = {
   siteKey: process.env.REACT_APP_GOOGLE_RECAPTCHA_V3_SITE_KEY
 }
 export const GoogleAnalyticsConfig = {
-  trackingId: process.env.VUE_APP_GOOGLE_ANALYTICS_TRACKING_ID
+  trackingId: process.env.REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID
 }
 
 // AWS
