@@ -14,7 +14,7 @@ const currentConfig = Amplify.configure(AwsConfig)
 API.configure(AwsConfig)
 PubSub.configure(AwsConfig)
 
-console.log(JSON.stringify(currentConfig))
+console.log('Amplify Config: ' + JSON.stringify(currentConfig))
 
 ReactDOM.render(
   <React.StrictMode>
