@@ -1,6 +1,6 @@
 {
   "name": "tafalk-web",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@aws-amplify/api": "^3.1.21",
