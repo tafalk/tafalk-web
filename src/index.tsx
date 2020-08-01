@@ -14,6 +14,9 @@ Amplify.configure(AwsConfig)
 API.configure(AwsConfig)
 PubSub.configure(AwsConfig)
 
+// Amplify Log Level
+Amplify.Logger.LOG_LEVEL = 'DEBUG'
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
