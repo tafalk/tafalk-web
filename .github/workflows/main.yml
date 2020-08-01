@@ -40,4 +40,4 @@ jobs:
           REACT_APP_S3_SITE_POLICIES_BUCKET: ${{ secrets.REACT_APP_S3_SITE_POLICIES_BUCKET }}
           REACT_APP_S3_HOSTING_BUCKET: ${{ secrets.REACT_APP_S3_HOSTING_BUCKET }}
         run: |
-          aws s3 sync build s3://${{ secrets.REACT_APP_S3_HOSTING_BUCKET }}
+          aws s3 sync build s3://${{ secrets.REACT_APP_S3_HOSTING_BUCKET }} --delete --acl public-read
