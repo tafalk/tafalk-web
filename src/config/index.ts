@@ -24,8 +24,6 @@ export const AwsConfig = {
     userPoolWebClientId: process.env.REACT_APP_COGNITO_USER_POOL_CLIENT_ID
   },
   // AppSync
-  // aws_project_region: process.env.REACT_APP_AWS_REGION,
-  // aws_cognito_identity_pool_id: process.env.REACT_APP_COGNITO_IDENTITY_POOL_ID,
   aws_appsync_graphqlEndpoint: process.env.REACT_APP_APPSYNC_GRAPHQL_ENDPOINT,
   aws_appsync_region: process.env.REACT_APP_AWS_REGION,
   aws_appsync_authenticationType: 'AMAZON_COGNITO_USER_POOLS'

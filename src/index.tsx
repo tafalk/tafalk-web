@@ -10,10 +10,10 @@ import PubSub from '@aws-amplify/pubsub'
 import { AwsConfig } from 'config'
 
 // AWS Amplify configurations
+console.log('Before Amplify Config')
 const currentConfig = Amplify.configure(AwsConfig)
 API.configure(AwsConfig)
 PubSub.configure(AwsConfig)
-
 console.log('Amplify Config: ' + JSON.stringify(currentConfig))
 
 ReactDOM.render(
