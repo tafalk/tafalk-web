@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Amplify from '@aws-amplify/core'
+import Auth from '@aws-amplify/auth'
 import API from '@aws-amplify/api'
 import PubSub from '@aws-amplify/pubsub'
 
@@ -11,6 +12,7 @@ import { AwsConfig } from 'config'
 
 // AWS Amplify configurations
 Amplify.configure(AwsConfig)
+Auth.configure(AwsConfig)
 API.configure(AwsConfig)
 PubSub.configure(AwsConfig)
 
