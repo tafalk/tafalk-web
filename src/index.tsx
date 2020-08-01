@@ -10,9 +10,11 @@ import PubSub from '@aws-amplify/pubsub'
 import { AwsConfig } from 'config'
 
 // AWS Amplify configurations
-Amplify.configure(AwsConfig)
+const currentConfig = Amplify.configure(AwsConfig)
 API.configure(AwsConfig)
 PubSub.configure(AwsConfig)
+
+console.log(JSON.stringify(currentConfig))
 
 ReactDOM.render(
   <React.StrictMode>
