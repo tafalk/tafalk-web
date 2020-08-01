@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, Suspense, useEffect } from 'react'
+import React, { useContext, useMemo, Suspense } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import router from 'router'
@@ -14,11 +14,6 @@ import MUICookieConsent from 'material-ui-cookie-consent'
 
 import AuthUserContextProvider, { AuthUserContext } from 'context/Auth'
 import { maxNotistackSnacks } from 'utils/constants'
-
-import Amplify from '@aws-amplify/core'
-import API from '@aws-amplify/api'
-import PubSub from '@aws-amplify/pubsub'
-import { AwsConfig } from 'config'
 
 const App: React.FC = () => {
   const { t } = useTranslation()
@@ -36,14 +31,6 @@ const App: React.FC = () => {
       }),
     [isDarkMode]
   )
-
-  // Side Effects: Configure AWS
-  useEffect(() => {
-    // AWS Amplify configurations
-    Amplify.configure(AwsConfig)
-    API.configure(AwsConfig)
-    PubSub.configure(AwsConfig)
-  }, [])
 
   return (
     <ThemeProvider theme={theme}>
