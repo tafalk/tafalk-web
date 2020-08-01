@@ -284,7 +284,7 @@ const Home: React.FC = () => {
       {/* Content */}
       {contentLoading ? (
         [...Array(6).keys()].map((i) => (
-          <React.Fragment>
+          <React.Fragment key={`home-loader-${i}`}>
             <Skeleton height={theme.spacing(12)} />
           </React.Fragment>
         ))

@@ -41,13 +41,11 @@ const App: React.FC = () => {
             {/* Header */}
             <TafalkHeader />
             {/* Body */}
-            <Container maxWidth="md">
+            <Container maxWidth="lg">
               <Suspense
-                fallback={[...Array(3).keys()].map((i) => (
-                  <React.Fragment>
-                    <Skeleton />
-                    <Skeleton />
-                    <Skeleton />
+                fallback={[...Array(6).keys()].map((i) => (
+                  <React.Fragment key={`loader-${i}`}>
+                    <Skeleton height={theme.spacing(12)} />
                     <br />
                   </React.Fragment>
                 ))}

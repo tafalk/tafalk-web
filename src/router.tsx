@@ -16,6 +16,7 @@ const TafalkStreamView = lazy(() => import('views/content/Stream'))
 const TafalkCantoView = lazy(() => import('views/content/Canto'))
 const TafalkPourStreamView = lazy(() => import('views/pour/Stream'))
 const TafalkPourCantoView = lazy(() => import('views/pour/Canto'))
+const TafalkAdminPanelView = lazy(() => import('views/restricted/AdminPanel'))
 const TafalkAboutView = lazy(() => import('views/meta/About'))
 const TafalkNotFoundView = lazy(() => import('views/meta/NotFound'))
 
@@ -81,6 +82,11 @@ const router = [
   {
     path: '/c/:id',
     component: TafalkCantoView
+  },
+  // Admin
+  {
+    path: '/admin',
+    component: TafalkAdminPanelView
   },
   // Other
   {

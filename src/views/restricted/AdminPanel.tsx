@@ -125,12 +125,12 @@ const flagTableColumns: Array<Column<FlagRow>> = [
 
 const uncloggerPromptTableColumns: Array<Column<UncloggerPromptRow>> = [
   {
-    title: i18n.t('admin.tabs.flags.table.columns.id'),
+    title: i18n.t('admin.tabs.uncloggerPrompts.table.columns.id'),
     field: 'id',
     filtering: false
   },
   {
-    title: i18n.t('admin.tabs.flags.table.columns.status'),
+    title: i18n.t('admin.tabs.uncloggerPrompts.table.columns.status'),
     field: 'status',
     lookup: {
       [UncloggerPromptApprovalStatus.Pending]: i18n.t(
@@ -148,17 +148,17 @@ const uncloggerPromptTableColumns: Array<Column<UncloggerPromptRow>> = [
     }
   },
   {
-    title: i18n.t('admin.tabs.flags.table.columns.category'),
+    title: i18n.t('admin.tabs.uncloggerPrompts.table.columns.category'),
     field: 'category',
     filtering: false
   },
   {
-    title: i18n.t('admin.tabs.flags.table.columns.body'),
+    title: i18n.t('admin.tabs.uncloggerPrompts.table.columns.body'),
     field: 'body',
     filtering: false
   },
   {
-    title: i18n.t('admin.tabs.flags.table.columns.creatorUserId'),
+    title: i18n.t('admin.tabs.uncloggerPrompts.table.columns.creatorUserId'),
     field: 'creatorUserId',
     filtering: false
   }
@@ -347,7 +347,7 @@ const AdminPanel: React.FC = () => {
               }}
               indicatorColor="primary"
               textColor="primary"
-              variant="scrollable"
+              variant="fullWidth"
               scrollButtons="auto"
               aria-label="admin page tabs"
             >

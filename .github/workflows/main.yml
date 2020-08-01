@@ -24,10 +24,9 @@ jobs:
             ${{ runner.OS }}-build-
             ${{ runner.OS }}-
       - name: Install dependencies
-        run: npm i
+        run: |
+          npm i
       - name: Build
-        run: npm run build
-      - name: Deploy
         env:
           REACT_APP_APPSYNC_GRAPHQL_ENDPOINT: ${{ secrets.REACT_APP_APPSYNC_GRAPHQL_ENDPOINT }}
           REACT_APP_COGNITO_IDENTITY_POOL_ID: ${{ secrets.REACT_APP_COGNITO_IDENTITY_POOL_ID }}
@@ -39,5 +38,8 @@ jobs:
           REACT_APP_S3_USER_STORAGE_BUCKET: ${{ secrets.REACT_APP_S3_USER_STORAGE_BUCKET }}
           REACT_APP_S3_SITE_POLICIES_BUCKET: ${{ secrets.REACT_APP_S3_SITE_POLICIES_BUCKET }}
           REACT_APP_S3_HOSTING_BUCKET: ${{ secrets.REACT_APP_S3_HOSTING_BUCKET }}
+        run: |
+          npm run build
+      - name: Deploy
         run: |
           aws s3 sync build s3://${{ secrets.REACT_APP_S3_HOSTING_BUCKET }} --delete --acl public-read
