@@ -1,7 +1,7 @@
 import { lazy } from 'react'
+import TafalkHomeView from 'views/Home'
 
 const TafalkWelcomeView = lazy(() => import('views/Welcome'))
-const TafalkHomeView = lazy(() => import('views/Home'))
 const TafalkSearchView = lazy(() => import('views/Search'))
 const TafalkLoginView = lazy(() => import('views/auth/Login'))
 const TafalkRegisterView = lazy(() => import('views/auth/Register'))
