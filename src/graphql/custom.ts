@@ -453,6 +453,21 @@ export const GetFlagIdByUser = gql`
   }
 `
 
+export const GetStreamCommentFlagsByUser = gql`
+  query GetStreamCommentFlagsByUser(
+    $flaggerUserId: ID!
+    $parentContentId: String!
+  ) {
+    getChildContentFlagsByUser(
+      flaggerUserId: $flaggerUserId
+      contentType: comment
+      parentContentId: $parentContentId
+    ) {
+      id
+    }
+  }
+`
+
 export const GetFlagById = gql`
   query GetFlagById($id: ID!) {
     getFlag(id: $id) {

@@ -30,7 +30,8 @@ import {
   ListSubheader,
   ListItem,
   ListItemAvatar,
-  Typography
+  Typography,
+  ListItemSecondaryAction
 } from '@material-ui/core'
 import { Skeleton, Alert } from '@material-ui/lab'
 import {
@@ -41,7 +42,8 @@ import {
   CreateStreamBookmarkMutation,
   CreateStreamCommentMutation,
   GetStreamQuery,
-  ListStreamCommentsQuery
+  ListStreamCommentsQuery,
+  GetChildContentFlagsByUserQuery
 } from 'types/appsync/API'
 import { AuthUserContext } from 'context/Auth'
 import API, { graphqlOperation } from '@aws-amplify/api'
@@ -55,7 +57,8 @@ import {
   DeleteBookmark,
   DeleteFlagById,
   CreateStreamComment,
-  ListStreamComments
+  ListStreamComments,
+  GetStreamCommentFlagsByUser
 } from 'graphql/custom'
 import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
 import TafalkConfirmationDialog from 'components/common/dialogs/GenericConfirmationDialog'
@@ -94,6 +97,15 @@ interface StreamRouteParams {
 
 interface StreamDataType
   extends Omit<Exclude<GetStreamQuery['getStream'], null>, '__typename'> {}
+
+interface CommentDataType
+  extends Omit<
+    Exclude<
+      GetChildContentFlagsByUserQuery['getChildContentFlagsByUser'],
+      null
+    >,
+    '__typename'
+  > {}
 
 const topBarActionsMenuId = 'top-bar-actions-menu'
 
@@ -166,6 +178,9 @@ const Stream: React.FC = () => {
   ] = useState('')
   const [authUserBookmarkId, setAuthUserBookmarkId] = useState('')
   const [authUserFlagId, setAuthUserFlagId] = useState('')
+  const [authUserCommentFlags, setAuthUserCommentFlags] = useState<
+    CommentDataType
+  >([])
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [newComment, setNewComment] = useState('')
   const [comments, setComments] = useState<
@@ -213,20 +228,32 @@ const Stream: React.FC = () => {
           data: GetFlagByUserQuery
         }>
 
+        const streamChildFlagsByAuthUserGraphqlQuery = API.graphql(
+          graphqlOperation(GetStreamCommentFlagsByUser, {
+            flaggerUserId: authUser?.id ?? '',
+            parentContentId: routeStreamId ?? ''
+          })
+        ) as PromiseLike<{
+          data: GetChildContentFlagsByUserQuery
+        }>
+
         const [
           streamGraphqlResponse,
           streamAuthUserBookmarkGraphqlResponse,
-          streamAuthUserFlagGraphqlResponse
+          streamAuthUserFlagGraphqlResponse,
+          streamChildFlagsByAuthUserGraphqlResponse
         ] = (await Promise.all([
           streamGraphqlQuery,
           streamAuthUserBookmarkGraphqlQuery,
-          streamAuthUserFlagGraphqlQuery
+          streamAuthUserFlagGraphqlQuery,
+          streamChildFlagsByAuthUserGraphqlQuery
         ])) as [
           { data: GetStreamQuery },
           {
             data: GetContentBookmarkByUserQuery
           },
-          { data: GetFlagByUserQuery }
+          { data: GetFlagByUserQuery },
+          { data: GetChildContentFlagsByUserQuery }
         ]
 
         const streamResult = streamGraphqlResponse.data.getStream
@@ -234,6 +261,9 @@ const Stream: React.FC = () => {
           streamAuthUserBookmarkGraphqlResponse.data.getContentBookmarkByUser
         const streamAuthUserFlagResult =
           streamAuthUserFlagGraphqlResponse.data.getFlagByUser
+        const streamChildFlagsByAuthUserResult =
+          streamChildFlagsByAuthUserGraphqlResponse.data
+            .getChildContentFlagsByUser
 
         if (!streamResult) {
           routerHistory.push('/notfound')
@@ -254,6 +284,7 @@ const Stream: React.FC = () => {
         setComments(streamResult.comments ?? [])
         setAuthUserBookmarkId(streamAuthUserBookmarkResult?.id ?? '')
         setAuthUserFlagId(streamAuthUserFlagResult?.id ?? '')
+        setAuthUserCommentFlags(streamChildFlagsByAuthUserResult ?? [])
 
         // Subscribe to stream itself for live content changes
         const streamChangeSubscription = API.graphql(
@@ -785,13 +816,22 @@ const Stream: React.FC = () => {
                   />
                   {/** Action (Flag. Only if not the commentor xirself) */}
                   {c?.user?.id !== authUser?.id && (
-                    <div></div>
-                    // TODO: Check if the user already flagged this comment
-                    // <ListItemSecondaryAction>
-                    //   <IconButton edge="end" aria-label="flag">
-                    //     <FlagIcon />
-                    //   </IconButton>
-                    // </ListItemSecondaryAction>
+                    <ListItemSecondaryAction>
+                      {!authUserCommentFlags?.some((f) => f?.id === c?.id) ? (
+                        <IconButton edge="end" aria-label="Raise Flag">
+                          <FlagIcon />
+                        </IconButton>
+                      ) : (
+                        <React.Fragment>
+                          <IconButton edge="end" aria-label="Edit Flag">
+                            <FlagCheckeredIcon />
+                          </IconButton>
+                          <IconButton edge="end" aria-label="Remove Flag">
+                            <FlagRemoveIcon />
+                          </IconButton>
+                        </React.Fragment>
+                      )}
+                    </ListItemSecondaryAction>
                   )}
                 </ListItem>
               ))}
