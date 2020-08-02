@@ -721,6 +721,7 @@ const Stream: React.FC = () => {
                   key={c?.id ?? ''}
                   alignItems="flex-start"
                 >
+                  {/** Avatar */}
                   <IconButton
                     disableRipple
                     component={RouterLink}
@@ -739,7 +740,7 @@ const Stream: React.FC = () => {
                       ></Avatar>
                     </ListItemAvatar>
                   </IconButton>
-
+                  {/** Content */}
                   <ListItemText
                     primary={
                       <React.Fragment>
@@ -756,7 +757,6 @@ const Stream: React.FC = () => {
                             {c?.user?.username ?? ''}
                           </Typography>
                         </Link>
-
                         {/** Comment time */}
                         <Typography
                           component="span"
@@ -783,13 +783,22 @@ const Stream: React.FC = () => {
                       </Typography>
                     }
                   />
+                  {/** Action (Flag. Only if not the commentor xirself) */}
+                  {c?.user?.id !== authUser?.id && (
+                    <div></div>
+                    // TODO: Check if the user already flagged this comment
+                    // <ListItemSecondaryAction>
+                    //   <IconButton edge="end" aria-label="flag">
+                    //     <FlagIcon />
+                    //   </IconButton>
+                    // </ListItemSecondaryAction>
+                  )}
                 </ListItem>
               ))}
             </List>
           </Grid>
         )}
       </InfiniteScroll>
-      {/** Content */}
 
       {/** Dialogs */}
       <TafalkShareContentDialog
