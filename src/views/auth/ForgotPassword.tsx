@@ -151,7 +151,6 @@ const ForgotPassword: React.FC = () => {
               <Grid item xs={12}>
                 <Field
                   component={TextField}
-                  autoFocus
                   name="username"
                   label={t('forgotPasswordForm.labels.username')}
                   inputProps={{

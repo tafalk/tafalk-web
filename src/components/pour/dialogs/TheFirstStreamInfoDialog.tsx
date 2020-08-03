@@ -57,7 +57,6 @@ const TheFirstStreamInfoDialog: React.FC<FirstStreamInfoDialogProps> = (
           variant="contained"
           color="primary"
           disableElevation
-          autoFocus
         >
           {t('common.ok')}
         </Button>

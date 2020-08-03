@@ -156,7 +156,6 @@ const TheChangePasswordDialog: React.FC<ChangePasswordDialogProps> = (
               onClick={submitForm}
               variant="contained"
               color="secondary"
-              autoFocus
               disabled={isSubmitting}
             >
               {!isSubmitting ? (

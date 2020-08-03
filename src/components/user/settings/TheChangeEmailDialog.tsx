@@ -90,7 +90,6 @@ const TheChangeEmailDialog: React.FC<ChangeEmailDialogProps> = (props) => {
           onClick={onClickChangeEmail}
           variant="contained"
           color="primary"
-          autoFocus
           disabled={emailChangeInProgress}
         >
           {!emailChangeInProgress ? (

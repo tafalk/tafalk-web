@@ -120,7 +120,6 @@ const Login: React.FC = () => {
           <Form className={classes.form}>
             <Field
               component={TextField}
-              autoFocus
               name="usernameOrEmail"
               label={t('loginForm.labels.usernameOrEmail')}
               inputProps={{

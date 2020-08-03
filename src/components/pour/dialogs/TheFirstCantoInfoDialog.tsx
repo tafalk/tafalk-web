@@ -53,7 +53,6 @@ const TheFirstCantoInfoDialog: React.FC<FirstCantoInfoDialogProps> = (
           variant="contained"
           color="primary"
           disableElevation
-          autoFocus
         >
           {t('common.ok')}
         </Button>

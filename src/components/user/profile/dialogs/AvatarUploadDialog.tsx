@@ -181,7 +181,6 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
           onClick={onConfirmUpload}
           variant="contained"
           color="primary"
-          autoFocus
           disabled={!uploadEnabled || uploadInProgress}
           startIcon={<UploadIcon />}
         >

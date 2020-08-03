@@ -161,7 +161,6 @@ const Register: React.FC = () => {
                 <Grid item xs={12} md={6}>
                   <Field
                     component={TextField}
-                    autoFocus
                     name="firstName"
                     label={t('registerForm.labels.firstName')}
                     inputProps={{

@@ -77,7 +77,6 @@ const TheDeleteAccountConfirmationDialog: React.FC<DeleteAccountConfirmationDial
           onClick={onClickDeleteAccount}
           variant="contained"
           color="secondary"
-          autoFocus
           disabled={deleteAccountInProgress}
         >
           {!deleteAccountInProgress ? (
