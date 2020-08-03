@@ -198,6 +198,7 @@ const Stream: React.FC = () => {
     ContentType
   >(ContentType.stream)
   const [flagDialogContentId, setFlagDialogContentId] = useState('')
+  const [flagDialogParentContentId, setFlagDialogParentContentId] = useState('')
   const [flagDialogAuthUserFlagId, setFlagDialogAuthUserFlagId] = useState('')
   const [retractFlagDialogFlagId, setRetractFlagDialogFlagId] = useState('')
   const [loginRequiredDialogOpen, setLoginRequiredDialogOpen] = useState(false)
@@ -420,10 +421,12 @@ const Stream: React.FC = () => {
   const onShowFlagDialog = (input: {
     contentType: ContentType
     contentId: string
+    parentContentId: string
     authUserExistingFlagId: string
   }) => {
     setFlagDialogContentType(input.contentType)
     setFlagDialogContentId(input.contentId)
+    setFlagDialogParentContentId(input.parentContentId)
     setFlagDialogAuthUserFlagId(input.authUserExistingFlagId)
     setFlagDialogOpen(true)
   }
@@ -632,6 +635,7 @@ const Stream: React.FC = () => {
                           onShowFlagDialog({
                             contentType: ContentType.stream,
                             contentId: stream?.id ?? '',
+                            parentContentId: '',
                             authUserExistingFlagId: authUserFlagId
                           })
                         }
@@ -654,6 +658,7 @@ const Stream: React.FC = () => {
                         onShowFlagDialog({
                           contentType: ContentType.stream,
                           contentId: stream?.id ?? '',
+                          parentContentId: '',
                           authUserExistingFlagId: ''
                         })
                       }
@@ -862,6 +867,7 @@ const Stream: React.FC = () => {
                             onShowFlagDialog({
                               contentType: ContentType.comment,
                               contentId: c?.id ?? '',
+                              parentContentId: stream?.id ?? '',
                               authUserExistingFlagId: ''
                             })
                           }
@@ -878,6 +884,7 @@ const Stream: React.FC = () => {
                               onShowFlagDialog({
                                 contentType: ContentType.comment,
                                 contentId: c?.id ?? '',
+                                parentContentId: stream?.id ?? '',
                                 authUserExistingFlagId:
                                   authUserCommentFlags?.find(
                                     (f) => f?.id === c?.id
@@ -926,6 +933,7 @@ const Stream: React.FC = () => {
         onClose={() => setFlagDialogOpen(false)}
         contentType={flagDialogContentType}
         contentId={flagDialogContentId}
+        parentContentId={flagDialogParentContentId}
         flaggerUserId={authUser?.id ?? ''}
         flagId={flagDialogAuthUserFlagId}
       />

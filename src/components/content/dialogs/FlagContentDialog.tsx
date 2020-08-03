@@ -29,7 +29,8 @@ import {
   CreateCantoFlag,
   GetFlagById,
   CreateStreamFlag,
-  UpdateContentFlag
+  UpdateContentFlag,
+  CreateStreamCommentFlag
 } from 'graphql/custom'
 import { useSnackbar } from 'notistack'
 import { Skeleton } from '@material-ui/lab'
@@ -37,6 +38,7 @@ import { Skeleton } from '@material-ui/lab'
 interface FlagContentDialogProps extends BasicDialogProps {
   contentType: ContentType
   contentId: string
+  parentContentId: string
   flaggerUserId: string
   // For edit
   flagId?: string
@@ -61,7 +63,15 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
-  const { onClose, open, contentType, contentId, flaggerUserId, flagId } = props
+  const {
+    onClose,
+    open,
+    contentType,
+    contentId,
+    parentContentId,
+    flaggerUserId,
+    flagId
+  } = props
   const theme = useTheme()
   const classes = useStyles()
   const { t } = useTranslation()
@@ -228,6 +238,18 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
           graphqlOperation(CreateStreamFlag, {
             contentId,
             flaggerUserId,
+            category: categories[selectedCategoryIndex].code,
+            type: types[selectedTypeIndex].code,
+            detail: detailText
+          })
+        )
+        return
+      }
+      if (contentType === ContentType.comment) {
+        await API.graphql(
+          graphqlOperation(CreateStreamCommentFlag, {
+            contentId,
+            parentContentId: flaggerUserId,
             category: categories[selectedCategoryIndex].code,
             type: types[selectedTypeIndex].code,
             detail: detailText

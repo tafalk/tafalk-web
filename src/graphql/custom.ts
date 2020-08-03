@@ -758,6 +758,31 @@ export const CreateCantoFlag = gql`
   }
 `
 
+export const CreateStreamCommentFlag = gql`
+  mutation CreateStreamCommentFlag(
+    $contentId: String
+    $parentContentId: String
+    $flaggerUserId: String!
+    $category: String!
+    $type: String!
+    $detail: String
+  ) {
+    createFlag(
+      input: {
+        contentType: comment
+        contentId: $contentId
+        parentContentId: $parentContentId
+        flaggerUserId: $flaggerUserId
+        category: $category
+        type: $type
+        detail: $detail
+      }
+    ) {
+      id
+    }
+  }
+`
+
 export const UpdateContentFlag = gql`
   mutation UpdateContentFlag(
     $id: ID!
