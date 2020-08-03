@@ -65,7 +65,8 @@
     ],
     "extends": [
       "react-app",
-      "prettier"
+      "prettier",
+      "plugin:jsx-a11y/strict"
     ],
     "parserOptions": {
       "parser": "@typescript-eslint/parser",
