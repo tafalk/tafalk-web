@@ -437,6 +437,7 @@ const TheHeader: React.FC = () => {
           {/* Search Bar */}
           {searchBarPaths.includes(routeLocation.pathname) ? (
             <Autocomplete
+              aria-label="Search Input"
               open={searchOptionsOpen}
               onOpen={() => {
                 setSearchOptionsOpen(true)
