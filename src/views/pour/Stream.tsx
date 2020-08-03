@@ -215,7 +215,7 @@ const Stream: React.FC = () => {
           username:
             randomUncloggerPromptGraphqlResult?.creatorUser?.username ?? ''
         })
-        if (authUser.id) {
+        if (!!authUser?.id) {
           const genId = uuidv4()
           setStreamId(genId)
           await API.graphql(
