@@ -14,8 +14,24 @@ import MUICookieConsent from 'material-ui-cookie-consent'
 
 import AuthUserContextProvider, { AuthUserContext } from 'context/Auth'
 import { maxNotistackSnacks } from 'utils/constants'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Link } from '@material-ui/core'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    skipToMainContentButton: {
+      position: 'absolute',
+      top: '-40px',
+      left: 0,
+      backgroundColor: '#000000',
+      color: '#FFFFFF',
+      zIndex: 100
+    }
+  })
+)
 
 const App: React.FC = () => {
+  const classes = useStyles()
   const { t } = useTranslation()
   const { user: authUser } = useContext(AuthUserContext)
   const isMediaDarkModePreferred = useMediaQuery('(prefers-color-scheme: dark)')
@@ -37,11 +53,18 @@ const App: React.FC = () => {
       <CssBaseline />
       <SnackbarProvider maxSnack={maxNotistackSnacks} preventDuplicate>
         <AuthUserContextProvider>
+          <Link
+            href="#maincontent"
+            className={classes.skipToMainContentButton}
+            onClick={(e: React.MouseEvent<HTMLElement>) => e.preventDefault()}
+          >
+            Skip to main content
+          </Link>
           <BrowserRouter>
             {/* Header */}
             <TafalkHeader />
             {/* Body */}
-            <Container maxWidth="lg">
+            <Container id="maincontent" role="main" maxWidth="lg">
               <Suspense
                 fallback={[...Array(6).keys()].map((i) => (
                   <React.Fragment key={`loader-${i}`}>

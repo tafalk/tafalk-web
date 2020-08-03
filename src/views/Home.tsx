@@ -343,6 +343,8 @@ const Home: React.FC = () => {
       {/* Bottom Nav */}
       <Slide in={!scrollTrigger} direction="up">
         <BottomNavigation
+          role="nav"
+          aria-label="Bottom navigation"
           value={bottomNavigationValue}
           onChange={(_event, newVal) => {
             setBottomNavigationValue(newVal)

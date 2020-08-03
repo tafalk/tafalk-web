@@ -417,7 +417,7 @@ const TheHeader: React.FC = () => {
   ]
 
   return (
-    <div className={classes.grow}>
+    <header className={classes.grow}>
       <AppBar
         position="static"
         className={classes.appBar}
@@ -563,7 +563,7 @@ const TheHeader: React.FC = () => {
         title={t('logoutConfirmationDialog.title')}
         body={t('logoutConfirmationDialog.body')}
       />
-    </div>
+    </header>
   )
 }
 
