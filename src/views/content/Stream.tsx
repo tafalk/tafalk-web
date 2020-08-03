@@ -194,6 +194,12 @@ const Stream: React.FC = () => {
     setConfirmRetractFlagDialogOpen
   ] = useState(false)
   const [flagDialogOpen, setFlagDialogOpen] = useState(false)
+  const [flagDialogContentType, setFlagDialogContentType] = useState<
+    ContentType
+  >(ContentType.stream)
+  const [flagDialogContentId, setFlagDialogContentId] = useState('')
+  const [flagDialogAuthUserFlagId, setFlagDialogAuthUserFlagId] = useState('')
+  const [retractFlagDialogFlagId, setRetractFlagDialogFlagId] = useState('')
   const [loginRequiredDialogOpen, setLoginRequiredDialogOpen] = useState(false)
 
   // Derive some constants
@@ -411,11 +417,27 @@ const Stream: React.FC = () => {
     }
   }
 
+  const onShowFlagDialog = (input: {
+    contentType: ContentType
+    contentId: string
+    authUserExistingFlagId: string
+  }) => {
+    setFlagDialogContentType(input.contentType)
+    setFlagDialogContentId(input.contentId)
+    setFlagDialogAuthUserFlagId(input.authUserExistingFlagId)
+    setFlagDialogOpen(true)
+  }
+
+  const onShowConfirmRetractFlagDialog = (flagId: string) => {
+    setRetractFlagDialogFlagId(flagId)
+    setConfirmRetractFlagDialogOpen(true)
+  }
+
   const onRetractFlagClick = async () => {
     try {
       await API.graphql(
         graphqlOperation(DeleteFlagById, {
-          id: authUserFlagId
+          id: retractFlagDialogFlagId
         })
       )
     } catch (err) {
@@ -592,7 +614,9 @@ const Stream: React.FC = () => {
                       // Retract Flag
                       <MenuItem
                         key="retract-flag-menu-item"
-                        onClick={() => setConfirmRetractFlagDialogOpen(true)}
+                        onClick={() =>
+                          onShowConfirmRetractFlagDialog(authUserFlagId)
+                        }
                       >
                         <ListItemIcon>
                           <FlagRemoveIcon fontSize="small" />
@@ -604,7 +628,13 @@ const Stream: React.FC = () => {
                       // Edit Flag
                       <MenuItem
                         key="edit-flag-menu-item"
-                        onClick={() => setFlagDialogOpen(true)}
+                        onClick={() =>
+                          onShowFlagDialog({
+                            contentType: ContentType.stream,
+                            contentId: stream?.id ?? '',
+                            authUserExistingFlagId: authUserFlagId
+                          })
+                        }
                       >
                         <ListItemIcon>
                           <FlagCheckeredIcon fontSize="small" />
@@ -620,7 +650,13 @@ const Stream: React.FC = () => {
                     // Raise Flag
                     <MenuItem
                       key="raise-flag-menu-item"
-                      onClick={() => setFlagDialogOpen(true)}
+                      onClick={() =>
+                        onShowFlagDialog({
+                          contentType: ContentType.stream,
+                          contentId: stream?.id ?? '',
+                          authUserExistingFlagId: ''
+                        })
+                      }
                     >
                       <ListItemIcon>
                         <FlagIcon fontSize="small" />
@@ -818,15 +854,50 @@ const Stream: React.FC = () => {
                   {c?.user?.id !== authUser?.id && (
                     <ListItemSecondaryAction>
                       {!authUserCommentFlags?.some((f) => f?.id === c?.id) ? (
-                        <IconButton edge="end" aria-label="Raise Flag">
+                        // Auth user has NOT flagged this comment
+                        <IconButton
+                          edge="end"
+                          aria-label="Raise Flag"
+                          onClick={() =>
+                            onShowFlagDialog({
+                              contentType: ContentType.comment,
+                              contentId: c?.id ?? '',
+                              authUserExistingFlagId: ''
+                            })
+                          }
+                        >
                           <FlagIcon />
                         </IconButton>
                       ) : (
+                        // Auth user has flagged this comment
                         <React.Fragment>
-                          <IconButton edge="end" aria-label="Edit Flag">
+                          <IconButton
+                            edge="end"
+                            aria-label="Edit Flag"
+                            onClick={() =>
+                              onShowFlagDialog({
+                                contentType: ContentType.comment,
+                                contentId: c?.id ?? '',
+                                authUserExistingFlagId:
+                                  authUserCommentFlags?.find(
+                                    (f) => f?.id === c?.id
+                                  )?.id ?? ''
+                              })
+                            }
+                          >
                             <FlagCheckeredIcon />
                           </IconButton>
-                          <IconButton edge="end" aria-label="Remove Flag">
+                          <IconButton
+                            edge="end"
+                            aria-label="Remove Flag"
+                            onClick={() =>
+                              onShowConfirmRetractFlagDialog(
+                                authUserCommentFlags?.find(
+                                  (f) => f?.id === c?.id
+                                )?.id ?? ''
+                              )
+                            }
+                          >
                             <FlagRemoveIcon />
                           </IconButton>
                         </React.Fragment>
@@ -853,12 +924,12 @@ const Stream: React.FC = () => {
       <TafalkFlagContentDialog
         open={flagDialogOpen}
         onClose={() => setFlagDialogOpen(false)}
-        contentType={ContentType.stream}
-        contentId={stream?.id ?? ''}
+        contentType={flagDialogContentType}
+        contentId={flagDialogContentId}
         flaggerUserId={authUser?.id ?? ''}
-        flagId={authUserFlagId ? authUserFlagId : undefined}
+        flagId={flagDialogAuthUserFlagId}
       />
-      {/** Remove Flag Confirmation Dialog */}
+      {/** Retract Flag Confirmation Dialog */}
       <TafalkConfirmationDialog
         open={confirmRetractFlagDialogOpen}
         onConfirm={onRetractFlagClick}
