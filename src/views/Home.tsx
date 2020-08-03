@@ -187,6 +187,7 @@ const Home: React.FC = () => {
             return
         }
       } catch (err) {
+        //TODO: When not authenticated await `API.graphql(...)` fails here with "No current user"
         enqueueSnackbar(JSON.stringify(err), {
           variant: 'error'
         })
