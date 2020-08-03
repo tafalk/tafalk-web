@@ -249,7 +249,8 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
         await API.graphql(
           graphqlOperation(CreateStreamCommentFlag, {
             contentId,
-            parentContentId: flaggerUserId,
+            parentContentId: parentContentId,
+            flaggerUserId,
             category: categories[selectedCategoryIndex].code,
             type: types[selectedTypeIndex].code,
             detail: detailText
