@@ -719,6 +719,7 @@ const Canto: React.FC = () => {
         onClose={() => setFlagDialogOpen(false)}
         contentType={ContentType.canto}
         contentId={canto?.id ?? ''}
+        parentContentId=""
         flaggerUserId={authUser?.id ?? ''}
         flagId={authUserFlagId ? authUserFlagId : undefined}
       />
