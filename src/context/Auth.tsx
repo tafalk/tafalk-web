@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import Auth from '@aws-amplify/auth'
-import API, { graphqlOperation } from '@aws-amplify/api'
+import API, { graphqlOperation, GRAPHQL_AUTH_MODE } from '@aws-amplify/api'
 import Storage from '@aws-amplify/storage'
 import { GetColor } from '@tafalk/material-color-generator'
 import { GetUser, UpdateUserCognitoIdentityId } from 'graphql/custom'
 import { GetUserByUsernameQuery, Language } from 'types/appsync/API'
 import { useSnackbar } from 'notistack'
 import { cognitoNotAuthenticatedMessage } from 'utils/constants'
+import Amplify from '@aws-amplify/core'
+import { AwsConfig } from 'config'
 
 interface AuthUserContextDataType
   extends Pick<
@@ -54,9 +56,21 @@ export default ({ children }: any) => {
           Auth.currentCredentials()
         ])
         if (!authUser) {
+          // No auth user: Change AppSync Auth type to IAM
+          Amplify.configure({
+            ...AwsConfig,
+            aws_appsync_authenticationType: GRAPHQL_AUTH_MODE.AWS_IAM
+          })
           setUser(null)
           return
         }
+
+        // Auth User exists: Change AppSync Auth type to Cognito User Pools
+        Amplify.configure({
+          ...AwsConfig,
+          aws_appsync_authenticationType:
+            GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS
+        })
 
         // Extract Cognito Group from token
         const cognitoGroups = authUser.signInUserSession.accessToken.payload[
@@ -114,6 +128,11 @@ export default ({ children }: any) => {
           }
         })
       } catch (err) {
+        // No auth user or error: Change AppSync Auth type to IAM anyway
+        Amplify.configure({
+          ...AwsConfig,
+          aws_appsync_authenticationType: GRAPHQL_AUTH_MODE.AWS_IAM
+        })
         setUser({
           id: '',
           username: '',

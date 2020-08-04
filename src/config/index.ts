@@ -1,3 +1,5 @@
+import { GRAPHQL_AUTH_MODE } from '@aws-amplify/api'
+
 // Google
 export const GoogleRecaptchaV3Config = {
   siteKey: process.env.REACT_APP_GOOGLE_RECAPTCHA_V3_SITE_KEY
@@ -26,7 +28,7 @@ export const AwsConfig = {
   // AppSync
   aws_appsync_graphqlEndpoint: process.env.REACT_APP_APPSYNC_GRAPHQL_ENDPOINT,
   aws_appsync_region: process.env.REACT_APP_AWS_REGION,
-  aws_appsync_authenticationType: 'AMAZON_COGNITO_USER_POOLS'
+  aws_appsync_authenticationType: GRAPHQL_AUTH_MODE.AWS_IAM
 }
 
 // MapTiler Geocoder
