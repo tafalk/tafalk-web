@@ -58,6 +58,7 @@ import { maxNumOfSearchResults, cognitoAdminUserGroup } from 'utils/constants'
 import { UpdateUserTheme, SearchSiteContent } from 'graphql/custom'
 import { SearchQuery } from 'types/appsync/API'
 import { useSnackbar } from 'notistack'
+import { v4 as uuidv4 } from 'uuid'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -138,6 +139,9 @@ const TheHeader: React.FC = () => {
   const classes = useStyles()
   const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
   const { user: authUser, setUser: setAuthUser } = useContext(AuthUserContext)
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState<
+    boolean | undefined
+  >(undefined)
   const [isUserAdmin, setIsUserAdmin] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [darkModeSwitchChecked, setDarkModeSwitchChecked] = useState(false)
@@ -158,6 +162,12 @@ const TheHeader: React.FC = () => {
   // Side Effects: Is admin
   useEffect(() => {
     try {
+      if (!authUser || !authUser.contextMeta.isReady) {
+        setIsUserAuthenticated(undefined)
+      } else {
+        setIsUserAuthenticated(!!authUser?.id)
+      }
+
       setIsUserAdmin((authUser?.groups ?? []).includes(cognitoAdminUserGroup))
     } catch (err) {
       enqueueSnackbar(JSON.stringify(err), {
@@ -215,6 +225,12 @@ const TheHeader: React.FC = () => {
   const onConfirmLogout = async (): Promise<void> => {
     await Auth.signOut()
     setLogoutDialogOpen(false)
+    // Push to home route (Used 'key' since it may require force push )
+    routerHistory.push({
+      pathname: '/',
+      key: uuidv4(),
+      state: {}
+    })
   }
 
   const onThemeToggle = async (
@@ -526,14 +542,14 @@ const TheHeader: React.FC = () => {
 
           <div className={classes.grow} />
           {/* Top Bar Buttons */}
-          {authUser?.contextMeta.isReady ? (
-            authUser?.id ? (
+          {isUserAuthenticated !== undefined ? (
+            isUserAuthenticated ? (
               renderAuthButtons
             ) : (
               renderUnauthButtons
             )
           ) : (
-            <Skeleton variant="rect" width={150} height={theme.spacing(6)} />
+            <Skeleton variant="rect" width={100} height={theme.spacing(3)} />
           )}
         </Toolbar>
       </AppBar>
@@ -546,7 +562,7 @@ const TheHeader: React.FC = () => {
         open={isMenuOpen}
         onClose={onMenuClose}
       >
-        {authUser?.username ? renderAuthMenuContent : renderUnauthMenuContent}
+        {isUserAuthenticated ? renderAuthMenuContent : renderUnauthMenuContent}
       </Menu>
 
       {/* Language Selection Dialog */}

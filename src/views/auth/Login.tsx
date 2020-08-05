@@ -79,8 +79,6 @@ const Login: React.FC = () => {
     try {
       await Auth.signIn(values.usernameOrEmail, values.password)
       setAuthUser()
-
-      // Push to home route
       routerHistory.push('/')
     } catch (err) {
       enqueueSnackbar(err.message ?? err, {
