@@ -32,21 +32,30 @@ interface AuthUserContextDataType
   }
 }
 
+type TriggerDataType = 'initial' | 'login' | 'logout' | undefined
+
 export interface AuthUserContextType {
   user: AuthUserContextDataType | null
   setUser: Function
+  trigger: TriggerDataType
+  setTrigger: Function
 }
 
 export const AuthUserContext = React.createContext<AuthUserContextType>({
   user: null,
-  setUser: () => {}
+  setUser: () => {},
+  trigger: undefined,
+  setTrigger: () => {}
 })
 
 export default ({ children }: any) => {
   const [user, setUser] = useState<AuthUserContextDataType | null>(null)
+  const [trigger, setTrigger] = useState<TriggerDataType>('initial')
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
+    if (!trigger) return
+    console.log('AUTH EFFECT RUN')
     ;(async () => {
       try {
         let [authUser, cognitoCredentials] = await Promise.all([
@@ -70,7 +79,7 @@ export default ({ children }: any) => {
         }
 
         let user = userGraphqlResponse.data.getUserByUsername
-        // console.log('User: ' + JSON.stringify(user))
+        console.log('User: ' + JSON.stringify(user))
         if (!user) {
           throw new Error('no db record found for the authenticated user')
         }
@@ -139,10 +148,10 @@ export default ({ children }: any) => {
         }
       }
     })()
-  }, [enqueueSnackbar])
+  }, [enqueueSnackbar, trigger])
 
   return (
-    <AuthUserContext.Provider value={{ user, setUser }}>
+    <AuthUserContext.Provider value={{ user, setUser, trigger, setTrigger }}>
       {children}
     </AuthUserContext.Provider>
   )

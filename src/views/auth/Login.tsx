@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Auth from '@aws-amplify/auth'
@@ -10,7 +10,9 @@ import {
   CircularProgress,
   Divider,
   Typography,
-  Box
+  Box,
+  InputAdornment,
+  IconButton
 } from '@material-ui/core'
 import TextField from 'components/common/wrappers/TheHelpedFormikTextField'
 import {
@@ -27,6 +29,8 @@ import {
   usernameMaxLength
 } from 'utils/constants'
 import { useSnackbar } from 'notistack'
+import EyeIcon from 'mdi-material-ui/Eye'
+import EyeOffIcon from 'mdi-material-ui/EyeOff'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,7 +55,8 @@ const Login: React.FC = () => {
   const { t } = useTranslation()
   const classes = useStyles()
   let routerHistory = useHistory()
-  const { setUser: setAuthUser } = useContext(AuthUserContext)
+  const { setTrigger: setAuthTrigger } = useContext(AuthUserContext)
+  const [showPassword, setShowPassword] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
 
   const redirectMilliseconds = 500
@@ -78,9 +83,11 @@ const Login: React.FC = () => {
   const onSubmitClick = async (values: any, { setSubmitting }: any) => {
     try {
       await Auth.signIn(values.usernameOrEmail, values.password)
-      setAuthUser()
+      setSubmitting(false)
+      setAuthTrigger('login')
       routerHistory.push('/')
     } catch (err) {
+      setSubmitting(false)
       enqueueSnackbar(err.message ?? err, {
         variant: 'error',
         autoHideDuration: redirectMilliseconds
@@ -93,8 +100,6 @@ const Login: React.FC = () => {
           routerHistory.push('/auth/register')
         }, redirectMilliseconds)
       }
-    } finally {
-      setSubmitting(false)
     }
   }
 
@@ -129,6 +134,19 @@ const Login: React.FC = () => {
               type="password"
               name="password"
               label={t('loginForm.labels.password')}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => {
+                      setShowPassword((prev) => !prev)
+                    }}
+                    onMouseDown={(e) => e.preventDefault()}
+                  >
+                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </IconButton>
+                </InputAdornment>
+              }
             />
 
             <br />

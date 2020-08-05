@@ -11,7 +11,9 @@ import {
   Typography,
   Box,
   FormControlLabel,
-  Link
+  Link,
+  InputAdornment,
+  IconButton
 } from '@material-ui/core'
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
@@ -33,6 +35,8 @@ import {
 } from 'utils/constants'
 import { getMaxDateFor18OrMoreYearsOld } from 'utils/validations'
 import { useSnackbar } from 'notistack'
+import EyeIcon from 'mdi-material-ui/Eye'
+import EyeOffIcon from 'mdi-material-ui/EyeOff'
 
 const TafalkTermsOfServiceDialog = React.lazy(() =>
   import('components/common/dialogs/TheTermsOfServiceDialog')
@@ -64,6 +68,8 @@ const Register: React.FC = () => {
     false
   )
   const [privacyPolicyDialogOpen, setPrivacyPolicyDialogOpen] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showRetypePassword, setShowRetypePassword] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
 
   const maxBirthDate = getMaxDateFor18OrMoreYearsOld()
@@ -200,12 +206,38 @@ const Register: React.FC = () => {
                 type="password"
                 name="password"
                 label={t('registerForm.labels.password')}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => {
+                        setShowPassword((prev) => !prev)
+                      }}
+                      onMouseDown={(e) => e.preventDefault()}
+                    >
+                      {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                }
               />
               <Field
                 component={TextField}
                 type="password"
                 name="retypePassword"
                 label={t('registerForm.labels.retypePassword')}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => {
+                        setShowRetypePassword((prev) => !prev)
+                      }}
+                      onMouseDown={(e) => e.preventDefault()}
+                    >
+                      {showRetypePassword ? <EyeOffIcon /> : <EyeIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                }
               />
               <Field
                 component={KeyboardDatePicker}

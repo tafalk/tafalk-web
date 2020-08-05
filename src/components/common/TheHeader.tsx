@@ -138,7 +138,11 @@ const TheHeader: React.FC = () => {
   const theme = useTheme()
   const classes = useStyles()
   const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
-  const { user: authUser, setUser: setAuthUser } = useContext(AuthUserContext)
+  const {
+    user: authUser,
+    setUser: setAuthUser,
+    setTrigger: setAuthTrigger
+  } = useContext(AuthUserContext)
   const [isUserAuthenticated, setIsUserAuthenticated] = useState<
     boolean | undefined
   >(undefined)
@@ -163,8 +167,10 @@ const TheHeader: React.FC = () => {
   useEffect(() => {
     try {
       if (!authUser || !authUser.contextMeta.isReady) {
+        console.log('NOT READY')
         setIsUserAuthenticated(undefined)
       } else {
+        console.log('READY WITH USER ID: ' + authUser?.id)
         setIsUserAuthenticated(!!authUser?.id)
       }
 
@@ -224,6 +230,7 @@ const TheHeader: React.FC = () => {
 
   const onConfirmLogout = async (): Promise<void> => {
     await Auth.signOut()
+    setAuthTrigger('logout')
     setLogoutDialogOpen(false)
     // Push to home route (Used 'key' since it may require force push )
     routerHistory.push({
@@ -398,7 +405,13 @@ const TheHeader: React.FC = () => {
       <ListItemText primary={t('topMenu.buttons.about')} />
     </MenuItem>,
     <Divider key="divider-3-menu-item" />,
-    <MenuItem key="logout-menu-item" onClick={() => setLogoutDialogOpen(true)}>
+    <MenuItem
+      key="logout-menu-item"
+      onClick={() => {
+        onMenuClose()
+        setLogoutDialogOpen(true)
+      }}
+    >
       <ListItemIcon>
         <LogoutIcon fontSize="small" />
       </ListItemIcon>

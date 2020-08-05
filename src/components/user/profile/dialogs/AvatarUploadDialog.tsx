@@ -115,7 +115,7 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
           })
         )
       ])
-      // Set the avatar picture of profile and auth user contextuntil it is reloaded some time
+      // Set the avatar picture of profile and auth user context until it is reloaded some time
       if (user) {
         user.profilePictureObjectUrl = uploadedFile.objecturl
         setAuthUser({
