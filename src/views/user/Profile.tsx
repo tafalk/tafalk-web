@@ -523,7 +523,6 @@ const Profile: React.FC = () => {
               {!infoLoaded ? (
                 <Grid item xs={12}>
                   <Skeleton
-                    variant="rect"
                     width={theme.spacing(avatarThemeSpacing)}
                     height={theme.spacing(avatarThemeSpacing)}
                   ></Skeleton>

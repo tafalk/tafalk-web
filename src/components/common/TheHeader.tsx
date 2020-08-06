@@ -167,10 +167,8 @@ const TheHeader: React.FC = () => {
   useEffect(() => {
     try {
       if (!authUser || !authUser.contextMeta.isReady) {
-        console.log('NOT READY')
         setIsUserAuthenticated(undefined)
       } else {
-        console.log('READY WITH USER ID: ' + authUser?.id)
         setIsUserAuthenticated(!!authUser?.id)
       }
 
@@ -562,7 +560,9 @@ const TheHeader: React.FC = () => {
               renderUnauthButtons
             )
           ) : (
-            <Skeleton variant="rect" width={100} height={theme.spacing(3)} />
+            <Skeleton variant="circle">
+              <Avatar />
+            </Skeleton>
           )}
         </Toolbar>
       </AppBar>

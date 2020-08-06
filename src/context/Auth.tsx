@@ -55,7 +55,6 @@ export default ({ children }: any) => {
 
   useEffect(() => {
     if (!trigger) return
-    console.log('AUTH EFFECT RUN')
     ;(async () => {
       try {
         let [authUser, cognitoCredentials] = await Promise.all([
@@ -79,7 +78,7 @@ export default ({ children }: any) => {
         }
 
         let user = userGraphqlResponse.data.getUserByUsername
-        console.log('User: ' + JSON.stringify(user))
+        // console.log('User: ' + JSON.stringify(user))
         if (!user) {
           throw new Error('no db record found for the authenticated user')
         }

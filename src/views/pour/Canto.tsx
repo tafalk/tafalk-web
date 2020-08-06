@@ -165,11 +165,11 @@ const Canto: React.FC = () => {
   // Side Effects: Check SpeechRecognitioin availability in browser
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const SpeechRecognition = window.SpeechRecognition // ?? window.webkitSpeechRecognition
+    const SpeechRecognition =
+      window.SpeechRecognition ?? (window as any).webkitSpeechRecognition
     if (SpeechRecognition) {
       setSpeechRecognitionSupported(true)
       recognition.current = new SpeechRecognition()
-
       recognition.current.continuous = true
       recognition.current.interimResults = true
     }

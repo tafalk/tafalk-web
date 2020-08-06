@@ -447,7 +447,6 @@ const Canto: React.FC = () => {
         })
       )
     } catch (err) {
-      console.log(err)
       enqueueSnackbar(JSON.stringify(err), {
         variant: 'error'
       })

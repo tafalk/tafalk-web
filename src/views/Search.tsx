@@ -3,7 +3,12 @@ import { useLocation } from 'react-router-dom'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { SearchSiteContent } from 'graphql/custom'
 import { SearchQuery } from 'types/appsync/API'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme
+} from '@material-ui/core/styles'
 import { GridList, GridListTile, Typography, Grid } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
 import TafalkSearchResultTileCard from 'components/search/SearchResultTileCard'
@@ -18,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Search: React.FC = () => {
   const classes = useStyles()
+  const theme = useTheme()
   const { t } = useTranslation()
   const routeLocation = useLocation()
   const [itemsLoaded, setItemsLoaded] = useState<boolean>(false)
@@ -92,11 +98,9 @@ const Search: React.FC = () => {
       {!itemsLoaded ? (
         <React.Fragment>
           {/* Skeleton Loader */}
-          {[...Array(3).keys()].map((i) => (
+          {[...Array(6).keys()].map((i) => (
             <React.Fragment>
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
+              <Skeleton height={theme.spacing(6)} />
               <br />
             </React.Fragment>
           ))}
