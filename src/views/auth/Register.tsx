@@ -214,6 +214,7 @@ const Register: React.FC = () => {
                         setShowPassword((prev) => !prev)
                       }}
                       onMouseDown={(e) => e.preventDefault()}
+                      edge="end"
                     >
                       {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                     </IconButton>
@@ -233,6 +234,7 @@ const Register: React.FC = () => {
                         setShowRetypePassword((prev) => !prev)
                       }}
                       onMouseDown={(e) => e.preventDefault()}
+                      edge="end"
                     >
                       {showRetypePassword ? <EyeOffIcon /> : <EyeIcon />}
                     </IconButton>

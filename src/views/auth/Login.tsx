@@ -142,13 +142,13 @@ const Login: React.FC = () => {
                       setShowPassword((prev) => !prev)
                     }}
                     onMouseDown={(e) => e.preventDefault()}
+                    edge="end"
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </IconButton>
                 </InputAdornment>
               }
             />
-
             <br />
             <br />
             <Grid container spacing={10} justify="space-between">
