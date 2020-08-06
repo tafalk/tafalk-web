@@ -80,6 +80,34 @@ export default ({ children }: any) => {
       })
     }
 
+    const setAuthenticatedUser = (
+      user: Exclude<GetUserByUsernameQuery['getUserByUsername'], null>,
+      cognitoGroups: string[],
+      profilePictureObjectUrl: string
+    ) => {
+      setUser({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+        theme: user.theme,
+        language: user.language,
+        cognitoIdentityId: user.cognitoIdentityId,
+        userWatchInteractions: user.userWatchInteractions,
+        userBlockInteractions: user.userBlockInteractions,
+        color: GetColor(user.username, 'dark'),
+        profilePictureObjectUrl: profilePictureObjectUrl,
+        groups: cognitoGroups,
+        contextMeta: {
+          isReady: true
+        }
+      })
+      Amplify.configure({
+        aws_appsync_authenticationType:
+          GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS
+      })
+    }
+
     // Main body
     if (!trigger) return
     ;(async () => {
@@ -135,28 +163,7 @@ export default ({ children }: any) => {
             })) as string)
           : ''
 
-        setUser({
-          // ...user,
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          bio: user.bio,
-          theme: user.theme,
-          language: user.language,
-          cognitoIdentityId: user.cognitoIdentityId,
-          userWatchInteractions: user.userWatchInteractions,
-          userBlockInteractions: user.userBlockInteractions,
-          color: GetColor(user.username, 'dark'),
-          profilePictureObjectUrl: profilePictureObjectUrl,
-          groups: cognitoGroups,
-          contextMeta: {
-            isReady: true
-          }
-        })
-        Amplify.configure({
-          aws_appsync_authenticationType:
-            GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS
-        })
+        setAuthenticatedUser(user, cognitoGroups, profilePictureObjectUrl)
       } catch (err) {
         setNoUserButReady()
 
