@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
+import Amplify from '@aws-amplify/core'
 import Auth from '@aws-amplify/auth'
-import API, { graphqlOperation } from '@aws-amplify/api'
+import API, { graphqlOperation, GRAPHQL_AUTH_MODE } from '@aws-amplify/api'
 import Storage from '@aws-amplify/storage'
 import { GetColor } from '@tafalk/material-color-generator'
 import { GetUser, UpdateUserCognitoIdentityId } from 'graphql/custom'
 import { GetUserByUsernameQuery, Language } from 'types/appsync/API'
 import { useSnackbar } from 'notistack'
 import { cognitoNotAuthenticatedMessage } from 'utils/constants'
+// import { AwsConfig } from 'config'
 
 interface AuthUserContextDataType
   extends Pick<
@@ -54,15 +56,44 @@ export default ({ children }: any) => {
   const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
+    // Closure
+    const setNoUserButReady = () => {
+      setUser({
+        id: '',
+        username: '',
+        email: '',
+        bio: '',
+        theme: 'light',
+        color: '',
+        language: Language.en,
+        cognitoIdentityId: '',
+        profilePictureObjectUrl: '',
+        groups: [],
+        userWatchInteractions: [],
+        userBlockInteractions: [],
+        contextMeta: {
+          isReady: true
+        }
+      })
+      Amplify.configure({
+        aws_appsync_authenticationType: GRAPHQL_AUTH_MODE.AWS_IAM
+      })
+    }
+
+    // Main body
     if (!trigger) return
     ;(async () => {
       try {
+        if (trigger === 'logout') {
+          setNoUserButReady()
+          return
+        }
         let [authUser, cognitoCredentials] = await Promise.all([
           Auth.currentAuthenticatedUser(),
           Auth.currentCredentials()
         ])
         if (!authUser) {
-          setUser(null)
+          setNoUserButReady()
           return
         }
 
@@ -80,6 +111,7 @@ export default ({ children }: any) => {
         let user = userGraphqlResponse.data.getUserByUsername
         // console.log('User: ' + JSON.stringify(user))
         if (!user) {
+          setNoUserButReady()
           throw new Error('no db record found for the authenticated user')
         }
 
@@ -121,24 +153,12 @@ export default ({ children }: any) => {
             isReady: true
           }
         })
-      } catch (err) {
-        setUser({
-          id: '',
-          username: '',
-          email: '',
-          bio: '',
-          theme: 'light',
-          color: '',
-          language: Language.en,
-          cognitoIdentityId: '',
-          profilePictureObjectUrl: '',
-          groups: [],
-          userWatchInteractions: [],
-          userBlockInteractions: [],
-          contextMeta: {
-            isReady: true
-          }
+        Amplify.configure({
+          aws_appsync_authenticationType:
+            GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS
         })
+      } catch (err) {
+        setNoUserButReady()
 
         if (![cognitoNotAuthenticatedMessage].includes(err.toString())) {
           enqueueSnackbar(JSON.stringify(err), {
