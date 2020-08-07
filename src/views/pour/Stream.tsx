@@ -274,7 +274,7 @@ const Stream: React.FC = () => {
       recognition.current.continuous = true
       recognition.current.interimResults = true
     }
-  }, [])
+  }, [enqueueSnackbar])
 
   // Side effects: Persist UncloggerPrompt
   useEffect(() => {
@@ -412,9 +412,9 @@ const Stream: React.FC = () => {
         variant: 'error'
       })
     }
-    // SpeechRecognition stops automatically after inactivity
-    // We want it to keep going until we tell it to stop
     recognition.current.onend = () => {
+      // SpeechRecognition stops automatically after inactivity
+      // We want it to keep going until we tell it to stop
       if (!recognition.current) return
       recognition.current.start()
     }
