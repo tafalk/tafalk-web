@@ -73,6 +73,9 @@ import {
 import { v4 as uuidv4 } from 'uuid'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import { debounce } from 'debounce'
+import SpeechRecognition, {
+  useSpeechRecognition
+} from 'react-speech-recognition'
 
 type UncloggerPromptType = {
   id: string
@@ -115,7 +118,7 @@ const Stream: React.FC = () => {
   const [speechRecognitionSupported, setSpeechRecognitionSupported] = useState(
     false
   )
-  const recognition = useRef<SpeechRecognition | null>(null)
+  // const recognition = useRef<SpeechRecognition | null>(null)
   const [firstStreamDialogOpen, setFirstStreamDialogOpen] = useState(false)
   const [pourState, setPourState] = useState<
     'saved' | 'saving' | 'error' | undefined
@@ -136,10 +139,13 @@ const Stream: React.FC = () => {
   const [mood, setMood] = useState<StreamMood | null>(null)
   const [position, setPosition] = useState<StreamPosition | null>(null)
   const [shareContentDialogOpen, setShareContentDialogOpen] = useState(false)
-  const [listening, setListening] = useState(false)
+  // const [listening, setListening] = useState(false)
   const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
   const [sealInProgress, setSealInProgress] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
+  const { transcript, listening } = useSpeechRecognition({
+    continuous: true
+  })
   const { enqueueSnackbar } = useSnackbar()
 
   const moodValueTextMap = new Map<StreamMood, string>([
@@ -265,16 +271,26 @@ const Stream: React.FC = () => {
 
   // Side Effects: Check SpeechRecognitioin availability in browser
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const SpeechRecognition =
-      window.SpeechRecognition ?? (window as any).webkitSpeechRecognition
-    if (SpeechRecognition) {
-      setSpeechRecognitionSupported(true)
-      recognition.current = new SpeechRecognition()
-      recognition.current.continuous = true
-      recognition.current.interimResults = true
+    // if (typeof window === 'undefined') return
+    // const SpeechRecognition =
+    //   window.SpeechRecognition ?? (window as any).webkitSpeechRecognition
+    // if (SpeechRecognition) {
+    //   setSpeechRecognitionSupported(true)
+    //   recognition.current = new SpeechRecognition()
+    //   recognition.current.continuous = true
+    //   recognition.current.interimResults = true
+    // }
+    if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+      setSpeechRecognitionSupported(false)
+      return
     }
-  }, [enqueueSnackbar])
+    setSpeechRecognitionSupported(true)
+  }, [])
+
+  // Side effects: get transcript
+  useEffect(() => {
+    console.log('transcript: ' + transcript)
+  }, [transcript])
 
   // Side effects: Persist UncloggerPrompt
   useEffect(() => {
@@ -397,37 +413,39 @@ const Stream: React.FC = () => {
   }
 
   const startMic = () => {
-    if (!recognition?.current) return
-    setListening(true)
-    recognition.current.onresult = (event) => {
-      var transcript = event.results[0][0].transcript
-      console.log('You told: ' + transcript)
-    }
-    recognition.current.onerror = (event: any) => {
-      if (recognition?.current && event.error === 'not-allowed') {
-        recognition.current.onend = () => {}
-        setListening(false)
-      }
-      enqueueSnackbar(event.error, {
-        variant: 'error'
-      })
-    }
-    recognition.current.onend = () => {
-      // SpeechRecognition stops automatically after inactivity
-      // We want it to keep going until we tell it to stop
-      if (!recognition.current) return
-      recognition.current.start()
-    }
-    recognition.current.start()
+    SpeechRecognition.startListening()
+    console.log('Started')
+    // if (!recognition?.current) return
+    // setListening(true)
+    // recognition.current.onresult = (event) => {
+    //   var transcript = event.results[0][0].transcript
+    //   console.log('You told: ' + transcript)
+    // }
+    // recognition.current.onerror = (event: any) => {
+    //   if (recognition?.current && event.error === 'not-allowed') {
+    //     recognition.current.onend = () => {}
+    //     setListening(false)
+    //   }
+    //   enqueueSnackbar(event.error, {
+    //     variant: 'error'
+    //   })
+    // }
+    // recognition.current.onend = () => {
+    //   // SpeechRecognition stops automatically after inactivity
+    //   // We want it to keep going until we tell it to stop
+    //   if (!recognition.current) return
+    //   recognition.current.start()
+    // }
+    // recognition.current.start()
   }
 
   const stopMic = () => {
-    setListening(false)
-    if (!recognition?.current) return
-    recognition.current.onresult = () => {}
-    recognition.current.onend = () => {}
-    recognition.current.onerror = () => {}
-    recognition.current.stop()
+    SpeechRecognition.stopListening()
+    // if (!recognition?.current) return
+    // recognition.current.onresult = () => {}
+    // recognition.current.onend = () => {}
+    // recognition.current.onerror = () => {}
+    // recognition.current.stop()
   }
 
   const onBlurTitleField = async () => {

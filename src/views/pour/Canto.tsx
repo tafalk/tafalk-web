@@ -49,6 +49,9 @@ import CachedIcon from 'mdi-material-ui/Cached'
 import CloseCircleOutlineIcon from 'mdi-material-ui/CloseCircleOutline'
 import ShareVariantIcon from 'mdi-material-ui/ShareVariant'
 import MusicRestQuarterIcon from 'mdi-material-ui/MusicRestQuarter'
+import SpeechRecognition, {
+  useSpeechRecognition
+} from 'react-speech-recognition'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,7 +82,7 @@ const Canto: React.FC = () => {
   const [speechRecognitionSupported, setSpeechRecognitionSupported] = useState(
     false
   )
-  const recognition = useRef<SpeechRecognition | null>(null)
+  // const recognition = useRef<SpeechRecognition | null>(null)
   const [firstCantoDialogOpen, setFirstCantoDialogOpen] = useState(false)
   const [pourState, setPourState] = useState<
     'saved' | 'saving' | 'error' | undefined
@@ -90,10 +93,13 @@ const Canto: React.FC = () => {
   const [cantoId, setCantoId] = useState('')
   const [body, setBody] = useState('')
   const [shareContentDialogOpen, setShareContentDialogOpen] = useState(false)
-  const [listening, setListening] = useState(false)
+  // const [listening, setListening] = useState(false)
   const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
   const [pauseInProgress, setPauseInProgress] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
+  const { transcript, listening } = useSpeechRecognition({
+    continuous: true
+  })
   const { enqueueSnackbar } = useSnackbar()
 
   // Side effects: Load initial profile data
@@ -164,16 +170,26 @@ const Canto: React.FC = () => {
 
   // Side Effects: Check SpeechRecognitioin availability in browser
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const SpeechRecognition =
-      window.SpeechRecognition ?? (window as any).webkitSpeechRecognition
-    if (SpeechRecognition) {
-      setSpeechRecognitionSupported(true)
-      recognition.current = new SpeechRecognition()
-      recognition.current.continuous = true
-      recognition.current.interimResults = true
+    // if (typeof window === 'undefined') return
+    // const SpeechRecognition =
+    //   window.SpeechRecognition ?? (window as any).webkitSpeechRecognition
+    // if (SpeechRecognition) {
+    //   setSpeechRecognitionSupported(true)
+    //   recognition.current = new SpeechRecognition()
+    //   recognition.current.continuous = true
+    //   recognition.current.interimResults = true
+    // }
+    if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+      setSpeechRecognitionSupported(false)
+      return
     }
+    setSpeechRecognitionSupported(true)
   }, [])
+
+  // Side effects: get transcript
+  useEffect(() => {
+    console.log('transcript: ' + transcript)
+  }, [transcript])
 
   // Functions
   const delayedUpdateBody = useCallback(
@@ -271,37 +287,40 @@ const Canto: React.FC = () => {
   }
 
   const startMic = () => {
-    if (!recognition?.current) return
-    setListening(true)
-    recognition.current.onresult = (event) => {
-      var transcript = event.results[0][0].transcript
-      console.log('You told: ' + transcript)
-    }
-    recognition.current.onerror = (event: any) => {
-      if (recognition?.current && event.error === 'not-allowed') {
-        recognition.current.onend = () => {}
-        setListening(false)
-      }
-      enqueueSnackbar(event.error, {
-        variant: 'error'
-      })
-    }
-    // SpeechRecognition stops automatically after inactivity
-    // We want it to keep going until we tell it to stop
-    recognition.current.onend = () => {
-      if (!recognition.current) return
-      recognition.current.start()
-    }
-    recognition.current.start()
+    SpeechRecognition.startListening()
+    console.log('Started')
+    // if (!recognition?.current) return
+    // setListening(true)
+    // recognition.current.onresult = (event) => {
+    //   var transcript = event.results[0][0].transcript
+    //   console.log('You told: ' + transcript)
+    // }
+    // recognition.current.onerror = (event: any) => {
+    //   if (recognition?.current && event.error === 'not-allowed') {
+    //     recognition.current.onend = () => {}
+    //     setListening(false)
+    //   }
+    //   enqueueSnackbar(event.error, {
+    //     variant: 'error'
+    //   })
+    // }
+    // recognition.current.onend = () => {
+    //   // SpeechRecognition stops automatically after inactivity
+    //   // We want it to keep going until we tell it to stop
+    //   if (!recognition.current) return
+    //   recognition.current.start()
+    // }
+    // recognition.current.start()
   }
 
   const stopMic = () => {
-    setListening(false)
-    if (!recognition?.current) return
-    recognition.current.onresult = () => {}
-    recognition.current.onend = () => {}
-    recognition.current.onerror = () => {}
-    recognition.current.stop()
+    SpeechRecognition.stopListening()
+    // setListening(false)
+    // if (!recognition?.current) return
+    // recognition.current.onresult = () => {}
+    // recognition.current.onend = () => {}
+    // recognition.current.onerror = () => {}
+    // recognition.current.stop()
   }
 
   const onPauseClick = async () => {
