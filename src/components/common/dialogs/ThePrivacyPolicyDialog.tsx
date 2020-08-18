@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { BasicDialogProps } from 'types/props'
 import {
-  DialogContentText,
   Dialog,
   DialogTitle,
   DialogActions,
@@ -53,10 +52,8 @@ const ThePrivacyPolicyDialog: React.FC<BasicDialogProps> = (props) => {
   }, [closeSnackbar, enqueueSnackbar])
   return (
     <Dialog open={open}>
-      <DialogTitle>{t('agreements.termsOfService.title')}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{body}</DialogContentText>
-      </DialogContent>
+      <DialogTitle>{t('agreements.privacyPolicy.title')}</DialogTitle>
+      <DialogContent dangerouslySetInnerHTML={{ __html: body }}></DialogContent>
       <DialogActions>
         <Button
           variant="contained"

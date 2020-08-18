@@ -115,7 +115,7 @@ const Register: React.FC = () => {
         password: values.password,
         attributes: {
           email: values.email,
-          birthdate: values.birthDate,
+          birthdate: values.birthDate.toISOString().substring(0, 10),
           name: values.firstName,
           family_name: values.lastName
         }
@@ -256,12 +256,12 @@ const Register: React.FC = () => {
                 control={<Checkbox name="termsAgreed" value={false} />}
                 label={
                   <Trans i18nKey="registerForm.labels.terms">
-                    Do you agree the{' '}
+                    Do you agree the
                     <Link onClick={() => setTermsOfServiceDialogOpen(true)}>
                       {' '}
-                      terms of service
-                    </Link>{' '}
-                    and{' '}
+                      terms of service{' '}
+                    </Link>
+                    and
                     <Link onClick={() => setPrivacyPolicyDialogOpen(true)}>
                       {' '}
                       privacy policy

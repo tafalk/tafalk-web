@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { BasicDialogProps } from 'types/props'
 import {
-  DialogContentText,
   Dialog,
   DialogTitle,
   DialogActions,
@@ -52,9 +51,7 @@ const TheTermsOfServiceDialog: React.FC<BasicDialogProps> = (props) => {
   return (
     <Dialog open={open}>
       <DialogTitle>{t('agreements.termsOfService.title')}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{body}</DialogContentText>
-      </DialogContent>
+      <DialogContent dangerouslySetInnerHTML={{ __html: body }}></DialogContent>
       <DialogActions>
         <Button
           variant="contained"
