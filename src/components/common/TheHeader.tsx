@@ -56,12 +56,8 @@ import { SearchQuery } from 'types/appsync/API'
 import { useSnackbar } from 'notistack'
 import { v4 as uuidv4 } from 'uuid'
 
-const TafalkLanguageSelectionDialog = React.lazy(() =>
-  import('components/common/dialogs/TheLanguageSelectionDialog')
-)
-const TafalkConfirmationDialog = React.lazy(() =>
-  import('components/common/dialogs/GenericConfirmationDialog')
-)
+import TafalkLanguageSelectionDialog from 'components/common/dialogs/TheLanguageSelectionDialog'
+import TafalkConfirmationDialog from 'components/common/dialogs/GenericConfirmationDialog'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

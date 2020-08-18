@@ -67,9 +67,7 @@ import {
 import { UserDataType } from 'types/props'
 import { useSnackbar } from 'notistack'
 
-const TafalkAvatarUploadDialog = React.lazy(() =>
-  import('components/user/profile/dialogs/AvatarUploadDialog')
-)
+import TafalkAvatarUploadDialog from 'components/user/profile/dialogs/AvatarUploadDialog'
 
 const avatarThemeSpacing = 28
 

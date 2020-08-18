@@ -51,12 +51,8 @@ import SpeechRecognition, {
   useSpeechRecognition
 } from 'react-speech-recognition'
 
-const TafalkFirstCantoInfoDialog = React.lazy(() =>
-  import('components/pour/dialogs/TheFirstCantoInfoDialog')
-)
-const TafalkShareContentDialog = React.lazy(() =>
-  import('components/content/dialogs/GenericShareContentDialog')
-)
+import TafalkFirstCantoInfoDialog from 'components/pour/dialogs/TheFirstCantoInfoDialog'
+import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

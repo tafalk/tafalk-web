@@ -38,12 +38,8 @@ import { useSnackbar } from 'notistack'
 import EyeIcon from 'mdi-material-ui/Eye'
 import EyeOffIcon from 'mdi-material-ui/EyeOff'
 
-const TafalkTermsOfServiceDialog = React.lazy(() =>
-  import('components/common/dialogs/TheTermsOfServiceDialog')
-)
-const TafalkPrivacyPolicyDialog = React.lazy(() =>
-  import('components/common/dialogs/ThePrivacyPolicyDialog')
-)
+import TafalkTermsOfServiceDialog from 'components/common/dialogs/TheTermsOfServiceDialog'
+import TafalkPrivacyPolicyDialog from 'components/common/dialogs/ThePrivacyPolicyDialog'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

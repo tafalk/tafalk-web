@@ -75,12 +75,8 @@ import SpeechRecognition, {
   useSpeechRecognition
 } from 'react-speech-recognition'
 
-const TafalkFirstStreamInfoDialog = React.lazy(() =>
-  import('components/pour/dialogs/TheFirstStreamInfoDialog')
-)
-const TafalkShareContentDialog = React.lazy(() =>
-  import('components/content/dialogs/GenericShareContentDialog')
-)
+import TafalkFirstStreamInfoDialog from 'components/pour/dialogs/TheFirstStreamInfoDialog'
+import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
 
 type UncloggerPromptType = {
   id: string
