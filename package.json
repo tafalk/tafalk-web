@@ -1,6 +1,6 @@
 {
   "name": "tafalk-web",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "dependencies": {
     "@aws-amplify/api": "^3.1.22",
@@ -31,7 +31,7 @@
     "graphql-tag": "^2.11.0",
     "i18next": "^19.6.3",
     "i18next-browser-languagedetector": "^4.3.1",
-    "material-table": "^1.68.1",
+    "material-table": "1.68.0",
     "material-ui-cookie-consent": "^0.1.0",
     "mdi-material-ui": "^6.18.0",
     "notistack": "^0.9.17",
