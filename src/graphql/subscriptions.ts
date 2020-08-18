@@ -280,7 +280,7 @@ export const onUpdateStream = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const onUpdateCanto = /* GraphQL */ `
   subscription OnUpdateCanto($id: ID!) {
     onUpdateCanto(id: $id) {
@@ -456,7 +456,7 @@ export const onUpdateCanto = /* GraphQL */ `
       }
     }
   }
-`
+`;
 export const onCreateOrDeleteContentInteraction = /* GraphQL */ `
   subscription OnCreateOrDeleteContentInteraction($contentId: String) {
     onCreateOrDeleteContentInteraction(contentId: $contentId) {
@@ -549,7 +549,7 @@ export const onCreateOrDeleteContentInteraction = /* GraphQL */ `
       time
     }
   }
-`
+`;
 export const onCreateOrDeleteFlag = /* GraphQL */ `
   subscription OnCreateOrDeleteFlag($contentId: String) {
     onCreateOrDeleteFlag(contentId: $contentId) {
@@ -729,4 +729,4 @@ export const onCreateOrDeleteFlag = /* GraphQL */ `
       lastUpdateTime
     }
   }
-`
+`;
