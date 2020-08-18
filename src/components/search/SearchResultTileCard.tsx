@@ -156,9 +156,10 @@ const SearchResultTileCard: React.FC<SearchResultTileCardProps> = (props) => {
   useEffect(() => {
     ;(async () => {
       try {
+        if (!item) return
         // Profile Pic (for User)
         const userProfilePictureObjectUrl =
-          item.__typename === 'User' && item?.profilePictureKey
+          item.__typename === 'User' && item.profilePictureKey
             ? ((await Storage.get(item.user.profilePictureKey, {
                 level: 'protected',
                 identityId: item.user.cognitoIdentityId

@@ -36,7 +36,7 @@ export const generateProfilePictureFileName = (
 export const getSiblings = (elem: Node | null) => {
   // Setup siblings array and get the first sibling
   var siblings = []
-  var sibling = (elem?.parentNode as HTMLElement).firstChild
+  var sibling = (elem?.parentNode as HTMLElement)?.firstChild
 
   // Loop through each sibling and push to the array
   while (sibling) {

@@ -8,7 +8,6 @@ import { GetUser, UpdateUserCognitoIdentityId } from 'graphql/custom'
 import { GetUserByUsernameQuery, Language } from 'types/appsync/API'
 import { useSnackbar } from 'notistack'
 import { cognitoNotAuthenticatedMessage } from 'utils/constants'
-// import { AwsConfig } from 'config'
 
 interface AuthUserContextDataType
   extends Pick<

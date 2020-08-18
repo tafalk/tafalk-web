@@ -107,7 +107,7 @@ const getHeaderAvatar = async (
         identityId: item.user.cognitoIdentityId
       })) as string)
     : ''
-  return showUserInfo ? (
+  return (
     <IconButton
       disableRipple
       component={RouterLink}
@@ -119,7 +119,7 @@ const getHeaderAvatar = async (
         src={userProfilePictureObjectUrl}
       ></Avatar>
     </IconButton>
-  ) : undefined
+  )
 }
 
 const getHeaderTitle = (item: TileCardProps['item'], showUserInfo: boolean) => {

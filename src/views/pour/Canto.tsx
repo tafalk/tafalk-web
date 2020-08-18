@@ -252,7 +252,7 @@ const Canto: React.FC = () => {
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     // No body? Do nothing
-    if (!bodyRef.current || !bodyRef.current?.value || !body) return
+    if (!bodyRef.current || !bodyRef.current.value || !body) return
 
     const keyName = e.key
     // Neither Backspace nor Delete? Save or update

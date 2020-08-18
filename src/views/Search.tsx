@@ -99,7 +99,7 @@ const Search: React.FC = () => {
         <React.Fragment>
           {/* Skeleton Loader */}
           {[...Array(6).keys()].map((i) => (
-            <React.Fragment>
+            <React.Fragment key={`loader-${i}`}>
               <Skeleton height={theme.spacing(6)} />
               <br />
             </React.Fragment>

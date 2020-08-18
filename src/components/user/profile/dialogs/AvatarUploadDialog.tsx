@@ -105,7 +105,7 @@ const AvatarUplaodDialog: React.FC<AvatarUploadDialogProps> = (props) => {
         // Upload to S3 storage
         Storage.put(profilePictureKey, uploadedFile, {
           level: 'protected',
-          contentType: uploadedFile?.type
+          contentType: uploadedFile.type
         }),
         // Update User DB Table
         API.graphql(

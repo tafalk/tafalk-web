@@ -198,7 +198,7 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
         setInitialInfoLoaded(true)
       }
     })()
-  }, [categories, enqueueSnackbar, flagId, types])
+  }, [categories, enqueueSnackbar, flagId, types]) // deepscan-disable-line
 
   // Functions
   const handleDetailTextChange = (

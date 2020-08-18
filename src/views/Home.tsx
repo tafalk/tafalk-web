@@ -267,7 +267,7 @@ const Home: React.FC = () => {
   // Subroutes
   const itemsGridList = items ? (
     <GridList cellHeight="auto" cols={1} className={classes.gridList}>
-      {items?.map((i) => (
+      {items.map((i) => (
         <GridListTile key={`${bottomNavigationValue}-${i.id}`} cols={1}>
           <TafalkGridListTileCard
             type={bottomNavigationValue}
