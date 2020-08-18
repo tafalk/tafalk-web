@@ -55,7 +55,6 @@ import {
 } from 'utils/constants'
 
 import TafalkProfileContentTileCard from 'components/user/profile/ContentTileCard'
-import TafalkAvatarUploadDialog from 'components/user/profile/dialogs/AvatarUploadDialog'
 import { itemsPerFetch } from 'utils/constants'
 import {
   ContentType,
@@ -67,6 +66,10 @@ import {
 } from 'types/appsync/API'
 import { UserDataType } from 'types/props'
 import { useSnackbar } from 'notistack'
+
+const TafalkAvatarUploadDialog = React.lazy(() =>
+  import('components/user/profile/dialogs/AvatarUploadDialog')
+)
 
 const avatarThemeSpacing = 28
 

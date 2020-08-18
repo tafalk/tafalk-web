@@ -52,8 +52,6 @@ import {
   Position as StreamPosition
   // UncloggerPromptCategory
 } from 'types/appsync/API'
-import TafalkFirstStreamInfoDialog from 'components/pour/dialogs/TheFirstStreamInfoDialog'
-import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
 import MicrophoneIcon from 'mdi-material-ui/Microphone'
 import MicrophoneOffIcon from 'mdi-material-ui/MicrophoneOff'
 import CheckCircleOutlineIcon from 'mdi-material-ui/CheckCircleOutline'
@@ -76,6 +74,13 @@ import { debounce } from 'debounce'
 import SpeechRecognition, {
   useSpeechRecognition
 } from 'react-speech-recognition'
+
+const TafalkFirstStreamInfoDialog = React.lazy(() =>
+  import('components/pour/dialogs/TheFirstStreamInfoDialog')
+)
+const TafalkShareContentDialog = React.lazy(() =>
+  import('components/content/dialogs/GenericShareContentDialog')
+)
 
 type UncloggerPromptType = {
   id: string
@@ -143,9 +148,7 @@ const Stream: React.FC = () => {
   const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
   const [sealInProgress, setSealInProgress] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
-  const { transcript, listening } = useSpeechRecognition({
-    continuous: true
-  })
+  const { transcript, listening } = useSpeechRecognition()
   const { enqueueSnackbar } = useSnackbar()
 
   const moodValueTextMap = new Map<StreamMood, string>([
@@ -413,7 +416,7 @@ const Stream: React.FC = () => {
   }
 
   const startMic = () => {
-    SpeechRecognition.startListening()
+    SpeechRecognition.startListening({ continuous: true })
     console.log('Started')
     // if (!recognition?.current) return
     // setListening(true)

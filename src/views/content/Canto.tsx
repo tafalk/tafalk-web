@@ -45,10 +45,6 @@ import {
   DeleteBookmark,
   DeleteFlagById
 } from 'graphql/custom'
-import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
-import TafalkConfirmationDialog from 'components/common/dialogs/GenericConfirmationDialog'
-import TafalkLoginRequiredDialog from 'components/common/dialogs/TheLoginRequiredDialog'
-import TafalkFlagContentDialog from 'components/content/dialogs/FlagContentDialog'
 import { getSiblings, getContentRoute } from 'utils/derivations'
 import Observable from 'zen-observable'
 import DotsVerticalIcon from 'mdi-material-ui/DotsVertical'
@@ -68,6 +64,19 @@ import { formatDistanceToNow } from 'date-fns'
 import { getUserLocale } from 'utils/conversions'
 import { SmallAvatar } from 'components/common/avatars/SmallAvatar'
 import { useSnackbar } from 'notistack'
+
+const TafalkShareContentDialog = React.lazy(() =>
+  import('components/content/dialogs/GenericShareContentDialog')
+)
+const TafalkConfirmationDialog = React.lazy(() =>
+  import('components/common/dialogs/GenericConfirmationDialog')
+)
+const TafalkLoginRequiredDialog = React.lazy(() =>
+  import('components/common/dialogs/TheLoginRequiredDialog')
+)
+const TafalkFlagContentDialog = React.lazy(() =>
+  import('components/content/dialogs/FlagContentDialog')
+)
 
 interface CantoRouteParams {
   id: string

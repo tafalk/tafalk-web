@@ -40,8 +40,6 @@ import {
 import { debounce } from 'debounce'
 import { deleteTimeToIdleDuration, persistDelayDuration } from 'utils/constants'
 import { getStrikethroughStr, getContentRoute } from 'utils/derivations'
-import TafalkFirstCantoInfoDialog from 'components/pour/dialogs/TheFirstCantoInfoDialog'
-import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
 import MicrophoneIcon from 'mdi-material-ui/Microphone'
 import MicrophoneOffIcon from 'mdi-material-ui/MicrophoneOff'
 import CheckCircleOutlineIcon from 'mdi-material-ui/CheckCircleOutline'
@@ -52,6 +50,13 @@ import MusicRestQuarterIcon from 'mdi-material-ui/MusicRestQuarter'
 import SpeechRecognition, {
   useSpeechRecognition
 } from 'react-speech-recognition'
+
+const TafalkFirstCantoInfoDialog = React.lazy(() =>
+  import('components/pour/dialogs/TheFirstCantoInfoDialog')
+)
+const TafalkShareContentDialog = React.lazy(() =>
+  import('components/content/dialogs/GenericShareContentDialog')
+)
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -97,9 +102,7 @@ const Canto: React.FC = () => {
   const [routeLeaveSafe, setRouteLeaveSafe] = useState(false)
   const [pauseInProgress, setPauseInProgress] = useState(false)
   const { user: authUser } = useContext(AuthUserContext)
-  const { transcript, listening } = useSpeechRecognition({
-    continuous: true
-  })
+  const { transcript, listening } = useSpeechRecognition()
   const { enqueueSnackbar } = useSnackbar()
 
   // Side effects: Load initial profile data
@@ -287,7 +290,9 @@ const Canto: React.FC = () => {
   }
 
   const startMic = () => {
-    SpeechRecognition.startListening()
+    SpeechRecognition.startListening({
+      continuous: true
+    })
     console.log('Started')
     // if (!recognition?.current) return
     // setListening(true)

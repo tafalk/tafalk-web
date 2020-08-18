@@ -26,10 +26,17 @@ import { TabContext, TabList, TabPanel } from '@material-ui/lab'
 import API, { graphqlOperation } from '@aws-amplify/api'
 import { UpdateUserBio } from 'graphql/custom'
 import DeleteForeverIcon from 'mdi-material-ui/DeleteForever'
-import TafalkChangeEmailDialog from 'components/user/settings/TheChangeEmailDialog'
-import TafalkChangePasswordDialog from 'components/user/settings/TheChangePasswordDialog'
-import TafalkDeleteAccountConfirmationDialog from 'components/user/settings/TheDeleteAccountConfirmationDialog'
 import { useSnackbar } from 'notistack'
+
+const TafalkChangeEmailDialog = React.lazy(() =>
+  import('components/user/settings/TheChangeEmailDialog')
+)
+const TafalkChangePasswordDialog = React.lazy(() =>
+  import('components/user/settings/TheChangePasswordDialog')
+)
+const TafalkDeleteAccountConfirmationDialog = React.lazy(() =>
+  import('components/user/settings/TheDeleteAccountConfirmationDialog')
+)
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

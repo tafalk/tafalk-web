@@ -31,10 +31,6 @@ import {
   Grid
 } from '@material-ui/core'
 import { Skeleton, Autocomplete } from '@material-ui/lab'
-
-import TafalkLanguageSelectionDialog from 'components/common/dialogs/TheLanguageSelectionDialog'
-import TafalkConfirmationDialog from 'components/common/dialogs/GenericConfirmationDialog'
-
 import AccountIcon from 'mdi-material-ui/Account'
 import MagnifyIcon from 'mdi-material-ui/Magnify'
 import DotsVerticalIcon from 'mdi-material-ui/DotsVertical'
@@ -59,6 +55,13 @@ import { UpdateUserTheme, SearchSiteContent } from 'graphql/custom'
 import { SearchQuery } from 'types/appsync/API'
 import { useSnackbar } from 'notistack'
 import { v4 as uuidv4 } from 'uuid'
+
+const TafalkLanguageSelectionDialog = React.lazy(() =>
+  import('components/common/dialogs/TheLanguageSelectionDialog')
+)
+const TafalkConfirmationDialog = React.lazy(() =>
+  import('components/common/dialogs/GenericConfirmationDialog')
+)
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
