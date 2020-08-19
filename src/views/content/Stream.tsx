@@ -711,7 +711,7 @@ const Stream: React.FC = () => {
                     {t('stream.addComment.message.loginToComment')}
                   </Alert>
                 ) : (
-                  // Proudly allowed comment area
+                  // Regular/allowed comment area
                   <Card
                     className={classes.addCommentCard}
                     color="transparent"

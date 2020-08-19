@@ -145,7 +145,6 @@ export default ({ children }: any) => {
         })
 
         if (!user.cognitoIdentityId) {
-          console.log('Ener here: ' + JSON.stringify(authUser))
           // If first login, there may be need to update cognito identity id
           const cognitoIdentityId = cognitoCredentials.identityId
           user.cognitoIdentityId = cognitoIdentityId
