@@ -286,10 +286,7 @@ const Settings: React.FC = () => {
       {/** HTML Document Header */}
       <Helmet>
         <title>
-          <span role="img" aria-label="settings">
-            ⚙️
-          </span>{' '}
-          {t('settings.text.title')} - {authUser?.username}
+          {`⚙️ ${t('settings.text.title')} - ${authUser?.username}`}
         </title>
       </Helmet>
       {/** Title */}
@@ -322,6 +319,12 @@ const Settings: React.FC = () => {
                 component={RouterLink}
                 to={`${url}/profile`}
                 label={t('settings.tabs.profile.title')}
+              />
+              <Tab
+                value="account"
+                component={RouterLink}
+                to={`${url}/account`}
+                label={t('settings.tabs.account.title')}
               />
             </TabList>
           </AppBar>

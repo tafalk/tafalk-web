@@ -101,10 +101,6 @@ export default ({ children }: any) => {
           isReady: true
         }
       })
-      Amplify.configure({
-        aws_appsync_authenticationType:
-          GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS
-      })
     }
 
     // Main body
@@ -142,16 +138,23 @@ export default ({ children }: any) => {
           throw new Error('no db record found for the authenticated user')
         }
 
+        // Change authtype here as UpdateUser will be called
+        Amplify.configure({
+          aws_appsync_authenticationType:
+            GRAPHQL_AUTH_MODE.AMAZON_COGNITO_USER_POOLS
+        })
+
         if (!user.cognitoIdentityId) {
+          console.log('Ener here: ' + JSON.stringify(authUser))
           // If first login, there may be need to update cognito identity id
           const cognitoIdentityId = cognitoCredentials.identityId
+          user.cognitoIdentityId = cognitoIdentityId
           await API.graphql(
             graphqlOperation(UpdateUserCognitoIdentityId, {
               userId: user.id,
               cognitoIdentityId: cognitoIdentityId
             })
           )
-          user.cognitoIdentityId = cognitoIdentityId
         }
 
         // Profile Picture Object Url
