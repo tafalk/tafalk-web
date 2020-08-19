@@ -142,6 +142,9 @@ export const GetStreamById = gql`
       bookmarkCount {
         count
       }
+      commentCount {
+        count
+      }
       comments {
         id
         contentId
