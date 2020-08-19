@@ -147,6 +147,7 @@ export const GetStreamById = gql`
       }
       comments {
         id
+        body
         contentId
         contentType
         userId

@@ -111,15 +111,20 @@ interface CommentDataType
 const topBarActionsMenuId = 'top-bar-actions-menu'
 
 //
-const getProtectedLevelProfilePictureObjectUrlByKey = async (
+const getProtectedLevelProfilePictureObjectUrlByKey = (
   profilePictureKey: string,
   cognitoIdentityId: string
 ) => {
   if (!profilePictureKey) return ''
-  return (await Storage.get(profilePictureKey, {
+  let objUrl = ''
+  Storage.get(profilePictureKey, {
     level: 'protected',
     identityId: cognitoIdentityId
-  })) as string
+  }).then((res) => {
+    objUrl = res as string
+  })
+
+  return objUrl
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -788,136 +793,130 @@ const Stream: React.FC = () => {
                 </ListSubheader>
               }
             >
-              {stream?.commentCount?.count
-                ? stream?.comments?.map(async (c) => (
-                    <ListItem
-                      id={c?.id ?? ''}
-                      key={c?.id ?? ''}
-                      alignItems="flex-start"
-                    >
-                      {/** Avatar */}
-                      <IconButton
-                        disableRipple
-                        component={RouterLink}
-                        to={`/u/${c?.user?.username ?? ''}`}
-                      >
-                        <ListItemAvatar>
-                          <Avatar
-                            alt={c?.user?.username}
-                            src={
-                              await getProtectedLevelProfilePictureObjectUrlByKey(
-                                c?.user?.profilePictureKey ?? '',
-                                c?.user?.cognitoIdentityId ?? ''
-                              )
-                            }
-                            className={classes.commentListItemAvatar}
-                          ></Avatar>
-                        </ListItemAvatar>
-                      </IconButton>
-                      {/** Content */}
-                      <ListItemText
-                        primary={
-                          <React.Fragment>
-                            {/** Commentor user name */}
-                            <Link
-                              component={RouterLink}
-                              to={`/u/${c?.user?.username ?? ''}`}
-                            >
-                              <Typography
-                                component="span"
-                                variant="body2"
-                                color="textPrimary"
-                              >
-                                {c?.user?.username ?? ''}
-                              </Typography>
-                            </Link>
-                            {/** Comment time */}
-                            <Typography
-                              component="span"
-                              variant="body2"
-                              color="textSecondary"
-                            >
-                              {' — '}
-                              {formatDistanceToNow(new Date(c?.time ?? 0), {
-                                locale: getUserLocale(
-                                  authUser?.language ?? Language.en
-                                ),
-                                addSuffix: true
-                              })}
-                            </Typography>
-                          </React.Fragment>
-                        }
-                        secondary={
+              {stream?.comments?.map((c) => (
+                <ListItem
+                  id={c?.id ?? ''}
+                  key={c?.id ?? ''}
+                  alignItems="flex-start"
+                >
+                  {/** Avatar */}
+                  <IconButton
+                    disableRipple
+                    component={RouterLink}
+                    to={`/u/${c?.user?.username ?? ''}`}
+                  >
+                    <ListItemAvatar>
+                      <Avatar
+                        alt={c?.user?.username}
+                        src={getProtectedLevelProfilePictureObjectUrlByKey(
+                          c?.user?.profilePictureKey ?? '',
+                          c?.user?.cognitoIdentityId ?? ''
+                        )}
+                        className={classes.commentListItemAvatar}
+                      ></Avatar>
+                    </ListItemAvatar>
+                  </IconButton>
+                  {/** Content */}
+                  <ListItemText
+                    primary={
+                      <React.Fragment>
+                        {/** Commentor user name */}
+                        <Link
+                          component={RouterLink}
+                          to={`/u/${c?.user?.username ?? ''}`}
+                        >
                           <Typography
                             component="span"
-                            variant="body1"
+                            variant="body2"
                             color="textPrimary"
                           >
-                            {c?.body ?? ''}
+                            {c?.user?.username ?? ''}
                           </Typography>
-                        }
-                      />
-                      {/** Action (Flag. Only if not the commentor xirself) */}
-                      {c?.user?.id !== authUser?.id && (
-                        <ListItemSecondaryAction>
-                          {!authUserCommentFlags?.some(
-                            (f) => f?.id === c?.id
-                          ) ? (
-                            // Auth user has NOT flagged this comment
-                            <IconButton
-                              edge="end"
-                              aria-label="Raise Flag"
-                              onClick={() =>
-                                onShowFlagDialog({
-                                  contentType: ContentType.comment,
-                                  contentId: c?.id ?? '',
-                                  parentContentId: stream?.id ?? '',
-                                  authUserExistingFlagId: ''
-                                })
-                              }
-                            >
-                              <FlagIcon />
-                            </IconButton>
-                          ) : (
-                            // Auth user has flagged this comment
-                            <React.Fragment>
-                              <IconButton
-                                edge="end"
-                                aria-label="Edit Flag"
-                                onClick={() =>
-                                  onShowFlagDialog({
-                                    contentType: ContentType.comment,
-                                    contentId: c?.id ?? '',
-                                    parentContentId: stream?.id ?? '',
-                                    authUserExistingFlagId:
-                                      authUserCommentFlags?.find(
-                                        (f) => f?.id === c?.id
-                                      )?.id ?? ''
-                                  })
-                                }
-                              >
-                                <FlagCheckeredIcon />
-                              </IconButton>
-                              <IconButton
-                                edge="end"
-                                aria-label="Remove Flag"
-                                onClick={() =>
-                                  onShowConfirmRetractFlagDialog(
-                                    authUserCommentFlags?.find(
-                                      (f) => f?.id === c?.id
-                                    )?.id ?? ''
-                                  )
-                                }
-                              >
-                                <FlagRemoveIcon />
-                              </IconButton>
-                            </React.Fragment>
-                          )}
-                        </ListItemSecondaryAction>
+                        </Link>
+                        {/** Comment time */}
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          color="textSecondary"
+                        >
+                          {' — '}
+                          {formatDistanceToNow(new Date(c?.time ?? 0), {
+                            locale: getUserLocale(
+                              authUser?.language ?? Language.en
+                            ),
+                            addSuffix: true
+                          })}
+                        </Typography>
+                      </React.Fragment>
+                    }
+                    secondary={
+                      <Typography
+                        component="span"
+                        variant="body1"
+                        color="textPrimary"
+                      >
+                        {c?.body ?? ''}
+                      </Typography>
+                    }
+                  />
+                  {/** Action (Flag. Only if not the commentor xirself) */}
+                  {c?.user?.id !== authUser?.id && (
+                    <ListItemSecondaryAction>
+                      {!authUserCommentFlags?.some((f) => f?.id === c?.id) ? (
+                        // Auth user has NOT flagged this comment
+                        <IconButton
+                          edge="end"
+                          aria-label="Raise Flag"
+                          onClick={() =>
+                            onShowFlagDialog({
+                              contentType: ContentType.comment,
+                              contentId: c?.id ?? '',
+                              parentContentId: stream?.id ?? '',
+                              authUserExistingFlagId: ''
+                            })
+                          }
+                        >
+                          <FlagIcon />
+                        </IconButton>
+                      ) : (
+                        // Auth user has flagged this comment
+                        <React.Fragment>
+                          <IconButton
+                            edge="end"
+                            aria-label="Edit Flag"
+                            onClick={() =>
+                              onShowFlagDialog({
+                                contentType: ContentType.comment,
+                                contentId: c?.id ?? '',
+                                parentContentId: stream?.id ?? '',
+                                authUserExistingFlagId:
+                                  authUserCommentFlags?.find(
+                                    (f) => f?.id === c?.id
+                                  )?.id ?? ''
+                              })
+                            }
+                          >
+                            <FlagCheckeredIcon />
+                          </IconButton>
+                          <IconButton
+                            edge="end"
+                            aria-label="Remove Flag"
+                            onClick={() =>
+                              onShowConfirmRetractFlagDialog(
+                                authUserCommentFlags?.find(
+                                  (f) => f?.id === c?.id
+                                )?.id ?? ''
+                              )
+                            }
+                          >
+                            <FlagRemoveIcon />
+                          </IconButton>
+                        </React.Fragment>
                       )}
-                    </ListItem>
-                  ))
-                : undefined}
+                    </ListItemSecondaryAction>
+                  )}
+                </ListItem>
+              ))}
             </List>
           </Grid>
         )}
