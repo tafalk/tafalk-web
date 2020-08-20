@@ -555,6 +555,7 @@ export const ListFlagsForAdmin = gql`
       id
       contentType
       contentId
+      parentContentId
       category
       type
       detail

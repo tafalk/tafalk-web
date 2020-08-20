@@ -485,6 +485,7 @@ const Stream: React.FC = () => {
               className={classes.topAppBar}
               avatar={
                 <IconButton
+                  size="small"
                   disableRipple
                   component={RouterLink}
                   to={`/u/${stream?.user?.username ?? ''}`}
@@ -800,12 +801,14 @@ const Stream: React.FC = () => {
                   alignItems="flex-start"
                 >
                   {/** Avatar */}
-                  <IconButton
-                    disableRipple
-                    component={RouterLink}
-                    to={`/u/${c?.user?.username ?? ''}`}
-                  >
-                    <ListItemAvatar>
+
+                  <ListItemAvatar>
+                    <IconButton
+                      disableRipple
+                      component={RouterLink}
+                      to={`/u/${c?.user?.username ?? ''}`}
+                      size="small"
+                    >
                       <Avatar
                         alt={c?.user?.username}
                         src={getProtectedLevelProfilePictureObjectUrlByKey(
@@ -814,8 +817,8 @@ const Stream: React.FC = () => {
                         )}
                         className={classes.commentListItemAvatar}
                       ></Avatar>
-                    </ListItemAvatar>
-                  </IconButton>
+                    </IconButton>
+                  </ListItemAvatar>
                   {/** Content */}
                   <ListItemText
                     primary={
