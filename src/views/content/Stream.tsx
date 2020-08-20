@@ -298,6 +298,7 @@ const Stream: React.FC = () => {
         setAuthUserBookmarkId(streamAuthUserBookmarkResult?.id ?? '')
         setAuthUserFlagId(streamAuthUserFlagResult?.id ?? '')
         setAuthUserCommentFlags(streamChildFlagsByAuthUserResult ?? [])
+        console.log(streamChildFlagsByAuthUserResult)
 
         // Subscribe to stream itself for live content changes
         const streamChangeSubscription = API.graphql(
@@ -865,7 +866,9 @@ const Stream: React.FC = () => {
                   {/** Action (Flag. Only if not the commentor xirself) */}
                   {c?.user?.id !== authUser?.id && (
                     <ListItemSecondaryAction>
-                      {!authUserCommentFlags?.some((f) => f?.id === c?.id) ? (
+                      {!authUserCommentFlags?.some(
+                        (f) => f?.contentId === c?.id
+                      ) ? (
                         // Auth user has NOT flagged this comment
                         <IconButton
                           edge="end"
@@ -907,7 +910,7 @@ const Stream: React.FC = () => {
                             onClick={() =>
                               onShowConfirmRetractFlagDialog(
                                 authUserCommentFlags?.find(
-                                  (f) => f?.id === c?.id
+                                  (f) => f?.contentId === c?.id
                                 )?.id ?? ''
                               )
                             }

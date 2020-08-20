@@ -468,6 +468,7 @@ export const GetStreamCommentFlagsByUser = gql`
       parentContentId: $parentContentId
     ) {
       id
+      contentId
     }
   }
 `
