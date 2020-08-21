@@ -77,20 +77,20 @@ const getContent = (
   classes: Record<any, string>
 ) => {
   if (item.__typename === 'Canto') {
-    return <div>{item.body}</div>
+    return <span style={{ whiteSpace: 'pre-line' }}>{item.body}</span>
   }
   if (item.__typename === 'Stream') {
     return (
-      <div>
+      <span style={{ whiteSpace: 'pre-line' }}>
         {item.title && item.title.trim() ? (
           <span className={classes.title}>{item.title}&mdash;&nbsp;</span>
         ) : undefined}
         {item.body}
-      </div>
+      </span>
     )
   }
   if (item.__typename === 'Comment') {
-    return <div>{item.body}</div>
+    return <span style={{ whiteSpace: 'pre-line' }}>{item.body}</span>
   }
   return undefined
 }

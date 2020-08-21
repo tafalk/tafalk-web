@@ -684,19 +684,29 @@ const Canto: React.FC = () => {
           >
             {!bodyHighlightRange.startOffset &&
             !bodyHighlightRange.endOffset ? (
-              <span>{canto?.body}</span>
+              <span style={{ whiteSpace: 'pre-line' }}>{canto?.body}</span>
             ) : (
               <React.Fragment>
-                <span className={cantoPreBookmarkClass}>
+                <span
+                  style={{ whiteSpace: 'pre-line' }}
+                  className={cantoPreBookmarkClass}
+                >
                   {canto?.body.substring(0, bodyHighlightRange.startOffset)}
                 </span>
-                <span id={bookmarkedSectionId} className={classes.highlight}>
+                <span
+                  style={{ whiteSpace: 'pre-line' }}
+                  id={bookmarkedSectionId}
+                  className={classes.highlight}
+                >
                   {canto?.body.substring(
                     bodyHighlightRange.startOffset,
                     bodyHighlightRange.endOffset
                   )}
                 </span>
-                <span className={cantoPostBookmarkClass}>
+                <span
+                  style={{ whiteSpace: 'pre-line' }}
+                  className={cantoPostBookmarkClass}
+                >
                   {canto?.body.substring(bodyHighlightRange.endOffset)}
                 </span>
               </React.Fragment>

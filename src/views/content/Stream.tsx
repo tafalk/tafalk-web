@@ -298,7 +298,6 @@ const Stream: React.FC = () => {
         setAuthUserBookmarkId(streamAuthUserBookmarkResult?.id ?? '')
         setAuthUserFlagId(streamAuthUserFlagResult?.id ?? '')
         setAuthUserCommentFlags(streamChildFlagsByAuthUserResult ?? [])
-        console.log(streamChildFlagsByAuthUserResult)
 
         // Subscribe to stream itself for live content changes
         const streamChangeSubscription = API.graphql(
@@ -690,7 +689,7 @@ const Stream: React.FC = () => {
                     {stream.title}
                   </Typography>
                 )}
-                {stream?.body}
+                <span style={{ whiteSpace: 'pre-line' }}>{stream?.body}</span>
               </Box>
             </Grid>
 
@@ -859,7 +858,9 @@ const Stream: React.FC = () => {
                         variant="body1"
                         color="textPrimary"
                       >
-                        {c?.body ?? ''}
+                        <span style={{ whiteSpace: 'pre-line' }}>
+                          {c?.body ?? ''}
+                        </span>
                       </Typography>
                     }
                   />
