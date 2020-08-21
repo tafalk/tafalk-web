@@ -102,6 +102,17 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+#### Locally run the production build
+
+You can run the production build  created by `npm run build` with [`serve`](https://github.com/vercel/serve) library:
+
+```sh
+npm run build
+npx serve -s build
+```
+
+However, you need to set environment variables to have it functioning.
+
 ### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
