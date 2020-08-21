@@ -722,6 +722,7 @@ const Stream: React.FC = () => {
                     className={classes.addCommentCard}
                     color="transparent"
                     elevation={0}
+                    variant="outlined"
                   >
                     <CardContent>
                       <Grid container>

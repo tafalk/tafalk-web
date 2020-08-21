@@ -111,8 +111,6 @@ npm run build
 npx serve -s build
 ```
 
-However, you need to set environment variables to have it functioning.
-
 ### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
