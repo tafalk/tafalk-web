@@ -69,7 +69,6 @@ const getContent = (
   classes: Record<any, string>
 ) => {
   if (['Stream', 'Canto'].includes(item.__typename)) {
-    console.log(item.body)
     return (
       <span style={{ whiteSpace: 'pre-line' }}>
         {item.title && item.title.trim() ? (
