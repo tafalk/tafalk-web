@@ -5,8 +5,8 @@ const TafalkWelcomeView = lazy(() => import('views/Welcome'))
 const TafalkSearchView = lazy(() => import('views/Search'))
 const TafalkLoginView = lazy(() => import('views/auth/Login'))
 const TafalkRegisterView = lazy(() => import('views/auth/Register'))
-const TafalkConfirmRegistrationView = lazy(() =>
-  import('views/auth/ConfirmRegistration')
+const TafalkConfirmRegistrationView = lazy(
+  () => import('views/auth/ConfirmRegistration')
 )
 const TafalkForgotPasswordView = lazy(() => import('views/auth/ForgotPassword'))
 const TafalkFarewellView = lazy(() => import('views/auth/Farewell'))
