@@ -1,8 +1,8 @@
 # tafalk-web
 
-![build](https://github.com/tafalk/tafalk-web/workflows/build/badge.svg?branch=master)
+![build](https://github.com/tafalk/tafalk-web/workflows/build/badge.svg?branch=main)
 ![website-up](https://img.shields.io/website?label=tafalk.com&url=https%3A%2F%2Ftafalk.com%2F)
-![last-master-commit](https://img.shields.io/github/last-commit/tafalk/tafalk-web/master)
+![last-main-commit](https://img.shields.io/github/last-commit/tafalk/tafalk-web/main)
 ![repo-size](https://img.shields.io/github/repo-size/tafalk/tafalk-web)
 
 This is the frontend project for [tafalk.com](https://tafalk.com) featuring:
