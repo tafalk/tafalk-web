@@ -93,9 +93,10 @@ const Home: React.FC = () => {
   const [fetchNextToken, setFetchNextToken] = useState<string | undefined>(
     undefined
   )
-  const [bottomNavigationValue, setBottomNavigationValue] = useState<
-    BottomNavigationType
-  >('sealedStream')
+  const [
+    bottomNavigationValue,
+    setBottomNavigationValue
+  ] = useState<BottomNavigationType>('sealedStream')
   const isSmallPlus = useMediaQuery(theme.breakpoints.up('sm'))
   const { user: authUser } = useContext(AuthUserContext)
   let routerHistory = useHistory()

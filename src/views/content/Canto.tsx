@@ -136,12 +136,14 @@ const Canto: React.FC = () => {
   ] = useState('')
   const [authUserBookmarkId, setAuthUserBookmarkId] = useState('')
   const [authUserFlagId, setAuthUserFlagId] = useState('')
-  const [bodySelectionRange, setBodySelectionRange] = useState<
-    CantoBodySelectionType
-  >({ startOffset: 0, endOffset: 0 })
-  const [bodyHighlightRange, setBodyHighlightRange] = useState<
-    CantoBodySelectionType
-  >({ startOffset: 0, endOffset: 0 })
+  const [
+    bodySelectionRange,
+    setBodySelectionRange
+  ] = useState<CantoBodySelectionType>({ startOffset: 0, endOffset: 0 })
+  const [
+    bodyHighlightRange,
+    setBodyHighlightRange
+  ] = useState<CantoBodySelectionType>({ startOffset: 0, endOffset: 0 })
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [
     updateBookmarkIndicesInfoOpen,

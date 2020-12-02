@@ -184,9 +184,10 @@ const Stream: React.FC = () => {
   ] = useState('')
   const [authUserBookmarkId, setAuthUserBookmarkId] = useState('')
   const [authUserFlagId, setAuthUserFlagId] = useState('')
-  const [authUserCommentFlags, setAuthUserCommentFlags] = useState<
-    CommentDataType
-  >([])
+  const [
+    authUserCommentFlags,
+    setAuthUserCommentFlags
+  ] = useState<CommentDataType>([])
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [newComment, setNewComment] = useState('')
   const [comments, setComments] = useState<
@@ -200,9 +201,10 @@ const Stream: React.FC = () => {
     setConfirmRetractFlagDialogOpen
   ] = useState(false)
   const [flagDialogOpen, setFlagDialogOpen] = useState(false)
-  const [flagDialogContentType, setFlagDialogContentType] = useState<
-    ContentType
-  >(ContentType.stream)
+  const [
+    flagDialogContentType,
+    setFlagDialogContentType
+  ] = useState<ContentType>(ContentType.stream)
   const [flagDialogContentId, setFlagDialogContentId] = useState('')
   const [flagDialogParentContentId, setFlagDialogParentContentId] = useState('')
   const [flagDialogAuthUserFlagId, setFlagDialogAuthUserFlagId] = useState('')
