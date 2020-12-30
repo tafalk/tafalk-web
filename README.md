@@ -13,8 +13,6 @@ This is the frontend project for [tafalk.com](https://tafalk.com) featuring:
 
 - [AWS Amplify](https://aws-amplify.github.io/) for connecting to the AWS backend resources
 
-- [MapTiler Geocoding](https://cloud.maptiler.com/geocoding/) for location autocomplete
-
 - [Google Analytics](https://analytics.google.com/analytics/web/) for collecting data, or serving a better user experience?
 
 - [Google Recaptcha V3](https://developers.google.com/recaptcha/docs/v3) for kindly warning robots
@@ -58,7 +56,7 @@ So, the following should be added to the repo secrets beforehand:
 | -------------------------------------- | ------------------------------------------------------------- |
 | AWS_ACCESS_KEY_ID                      | `{YOUR_AWS_ACCESS_KEY_ID}`                                    |
 | AWS_SECRET_ACCESS_KEY                  | `{SECRET_KEY_FOR_THE_ACCESS_KEY}`                             |
-| REACT_APP_AWS_REGION                   | `eu-west-1` *or another region*                               |
+| REACT_APP_AWS_REGION                   | `eu-west-1` _or another region_                               |
 | REACT_APP_APPSYNC_GRAPHQL_ENDPOINT     | `https://{api_id}.appsync-api.{region}.amazonaws.com/graphql` |
 | REACT_APP_COGNITO_IDENTITY_POOL_ID     | `{region}:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`               |
 | REACT_APP_COGNITO_USER_POOL_CLIENT_ID  | `xxxxxxxxxxxxxxxxxxxxxxxxxx`                                  |
@@ -104,7 +102,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 #### Locally run the production build
 
-You can run the production build  created by `npm run build` with [`serve`](https://github.com/vercel/serve) library:
+You can run the production build created by `npm run build` with [`serve`](https://github.com/vercel/serve) library:
 
 ```sh
 npm run build
