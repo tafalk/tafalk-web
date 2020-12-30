@@ -1,6 +1,6 @@
 # tafalk-web
 
-![build](https://github.com/tafalk/tafalk-web/workflows/build/badge.svg?branch=main)
+![build](https://github.com/tafalk/tafalk-web/workflows/build/badge.svg)
 ![website-up](https://img.shields.io/website?label=tafalk.com&url=https%3A%2F%2Ftafalk.com%2F)
 ![last-main-commit](https://img.shields.io/github/last-commit/tafalk/tafalk-web/main)
 ![repo-size](https://img.shields.io/github/repo-size/tafalk/tafalk-web)
