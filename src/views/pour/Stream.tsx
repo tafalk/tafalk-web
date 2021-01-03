@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useContext,
-  useState,
-  useRef,
-  useCallback
-} from 'react'
+import React, { useEffect, useContext, useState, useRef } from 'react'
 import {
   Link as RouterLink,
   useHistory,
@@ -77,6 +71,7 @@ import SpeechRecognition, {
 
 import TafalkFirstStreamInfoDialog from 'components/pour/dialogs/TheFirstStreamInfoDialog'
 import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
+import { useMemo } from 'react'
 
 type UncloggerPromptType = {
   id: string
@@ -319,17 +314,18 @@ const Stream: React.FC = () => {
   ])
 
   // Functions
-  const delayedUpdateBody = useCallback(
-    debounce(async () => {
-      setPourState('saving')
-      await API.graphql(
-        graphqlOperation(UpdateStreamBody, {
-          id: streamId,
-          body: bodyRef.current?.value
-        })
-      )
-      setPourState('saved')
-    }, persistDelayDuration),
+  const delayedUpdateBody = useMemo(
+    () =>
+      debounce(async () => {
+        setPourState('saving')
+        await API.graphql(
+          graphqlOperation(UpdateStreamBody, {
+            id: streamId,
+            body: bodyRef.current?.value
+          })
+        )
+        setPourState('saved')
+      }, persistDelayDuration),
     [streamId]
   ) // eslint-disable-line react-hooks/exhaustive-deps
 

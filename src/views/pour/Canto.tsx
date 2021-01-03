@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useContext,
-  useRef,
-  useState,
-  useCallback
-} from 'react'
+import React, { useEffect, useContext, useRef, useState } from 'react'
 import {
   Link as RouterLink,
   useHistory,
@@ -53,6 +47,7 @@ import SpeechRecognition, {
 
 import TafalkFirstCantoInfoDialog from 'components/pour/dialogs/TheFirstCantoInfoDialog'
 import TafalkShareContentDialog from 'components/content/dialogs/GenericShareContentDialog'
+import { useMemo } from 'react'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -191,20 +186,21 @@ const Canto: React.FC = () => {
   }, [transcript])
 
   // Functions
-  const delayedUpdateBody = useCallback(
-    debounce(async () => {
-      setPourState('saving')
-      await API.graphql(
-        graphqlOperation(UpdateCantoBody, {
-          id: cantoId,
-          body: bodyRef.current?.value,
-          lastUpdateTime: new Date().toISOString()
-        })
-      )
-      setPourState('saved')
-    }, persistDelayDuration),
+  const delayedUpdateBody = useMemo(
+    () =>
+      debounce(async () => {
+        setPourState('saving')
+        await API.graphql(
+          graphqlOperation(UpdateCantoBody, {
+            id: cantoId,
+            body: bodyRef.current?.value,
+            lastUpdateTime: new Date().toISOString()
+          })
+        )
+        setPourState('saved')
+      }, persistDelayDuration),
     []
-  ) // eslint-disable-line react-hooks/exhaustive-deps
+  )
 
   const onBodyKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
