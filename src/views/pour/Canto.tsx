@@ -199,7 +199,7 @@ const Canto: React.FC = () => {
         )
         setPourState('saved')
       }, persistDelayDuration),
-    []
+    [cantoId]
   )
 
   const onBodyKeyDown = (
