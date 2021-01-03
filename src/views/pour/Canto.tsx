@@ -204,7 +204,7 @@ const Canto: React.FC = () => {
       setPourState('saved')
     }, persistDelayDuration),
     []
-  )
+  ) // eslint-disable-line react-hooks/exhaustive-deps
 
   const onBodyKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>

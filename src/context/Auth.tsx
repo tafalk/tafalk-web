@@ -42,14 +42,14 @@ export interface AuthUserContextType {
   setTrigger: Function
 }
 
-export const AuthUserContext = React.createContext<AuthUserContextType>({
+const AuthUserContext = React.createContext<AuthUserContextType>({
   user: null,
   setUser: () => {},
   trigger: undefined,
   setTrigger: () => {}
 })
 
-export default ({ children }: any) => {
+const AuthUserContextProvider = ({ children }: any) => {
   const [user, setUser] = useState<AuthUserContextDataType | null>(null)
   const [trigger, setTrigger] = useState<TriggerDataType>('initial')
   const { enqueueSnackbar } = useSnackbar()
@@ -183,3 +183,5 @@ export default ({ children }: any) => {
     </AuthUserContext.Provider>
   )
 }
+
+export { AuthUserContextProvider as default, AuthUserContext }

@@ -331,7 +331,7 @@ const Stream: React.FC = () => {
       setPourState('saved')
     }, persistDelayDuration),
     [streamId]
-  )
+  ) // eslint-disable-line react-hooks/exhaustive-deps
 
   const onBodyKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>

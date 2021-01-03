@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { BasicDialogProps } from 'types/props'
 import {
   Dialog,
@@ -84,90 +84,109 @@ const FlagContentDialog: React.FC<FlagContentDialogProps> = (props) => {
   const [initialInfoLoaded, setInitialInfoLoaded] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
 
-  const steps = [
-    { code: 'category', label: t('flagContentDialog.steps.category.label') },
-    { code: 'type', label: t('flagContentDialog.steps.type.label') },
-    { code: 'detail', label: t('flagContentDialog.steps.detail.label') }
-  ]
-
-  const categories = [
-    {
-      code: 'spam',
-      primaryText: t('flagContentDialog.steps.category.items.spam.primary'),
-      secondaryText: t('flagContentDialog.steps.category.items.spam.secondary')
-    },
-    {
-      code: 'rude',
-      primaryText: t('flagContentDialog.steps.category.items.rude.primary'),
-      secondaryText: t('flagContentDialog.steps.category.items.rude.secondary')
-    },
-    {
-      code: 'loQlty',
-      primaryText: t('flagContentDialog.steps.category.items.loQlty.primary'),
-      secondaryText: t(
-        'flagContentDialog.steps.category.items.loQlty.secondary'
-      )
-    }
-  ]
-
-  const types = [
-    {
-      code: 'ad',
-      category: 'spam',
-      primaryText: t('flagContentDialog.steps.type.items.spam.ad.primary'),
-      secondaryText: t('flagContentDialog.steps.type.items.spam.ad.secondary')
-    },
-    {
-      code: 'harmful',
-      category: 'spam',
-      primaryText: t('flagContentDialog.steps.type.items.spam.harmful.primary'),
-      secondaryText: t(
-        'flagContentDialog.steps.type.items.spam.harmful.secondary'
-      )
-    },
-    {
-      code: 'hate',
-      category: 'rude',
-      primaryText: t('flagContentDialog.steps.type.items.rude.hate.primary'),
-      secondaryText: t('flagContentDialog.steps.type.items.rude.hate.secondary')
-    },
-    {
-      code: 'threat',
-      category: 'rude',
-      primaryText: t('flagContentDialog.steps.type.items.rude.threat.primary'),
-      secondaryText: t(
-        'flagContentDialog.steps.type.items.rude.threat.secondary'
-      )
-    },
-    {
-      code: 'offensive',
-      category: 'rude',
-      primaryText: t(
-        'flagContentDialog.steps.type.items.rude.offensive.primary'
-      ),
-      secondaryText: t(
-        'flagContentDialog.steps.type.items.rude.offensive.secondary'
-      )
-    },
-    {
-      code: 'private',
-      category: 'rude',
-      primaryText: t('flagContentDialog.steps.type.items.rude.private.primary'),
-      secondaryText: t(
-        'flagContentDialog.steps.type.items.rude.private.secondary'
-      )
-    },
-    {
-      code: 'private',
-      category: 'loQlty',
-      primaryText: t(
-        'flagContentDialog.steps.type.items.loQlty.nonsense.primary'
-      ),
-      secondaryText: t(
-        'flagContentDialog.steps.type.items.loQlty.nonsense.secondary'
-      )
-    }
-  ]
+  const steps = useMemo(
+    () => [
+      { code: 'category', label: t('flagContentDialog.steps.category.label') },
+      { code: 'type', label: t('flagContentDialog.steps.type.label') },
+      { code: 'detail', label: t('flagContentDialog.steps.detail.label') }
+    ],
+    [t]
+  )
+  const categories = useMemo(
+    () => [
+      {
+        code: 'spam',
+        primaryText: t('flagContentDialog.steps.category.items.spam.primary'),
+        secondaryText: t(
+          'flagContentDialog.steps.category.items.spam.secondary'
+        )
+      },
+      {
+        code: 'rude',
+        primaryText: t('flagContentDialog.steps.category.items.rude.primary'),
+        secondaryText: t(
+          'flagContentDialog.steps.category.items.rude.secondary'
+        )
+      },
+      {
+        code: 'loQlty',
+        primaryText: t('flagContentDialog.steps.category.items.loQlty.primary'),
+        secondaryText: t(
+          'flagContentDialog.steps.category.items.loQlty.secondary'
+        )
+      }
+    ],
+    [t]
+  )
+  const types = useMemo(
+    () => [
+      {
+        code: 'ad',
+        category: 'spam',
+        primaryText: t('flagContentDialog.steps.type.items.spam.ad.primary'),
+        secondaryText: t('flagContentDialog.steps.type.items.spam.ad.secondary')
+      },
+      {
+        code: 'harmful',
+        category: 'spam',
+        primaryText: t(
+          'flagContentDialog.steps.type.items.spam.harmful.primary'
+        ),
+        secondaryText: t(
+          'flagContentDialog.steps.type.items.spam.harmful.secondary'
+        )
+      },
+      {
+        code: 'hate',
+        category: 'rude',
+        primaryText: t('flagContentDialog.steps.type.items.rude.hate.primary'),
+        secondaryText: t(
+          'flagContentDialog.steps.type.items.rude.hate.secondary'
+        )
+      },
+      {
+        code: 'threat',
+        category: 'rude',
+        primaryText: t(
+          'flagContentDialog.steps.type.items.rude.threat.primary'
+        ),
+        secondaryText: t(
+          'flagContentDialog.steps.type.items.rude.threat.secondary'
+        )
+      },
+      {
+        code: 'offensive',
+        category: 'rude',
+        primaryText: t(
+          'flagContentDialog.steps.type.items.rude.offensive.primary'
+        ),
+        secondaryText: t(
+          'flagContentDialog.steps.type.items.rude.offensive.secondary'
+        )
+      },
+      {
+        code: 'private',
+        category: 'rude',
+        primaryText: t(
+          'flagContentDialog.steps.type.items.rude.private.primary'
+        ),
+        secondaryText: t(
+          'flagContentDialog.steps.type.items.rude.private.secondary'
+        )
+      },
+      {
+        code: 'private',
+        category: 'loQlty',
+        primaryText: t(
+          'flagContentDialog.steps.type.items.loQlty.nonsense.primary'
+        ),
+        secondaryText: t(
+          'flagContentDialog.steps.type.items.loQlty.nonsense.secondary'
+        )
+      }
+    ],
+    [t]
+  )
 
   // Side effect: Load existing flag info (i.e. category, type, detail) if exists
   useEffect(() => {
